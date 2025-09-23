@@ -1,0 +1,193 @@
+﻿Creates a report of user listening habits during the selected year
+or the entire listening history as a PDF and outputs some playlists
+recommendations using these stats.
+	- Downloads listens from external services (if enabled):
+		* ListenBrainz: match by MUSICBRAINZ_TRACKID.
+
+	- Retrieves listens from components:
+		* Playback Statistics
+		* Enhanced Playback Statistics
+		* Playcount 2003
+
+	- Deduplicates all listens retrieved (local or online).
+
+	- Computes statistics from the library by:
+		* Listening behavior (character)
+		* Genres/styles
+			+ Total
+			+ Top 5
+			+ Suggested genres
+		* Musical categories (chart)
+		* Tracks
+			+ Total
+			+ Most played track
+			+ Top 5
+		* Listens
+			+ Total (minutes/days)
+			+ Day with most listens
+		* Artists
+			+ Total
+			+ Top 5
+			+ Months reels
+			+ Most played artist (and track)
+		* Regions
+			+ Top 5
+			+ Artist/Country with more listens
+		* Sound town
+			+ Top 3 artists from that city
+		* Mood stats (chart)
+		* BPM stats (chart)
+		* Key stats (chart)
+
+	- Downloads artist and city images.
+	  (Tries to use first image stub from WilB's Biography)
+	  (Offline mode may be set to skip image downloading)
+
+	- Retrieves album covers from tracks.
+
+	- Generates random backgrounds (which can be customized by user).
+
+	- Outputs a report in Latex format. Compilation in PDF.
+
+	- Playlists recommendations:
+		* Top Favorite Songs
+		* Discovered Songs (during the year)
+		* Top Artists
+		* Top Genres
+		* Top Countries
+		* Suggested Genres (you may like) (ListenBrainz)
+		  (Offline mode may be set to only use queries)
+		* Suggested Artists (you make like) (ListenBrainz)
+		  (Offline mode may be set to only use queries)
+
+	- Year and Entire listening history reports may differ since
+	the latter does not use time-related stats (from Enhanced
+	Playback Statistics plugin).
+
+Additional Tips:
+----------------
+	- You can use your own images in offline mode by putting them
+	at '[foobar profile]\js_data\temp\wrapped\img\' subfolders. All
+	(artist, album & cities) image file names must be lower case,
+	without spaces, limited to 10 chars and jpg. Ex: 'fleetwoodm.jpg'
+
+	- The stub image path is used wether offline mode is enabled or
+	not, and these images are always preferred to downloaded ones.
+	These images are automatically retrieved by TF expression (only
+	applicable for artist images) and they are selected randomly
+	from all images available at the matched folder.
+
+	- In offline mode the artists images subfolder is not cleaned
+	on every run (so any images present are kept indefinitely),
+
+	- Listens are downloaded once before run (not on offline mode)
+	and cached for 10 days. They are also re-downloaded if it detects
+	some listens are missing. Note it will take some time since it
+	will retrieve the entire listening history from external services.
+	This database (to be reused offline) will be saved at:
+	'[foobar profile]\js_data\listenbrainz_listens_[user].json'
+
+	- In offline mode external listens may also be used as long as
+	the user name associated have been provided (since the listening
+	history is saved on JSON by username). Database as a single file
+	containing an array of listen objects must be present at:
+	'[foobar profile]\js_data\listenbrainz_listens_[user].json'
+
+	- There is a setting to halve reported BPMs by tracks with a high
+	value (> 130) because automatic BPM analysis tools usually fail
+	reporting double the real BPM. Since the report doesn't care about
+	specific track values, only the total BPM count on library, this
+	can be used to rectify the histogram a bit by a specific proportion
+	(which should be similar to the error rate of the analysis tool).
+	By default is set to 30% (i.e. 30% random tracks with high BMP will
+	be halved), which is a conservative estimation for tools like
+	Essentia or foo_bpm. You can find the right proportion by yourself
+	in your	library by selecting X random tracks -and different genres-
+	with high BPM and checking how many of them have doubled values
+	(the proportion should be uniform across the entire library).
+
+Requirements:
+-------------
+	- Playback Statistics: For any report.
+	https://www.foobar2000.org/components/view/foo_playcount
+
+	- Enhanced Playback Statistics: For year reports.
+	https://www.foobar2000.org/components/view/foo_enhanced_playcount
+							OR
+	- Playcount 2003: For year reports.
+	https://marc2k3.github.io/component/playcount-2003/
+
+	Note stats will be available only for dates posterior to the
+	date the components were installed.
+
+	- LaTeX: Recommended LuaLaTeX via MiKTeX.
+		* Win 10+: any version
+		https://miktex.org
+		* Win 7 / Wine (64 bit): 22.7 version
+		https://www.npackd.org/p/org.miktex.MiKTeX64/22.7
+		* Win 7 / Wine (32 bit): 21.6 version
+		https://www.npackd.org/p/org.miktex.MiKTeX/21.6
+
+Optional:
+---------
+	- Skip Count: To get some extra track stats.
+	https://github.com/Fjara-h/foo_skipcount
+
+	- World-Map-SMP: To get country stats. Tags must be written
+	to the JSON database. If locale tags are already present
+	on tracks, use 'Database...\Merge file tags with JSON...';
+	otherwise you will need to retrieve tags using the Bio panel.
+	Note artists without a country on the JSON database will
+	not be used on the country/city stats, so be sure to get
+	the tags for all artists in your library (use 'Database...\
+	Find artists without locale tags...').
+	https://github.com/regorxxx/World-Map-SMP
+
+	- Biography (Wil-B): To be used along World-Map-SMP.
+	https://github.com/Wil-B/Biography
+
+	- ListenBrainz token: It's not a requisite to get
+	playlists suggestions, since it will use the public API,
+	but it will be less probably to reach rate limits with it.
+	Additionally, the script may retrieve all listening history
+	from the server and try to match listens with tracks from
+	library (only by MBID), these will be deduplicated and used
+	in addition to local playcount stats. To get a token visit:
+	https://listenbrainz.org/settings/import/
+
+	- TeXstudio: To compile manually (if desired); can also be
+	configured to use LuaLaTeX engine, giving identical results
+	to the automated CMD build.
+	https://github.com/texstudio-org/texstudio
+		* Win 10+: any version
+		* Win 7: 4.3.0 (or lower)
+
+	- ExifTool: To clean all metadata from images used on report.
+	Binaries must be put at: .\helpers_external\exiftool\exiftool.exe
+		* 64 bit: https://exiftool.org/
+		* 32 bit: https://oliverbetz.de/pages/Artikel/ExifTool-for-Windows
+
+	- Pingo: To optimize images used (will greatly reduce file size).
+	Binaries must be put at: .\helpers_external\pingo\pingo.exe
+		* 64 bit: https://css-ig.net/pingo
+		* 32 bit: not available
+
+LaTeX compilation:
+------------------
+The default installation uses LuaLaTeX via CMD:
+lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1
+
+A portable install may also be used as long as the CMD command is adjusted.
+
+This command may be changed at the settings menu, in case other engine
+or format is preferred (any layout problems is your responsibility though).
+
+The CMD expression allows these numbered arguments which are replaced at
+execution:
+	- %1: input .tex file path (with quotes)
+	- %2: output .pdf file path (with quotes)
+	- %3: output directory path (with quotes)
+	- %4: year
+
+Ex:
+lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_2023 --output-directory="B:\foobar2000\profile\js_data\temp\wrapped" "B:\foobar2000\profile\js_data\temp\wrapped\Wrapped_2023.tex"
