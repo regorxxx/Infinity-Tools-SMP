@@ -1,0 +1,20 @@
+﻿Automate foobar2000's output selection:
+	- Device 1 is connected, select it as output.
+	- Otherwise, fall back to Device 2 instead of setting 
+	"nothing" as output.
+	- Otherwise, fall back to Device 3.
+	...
+
+As noted, it may be used to automatically switch to headphones or 
+wireless outputs as soon as they are connected / switched on, falling
+back to the default output when they are not.
+	
+Usage:
+	- Export first the device list with all the desired devices connected
+	to use them at a later point (even if the devices are not connected).
+	- 'Set Device X\' menus will only show either currently connected 
+	devices or the ones from the exported list.
+	- In other words, you can only assign devices to the priority list if
+	they are available on the menus. 
+	- A disconnected device, not available on the exported list, will be
+	shown as \'Not connected device\', with its name at top. 
