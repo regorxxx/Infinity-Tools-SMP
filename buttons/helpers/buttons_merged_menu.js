@@ -722,15 +722,7 @@ function createButtonsMenu(name) {
 				overwriteProperties(barProperties);
 				if (barProperties.bAutoUpdateCheck[1]) {
 					if (typeof checkUpdate === 'undefined') { include('..\\..\\helpers\\helpers_xxx_web_update.js'); }
-					const args = buttonsBar.getUpdateList().map((btn) => {
-						return {
-							...(btn.scriptName ? { scriptName: btn.scriptName } : {}),
-							...(btn.repository ? { repository: btn.repository } : {}),
-							...(btn.version ? { version: btn.version } : {}), // If there is no version, it's retrieved from the toolbar version
-							bDownload: globSettings.bAutoUpdateDownload, bOpenWeb: globSettings.bAutoUpdateOpenWeb, bDisableWarning: false
-						};
-					});
-					Promise.serial(args, checkUpdate);
+					checkUpdate({ bDownload: globSettings.bAutoUpdateDownload, bOpenWeb: globSettings.bAutoUpdateOpenWeb, bDisableWarning: false });
 				}
 			}
 		});
@@ -739,17 +731,10 @@ function createButtonsMenu(name) {
 		menu.newEntry({
 			menuName: subMenu, entryText: 'Check for updates...', func: () => {
 				if (typeof checkUpdate === 'undefined') { include('..\\..\\helpers\\helpers_xxx_web_update.js'); }
-				const args = buttonsBar.getUpdateList().map((btn) => {
-					return {
-						...(btn.scriptName ? { scriptName: btn.scriptName } : {}),
-						...(btn.repository ? { repository: btn.repository } : {}),
-						...(btn.version ? { version: btn.version } : {}), // If there is no version, it's retrieved from the toolbar version
-						bDownload: globSettings.bAutoUpdateDownload, bOpenWeb: globSettings.bAutoUpdateOpenWeb, bDisableWarning: false
-					};
-				});
-				Promise.serial(args, checkUpdate).then((results) => {
-					if (results.every((result) => !result)) { fb.ShowPopupMessage('No updates found.', window.Name); }
-				});
+				checkUpdate({ bDownload: globSettings.bAutoUpdateDownload, bOpenWeb: globSettings.bAutoUpdateOpenWeb, bDisableWarning: false })
+					.then((result) => {
+						if (!result) { fb.ShowPopupMessage('No updates found.', window.Name); }
+					});
 			}
 		});
 	}
