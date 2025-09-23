@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/09/25
+//23/09/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -17,7 +17,7 @@
 // eslint-disable-next-line no-unused-vars
 var bLoadTags = true; // NOSONAR
 
-if (!window.ScriptInfo.Name) { window.DefineScript('Infinity Tools', { author: 'regorxxx', version: '6.0.0', features: { drag_n_drop: false } }); }
+if (!window.ScriptInfo.Name) { window.DefineScript('Infinity Tools', { author: 'regorxxx', version: '1.0.0', features: { drag_n_drop: false } }); }
 
 {
 	const dependencies = [
@@ -159,11 +159,11 @@ function loadButtonsFile(bStartup = false) {
 			/* global sbd:readable */
 			{
 				name: (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ' (basic)', files:
-					['buttons_music_map_basic.js']
+					['buttons_music_map_basic.js', 'buttons_music_map_genre_explorer.js']
 			},
 			{
 				name: (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ' (customizable)', files:
-					['buttons_music_map_customizable.js', 'buttons_music_map_customizable.js', 'buttons_music_map_customizable.js', 'buttons_music_map_customizable.js']
+					['buttons_music_map_customizable.js', 'buttons_music_map_customizable.js', 'buttons_music_map_genre_explorer.js']
 			},
 			{
 				name: 'Top Tracks', files:
@@ -171,16 +171,23 @@ function loadButtonsFile(bStartup = false) {
 			},
 			{
 				name: 'Library search', files:
-					['buttons_search_by_tags_combinations.js', 'buttons_search_by_tags_queries.js', 'buttons_search_quicksearch.js']
+					['buttons_search_by_tags_combinations.js', 'buttons_search_by_tags_queries.js', 'buttons_search_quicksearch.js', 'buttons_search_quickmatch.js']
 			},
 			{
 				name: 'Playlist manipulation', files:
-					['buttons_playlist_remove_duplicates.js', 'buttons_playlist_filter.js', 'buttons_playlist_filter.js', 'buttons_playlist_history.js']
+					['buttons_playlist_tools.js', 'buttons_playlist_remove_duplicates.js', 'buttons_playlist_show_duplicates.js', 'buttons_playlist_filter.js', 'buttons_playlist_history.js']
 			},
 			{
-				name: 'Device priority', files: _isFile(folders.xxx + 'buttons\\buttons_device_switcher.js')
-					? ['buttons_device_priority.js', 'buttons_device_switcher.js']
-					: ['buttons_device_priority.js']
+				name: 'Tagging', files:
+					['buttons_tags_batch_tagger.js', 'buttons_tags_batch_tagger.js']
+			},
+			{
+				name: 'Autobackup and Tools', files:
+					['buttons_utils_autobackup.js', 'buttons_utils_main_menu.js', 'buttons_playlist_tools.js',]
+			},
+			{
+				name: 'Device priority', files:
+					['buttons_device_priority.js', 'buttons_device_switcher.js']
 			},
 			{
 				name: 'ListenBrainz & Last.fm', files:
@@ -188,11 +195,15 @@ function loadButtonsFile(bStartup = false) {
 			},
 			{
 				name: 'Full', files:
-					['buttons_playlist_tools.js', 'buttons_playlist_tools_submenu_custom.js', 'buttons_playlist_tools_macros.js', 'buttons_search_by_tags_combinations.js', 'buttons_playlist_remove_duplicates.js', 'buttons_playlist_filter.js', 'buttons_search_quicksearch.js']
+					['buttons_playlist_tools.js', 'buttons_playlist_tools_submenu_custom.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_remove_duplicates.js', 'buttons_search_quicksearch.js']
 			},
 			{
-				name: 'Full' + (typeof sbd !== 'undefined' ? '( with ' + sbd.name + ')' : ''), files:
-					['buttons_playlist_tools.js', 'buttons_playlist_tools_submenu_custom.js', 'buttons_music_map_customizable.js', 'buttons_music_map_customizable.js', 'buttons_playlist_remove_duplicates.js', 'buttons_playlist_filter.js', 'buttons_search_quicksearch.js']
+				name: 'Full' + (typeof sbd !== 'undefined' ? ' (with ' + sbd.name + ')' : ' (with Music Map)'), files:
+					['buttons_playlist_tools.js', 'buttons_playlist_tools_submenu_custom.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_remove_duplicates.js', 'buttons_music_map_customizable.js', 'buttons_search_quicksearch.js']
+			},
+			{
+				name: 'Volume display', files:
+					['buttons_display_volume.js', 'separator', 'buttons_display_tf.js'],
 			},
 			{
 				name: 'Status bar', files:
@@ -203,7 +214,7 @@ function loadButtonsFile(bStartup = false) {
 		].map((preset) =>
 			preset.files.every((file) => _isFile(folders.xxx + 'buttons\\' + file) || file.toLowerCase() === 'separator') ? preset : void (0)
 		).filter(Boolean);
-		const input = Input.number('int positive', presets.length, 'Choose a preset (by number) from the following list, to load the toolbar with pre-defined buttons (they may be added/removed at any time later):\n' + presets.map((p, i) => '\t' + _b(i + 1) + ' ' + p.name).join('\n') + '\n\nCanceling will load a blank toolbar by default.', 'Toolbar: preset', 1, [(n) => n > 0 && n <= presets.length]);
+		const input = Input.number('int positive', presets.length, 'Choose a preset (by number) from the following list, to load the toolbar with pre-defined buttons:\n' + presets.map((p, i) => '\t' + _b((i + 1).toString().padStart(2, '0')) + ' ' + p.name).join('\n') + '\n\nCanceling will load a blank toolbar by default.\n\nNote buttons may be added orremoved at any time later by R. Clicking on the toolbar.', 'Toolbar: preset', 1, [(n) => n > 0 && n <= presets.length]);
 		if (input == null) { return false; }
 		const preset = presets[input - 1];
 		if (preset) {
