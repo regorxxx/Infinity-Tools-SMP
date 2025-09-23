@@ -9,7 +9,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, checkCompatible:readable, VK_RETURN:readable, FontStyle:readable, MK_SHIFT:readable, VK_SHIFT:readable, VK_BACK:readable, DT_LEFT:readable, DT_CENTER:readable, DT_RIGHT:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_END_ELLIPSIS:readable, DT_PATH_ELLIPSIS:readable, DT_WORD_ELLIPSIS:readable, DT_NOCLIP:readable, globTags:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, getButtonVersion:readable, Flag:readable, buttonStates:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, Flag:readable, buttonStates:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
@@ -22,9 +22,8 @@ include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
 
 var prefix = 'dtf'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Display Title Format button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Display Title Format button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 checkCompatible('1.6.1', 'smp');
 checkCompatible('1.4.0', 'fb');
@@ -352,7 +351,6 @@ addButton({
 					}
 				}
 			}
-		},
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		}
 	}),
 });

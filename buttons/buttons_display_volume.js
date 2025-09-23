@@ -9,7 +9,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, checkCompatible:readable, VK_RETURN:readable, FontStyle:readable, MK_SHIFT:readable, VK_SHIFT:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, getButtonVersion:readable, buttonStates:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, buttonStates:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
@@ -20,9 +20,8 @@ include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 
 var prefix = 'dvo'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Volume control button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Volume control button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 checkCompatible('1.6.1', 'smp');
 checkCompatible('1.4.0', 'fb');
@@ -233,7 +232,6 @@ addButton({
 					}
 				}
 			}
-		},
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		}
 	}),
 });

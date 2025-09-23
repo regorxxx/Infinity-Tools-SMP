@@ -1,5 +1,5 @@
 ﻿'use strict';
-//17/03/25
+//20/09/25
 
 /*
 	Output device selector
@@ -10,7 +10,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, MF_GRAYED:readable, checkCompatible:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, getButtonVersion:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\menu_xxx.js');
 /* global _menu:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
@@ -21,10 +21,8 @@ include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 
 var prefix = 'ds'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Output device switcher button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
-
+if (!window.ScriptInfo.Name) { window.DefineScript('Output device switcher button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 checkCompatible('1.6.1', 'smp');
 checkCompatible('1.4.0', 'fb');
 
@@ -67,7 +65,6 @@ addButton({
 			return info;
 		},
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: chars.speaker,
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		icon: chars.speaker
 	}),
 });
