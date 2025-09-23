@@ -26,9 +26,8 @@ include('..\\helpers\\callbacks_xxx.js');
 /* global removeEventListenerSelf:readable */
 
 var prefix = 'dp_'; // NOSONAR[global]
-var version = '3.0.0'; // NOSONAR[global]
 
-try { window.DefineScript('Output device priority button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Output device priority button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 checkCompatible('1.6.1', 'smp');
 checkCompatible('1.4.0', 'fb');
@@ -287,8 +286,7 @@ addButton({
 			return info;
 		},
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: chars.headphones,
-		update: { scriptName: 'Device-Priority-SMP', version }
+		icon: chars.headphones
 	}),
 });
 

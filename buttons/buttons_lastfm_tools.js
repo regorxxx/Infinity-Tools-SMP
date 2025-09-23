@@ -1,5 +1,5 @@
 'use strict';
-//07/09/25
+//20/09/25
 
 /*
 	Integrates Last.fm recommendations statistics within foobar2000 library.
@@ -9,7 +9,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, globQuery:readable, doOnce:readable, MF_GRAYED:readable, VK_CONTROL:readable, folders:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getButtonVersion:readable, getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
@@ -31,9 +31,9 @@ include('..\\main\\last_list\\last_list_menu.js');
 include('..\\main\\bio\\bio_tags.js');
 /* global lastfmListeners:readable */
 var prefix = 'lfm'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Last.fm Tools Button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Last.fm Tools Button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
+
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
@@ -241,7 +241,6 @@ addButton({
 					}
 				});
 			}
-		},
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		}
 	}),
 });
