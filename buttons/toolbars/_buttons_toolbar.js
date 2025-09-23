@@ -1,7 +1,7 @@
 ﻿'use strict';
-//20/09/25
+//21/09/25
 
-/* Playlist Tools: Buttons Toolbar
+/* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
 	Compatible with:
 		- Music Map
@@ -16,9 +16,8 @@
 // Note this must be added before loading helpers! See buttons_search_by_tags_combinations.js and search_same_by.js
 // eslint-disable-next-line no-unused-vars
 var bLoadTags = true; // NOSONAR
-var version = '2.0.0'; // NOSONAR
 
-try { window.DefineScript('Playlist Tools: Buttons Bar', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons*/ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Infinity Tools', { author: 'regorxxx', version: '6.0.0', features: { drag_n_drop: false } }); }
 
 {
 	const dependencies = [
@@ -163,7 +162,7 @@ function loadButtonsFile(bStartup = false) {
 					['buttons_music_map_basic.js']
 			},
 			{
-				name: (typeof sbd !== 'undefined' ? sbd.name  : 'Music Map') + ' (customizable)', files:
+				name: (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ' (customizable)', files:
 					['buttons_music_map_customizable.js', 'buttons_music_map_customizable.js', 'buttons_music_map_customizable.js', 'buttons_music_map_customizable.js']
 			},
 			{
@@ -414,14 +413,7 @@ if (barProperties.bAutoUpdateCheck[1]) {
 		if (bIncludeRel) { dependencies.forEach((file) => { include('..\\..\\' + file); }); }
 		else { dependencies.forEach((file) => { include(file); }); }
 	}
-	buttonsBar.getUpdateList().forEach((btn, i) => {
-		setTimeout(checkUpdate, 120000 + 60000 * i, {
-			...(btn.scriptName ? { scriptName: btn.scriptName } : {}),
-			...(btn.repository ? { repository: btn.repository } : {}),
-			...(btn.version ? { version: btn.version } : {}),
-			bDownload: globSettings.bAutoUpdateDownload, bOpenWeb: globSettings.bAutoUpdateOpenWeb
-		});
-	});
+	setTimeout(checkUpdate, 120000, { bDownload: globSettings.bAutoUpdateDownload, bOpenWeb: globSettings.bAutoUpdateOpenWeb });
 }
 
 globProfiler.Print('callbacks');
