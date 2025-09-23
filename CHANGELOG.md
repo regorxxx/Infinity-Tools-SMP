@@ -10,6 +10,7 @@
 - Merged [ListenBrainz-SMP](https://github.com/regorxxx/ListenBrainz-SMP) script.
 - Merged [Autobackup-SMP](https://github.com/regorxxx/Autobackup-SMP) script.
 - Merged [Device-Priority-SMP](https://github.com/regorxxx/Device-Priority-SMP) script.
+- Merged [Fingerprint-Tools-SMP](https://github.com/regorxxx/Fingerprint-Tools-SMP) script.
 ### Changed
 ### Removed
 ### Fixed
