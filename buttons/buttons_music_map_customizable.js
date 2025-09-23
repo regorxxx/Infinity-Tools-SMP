@@ -23,9 +23,7 @@ include('helpers\\buttons_sbd_menu_recipe.js'); // Button menu
 include('helpers\\buttons_sbd_menu_config.js'); // Button menu
 /* global createConfigMenu:readable */
 
-var version = sbd.version; // NOSONAR [shared on files]
-
-try { window.DefineScript(sbd.name + ' Customizable Button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript(sbd.name + ' Customizable Button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 var prefix = 'sbd'; // NOSONAR [shared on files]
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
@@ -137,8 +135,7 @@ addButton({
 				recipe: properties.recipe[1].length ? processRecipePlaceholder(properties.recipe[1], JSON.parse(properties.tags[1])) : null,
 				name: properties.recipe[1] || ''
 			};
-		},
-		update: { scriptName: 'Search-by-Distance-SMP', version }
+		}
 	})
 });
 

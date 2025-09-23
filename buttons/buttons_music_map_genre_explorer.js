@@ -22,9 +22,8 @@ include('..\\main\\search_by_distance\\search_by_distance.js'); // Load after bu
 /* global sbd:readable */
 include('helpers\\buttons_sbd_explorer_menu.js');
 /* global graphInfoMenu:readable */
-var version = sbd.version; // NOSONAR [shared on files]
 
-try { window.DefineScript(sbd.name + ' Genre explorer Button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript(sbd.name + ' Genre explorer Button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 var prefix = 'sbd'; // NOSONAR [shared on files]
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
@@ -92,8 +91,7 @@ addButton({
 		},
 		description: buttonTooltipSbdCustom,
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: chars.sitemap,
-		update: { scriptName: 'Search-by-Distance-SMP', version }
+		icon: chars.sitemap
 	})
 });
 

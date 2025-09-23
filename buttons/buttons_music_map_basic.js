@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/09/25
+//20/09/25
 
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
@@ -18,9 +18,8 @@ include('..\\main\\search_by_distance\\search_by_distance.js'); // Load after bu
 /* global SearchByDistance_properties:readable, sbd:readable, updateCache:readable, findStyleGenresMissingGraphCheck:readable, testBaseTags:readable */
 include('helpers\\buttons_sbd_menu_presets.js'); // Button menu
 /* global choosePresetMenu:readable */
-var version = sbd.version; // NOSONAR[global]
 
-try { window.DefineScript(sbd.name + ' Basic Buttons', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript(sbd.name + ' Basic Buttons', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 var prefix = 'sbd'; // NOSONAR[global]
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
