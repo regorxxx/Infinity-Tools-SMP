@@ -1,0 +1,9 @@
+{
+	"name": "Test recipe nesting",
+	"recipe": "test_tag_remap.json",
+	"tags": {
+		"genre": {
+			"weight": 200
+		}
+	}
+}

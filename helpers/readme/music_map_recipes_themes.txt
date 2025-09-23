@@ -1,0 +1,35 @@
+﻿Themes are 'tag containers' which emulate track's tags, to be used with
+'Music Map' buttons and tools instead of evaluating with the
+selected track.
+
+Recipes are 'variables containers' which emulate the args of 'Search by
+Distance' buttons and tools instead of using hard-coded variables or
+properties.
+
+Note recipes may also contain a forced theme, either the entire object or
+a link to a theme file (using its path or filename).
+
+Both may be used in buttons, tools or with Playlist Tools:
+	- Playlist Tools's Pools can link to these files on some sources.
+	- Custom buttons may use recipes and themes to tweak their behavior.
+
+Recipe files may be created via files or custom button:
+	- On custom buttons, use the recipe menu (Ctrl + Left Click).
+	- Otherwise, directly edit the JSON files at the recipes folder.
+
+Theme files may be created via files, custom button or Playlist Tools:
+	- On Playlist Tools script there is a menu entry (see
+	Configuration\Music Map) to use the selected track's tags
+	as reference and save them to a json file directly. The tags names
+	set at the properties panel will be used. i.e. genre can be
+	remapped to 'GENRE' and 'ALL MUSIC GENRE', etc.
+	- On custom buttons, use the theme menu	(Shift + Left Click).
+	- Otherwise, directly edit the JSON files at the themes folder.
+
+Both type of files may be set to 'Hidden' (file attribute) to not show them
+on the menus, instead of deleting them. Some files, meant for internal use
+only, may be hidden by default.
+
+Although all recipes are shown by default in a clean installation, it's
+recommended to hide those which will not be used on a daily basis to clean
+up the menu using the tip above.

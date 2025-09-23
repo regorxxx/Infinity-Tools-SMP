@@ -1,0 +1,54 @@
+{
+	"name": "Similar unrated tracks (G)",
+	"tags": {
+		"genre": {
+			"weight": 25
+		},
+		"style": {
+			"weight": 15
+		},
+		"mood": {
+			"weight": 25
+		},
+		"key": {
+			"weight": 0
+		},
+		"bpm": {
+			"weight": 25,
+			"range": 50,
+			"scoringDistribution": "NORMAL"
+		},
+		"date": {
+			"weight": 10,
+			"range": 50,
+			"scoringDistribution": "NORMAL"
+		},
+		"composer": {
+			"weight": 0
+		},
+		"artistRegion": {
+			"weight": 3,
+			"baseScore": 0,
+			"scoringDistribution": "LOGISTIC",
+			"range": 5
+		},
+		"genreStyleRegion": {
+			"weight": 5,
+			"baseScore": 0,
+			"scoringDistribution": "LOGISTIC",
+			"range": 5
+		}
+	},
+	"scoreFilter": 50,
+	"method": "GRAPH",
+	"graphDistance": "music_graph_descriptors.cluster * 2 * 3/4",
+	"probPick": 100,
+	"bRandomPick": false,
+	"bSortRandom": false,
+	"bScatterInstrumentals": false,
+	"bSmartShuffle": true,
+	"bProgressiveListOrder": false,
+	"bProgressiveListCreation": false,
+	"progressiveListCreationN": 1,
+	"forcedQuery": "(%RATING% MISSING) AND NOT (STYLE IS live AND NOT STYLE IS hi-fi) AND %CHANNELS% LESS 3 AND NOT COMMENT HAS quad"
+}

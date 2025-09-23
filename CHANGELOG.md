@@ -6,6 +6,7 @@
 ## [Unreleased][]
 ### Added
 - Merged [Playlist-Tools-SMP](https://github.com/regorxxx/Playlist-Tools-SMP) script.
+- Merged [Search-by-Distance-SMP](https://github.com/regorxxx/Search-by-Distance-SMP) script.
 ### Changed
 ### Removed
 ### Fixed

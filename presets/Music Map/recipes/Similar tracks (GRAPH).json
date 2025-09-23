@@ -1,0 +1,46 @@
+{
+	"name": "Similar tracks (G)",
+	"tags": {
+		"genre": {
+			"weight": 10
+		},
+		"style": {
+			"weight": 5
+		},
+		"mood": {
+			"weight": 5
+		},
+		"key": {
+			"weight": 5,
+			"range": 3
+		},
+		"bpm": {
+			"weight": 5,
+			"range": 50,
+			"scoringDistribution": "NORMAL"
+		},
+		"date": {
+			"weight": 25,
+			"range": 30,
+			"scoringDistribution": "NORMAL"
+		},
+		"composer": {
+			"weight": 0
+		},
+		"artistRegion": {
+			"weight": 3,
+			"baseScore": 0,
+			"scoringDistribution": "LOGISTIC",
+			"range": 5
+		},
+		"genreStyleRegion": {
+			"weight": 5,
+			"baseScore": 0,
+			"scoringDistribution": "LOGISTIC",
+			"range": 5
+		}
+	},
+	"scoreFilter": 65,
+	"method": "GRAPH",
+	"graphDistance": "music_graph_descriptors.cluster * 2 * 3/4"
+}

@@ -1,0 +1,46 @@
+{
+	"name": "Same music group (D)",
+	"tags": {
+		"genre": {
+			"weight": 5
+		},
+		"style": {
+			"weight": 5
+		},
+		"dynGenre": {
+			"weight": 40,
+			"range": 2
+		},
+		"mood": {
+			"weight": 15
+		},
+		"key": {
+			"weight": 10,
+			"range": 3
+		},
+		"bpm": {
+			"weight": 5,
+			"range": 50,
+			"scoringDistribution": "NORMAL"
+		},
+		"date": {
+			"weight": 25,
+			"range": 30,
+			"scoringDistribution": "NORMAL"
+		},
+		"composer": {
+			"weight": 0
+		},
+		"artistRegion": {
+			"weight": 5,
+			"baseScore": 0,
+			"scoringDistribution": "LOGISTIC",
+			"range": 5
+		},
+		"genreStyleRegion": {
+			"weight": 0
+		}
+	},
+	"scoreFilter": 60,
+	"method": "DYNGENRE"
+}

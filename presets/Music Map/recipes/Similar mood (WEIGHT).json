@@ -1,0 +1,39 @@
+{
+	"name": "Similar mood (W)",
+	"tags": {
+		"genre": {
+			"weight": 0
+		},
+		"style": {
+			"weight": 5
+		},
+		"mood": {
+			"weight": 15
+		},
+		"key": {
+			"weight": 10,
+			"range": 3
+		},
+		"bpm": {
+			"weight": 5,
+			"range": 50,
+			"scoringDistribution": "NORMAL"
+		},
+		"date": {
+			"weight": 0,
+			"range": 100
+		},
+		"composer": {
+			"weight": 5,
+			"baseScore": 50
+		},
+		"artistRegion": {
+			"weight": 0
+		},
+		"genreStyleRegion": {
+			"weight": 0
+		}
+	},
+	"scoreFilter": 50,
+	"method": "WEIGHT"
+}

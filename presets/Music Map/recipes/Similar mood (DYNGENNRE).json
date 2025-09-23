@@ -1,0 +1,45 @@
+{
+	"name": "Similar mood (D)",
+	"tags": {
+		"genre": {
+			"weight": 0
+		},
+		"style": {
+			"weight": 5
+		},
+		"dynGenre": {
+			"weight": 5,
+			"range": 4
+		},
+		"mood": {
+			"weight": 15
+		},
+		"key": {
+			"weight": 10,
+			"range": 2
+		},
+		"bpm": {
+			"weight": 5,
+			"range": 50,
+			"scoringDistribution": "NORMAL"
+		},
+		"date": {
+			"weight": 0,
+			"range": 100
+		},
+		"composer": {
+			"weight": 0
+		},
+		"artistRegion": {
+			"weight": 3,
+			"baseScore": 0,
+			"scoringDistribution": "LOGISTIC",
+			"range": 5
+		},
+		"genreStyleRegion": {
+			"weight": 0
+		}
+	},
+	"scoreFilter": 50,
+	"method": "DYNGENRE"
+}

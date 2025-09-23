@@ -1,0 +1,195 @@
+﻿Filters the library by a query built according to the reference track
+or theme.
+
+For filtering purposes:
+-------------
+- Empty queries and 'ALL' are non valid (they do nothing).
+- Don't add 2 tags which will be remapped internally by Search by
+Distance tags (see below) in the same query. Use the multiple slots
+for that.
+- When used along themes, since there is no reference track, the theme
+tags are used instead. Note this will probably limit the usage to
+internal remapped tags, since other tags like 'ARTIST' are obviously
+missing on the theme. In such case that query is omitted. The tag
+may be manually added to the theme though, by editing the theme json.
+
+Rules:
+-------------
+- Tags are remapped with the current settings for tags. i.e. 'GENRE'
+could be remapped to 'GENRE' and 'ALLMUSIC GENRE' before execution,
+if the current genre tag is remapped that way. This is by design, and
+always applied before further processing.
+- Dynamic variables are allowed too, enclosed on '#': #ARTIST#,
+#$year(%date%)#, ...
+- There are a few special variables, which are not evaluated against
+a track but globally. For ex: #YEAR# -> 2023
+- These placeholders will be replaced with focused item\'s TF result on
+execution.
+- Using tags alone, translates into multi-value tags/queries by default.
+- When using TF expressions ($...), tags are not converted and the
+expression is executed 'as is'.
+- When using a NOT along a remapped tag, the evaluation will be joined
+with an 'AND' instead of 'OR'.
+- Standard queries may be added -ONLY- to the end of a dynamic query
+expression. In any other case it will probably throw an error.
+- Multiple dynamic multi-valued variables are allowed, but they must be
+enclosed on parenthesis to work.
+- In any case queries are tested before using it, so errors will be
+shown as a popup.
+
+Special variables:
+-------------
+Don't require a track to be evaluated (i.e. they always work):
+	- #DAY# 	  -> 8 (current day)
+	- #DDAY# 	  -> 08 (current day DD)
+	- #WEEK# 	  -> 5 (first day of week)
+	- #DWEEK# 	  -> 05 (first day of week DD)
+	- #MONTH#	  -> 3 (current month)
+	- #MMONTH#	  -> 03 (current month MM)
+	- #YEAR#	  -> 2025 (current year)
+	- #DECADE#	  -> 2020s (current decade)
+	- #NOW#		  -> 2023-03-08 (current date YY-MM-DD)
+	- #TODAY#	  -> Alias for #NOW#
+	- #NOW_TS#	  -> 1750881508 (current Unix timestamp in s)
+	- #YESTERDAY#	  -> 2023-03-07 (yesterday date YY-MM-DD)
+	- #PREVDAY#	  -> Alias for #YESTERDAY#
+	- #YESTERDAY_TS#  -> 1750881508 (yesterday Unix timestamp in s)
+	- #PREVDAY_TS#	  -> Alias for #YESTERDAY_TS#
+	- #PREVWEEK#	  -> 5 (first day of previous week)
+	- #PREVDWEEK#	  -> 05 (first day of previous week DD)
+	- #PREVMONTH#	  -> 2 (previous month)
+	- #PREVMMONTH#	  -> 02 (previous month MM)
+	- #PREVYEAR#	  -> 2024 (previous year)
+	- #PREVDECADE#	  -> 2010s (previous decade)
+	- #VOLUME#	  -> 100 (volume from 0 to 100, rounded)
+	- #VOLUMEDB#	  -> -7.53 dB (volume from -100 to 0 dB)
+	- #VERSION#	  -> 1.4.1 (foobar version)
+	- #ISPLAYING#	  -> 1 (1 if playing, empty otherwise)
+	- #ISPAUSED#	  -> 1 (1 if playing, empty otherwise)
+	- #PLAYSTATE#	  -> Paused (Paused|Playing|Stopped)
+	- #SELTYPE#	  -> active playlist (selection type)
+	- #DEVICE#	  -> Null Output (output device name)
+	- #DEVICEID#	  -> {5243F9AD-C84F-4723-8194-0788FC021BCC}
+	- #SAC#		  -> 1 (1 if stop after current, empty otherwise)
+	- #RGMODE#	  -> disabled (Replay Gain mode)
+	- #PLAYMODE#	  -> default (Playback Order mode)
+	- #PLSCOUNT#	  -> 13 (playlists count)
+
+Special selection variables:
+----------------------------
+Requires a selection to be evaluated:
+	- #SELTRACKS#	  -> 10 (number of selected tracks)
+	- #SELDURATION#	  -> 3:09:37 (duration of selected tracks)
+	- #SELSIZE#	  -> 1.88 GB (size of selected tracks)
+	- #SELPLAYING#	  -> 1 (1 if playing*, empty otherwise)
+	- #SELINLIBRARY#  -> 1 (1 if in library, empty otherwise)
+
+(*) Note this will return nothing while playing unless the focused track
+is also the playing track. Use #ISPLAYING# to globally evaluate if foobar
+is playing, or use %ISPLAYING% but only when following now playing (it will
+not work when evaluated on a selection).
+
+Special active playlist variables:
+----------------------------------
+Requires an active playlist to be evaluated:
+	- #PLSIDX#	  -> 3 (index)
+	- #PLSNAME#	  -> My playlist (name)
+	- #PLSTRACKS#	  -> 27 (number of tracks)
+	- #PLSISAUTOPLS#  -> 1 (1 for AutoPlaylists, empty otherwise)
+	- #PLSISLOCKED#	  -> 1 (1 if locked, empty otherwise)
+	- #PLSDURATION#	  -> 3:09:37 (total duration)
+	- #PLSSIZE#	  -> 1.88 GB (total size)
+	- #PLSLOCKS#	  -> AddItems (blocked actions)
+	- #PLSLOCKNAME#	  -> Quicksearch (lock owner)
+
+Special playing playlist variables:
+----------------------------------
+Requires a playing playlist to be evaluated:
+	- #PLSPLAYIDX#	  -> 3 (index)
+	- #PLSPLAYNAME#	  -> My playlist (name)
+	- #PLSPLAYTRACKS# -> 27 (number of tracks)
+	- #PLSPLAYDURATION# -> 3:09:37 (total duration)
+	- #PLSPLAYSIZE#	  -> 1.88 GB (total size)
+
+Some examples:
+-------------
+For tracks from this decade:
+"$div(%DATE%,10)0s" IS #DECADE# -> "$div(%DATE%,10)0s" IS 2020s
+
+For a rock track:
+GENRE IS #GENRE# -> GENRE IS Rock.
+The entire library would be filtered with tracks from that genre.
+
+If genre tag is remapped (with 2 tags), then it would translate into:
+GENRE IS #GENRE# -> (GENRE IS Rock) OR (ALLMUSIC GENRE IS Rock)
+
+For a rock and electronic track, it would translate into:
+GENRE IS #GENRE# -> (GENRE IS Rock) AND (GENRE IS Electronic)
+Note multi-value tags are split and produce multiple query entries
+by default. (*)
+
+If genre tag is also remapped, in such case it would look like:
+GENRE IS #GENRE# -> ((GENRE IS Rock) AND (GENRE IS Electronic))
+OR ((ALLMUSIC GENRE IS Rock) AND (ALLMUSIC GENRE IS Electronic))
+
+It can also be used to remap tags like this (for a Bob Dylan's track):
+COMPOSER IS #ARTIST# -> COMPOSER IS Bob Dylan
+
+Merging standard and dynamic expressions  is also possible, as long as
+the standard query expression is added at the end, like:
+GENRE IS #GENRE# AND NOT (%RATING% EQUAL 2 OR %RATING% EQUAL 1)
+->
+(GENRE IS Psychedelic Rock) AND (GENRE IS Hard Rock) AND NOT (%RATING%
+EQUAL 2 OR %RATING% EQUAL 1).
+
+Multiple dynamic queries are also possible. Note how the parenthesis are
+used to limit dynamic expansion.
+((GENRE IS #GENRE#) OR (STYLE IS #STYLE#))
+ ->
+(((GENRE IS Psychedelic Rock) AND (GENRE IS Hard Rock)) OR ((STYLE
+IS Acid Rock) AND (STYLE IS Live)))
+
+On other cases parenthesis may be redundant (but valid):
+((DATE IS #DATE#) OR (DATE IS #$add(%DATE%,1)#))
+->
+((DATE IS 1969) OR (DATE IS 1970)).
+
+Note how single valued tags don't need extra parenthesis since dynamic
+expansion does not apply here:
+(DATE IS #DATE# OR DATE IS #$add(%DATE%,1)#)
+->
+(DATE IS 1969 OR DATE IS 1970)
+
+Don't forget the rules for internal tag remapping about 'NOT':
+GENRE IS #GENRE# -> GENRE IS Rock
+NOT GENRE IS #GENRE# -> NOT GENRE IS Rock
+With internal tag remapping, the second case uses 'AND' instead of 'OR':
+GENRE IS #GENRE# -> (GENRE IS Rock) OR (MYGENRE IS Rock)
+NOT GENRE IS #GENRE# -> (NOT GENRE IS Rock) AND (NOT MYGENRE IS Rock)
+
+Common errors:
+-------------
+Queries don't allow TF expressions after IS/HAS/GREATER/... terms.
+
+For ex:
+"$sub(%DATE%,10)" GREATER #DATE# -> "$sub(%DATE%,10)" GREATER 1969
+And
+%DATE% GREATER #$add(%DATE%,10)# -> %DATE% GREATER 1979
+Are equivalent and valid, since both ensure tracks with date > 1979.
+
+But this similar query is non valid (and will throw an error):
+%DATE% GREATER "$add(#DATE#,10)" -> %DATE% GREATER "$add(1969,10)"
+Since the TF expression is not executed during query evaluation!
+
+Note in these cases there is (usually) no need to add quotes at the
+dynamic term when using a function since the final value must be a
+string/number, not another function (like the last example).
+
+It is not possible to add 2 tags which are going to be remapped at the
+same query slot. For ex:
+'NOT GENRE IS #GENRE# AND STYLE IS #STYLE'
+
+(*) Since '#TAG# IS VALUE' forces tag to be equal to value, multi-value
+tags follow the same rationale. If you want to use another logic (OR,
+combinations, etc.) between different values of the same tag
+then the tool to use would be 'Search Same By'.

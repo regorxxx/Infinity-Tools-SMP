@@ -1,0 +1,52 @@
+{
+	"name": "Similar artists (G)",
+	"tags": {
+		"genre": {
+			"weight": 10
+		},
+		"style": {
+			"weight": 5
+		},
+		"mood": {
+			"weight": 5
+		},
+		"key": {
+			"weight": 2,
+			"range": 4
+		},
+		"bpm": {
+			"weight": 5,
+			"range": 50,
+			"scoringDistribution": "NORMAL"
+		},
+		"date": {
+			"weight": 2,
+			"range": 40,
+			"scoringDistribution": "NORMAL"
+		},
+		"composer": {
+			"weight": 0
+		},
+		"artistRegion": {
+			"weight": 5,
+			"baseScore": 0,
+			"scoringDistribution": "LOGISTIC",
+			"range": 5
+		},
+		"genreStyleRegion": {
+			"weight": 5,
+			"baseScore": 0,
+			"scoringDistribution": "LOGISTIC",
+			"range": 5
+		}
+	},
+	"bSameArtistFilter": true,
+	"bSimilArtistsFilter": true,
+	"method": "GRAPH",
+	"scoreFilter": 65,
+	"minScoreFilter": 50,
+	"graphDistance": "music_graph_descriptors.intra_supergenre",
+	"bRandomPick": true,
+	"probPick": 100,
+	"playlistName": "Search..."
+}

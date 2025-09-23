@@ -1,0 +1,47 @@
+{
+	"name": "Similar tracks - Instrumentals (G)",
+	"tags": {
+		"genre": {
+			"weight": 10
+		},
+		"style": {
+			"weight": 5
+		},
+		"mood": {
+			"weight": 5
+		},
+		"key": {
+			"weight": 5,
+			"range": 3
+		},
+		"bpm": {
+			"weight": 5,
+			"range": 50,
+			"scoringDistribution": "NORMAL"
+		},
+		"date": {
+			"weight": 25,
+			"range": 30,
+			"scoringDistribution": "NORMAL"
+		},
+		"composer": {
+			"weight": 0
+		},
+		"artistRegion": {
+			"weight": 3,
+			"baseScore": 0,
+			"scoringDistribution": "LOGISTIC",
+			"range": 5
+		},
+		"genreStyleRegion": {
+			"weight": 5,
+			"baseScore": 0,
+			"scoringDistribution": "LOGISTIC",
+			"range": 5
+		}
+	},
+	"scoreFilter": 65,
+	"method": "GRAPH",
+	"graphDistance": "music_graph_descriptors.cluster * 2 * 3/4",
+	"forcedQuery": "(NOT (%RATING% EQUAL 2 OR %RATING% EQUAL 1) AND NOT (STYLE IS live AND NOT STYLE IS hi-fi) AND %CHANNELS% LESS 3 AND NOT COMMENT HAS quad) AND (STYLE IS instrumental OR GENRE IS instrumental OR SPEECHNESS EQUAL 0 OR LANGUAGE IS zxx)"
+}

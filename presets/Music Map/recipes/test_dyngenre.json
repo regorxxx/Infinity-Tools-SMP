@@ -1,0 +1,30 @@
+{
+	"name": "Test DYNGENRE",
+	"tags": {
+		"genre": {
+			"weight": 15
+		},
+		"style": {
+			"weight": 10
+		},
+		"dynGenre": {
+			"weight": 15
+		},
+		"mood": {
+			"weight": 5
+		},
+		"key": {
+			"weight": 10,
+			"range": 3
+		},
+		"bpm": {
+			"weight": 5,
+			"range": 25
+		},
+		"date": {
+			"weight": 25,
+			"range": 15
+		}
+	},
+	"method": "DYNGENRE"
+}
