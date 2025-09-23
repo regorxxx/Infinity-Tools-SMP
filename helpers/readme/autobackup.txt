@@ -1,0 +1,84 @@
+﻿Periodic automatic saving of configuration and other data and backup
+copies of it. Replacement of foo_jesus. (*)
+
+Every time a backup is run, first saves configuration using the native
+menu ("File\Save Configuration"):
+	- Whole configuration subfolder.,
+	- Media library database (database.*)
+	- Playlists
+	- Additional data managed by other components (for example
+		current theme or playback statistics).
+
+After saving, a backup of files is created, as a ZIP archive (7zip).
+
+Rules: (times in min)
+------------------------
+- While playing (every X min, 0 = off):
+	Time is counted when playback is active (i.e. not stopped
+	nor paused) and when it exceeds this value, executes.
+- When playback stops (every X min, 0 = off):
+	When playback was active, then stopped or paused for this
+	amount of time, executes.
+- Always, since last autosave (every X min, 0 = off):
+	Regardless of activity, when the last time autosave was
+	run is more than so many minutes ago, executes.
+- On startup, after X minutes (backup only, 0 = off):
+	After specified number of minutes after startup,
+	a new backup archive with the current configuration
+	is created. Note that this trigger does not execute
+	(the more intrusive) save configuration command, assuming
+	nothing has changed since startup yet and because its
+	point is to store the base configuration the application
+	has been started with.
+- Every X tracks (0 = off):
+	Each time a track ends (it has played all the way through
+	or another has been started manually, except when shutting
+	down), a counter is incremented. When it exceeds this value,
+	configuration is saved. Note that saving too often is
+	blocked to avoid problems when going through a playlist too
+	fast (e.g. on very short files or invalid entries).
+- On foobar2000 exit (script unload), after X seconds (0 = off):
+	When the program closes or the script is unloaded (for
+	ex. after reloading the panel), a backup is scheduled
+	to be run after X seconds. Note the configuration is
+	saved on exit automatically (but not on script reloading).
+- Saving by any rule more often than 30 seconds since last
+	autosave is blocked to avoid lockup or crash problems.
+
+Files and folders:
+------------------------
+Items to store to the backup archive. Those which are not found are
+silently ignored. If an item is found out to be a directory, all files
+in it are added recursively.
+
+Masks can be added like 'data*', which cover any folder or file which
+starts with 'data' at the profile folder.
+
+To ensure that playlists created by any version of foobar2000 are
+backed up properly, playlists are added as 'playlists*' (so it covers
+'playlists-v1.4' or 'playlists', ...).
+
+Structure is always keep on the backup file (contrary to foo_jesus).
+i.e adding "js_data\buttons_*.json" as files to backup, will keep
+the same subfolder in the ZIP archive.
+
+ZIP archive:
+------------------------
+Backups are saved to the set output path, which allows to tweak
+the final folder and filename.
+
+Appended to the name, a date string will be added like
+'autobackup.20231128-084541.zip'.
+
+There are some settings to further tweak that string with RegEx
+(or even remove it).
+
+The number of backups kept can be set by number of files or
+total file size.
+
+Headless mode:
+------------------------
+The button  may be used in headless mode to not clutter the
+toolbar with something which only works on background and
+has no other usage. For that, use the appropriate setting of
+the toolbar menu at 'Other UI settings...'.
