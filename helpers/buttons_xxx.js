@@ -1,7 +1,7 @@
 ﻿'use strict';
-//10/09/25
+//21/09/25
 
-/* exported ThemedButton, getUniquePrefix, addButton, getButtonVersion, addButtonSeparator, showButtonReadme */
+/* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme */
 
 /* global buttonsPath:readable, barProperties:readable */
 include('helpers_xxx.js');
@@ -1256,21 +1256,6 @@ function getButtonsMaxSize(bCurrent = true) {
 	if (orientation === 'x') { maxSize.totalH = maxSize.h; }
 	if (orientation === 'y') { maxSize.totalW = maxSize.w; }
 	return maxSize;
-}
-
-function getButtonVersion(source = 'Playlist-Tools-SMP') {
-	let ver = (buttonsBar.getUpdateList().find((btn) => btn.scriptName === source) || {}).version;
-	if (!ver) {
-		switch (source.toLowerCase()) { // NOSONAR [to add more options]
-			case 'playlist-tools-smp':
-				try {
-					ver = RegExp(/var version = '(.*)'/mi)
-						.exec(utils.ReadTextFile(folders.xxx + '\\buttons\\buttons_playlist_tools.js', 65001))[1];
-				} catch (e) { /* empty */ } // eslint-disable-line no-unused-vars
-				break;
-		}
-	}
-	return ver || 'x.x.x';
 }
 
 function showButtonReadme(fileName) {
