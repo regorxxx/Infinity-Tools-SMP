@@ -73,9 +73,9 @@ Not properly following the installation instructions will result in scripts not 
  1. [Issues tracker](../../issues).
  2. [Hydrogenaudio forum](https://hydrogenaud.io/index.php/topic,120978.0.html).
  3. [Wiki](../../wiki).
-
+ 4. 
 ## Nightly releases
-Zip file [from GitHub](../../archive/refs/heads/main.zip) (using the latest commit).
+Automatic package [built from GitHub](https://nightly.link/regorxxx/Infinity-Tools-SMP/workflows/build/main/file.zip) (using the latest commit). Unzip 'file.zip' downloaded and load the '*-package.zip' inside as package within your JS host component.
 
 [changelog]: CHANGELOG.md
 [version_badge]: https://img.shields.io/github/release/regorxxx/Playlist-Tools-SMP.svg
