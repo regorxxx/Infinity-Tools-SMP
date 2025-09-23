@@ -34,7 +34,7 @@ ECHO (1) World-Map-SMP
 ECHO (2) Playlist-Manager-SMP
 ECHO (3) Not-a-Waveform-Seekbar-SMP
 ECHO (4) Timeline-SMP
-ECHO (5) Volume-Seekbar-Slider-SMP
+ECHO (5) Volume-Seekbar-SMP
 ECHO (6) Infinity-Tools-SMP
 ECHO.
 IF [%~1]==[] (
@@ -50,7 +50,7 @@ IF %ERRORLEVEL% EQU 1 GOTO world_map
 IF %ERRORLEVEL% EQU 2 GOTO playlist_manager
 IF %ERRORLEVEL% EQU 3 GOTO not_a_waveform_seekbar
 IF %ERRORLEVEL% EQU 4 GOTO timeline
-IF %ERRORLEVEL% EQU 5 GOTO volume_seekbar_slider
+IF %ERRORLEVEL% EQU 5 GOTO volume_seekbar
 IF %ERRORLEVEL% EQU 6 GOTO playlist_tools
 IF ERRORLEVEL 6 (
 	ECHO Package ^(%1^) not recognized.
@@ -520,7 +520,7 @@ REM package info, zip and report
 CALL :finish
 GOTO:EOF
 
-:volume_seekbar_slider
+:volume_seekbar
 REM package variables
 REM version is automatically retrieved from main js file
 REM any text must be JSON encoded
@@ -528,7 +528,7 @@ SET name=Volume-Seekbar-Slider-SMP
 SET id=82303AA1-3DA0-4817-BE47-85A4AE09D5CD
 SET description=https://github.com/regorxxx/Volume-Slider-SMP\r\n\r\nA volume slider for foobar2000, using Spider Monkey Panel.\r\n\r\n• Drag + L. Click to set volume\\time.\r\n• Double L. Click on button to mute\\set full volume (volume).\r\n• Double L. Click on button to restart\\skip playback (seekbar).\r\n• Vertical and horizontal mouse wheel scrolling.\r\n• Configurable layout and colors using R. Click menu.\r\n• Elements may be disabled removing color or setting size to 0.
 REM version
-FOR /F "tokens=* USEBACKQ" %%F IN (`findstr /R "window.DefineScript" volume_seekbar_slider.js`) DO (SET version=%%F)
+FOR /F "tokens=* USEBACKQ" %%F IN (`findstr /R "window.DefineScript" volume_seekbar.js`) DO (SET version=%%F)
 IF "%version%"=="" (
 	ECHO Main file not found or wrong version string
 	PAUSE>NUL
@@ -543,7 +543,7 @@ REM global variable
 SET root=%packagesFolder%\%name: =-%
 REM package folder and file
 CALL :check_root
-CALL :copy_main volume_seekbar_slider.js
+CALL :copy_main volume_seekbar.js
 REM docs
 CALL :copy_file _INSTALLATION.txt
 CALL :copy_file _SCRIPTS_SUMMARY.txt
@@ -583,7 +583,7 @@ CALL :copy_file helpers\helpers_xxx_web.js
 CALL :copy_file helpers\helpers_xxx_web_update.js
 CALL :copy_file helpers\menu_xxx.js
 CALL :check_folder helpers\readme
-CALL :copy_file helpers\readme\volume_seekbar_slider.txt
+CALL :copy_file helpers\readme\volume_seekbar.txt
 REM helpers external
 CALL :copy_folder helpers-external\7z
 CALL :copy_folder helpers-external\bitmasksorterjs
@@ -714,7 +714,7 @@ CALL :delete_file helpers\readme\playlist_manager_network.txt
 CALL :delete_file helpers\readme\seekbar.txt
 CALL :delete_file helpers\readme\timeline.txt
 CALL :delete_file helpers\readme\timeline_dynamic_query.txt
-CALL :delete_file helpers\readme\volume_seekbar_slider.txt
+CALL :delete_file helpers\readme\volume_seekbar.txt
 CALL :delete_file helpers\readme\world_map.txt
 REM helpers external
 CALL :copy_folder helpers-external\7z
