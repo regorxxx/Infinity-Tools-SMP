@@ -1,5 +1,5 @@
 ﻿'use strict';
-//09/08/25
+//22/09/25
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, globTags:readable */
@@ -13,15 +13,25 @@ const essentia = {};
 essentia.calculateKey = function calculateKey({
 	fromHandleList = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	tagName = globTags.key,
-	essentiaPath = folders.xxx + 'helpers-external\\essentia\\essentia_streaming_key.exe',
+	essentiaPath = [
+		folders.binaries + 'essentia\\essentia_streaming_key.exe',
+		folders.xxx + 'helpers-external\\essentia\\essentia_streaming_key.exe'
+	],
 	bDebug = false,
 	bProfile = true,
 	bQuiet = false
 }) {
 	// Safecheck
 	if (!fromHandleList || !fromHandleList.Count || !tagName.length) { return false; }
-	if (!_isFile(essentiaPath)) { fb.ShowPopupMessage('essentia_streaming_key executable not found:\n' + essentiaPath, 'Essentia Key extractor'); }
+	if (Array.isArray(essentiaPath)) {
+		const path = essentiaPath.find((path) => _isFile(path));
+		if (path) { essentiaPath = path; }
+		else { fb.ShowPopupMessage('essentia_streaming_key executable not found at:\n' + essentiaPath.split('\n'), 'Essentia Key extractor'); }
+	} else if (!_isFile(essentiaPath)) { fb.ShowPopupMessage('essentia_streaming_key executable not found:\n' + essentiaPath, 'Essentia Key extractor'); }
 	const profile = bProfile ? new FbProfiler('Essentia Key extractor') : null;
+	const batFile = essentiaPath.replace('_32.exe', '.exe').replace('.exe', '.bat');
+	if (bDebug) { console.log(batFile); }
+	if (!_isFile(batFile)) { fb.ShowPopupMessage('Essentia bat file not found:\n' + batFile, 'Essentia Key extractor'); return false; }
 	const handleListArr = fromHandleList.Convert()
 		.filter((handle) => handle.Path.split('.').slice(-1)[0] !== 'dsf');
 	if (!handleListArr.length) { return false; }
@@ -42,7 +52,7 @@ essentia.calculateKey = function calculateKey({
 			const path = handle.Path;
 			if (_isFile(path)) {
 				if (bDebug) { console.log(_q(essentiaPath) + _q(path) + ' ' + _q(essentiaJSON)); }
-				_runHidden(essentiaPath.replace('.exe', '.bat'), path, essentiaJSON, essentiaPath);
+				_runHidden(batFile, path, essentiaJSON, essentiaPath);
 				const data = _open(essentiaJSON);
 				if (data) {
 					// eslint-disable-next-line no-sparse-arrays
@@ -84,7 +94,10 @@ essentia.calculateKey = function calculateKey({
 essentia.calculateHighLevelTags = function calculateHighLevelTags({
 	fromHandleList = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	tagName = [{ name: 'KEY', tf: globTags.key }, { name: 'BPM', tf: globTags.bpm }, { name: 'DANCENESS', tf: globTags.danceness }, { name: 'LRA', tf: globTags.lra, bIncludeUnit: false }],
-	essentiaPath = folders.xxx + 'helpers-external\\essentia\\streaming_extractor_music.exe',
+	essentiaPath = [
+		folders.binaries + 'essentia\\streaming_extractor_music.exe',
+		folders.xxx + 'helpers-external\\essentia\\streaming_extractor_music.exe'
+	],
 	bDebug = false,
 	bProfile = true,
 	bQuiet = false
@@ -92,8 +105,15 @@ essentia.calculateHighLevelTags = function calculateHighLevelTags({
 	// Safecheck
 	tagName = tagName.filter((tag) => Object.hasOwn(tag, 'tf') && tag.tf.length && Object.hasOwn(tag, 'name') && tag.name.length);
 	if (!fromHandleList || !fromHandleList.Count || !tagName.length) { return false; }
-	if (!_isFile(essentiaPath)) { fb.ShowPopupMessage('streaming_extractor_music executable not found:\n' + essentiaPath, 'Essentia Music extractor'); }
+	if (Array.isArray(essentiaPath)) {
+		const path = essentiaPath.find((path) => _isFile(path));
+		if (path) { essentiaPath = path; }
+		else { fb.ShowPopupMessage('streaming_extractor_music executable not found at:\n' + essentiaPath.split('\n'), 'Essentia KeMusicy extractor'); }
+	} if (!_isFile(essentiaPath)) { fb.ShowPopupMessage('streaming_extractor_music executable not found:\n' + essentiaPath, 'Essentia Music extractor'); }
 	const profile = bProfile ? new FbProfiler('Essentia Music extractor') : null;
+	const batFile = essentiaPath.replace('_32.exe', '.exe').replace('.exe', '.bat');
+	if (bDebug) { console.log(batFile); }
+	if (!_isFile(batFile)) { fb.ShowPopupMessage('Essentia bat file not found:\n' + batFile, 'Essentia Music extractor'); return false; }
 	const handleListArr = fromHandleList.Convert();
 	const totalTracks = handleListArr.length, numTracks = 25, maxCount = Math.ceil(totalTracks / numTracks);
 	const tagNameLen = tagName.length;
@@ -111,7 +131,7 @@ essentia.calculateHighLevelTags = function calculateHighLevelTags({
 			const path = handle.Path;
 			if (_isFile(path)) {
 				if (bDebug) { console.log(_q(essentiaPath) + _q(path) + ' ' + _q(essentiaJSON)); }
-				_runHidden(essentiaPath.replace('.exe', '.bat'), path, essentiaJSON, essentiaPath);
+				_runHidden(batFile, path, essentiaJSON, essentiaPath);
 				const data = _jsonParseFile(essentiaJSON, utf8);
 				if (data) {
 					let handleTags = {};

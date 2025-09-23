@@ -1,7 +1,7 @@
 ﻿'use strict';
-//09/08/25
+//22/09/25
 
-/* exported ffprobeUtils */
+/* exported ffmpeg */
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, soFeat:readable, globTags:readable */
@@ -15,7 +15,12 @@ const ffmpeg = {};
 ffmpeg.calculateLoudness = function calculateLoudness({
 	fromHandleList = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	tagName = globTags.lra,
-	ffmpegPath = folders.xxx + 'helpers-external\\ffmpeg\\ffmpeg' + (soFeat.x64 ? '' : '_32') + '.exe',
+	ffmpegPath = [
+		folders.binaries + 'ffmpeg\\ffmpeg_32.exe',
+		folders.xxx + 'helpers-external\\ffmpeg\\ffmpeg_32.exe',
+		folders.binaries + 'ffmpeg\\ffmpeg.exe',
+		folders.xxx + 'helpers-external\\ffmpeg\\ffmpeg.exe'
+	],
 	bIncludeUnit = false,
 	bWineBug = !soFeat.x64 && !soFeat.popup,
 	bDebug = false,
@@ -24,9 +29,13 @@ ffmpeg.calculateLoudness = function calculateLoudness({
 }) {
 	// Safecheck
 	if (!fromHandleList || !fromHandleList.Count) { return false; }
-	if (!_isFile(ffmpegPath)) { fb.ShowPopupMessage('ffmpeg executable not found:\n' + ffmpegPath, 'EBUR 128 Scanner'); return false; }
+	if (Array.isArray(ffmpegPath)) {
+		const path = ffmpegPath.find((path) => _isFile(path));
+		if (path) { ffmpegPath = path; }
+		else { fb.ShowPopupMessage('ffmpeg executable not found at:\n' + ffmpegPath.split('\n'), 'EBUR 128 Scanner'); }
+	} else if (!_isFile(ffmpegPath)) { fb.ShowPopupMessage('ffmpeg executable not found:\n' + ffmpegPath, 'EBUR 128 Scanner'); return false; }
 	const profile = bProfile ? new FbProfiler('EBUR 128 Scanner') : null;
-	const batFile = ffmpegPath.replace((soFeat.x64 ? '' : '_32') + '.exe', bWineBug ? '_wine.bat' : '.bat');
+	const batFile = ffmpegPath.replace('_32.exe', '.exe').replace('.exe', bWineBug ? '_wine.bat' : '.bat');
 	if (bDebug) { console.log(batFile); }
 	if (!_isFile(batFile)) { fb.ShowPopupMessage('ffmpeg bat file not found:\n' + batFile, 'EBUR 128 Scanner'); return false; }
 	const handleListArr = fromHandleList.Convert();

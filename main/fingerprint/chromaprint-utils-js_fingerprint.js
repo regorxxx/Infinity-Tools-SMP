@@ -1,5 +1,5 @@
 ﻿'use strict';
-//09/08/25
+//22/09/25
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, globTags:readable,  */
@@ -38,7 +38,7 @@ chromaPrintUtils.compareFingerprints = async function compareFingerprints({
 	if (!fromHandleList || !fromHandleList.Count || !toHandleList || !toHandleList.Count) { return null; }
 	const bSameList = fromHandleList === toHandleList;
 	if (bReadFiles && !bSameList && toHandleList.Count > 200) {
-		fb.ShowPopupMessage('Reading directly from files is disabled for a number of tracks greater than 200.\n\nUse the database option instead.', 'Fingerprint Tag');
+		fb.ShowPopupMessage('Reading directly from files is disabled for a number of tracks greater than 200.\n\nUse the database option instead.', 'Fingerprint Tagger');
 		return null;
 	}
 	const profile = bProfile ? new FbProfiler('ChromaPrint search fingerprint') : null;
@@ -55,7 +55,7 @@ chromaPrintUtils.compareFingerprints = async function compareFingerprints({
 		).map((array) => { return array.map((item) => { return item.split(','); }).flat(1).map((item) => { return item ? Number(item) : void (0); }).filter(Boolean); });
 	// Safecheck for improper set Library
 	if (fromTags.every((val) => !val.length) || !bSameList && toTags.every((val) => !val.length)) {
-		fb.ShowPopupMessage('Selection has no ChromaPrint fingerprint tags or Foobar2000 has not be configured to read the full tag (on v1.6.X).\n\nEither configure \'LargeFieldsConfig.txt\' properly or use \'Read directly from files\' option.', 'Fingerprint Tag');
+		fb.ShowPopupMessage('Selection has no ChromaPrint fingerprint tags or Foobar2000 has not be configured to read the full tag (on v1.6.X).\n\nEither configure \'LargeFieldsConfig.txt\' properly or use \'Read directly from files\' option.', 'Fingerprint Tagger');
 		return null;
 	}
 	// Compute similarity
@@ -146,13 +146,13 @@ chromaPrintUtils.compareFingerprints = async function compareFingerprints({
 				// Create playlist
 				console.log('Found: ' + outputItems.length + ' tracks');
 				plman.InsertPlaylistItems(plman.ActivePlaylist, 0, outputHandleList);
-				if (bPopup) { fb.ShowPopupMessage(header + report.join('\n'), 'Fingerprint Tag'); }
-			} else if (bPopup) { fb.ShowPopupMessage(header, 'Fingerprint Tag'); }
+				if (bPopup) { fb.ShowPopupMessage(header + report.join('\n'), 'Fingerprint Tagger'); }
+			} else if (bPopup) { fb.ShowPopupMessage(header, 'Fingerprint Tagger'); }
 		} else if (bPopup) {
-			if (bFound) { fb.ShowPopupMessage(header + report.join('\n'), 'Fingerprint Tag'); }
-			else { fb.ShowPopupMessage(header, 'Fingerprint Tag'); }
+			if (bFound) { fb.ShowPopupMessage(header + report.join('\n'), 'Fingerprint Tagger'); }
+			else { fb.ShowPopupMessage(header, 'Fingerprint Tagger'); }
 		}
-	} else if (bPopup) { fb.ShowPopupMessage('No similar tracks were found.', 'Fingerprint Tag'); }
+	} else if (bPopup) { fb.ShowPopupMessage('No similar tracks were found.', 'Fingerprint Tagger'); }
 	if (bProfile) { profile.Print('Search fingerprints - completed in '); }
 	return outputHandleList;
 };
@@ -185,15 +185,15 @@ chromaPrintUtils.compareFingerprintsFilter = async function compareFingerprints(
 	let data = null;
 	if (_isFile(reverseDbPath) || _isFile(reverseDbPath.replace('.json', '0.json'))) {
 		data = _jsonParseFileSplit(reverseDbPath, 'Fingerprint inverse database', 'ChromaPrint search', utf8);
-		if (!data || !data.length) { console.popup('Database corrupt: ' + reverseDbPath, 'Fingerprint Tag'); return; }
-	} else { console.popup('Database not found: ' + reverseDbPath, 'Fingerprint Tag'); return; }
+		if (!data || !data.length) { console.popup('Database corrupt: ' + reverseDbPath, 'Fingerprint Tagger'); return; }
+	} else { console.popup('Database not found: ' + reverseDbPath, 'Fingerprint Tagger'); return; }
 	let reverseMap = bFastMap ? new FastMap(data) : new Map(data);
 	data = null; // Free mem immediately
 	let currReverseMapIdx = chromaPrintUtils.libraryMap({ toHandleList, bReverse: true });
 	if (_isFile(reverseDbIdxPath)) {
 		data = _jsonParseFile(reverseDbIdxPath, utf8);
-		if (!data || !data.length) { console.popup('Database corrupt: ' + reverseDbIdxPath, 'Fingerprint Tag'); return; }
-	} else { console.popup('Database not found: ' + reverseDbIdxPath, 'Fingerprint Tag'); return; }
+		if (!data || !data.length) { console.popup('Database corrupt: ' + reverseDbIdxPath, 'Fingerprint Tagger'); return; }
+	} else { console.popup('Database not found: ' + reverseDbIdxPath, 'Fingerprint Tagger'); return; }
 	let oldReverseMapIdx = bFastMap ? new FastMap(data) : new Map(data);
 	data = null;
 	// Get subset of matches which match at least one tag
@@ -209,9 +209,9 @@ chromaPrintUtils.compareFingerprintsFilter = async function compareFingerprints(
 			const list = matches[i];
 			for (let match of list) {
 				const oldIdx = oldReverseMapIdx.get(match.idx);
-				if (typeof oldIdx === 'undefined') { console.popup('Database corrupt: ' + reverseDbIdxPath + '\n\nUnknown index found: ' + match.idx, 'Fingerprint Tag'); continue; }
+				if (typeof oldIdx === 'undefined') { console.popup('Database corrupt: ' + reverseDbIdxPath + '\n\nUnknown index found: ' + match.idx, 'Fingerprint Tagger'); continue; }
 				const idx = currReverseMapIdx.get(oldIdx);
-				if (typeof idx === 'undefined') { console.popup('Database corrupt: ' + reverseDbPath + '\n\nUnknown track found: ' + _p(match.idx) + ' ' + oldIdx, 'Fingerprint Tag'); return; }
+				if (typeof idx === 'undefined') { console.popup('Database corrupt: ' + reverseDbPath + '\n\nUnknown track found: ' + _p(match.idx) + ' ' + oldIdx, 'Fingerprint Tagger'); return; }
 				const toTag = (bReadFiles
 					? await ffprobeUtils.getTags(new FbMetadbHandleList(toHandleList[idx]), tagName).then((tags) => { return tags.map((obj) => [obj[tagName]]); })
 					: getHandleListTagsV2(new FbMetadbHandleList(toHandleList[idx]), [tagName], { bMerged: true, splitBy: null })
@@ -270,10 +270,10 @@ chromaPrintUtils.compareFingerprintsFilter = async function compareFingerprints(
 				// Create playlist
 				console.log('Found: ' + outputItems.length + ' tracks');
 				plman.InsertPlaylistItems(plman.ActivePlaylist, 0, outputHandleList);
-				fb.ShowPopupMessage('Similar tracks found:\n' + report.join('\n'), 'Fingerprint Tag');
-			} else { fb.ShowPopupMessage('No similar tracks were found.', 'Fingerprint Tag'); }
+				fb.ShowPopupMessage('Similar tracks found:\n' + report.join('\n'), 'Fingerprint Tagger');
+			} else { fb.ShowPopupMessage('No similar tracks were found.', 'Fingerprint Tagger'); }
 		}
-	} else if (bSendToPls) { fb.ShowPopupMessage('No similar tracks were found.', 'Fingerprint Tag'); }
+	} else if (bSendToPls) { fb.ShowPopupMessage('No similar tracks were found.', 'Fingerprint Tagger'); }
 	if (bProfile) { profile.Print('Search fingerprints - completed in '); }
 	return outputHandleList;
 };
@@ -282,15 +282,27 @@ chromaPrintUtils.calculateFingerprints = function calculateFingerprints({
 	fromHandleList = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	tagName = globTags.acoustidFP,
 	bMerge = true,
-	fpcalcPath = folders.xxx + 'helpers-external\\fpcalc\\fpcalc.exe',
+	fpcalcPath = [
+		folders.binaries + 'fpcalc\\fpcalc_32.exe',
+		folders.xxx + 'helpers-external\\fpcalc\\fpcalc_32.exe',
+		folders.binaries + 'fpcalc\\fpcalc.exe',
+		folders.xxx + 'helpers-external\\fpcalc\\fpcalc.exe',
+	],
 	bDebug = false,
 	bProfile = true,
 	bQuiet = false
 }) {
 	// Safecheck
 	if (!fromHandleList || !fromHandleList.Count) { return false; }
-	if (!_isFile(fpcalcPath)) { fb.ShowPopupMessage('fpcalc executable not found:\n' + fpcalcPath, 'Fingerprint Tag'); }
+	if (Array.isArray(fpcalcPath)) {
+		const path = fpcalcPath.find((path) => _isFile(path));
+		if (path) { fpcalcPath = path; }
+		else { fb.ShowPopupMessage('fpcalc executable not found at:\n' + fpcalcPath.split('\n'), 'Fingerprint Tagger'); }
+	} else if (!_isFile(fpcalcPath)) { fb.ShowPopupMessage('fpcalc executable not found:\n' + fpcalcPath, 'Fingerprint Tagger'); }
 	const profile = bProfile ? new FbProfiler('ChromaPrint fingerprint') : null;
+	const batFile = fpcalcPath.replace('_32.exe', '.exe').replace('.exe', '.bat');
+	if (bDebug) { console.log(batFile); }
+	if (!_isFile(batFile)) { fb.ShowPopupMessage('ChromaPrint bat file not found:\n' + batFile, 'Fingerprint Tagger'); return false; }
 	const handleListArr = fromHandleList.Convert();
 	const totalTracks = handleListArr.length, numTracks = 100, maxCount = Math.ceil(totalTracks / numTracks);
 	let totalItems = 0;
@@ -307,7 +319,7 @@ chromaPrintUtils.calculateFingerprints = function calculateFingerprints({
 			const path = handle.Path;
 			if (_isFile(path)) {
 				if (bDebug) { console.log(fpcalcPath + ' -raw -json "' + path + '">"' + fpcalcJSON + '"'); }
-				_runHidden(fpcalcPath.replace('.exe', '.bat'), path, fpcalcJSON, fpcalcPath);
+				_runHidden(batFile, path, fpcalcJSON, fpcalcPath);
 				const data = _jsonParseFileCheck(fpcalcJSON);
 				if (data && Object.hasOwn(data, 'fingerprint')) {
 					items.push(handle);
@@ -335,9 +347,9 @@ chromaPrintUtils.calculateFingerprints = function calculateFingerprints({
 		calcFp(count);
 	}
 	const failedItemsLen = failedItems.length;
-	const report = totalTracks + ' items processed.\n' + totalItems + ' items tagged.\n' + failedItemsLen + ' items failed.' + (failedItemsLen ? '\n\nFailed items may be re-scanned in case the files were blocked. For more info, see this:\n https://github.com/regorxxx/Playlist-Tools-SMP/wiki/Known-problems-or-limitations#fingerprint-chromaprint-or-fooid-and-ebur-128-ffmpeg-tagging--fails-with-some-tracks' + '\n\nList of failed items:\n' + failedItems.join('\n') : '');
-	if (bQuiet) { console.log('Fingerprint Tag:\n\t' + report.replace(/\n/g, '\n\t')); }
-	else { console.popup(report, 'Fingerprint Tag'); }
+	const report = totalTracks + ' items processed.\n' + totalItems + ' items tagged.\n' + failedItemsLen + ' items failed.' + (failedItemsLen ? '\n\nFailed items may be re-scanned in case the files were blocked. For more info, see this:\n https://github.com/regorxxx/Infinity-Tools-SMP/wiki/Known-problems-or-limitations#fingerprint-chromaprint-or-fooid-and-ebur-128-ffmpeg-tagging--fails-with-some-tracks' + '\n\nList of failed items:\n' + failedItems.join('\n') : '');
+	if (bQuiet) { console.log('Fingerprint Tagger:\n\t' + report.replace(/\n/g, '\n\t')); }
+	else { console.popup(report, 'Fingerprint Tagger'); }
 	if (bProfile) { profile.Print('Save fingerprints to files - completed in '); }
 	return bDone;
 };
@@ -385,7 +397,7 @@ chromaPrintUtils.reverseIndexingIter = async function reverseIndexingIter({
 	}
 	if (bProfile) { profile.Print('Create reverse indexed database for ' + totalTracks + ' files - completed in '); }
 	if (reverseMap.size === 0) {
-		fb.ShowPopupMessage('Library has no ChromaPrint fingerprint tags or Foobar2000 has not be configured to read the full tag (on v1.6.X).\n\nEither configure \'LargeFieldsConfig.txt\' properly or use \'Read directly from files\' option.', 'Fingerprint Tag');
+		fb.ShowPopupMessage('Library has no ChromaPrint fingerprint tags or Foobar2000 has not be configured to read the full tag (on v1.6.X).\n\nEither configure \'LargeFieldsConfig.txt\' properly or use \'Read directly from files\' option.', 'Fingerprint Tagger');
 	}
 	return bToEntries
 		? bFastMap
