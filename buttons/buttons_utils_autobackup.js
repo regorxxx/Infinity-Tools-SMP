@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//21/09/25
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -24,9 +24,8 @@ include('..\\main\\autobackup\\autobackup.js');
 /* global AutoBackup:readable */
 
 var prefix = 'bak'; // NOSONAR[global]
-var version = '3.0.0'; // NOSONAR[global]
 
-try { window.DefineScript('AutoBackup Button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('AutoBackup Button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
@@ -66,8 +65,8 @@ var newButtonsProperties = { // NOSONAR[global]
 			{ name: 'Playlist-Manager-SMP', path: 'js_data\\playlistManager_*' },
 			{ name: 'Device-Priority-SMP', path: 'js_data\\devices*' },
 			{ name: 'ListenBrainz-SMP', path: 'js_data\\listenbrainz_*' },
-			{ name: 'Playlist-Tools-SMP (1)', path: 'js_data\\playlistTools_*' },
-			{ name: 'Playlist-Tools-SMP (2)', path: 'js_data\\pools_presets.json' },
+			{ name: 'Infinity-Tools-SMP (1)', path: 'js_data\\playlistTools_*' },
+			{ name: 'Infinity-Tools-SMP (2)', path: 'js_data\\pools_presets.json' },
 			{ name: 'JS Similar Artists', path: 'js_data\\searchByDistance_artists.json' },
 			{ name: 'World-Map-SMP', path: 'js_data\\worldMap*' }
 		]),
@@ -319,7 +318,6 @@ addButton({
 				overwriteProperties(this.buttonsProperties);
 			}
 			this.bHeadlessMode = this.buttonsProperties.bHeadlessMode[1];
-		},
-		update: { scriptName: 'AutoBackup-SMP', version }
+		}
 	})
 });
