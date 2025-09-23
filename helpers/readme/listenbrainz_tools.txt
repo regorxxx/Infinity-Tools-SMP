@@ -1,0 +1,5 @@
+﻿Utility to retrieve/set feedback for tracks within foobar2000 library and
+create playlists based on user or site-wide recommendations statistics. 
+
+Requires an account on ListenBrainz and an user token found at:
+https://listenbrainz.org/profile/
