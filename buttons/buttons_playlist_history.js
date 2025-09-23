@@ -11,7 +11,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, MK_SHIFT:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getButtonVersion:readable, getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
@@ -22,9 +22,8 @@ include('..\\helpers\\playlist_history.js');
 /* global PlsHistory:readable */
 
 var prefix = 'ph'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Playlist Tools History', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Playlist Tools History', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
@@ -56,7 +55,6 @@ addButton({
 		},
 		prefix,	buttonsProperties: newButtonsProperties,
 		icon: chars.history,
-		variables: { plsHistory: new PlsHistory() },
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		variables: { plsHistory: new PlsHistory() }
 	})
 });

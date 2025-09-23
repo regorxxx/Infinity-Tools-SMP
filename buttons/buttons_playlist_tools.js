@@ -11,13 +11,11 @@
 	NOTE: 'on_mouse_lbtn_up(x, y)' is simply replaced with a button to call the menu.
  */
 
-var version = '5.0.0'; // NOSONAR [shared on files]
-
 /* global menu_panelProperties:readable */
 /* global globFonts:readable, MK_SHIFT:readable, doOnce:readable, debounce:readable, MK_CONTROL:readable */
 try { include('..\\helpers\\buttons_xxx.js'); } catch (e) { include('helpers\\buttons_xxx.js'); } // eslint-disable-line no-unused-vars
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
-try { window.DefineScript('Playlist Tools: Button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Playlist Tools: Button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 {
 	const dependencies = [
@@ -73,7 +71,6 @@ addButton({
 		},
 		description: menuTooltip,
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: chars.wrench,
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		icon: chars.wrench
 	}),
 });

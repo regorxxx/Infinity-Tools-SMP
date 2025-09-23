@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/09/25
+//20/09/25
 
 /*
 	Search same by v 1.0 24/08/22
@@ -66,7 +66,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, MK_SHIFT:readable, MK_CONTROL:readable, VK_SHIFT:readable, globTags:readable, globQuery:readable, globRegExp:readable, MF_GRAYED:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getButtonVersion:readable, getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable, _menu:readable  */
 include('..\\helpers\\menu_xxx_extras.js');
@@ -83,9 +83,8 @@ include('..\\main\\search\\search_same_by.js');
 /* global searchSameByCombs:readable */
 
 var prefix = 'ssbytc'; // NOSONAR[global] /* cspell:disable-line */
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Search Same By Tags (Combinations) Button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Search Same By Tags (Combinations) Button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
@@ -321,7 +320,6 @@ addButton({
 			return info;
 		},
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: chars.searchPlus,
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		icon: chars.searchPlus
 	}),
 });

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/09/25
+//20/09/25
 
 /*
 	Removes duplicates on active playlist without changing order. It's currently set to title-artist-date,
@@ -16,7 +16,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, globQuery:readable, VK_CONTROL:readable, MK_CONTROL:readable, globRegExp:readable, MF_GRAYED:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getButtonVersion:readable, getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable, _menu:readable */
 include('..\\helpers\\menu_xxx_extras.js');
@@ -31,9 +31,7 @@ include('..\\main\\filter_and_query\\remove_duplicates.js');
 /* global showDuplicates:readable, removeDuplicates:readable */
 
 var prefix = 'sd'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
-
-try { window.DefineScript('Show Duplicates Button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Show Duplicates Button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
@@ -202,7 +200,6 @@ addButton({
 			return info;
 		},
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: chars.duplicates,
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		icon: chars.duplicates
 	}),
 });
