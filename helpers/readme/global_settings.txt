@@ -14,19 +14,18 @@ read the descriptions and variables. They should be self
 explanatory.
 
 Note the panels must be reloaded (or foobar2000 restarted)
-to apply the new settings. 
+to apply the new settings.
 
-Also note in some cases these settings are the default 
+Also note in some cases these settings are the default
 values used the first time a panel is installed... i.e.
 changing them afterwards will not change such settings
 on an already panel. This usually happens when that setting
-can also be customized within the panel. 
+can also be customized within the panel.
 
 For ex. the tooltip font is applied after reload/restart,
 since it is not configurable via panels, but the default
 tags set at 'globTags.json' are applied in most cases once
-at installation. Since scripts like Playlist-Tools-SMP or
-Search-By-Distance-SMP allow to configure tags and queries,
-those are only the values used by default. But once installed,
-they can only be changed via menus (or editing the properties
-panel).
+at installation. Since scripts like Infinity-Tools-SMP allow
+to configure tags and queries, those are only the values used
+by default. But once installed, they can only be changed via
+ menus (or editing the properties panel).

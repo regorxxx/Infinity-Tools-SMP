@@ -1,9 +1,12 @@
-﻿Filters the library by query and sends results to a new playlist.
-Similar to what foobar search or some search/filter plugins do.
+﻿Dynamic queries are the usual foobar2000's query expressions but improved
+with non-static values which are replaced before execution according to
+selection or the player state. WilB's Library tree script also has a s
+imilar functinality with the usage of $nowplaying{} and $selected{} on
+filter patterns.
 
-Dynamic queries usage are supported in multiple scripts and tools
-like Playlist Tools's Query filtering, Pools and Sort, Search by
-Distance's pre-analysis filters, etc. (shown on the input popup)
+Dynamic queries usage are supported in multiple scripts and tools like
+Playlist Tools's Query filters, Pools and Sort, Music Map's pre-analysis
+ filters, etc. (If it's supported, it will be shown on the input popup)
 
 For filtering purposes:
 -----------------------
