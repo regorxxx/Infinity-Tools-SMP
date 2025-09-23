@@ -17,7 +17,7 @@ include('..\\helpers\\menu_xxx.js');
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, soFeat:readable, MK_CONTROL:readable, MF_STRING:readable, MF_GRAYED:readable, VK_SHIFT:readable, VK_CONTROL:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getButtonVersion:readable, getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, showButtonReadme:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, showButtonReadme:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isJSON:readable, isString:readable,  */
 include('..\\helpers\\helpers_xxx_UI.js');
@@ -30,9 +30,8 @@ include('..\\main\\tags\\tagger.js');
 /* global Tagger:readable  */
 
 var prefix = 'ta'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Tagger', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Tagger', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
@@ -265,8 +264,7 @@ buttonsBar.list.push(newButtonsProperties);
 				return info;
 			},
 			prefix, buttonsProperties: newButtonsProperties,
-			icon: chars.tags,
-			update: { scriptName: 'Playlist-Tools-SMP', version }
+			icon: chars.tags
 		}),
 	};
 	newButton['Tagger'].tAut = new Tagger({

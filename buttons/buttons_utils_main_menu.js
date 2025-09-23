@@ -13,7 +13,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, MF_GRAYED:readable, clone:readable, MF_STRING:readable, tryMethod:readable, compareObjects:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getButtonVersion:readable, getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, showButtonReadme:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, showButtonReadme:readable */
 include('..\\helpers\\menu_xxx.js');
 /* global _menu:readable  */
 include('..\\helpers\\menu_xxx_extras.js');
@@ -28,9 +28,8 @@ include('..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 
 var prefix = 'mms'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Main Menu Shortcut Button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Main Menu Shortcut Button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
@@ -406,8 +405,7 @@ buttonsBar.list.push(newButtonsProperties);
 				if (indicator.enabled && indicator.init) { this.switchActive(bActive); }
 				this.buttonsProperties.state[1] = this.active;
 				overwriteProperties(this.buttonsProperties);
-			},
-			update: { scriptName: 'Playlist-Tools-SMP', version }
+			}
 		})
 	};
 	addButton(newButton);

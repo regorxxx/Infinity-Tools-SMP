@@ -1,5 +1,5 @@
 ﻿'use strict';
-//12/05/25
+//20/09/25
 
 /*
 	-> EDIT
@@ -8,7 +8,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, folders:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getButtonVersion:readable, getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\helpers_xxx_file.js');
 /* global _open:readable, utf8:readable, _jsonParseFileCheck:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
@@ -21,9 +21,8 @@ include('..\\main\\tags\\save_tags.js');
 /* global saveTags:readable, compareTags:readable */
 
 var prefix = 'st_'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Save tags button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Save tags button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 var newButtonsProperties = { // NOSONAR[global]
@@ -73,7 +72,6 @@ addButton({
 		},
 		description: 'Compare all tags from selected tracks with tags from a JSON file.\nFor backup comparison or to copy tags between libraries.',
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: chars.exchange,
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		icon: chars.exchange
 	}),
 });
