@@ -1,6 +1,7 @@
-﻿Music Map tools may be used to compute the similar artists to
-those from the currently selected tracks (duplicates are filtered first).
-This option may be found on the customizable button and Playlist Tools.
+﻿Music Map tools be used to compute the similar artists to those from
+the currently selected tracks (duplicates are filtered first). This
+option may be found on the Music Map customizable ('Other tools' submenu)
+and Playlist Tools ('Tagging') buttons.
 
 It tries to compute something equivalent to 'Similar Artists Last.fm',
 which can be retrieved with Bio script (but requires internet). In this

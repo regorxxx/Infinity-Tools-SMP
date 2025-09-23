@@ -3,13 +3,13 @@ according to the current selected track. This is a simplification
 of Search Same by Tags Combinations, where all tag values must be
 matched for every tag given using queries.
 
-Playlist Tools Usage:
+Playlist Tools button usage:
 	- The number of output tracks may be set at global config.
 	- Forced query to pre-filter tracks may be set at global config.
 	- Tags may be set at the appropriate submenu.
 	- Duplicates are filtered by title, artist & date.
 
-Buttons usage:
+Other Buttons usage:
 	- The number of output tracks may be set at properties panel.
 	- Forced query to pre-filter tracks may be set at properties panel.
 	- Tags may be set at properties panel.

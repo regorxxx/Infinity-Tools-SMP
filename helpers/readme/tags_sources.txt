@@ -6,8 +6,8 @@
 +----------+---------------------------------------------------------+
 | Tag name |                 Software (UNIX/Windows)                 |
 +----------+---------------------------------------------------------+
-|          | Foobar - Playlist Tools script   (**)                   |
-|          |      https://github.com/regorxxx/Playlist-Tools-SMP     |
+|          | Foobar - Infinity Tools script - Batch Tagger  (**)     |
+|          |      https://github.com/regorxxx/Infinity-Tools-SMP     |
 |          +---------------------------------------------------------+
 |    KEY   | Picard -   AcousticBrainz Tags plugin                   |
 |          |      https://picard.musicbrainz.org/plugins/            |
@@ -15,8 +15,8 @@
 |          | KeyFinder   (*)                                         |
 |          |      https://github.com/ibsh/is_KeyFinder               |
 +----------+---------------------------------------------------------+
-|          | Foobar - Playlist Tools script   (**)                   |
-|          |      https://github.com/regorxxx/Playlist-Tools-SMP     |
+|          | Foobar - Infinity Tools script - Batch Tagger  (**)     |
+|          |      https://github.com/regorxxx/Infinity-Tools-SMP     |
 |          +---------------------------------------------------------+
 |          | Picard -   AcousticBrainz Tags plugin                   |
 |          |      https://picard.musicbrainz.org/plugins/            |
@@ -45,15 +45,15 @@
 |          | Foobar -   Biography script (*)                         |
 |          |      https://github.com/Wil-B/Biography                 |
 +----------+---------------------------------------------------------+
-|          | Foobar - Search by Distance script - Music Map          |
-| SIMILAR  |      https://github.com/regorxxx/Search-by-Distance-SMP |
+|          | Foobar - Infinity Tools script - Music Map              |
+| SIMILAR  |      https://github.com/regorxxx/Infinity-Tools-SMP     |
 | ARTISTS  +---------------------------------------------------------+
-|          | Foobar - ListenBrainz script                            |
-|          |      https://github.com/regorxxx/ListenBrainz-SMP       |
+|          | Foobar - Infinity Tools script - ListenBrainz Tools     |
+|          |      https://github.com/regorxxx/Infinity-Tools-SMP     |
 +----------+---------------------------------------------------------+
 |          |                                                         |
-| FEEDBACK | Foobar - ListenBrainz script                            |
-|  loved   |      https://github.com/regorxxx/ListenBrainz-SMP       |
+| FEEDBACK | Foobar - Infinity Tools script - ListenBrainz Tools     |
+|  loved   |      https://github.com/regorxxx/Infinity-Tools-SMP     |
 |    &     |                                                         |
 |  hated   |                                                         |
 +----------+---------------------------------------------------------+
@@ -95,5 +95,5 @@ for comparison purposes).
 	scripting for batch processing:
 	streaming_extractor_music.exe file.flac out.txt
 
-	Playlist Tools script (see at top) has a tagger which may use
+	Infinity Tools script (see at top) has a tagger which may use
 	it to tag files on batch too.

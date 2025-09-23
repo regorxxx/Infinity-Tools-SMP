@@ -11,8 +11,9 @@ Buttons usage:
 	- Shift sends results to search window.
 	- Ctrl creates an AutoPlaylist with the result.
 	- Shit + Ctrl uses the current playlist as source for the lookup.
-	- To add customized entries, use Playlist Tools\Dynamic queries
-		or configure the button pressing shift.
+	- To add customized entries, use Library search\Dynamic queries
+		(on Playlist Tools button) or configure any other
+		button by pressing shift.
 	- Advanced entries (see below) are automatically created if
 		they would produce valid queries/searches.
 
@@ -39,4 +40,5 @@ this tool allows three additional modes:
 		named 'Yes', 'Y', 'Yesterday', 'Yesterdays', ...
 
 This tool uses Dynamic Queries under the hood. Readme may be found
-at 'Others\Dynamic queries' or at Playlist Tools button.
+at 'Search, Tags & Queries\Dynamic queries' at the button bar's
+readmes or Playlist Tools button's readmes submenu.

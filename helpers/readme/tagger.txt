@@ -19,11 +19,11 @@ Dependencies:
 	this download and pre-installed.
 
 	- ffmpeg requires to download 'ffmpeg.exe' from the web and
-	place it into '.\helpers-external\ffmpeg\ffmpeg.exe'.
+	place it into '[profile folder]\binaries\ffmpeg\ffmpeg.exe'.
 
 	- Essentia requires to download 'streaming_extractor_music.exe'
 	and 'essentia_streaming_key.exe' from the web and
-	place them into '.\helpers-external\essentia\...'.
+	place them into '[profile folder]\binaries\essentia\...'.
 
 	- For any other component related feature (foo_***), the plugin
 	needs to be installed first by the user. Some may be available

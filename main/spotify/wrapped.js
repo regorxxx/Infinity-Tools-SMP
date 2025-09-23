@@ -1,11 +1,11 @@
 ﻿
 'use strict';
-//06/08/25
+//22/09/25
 
 /* exported wrapped */
 
 include('..\\..\\helpers\\helpers_xxx.js');
-/* global folders:readable, globQuery:readable, globTags:readable, soFeat:readable, isSkipCount:readable */
+/* global folders:readable, globQuery:readable, globTags:readable, isSkipCount:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global forEachNested:readable, _bt:readable, _q:readable, round:readable, _asciify:readable, _p:readable, _t:readable, toType:readable, range:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
@@ -1960,10 +1960,19 @@ const wrapped = {
 		)
 			.then(() => {
 				if (bFormat) {
-					const nconvert = folders.xxx + 'helpers-external\\nconvert\\nconvert' + (soFeat.x64 ? '' : '_32') + '.exe';
-					const command = ' -out jpeg -dpi 300 -resize 600 600 -overwrite -keepfiledate -ignore_errors "' + path + '*.jpg"';
-					console.log('Wrapped: processing track images (' + tracksData.length + ') with nconvert\n\tnconvert.exe' + command);
-					_runCmd('CMD /C ' + nconvert + command, false);
+					const nconvert = [
+						folders.binaries + 'nconvert\\nconvert_32.exe',
+						folders.xxx + 'helpers-external\\nconvert\\nconvert_32.exe',
+						folders.binaries + 'nconvert\\nconvert.exe',
+						folders.xxx + 'helpers-external\\nconvert\\nconvert.exe'
+					];
+					nconvert.some((nc) => {
+						if (_isFile(nc)) {
+							const command = ' -out jpeg -dpi 300 -resize 600 600 -overwrite -keepfiledate -ignore_errors "' + path + '*.jpg"';
+							console.log('Wrapped: processing track images (' + tracksData.length + ') with nconvert\n\tnconvert.exe' + command);
+							_runCmd('CMD /C ' + nc + command, false);
+						}
+					});
 				}
 				return Promise.wait(500).then(() => tracksData); // Give some time to nconvert to end
 			});
@@ -2328,7 +2337,7 @@ const wrapped = {
 	createPdfReport: function ({ timePeriod, timeKey = null, fromDate = null, query = '', latexCmd, extraCmd = [], root = this.basePath }) {
 		if (this.settings.bOffline) { console.log('Wrapped: offline mode'); }
 		this.cleanRoot(root);
-		this.copyDependencies(root);
+		this.copyAssets(root);
 		return this.getData(timePeriod, query, timeKey, fromDate)
 			.then((wrappedData) => this.getDataImages(wrappedData))
 			.then((wrappedData) => {
@@ -3159,7 +3168,7 @@ const wrapped = {
 	createHtmlIeReport: function ({ timePeriod, timeKey = null, fromDate = null, query = '', extraCmd = [], root = this.basePath }) {
 		if (this.settings.bOffline) { console.log('Wrapped: offline mode'); }
 		this.cleanRoot(root);
-		this.copyDependencies(root);
+		this.copyAssets(root);
 		return this.getData(timePeriod, query, timeKey, fromDate)
 			.then((wrappedData) => this.getDataImages(wrappedData))
 			.then((wrappedData) => {
@@ -3241,7 +3250,7 @@ const wrapped = {
 	createJsonReport: function ({ timePeriod, timeKey = null, fromDate = null, query = '', extraCmd = [], root = this.basePath }) {
 		if (this.settings.bOffline) { console.log('Wrapped: offline mode'); }
 		this.cleanRoot(root);
-		this.copyDependencies(root);
+		this.copyAssets(root);
 		return this.getData(timePeriod, query, timeKey, fromDate)
 			.then((wrappedData) => this.getDataImages(wrappedData))
 			.then((wrappedData) => {
@@ -3303,16 +3312,16 @@ const wrapped = {
 		return false;
 	},
 	/**
-	 * Copies all dependencies required to create the report to temp folder
+	 * Copies all assets required to create the report to temp folder
 	 *
 	 * @property
-	 * @name copyDependencies
+	 * @name copyAssets
 	 * @kind method
 	 * @memberof wrapped
 	 * @type {function}
 	 * @param {?string} root - Optional parameter that specifies the root directory for the report
 	 */
-	copyDependencies: function (root = this.basePath) {
+	copyAssets: function (root = this.basePath) {
 		// Copy dependencies
 		if (!_isFolder(root)) { _createFolder(root); }
 		['bg', 'char', 'genres', 'month', 'burger', 'soundcity', 'map', 'fallback'].forEach((folder) => {
@@ -3326,6 +3335,41 @@ const wrapped = {
 					), new Set(['.jpg', '.jpeg', '.png'])
 				);
 				files.forEach((file) => _copyFile(file, path + file.split('\\').slice(-1)[0], true));
+			}
+		});
+		// Binaries
+		[
+			folders.binaries,
+			folders.binaries + 'ghostscript\\',
+			folders.binaries + 'exiftool\\',
+			folders.binaries + 'pingo\\',
+		].forEach((path) => {
+			if (!_isFolder(path)) {
+				_createFolder(path);
+				_copyFile(path.replace(folders.binaries, folders.xxx + 'helpers-external') + '*.*', path);
+			}
+		});
+	},
+	/**
+	 * Copies all binaries dependencies
+	 *
+	 * @property
+	 * @name copyDependencies
+	 * @kind method
+	 * @memberof wrapped
+	 * @type {function}
+	 * @param {?string} root - Optional parameter that specifies the root directory for the binaries
+	 */
+	copyDependencies: function (root = folders.binaries) {
+		[
+			root,
+			root + 'ghostscript\\',
+			root + 'exiftool\\',
+			root + 'pingo\\',
+		].forEach((path, i) => {
+			if (!_isFolder(path)) {
+				_createFolder(path);
+				if (i !== 0) { _copyFile(path.replace(root, folders.xxx + 'helpers-external\\') + '*.*', path); }
 			}
 		});
 	},
@@ -3358,12 +3402,17 @@ const wrapped = {
 	 * @param {?string} root - Optional parameter that specifies the root directory for the report
 	 */
 	cleanExif: function (root = this.basePath) {
-		const exifTool = folders.xxx + 'helpers-external\\exiftool\\exiftool.exe';
-		if (_isFile(exifTool)) {
-			const command = ' -overwrite_original -r -ext jpg -ext gif -ext png -EXIF= ' + _q(root + 'img');
-			console.log('Wrapped: processing images with exiftool\n\texiftool.exe ' + command);
-			_runCmd('CMD /C ' + _q(exifTool) + command, false);
-		}
+		const exifTool = [
+			folders.binaries + 'exiftool\\exiftool.exe',
+			folders.xxx + 'helpers-external\\exiftool\\exiftool.exe',
+		];
+		exifTool.some((et) => {
+			if (_isFile(et)) {
+				const command = ' -overwrite_original -r -ext jpg -ext gif -ext png -EXIF= ' + _q(root + 'img');
+				console.log('Wrapped: processing images with exiftool\n\texiftool.exe ' + command);
+				_runCmd('CMD /C ' + _q(et) + command, false);
+			}
+		});
 	},
 	/**
 	 * Compress all images on temp folder, requires pingo to be present at 'helpers-external\pingo', otherwise it is skipped.
@@ -3378,14 +3427,19 @@ const wrapped = {
 	 * @param {?string} root - Optional parameter that specifies the root directory for the report
 	 */
 	compressImgs: function (root = this.basePath) {
-		const pingo = folders.xxx + 'helpers-external\\pingo\\pingo.exe';
-		if (_isFile(pingo)) {
-			console.log('Wrapped: processing images with pingo\n\tpingo.exe -quiet ' + _q(root + 'img\\'));
-			_runCmd('CMD /C ' + _q(pingo) + ' -quiet ' + _q(root + 'img\\albums'), false);
-			_runCmd('CMD /C ' + _q(pingo) + ' -quiet ' + _q(root + 'img\\artists'), false);
-			_runCmd('CMD /C ' + _q(pingo) + ' -quiet ' + _q(root + 'img\\bg'), false);
-			_runCmd('CMD /C ' + _q(pingo) + ' -quiet ' + _q(root + 'img\\char'), false);
-		}
+		const pingo = [
+			folders.binaries + 'pingo\\pingo.exe',
+			folders.xxx + 'helpers-external\\pingo\\pingo.exe',
+		];
+		pingo.some((pg) => {
+			if (_isFile(pg)) {
+				console.log('Wrapped: processing images with pingo\n\tpingo.exe -quiet ' + _q(root + 'img\\'));
+				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\albums'), false);
+				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\artists'), false);
+				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\bg'), false);
+				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\char'), false);
+			}
+		});
 	},
 	/**
 	 * Compress pdf output, requires ghostscript to be present at 'helpers-external\ghostscript', otherwise it is skipped.
@@ -3401,8 +3455,10 @@ const wrapped = {
 	 */
 	compressPDF: function (input) {
 		const ghostscript = [
+			folders.binaries + 'ghostscript\\gswin32c.exe',
+			folders.xxx + 'helpers-external\\ghostscript\\gswin32c.exe',
+			folders.binaries + 'ghostscript\\gswin64c.exe',
 			folders.xxx + 'helpers-external\\ghostscript\\gswin64c.exe',
-			folders.xxx + 'helpers-external\\ghostscript\\gswin32c.exe'
 		];
 		ghostscript.some((gs) => {
 			if (_isFile(gs)) {

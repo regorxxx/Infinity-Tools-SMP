@@ -113,7 +113,7 @@ Requirements:
 
 	- Enhanced Playback Statistics: For year reports.
 	https://www.foobar2000.org/components/view/foo_enhanced_playcount
-							OR
+					OR
 	- Playcount 2003: For year reports.
 	https://marc2k3.github.io/component/playcount-2003/
 
@@ -163,12 +163,12 @@ Optional:
 		* Win 7: 4.3.0 (or lower)
 
 	- ExifTool: To clean all metadata from images used on report.
-	Binaries must be put at: .\helpers_external\exiftool\exiftool.exe
+	Put binaries at: [profile folder]\binaries\exiftool\exiftool.exe
 		* 64 bit: https://exiftool.org/
 		* 32 bit: https://oliverbetz.de/pages/Artikel/ExifTool-for-Windows
 
 	- Pingo: To optimize images used (will greatly reduce file size).
-	Binaries must be put at: .\helpers_external\pingo\pingo.exe
+	Put binaries at: [profile folder]\binaries\pingo\pingo.exe
 		* 64 bit: https://css-ig.net/pingo
 		* 32 bit: not available
 

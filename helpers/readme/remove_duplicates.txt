@@ -2,41 +2,41 @@
 It's superior to foobar2000 functionality since it checks more things than
 just having the same exact file multiple times...
 
-Note you can use these functions to filter lists! i.e. if you only check 
+Note you can use these functions to filter lists! i.e. if you only check
 by artist/date, then any track with same artist/date is considered
 duplicated.
 
-That means this could be used both to find duplicates or for custom 
+That means this could be used both to find duplicates or for custom
 post-playlist creation filtering (1 track per artist, 1 track per date,
 etc.)
 
-Usage on playlist tools:
+Playlist Tools button usage:
 	- Tags and n+1 var may be set via menus.
 	- See comments below (buttons) for usage. It applies the same.
 
-Usage on buttons:
+Other Buttons usage:
 	- Tags or TF expressions may be set via menus. There
-	are	3 possible fields, but multiple tags may also be set in the 
+	are	3 possible fields, but multiple tags may also be set in the
 	same field. ('%ARTIST% - %TITLE% - %DATE%' is equivalent to setting
 	them separately on the 3 properties)
 	- When adding a tag on a field, '%' may be omitted. When adding
-	multiple tags or TF expressions, you must add all TF symbols 
+	multiple tags or TF expressions, you must add all TF symbols
 	(% and $).
 	- Setting the n+1 duplicates allowed variable is used for the
-	filtering button. A value of 0 makes it work as the remove 
-	duplicates button (no duplicates allowed). A value of 1, would 
+	filtering button. A value of 0 makes it work as the remove
+	duplicates button (no duplicates allowed). A value of 1, would
 	allow 2 (1+1) tracks with the same set tags...
 	- Since the tags are configurable, the concept of 'duplicate' is
 	related to those tags... that's why this tool may also be used to
 	filter playlists instead of removing real duplicates too.
-	
+
 Note on 'Advanced RegExp title matching':
 	Matching duplicates by %TITLE% may be somewhat tricky as soon as
 	a library contains multiple versions of the same track. For ex:
 	live, acoustic, remix versions, etc. To account for these, RegExp
 	may be used, to allow partial matching to tracks with things like
 	'(acoustic)' or '(2022 remix)' on the title.
-	
+
 	Obviously these are no real 'duplicates', but the philosophy behind
 	the 'remove duplicates' concept is not having 2 times the same song
 	on a playlist, so having multiple versions of the same track is

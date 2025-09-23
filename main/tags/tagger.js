@@ -17,7 +17,7 @@
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global globTags:readable, folders:readable, soFeat:readable, isFoobarV2:readable, popup:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global WshShell:readable, _isFile:readable, testPath:readable, _isLink:readable */
+/* global WshShell:readable, _isFile:readable, testPath:readable, _isLink:readable, _isFolder:readable, _createFolder:readable, _copyFile:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global BiMap:readable, debounce:readable, isArrayStrings:readable , repeatFn:readable, _t:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
@@ -34,7 +34,8 @@ function Tagger({
 	bWineBug = false,
 	bFormatPopups = true,
 	bToolPopups = true,
-	bRunPopup = true
+	bRunPopup = true,
+	paths = null
 } = {}) {
 	this.selItems = null;
 	this.selItemsByCheck = {
@@ -57,6 +58,13 @@ function Tagger({
 	this.bFormatPopups = bFormatPopups;
 	this.bToolPopups = bToolPopups;
 	this.bRunPopup = bRunPopup;
+	this.paths = {
+		fpcalc: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'fpcalc\\fpcalc' + (soFeat.x64 ? '' : '_32') + '.exe',
+		ffmpeg: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'ffmpeg\\ffmpeg' + (soFeat.x64 ? '' : '_32') + '.exe',
+		essentiaKey: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'essentia\\essentia_streaming_key.exe',
+		essentiaExtractor: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'essentia\\streaming_extractor_music.exe',
+		...(paths || {})
+	};
 	this.notAllowedTools = new Set();
 	this.incompatibleTools = new BiMap({ ffmpegLRA: 'essentiaLRA', essentiaKey: 'essentiaFastKey', drMeter: 'dynamicRange', bpmAnaly: 'essentiaBPM' });
 	this.tools = [
@@ -71,7 +79,7 @@ function Tagger({
 		{
 			key: 'chromaPrint', tag: [globTags.acoustidFP],
 			title: 'ChromaPrint Fingerprint',
-			bAvailable: _isFile(folders.xxx + 'main\\fingerprint\\chromaprint-utils-js_fingerprint.js') && _isFile(folders.xxx + 'helpers-external\\fpcalc\\fpcalc' + (soFeat.x64 ? '' : '_32') + '.exe'),
+			bAvailable: _isFile(folders.xxx + 'main\\fingerprint\\chromaprint-utils-js_fingerprint.js') && _isFile(this.paths.fpcalc),
 			bDefault: true,
 			bQuiet: false
 		},
@@ -136,7 +144,7 @@ function Tagger({
 		{
 			key: 'ffmpegLRA', tag: [globTags.lra],
 			title: 'EBUR 128 Scanner (ffmpeg)',
-			bAvailable: _isFile(folders.xxx + 'helpers-external\\ffmpeg\\ffmpeg' + (soFeat.x64 ? '' : '_32') + '.exe'),
+			bAvailable: _isFile(this.paths.ffmpeg),
 			bDefault: true,
 			bQuiet: false
 		},
@@ -150,31 +158,31 @@ function Tagger({
 		{
 			key: 'essentiaFastKey', tag: [globTags.key],
 			title: 'Key (essentia fast)',
-			bAvailable: _isFile(folders.xxx + 'helpers-external\\essentia\\essentia_streaming_key.exe'), bDefault: true,
+			bAvailable: _isFile(this.paths.essentiaKey), bDefault: true,
 			bQuiet: false
 		},
 		{
 			key: 'essentiaKey', tag: [globTags.key],
 			title: 'Key (essentia)',
-			bAvailable: _isFile(folders.xxx + 'helpers-external\\essentia\\streaming_extractor_music.exe'), bDefault: false,
+			bAvailable: _isFile(this.paths.essentiaExtractor), bDefault: false,
 			bQuiet: false
 		},
 		{
 			key: 'essentiaBPM', tag: [globTags.bpm],
 			title: 'BPM (essentia)',
-			bAvailable: _isFile(folders.xxx + 'helpers-external\\essentia\\streaming_extractor_music.exe'), bDefault: false,
+			bAvailable: _isFile(this.paths.essentiaExtractor), bDefault: false,
 			bQuiet: false
 		},
 		{
 			key: 'essentiaDanceness', tag: [globTags.danceness],
 			title: 'Danceness (essentia)',
-			bAvailable: _isFile(folders.xxx + 'helpers-external\\essentia\\streaming_extractor_music.exe'), bDefault: false,
+			bAvailable: _isFile(this.paths.essentiaExtractor), bDefault: false,
 			bQuiet: false
 		},
 		{
 			key: 'essentiaLRA', tag: [globTags.lra],
 			title: 'EBUR 128 Scanner (essentia)',
-			bAvailable: _isFile(folders.xxx + 'helpers-external\\essentia\\streaming_extractor_music.exe'),
+			bAvailable: _isFile(this.paths.essentiaExtractor),
 			bDefault: false,
 			bQuiet: false
 		}
@@ -333,7 +341,7 @@ function Tagger({
 				if (this.check.subSong) {
 					const notAllowedTools = createCheck('subSong');
 					if (this.check.subSong) {
-						this.bFormatPopups && console.popup('Some of the selected tracks have a SubSong index different to zero, which means their container may be an ISO file, CUE, etc.\n\nThese tracks can not be used with the following tools (and will be omitted in such steps):\n' + notAllowedTools.join(', ') + '\n\nThis limitation may be bypassed converting the tracks into individual files, scanning them and finally copying back the tags. Only required for ChromaPrint (%' + globTags.acoustidFP + '%), Essentia (' + _t(globTags.key) + ', ' + _t(globTags.lra) + ', %DANCENESS%, ' + _t(globTags.bpm) + ') and ffmpeg (' + _t(globTags.lra) + ').\nMore info and tips can be found here:\nhttps://github.com/regorxxx/Playlist-Tools-SMP/wiki/Known-problems-or-limitations#fingerprint-chromaprint-or-fooid-and-ebur-128-ffmpeg-tagging--fails-with-some-tracks', 'Tags Automation');
+						this.bFormatPopups && console.popup('Some of the selected tracks have a SubSong index different to zero, which means their container may be an ISO file, CUE, etc.\n\nThese tracks can not be used with the following tools (and will be omitted in such steps):\n' + notAllowedTools.join(', ') + '\n\nThis limitation may be bypassed converting the tracks into individual files, scanning them and finally copying back the tags. Only required for ChromaPrint (%' + globTags.acoustidFP + '%), Essentia (' + _t(globTags.key) + ', ' + _t(globTags.lra) + ', %DANCENESS%, ' + _t(globTags.bpm) + ') and ffmpeg (' + _t(globTags.lra) + ').\nMore info and tips can be found here:\nhttps://github.com/regorxxx/Infinity-Tools-SMP/wiki/Known-problems-or-limitations#fingerprint-chromaprint-or-fooid-and-ebur-128-ffmpeg-tagging--fails-with-some-tracks', 'Tags Automation');
 						// Remove old tags
 						{	// Update problematic tracks with safe tools
 							this.selItemsByCheck.subSong.present = new FbMetadbHandleList(handleArr.filter((handle) => isSubsong(handle)));
@@ -522,9 +530,9 @@ function Tagger({
 				if (this.toolsByKey.ffmpegLRA) {
 					if (this.check.subSong) {
 						if (this.selItemsByCheck.subSong.missing.Count) {
-							bSuccess = ffmpeg.calculateLoudness({ fromHandleList: this.selItemsByCheck.subSong.missing, bWineBug: this.bWineBug, bQuiet: this.quietByKey.ffmpegLRA, bDebug, bProfile });
+							bSuccess = ffmpeg.calculateLoudness({ fromHandleList: this.selItemsByCheck.subSong.missing, bWineBug: this.bWineBug, bQuiet: this.quietByKey.ffmpegLRA, ffmpegPath: this.paths.ffmpeg, bDebug, bProfile });
 						}
-					} else { bSuccess = ffmpeg.calculateLoudness({ fromHandleList: this.selItems, bWineBug: this.bWineBug, bQuiet: this.quietByKey.ffmpegLRA, bDebug, bProfile }); }
+					} else { bSuccess = ffmpeg.calculateLoudness({ fromHandleList: this.selItems, bWineBug: this.bWineBug, bQuiet: this.quietByKey.ffmpegLRA, ffmpegPath: this.paths.ffmpeg, bDebug, bProfile }); }
 				} else { bSuccess = false; }
 				break;
 			case 8:
@@ -540,9 +548,9 @@ function Tagger({
 				if (this.toolsByKey.essentiaFastKey) {
 					if (this.check.subSong) {
 						if (this.selItemsByCheck.subSong.missing.Count) {
-							bSuccess = essentia.calculateKey({ fromHandleList: this.selItemsByCheck.subSong.missing, bQuiet: this.quietByKey.essentiaFastKey, bDebug, bProfile });
+							bSuccess = essentia.calculateKey({ fromHandleList: this.selItemsByCheck.subSong.missing, bQuiet: this.quietByKey.essentiaFastKey, essentiaPath: this.paths.essentiaKey, bDebug, bProfile });
 						}
-					} else { bSuccess = essentia.calculateKey({ fromHandleList: this.selItems, bQuiet: this.quietByKey.essentiaFastKey, bDebug, bProfile }); }
+					} else { bSuccess = essentia.calculateKey({ fromHandleList: this.selItems, bQuiet: this.quietByKey.essentiaFastKey, essentiaPath: this.paths.essentiaKey, bDebug, bProfile }); }
 				} else { bSuccess = false; }
 				break;
 			case 10:
@@ -552,9 +560,9 @@ function Tagger({
 					tagName.forEach((tag) => tag.tf = this.toolsByKey[tag.tf] ? this.tagsByKey[tag.tf][0] : '');
 					if (this.check.subSong) {
 						if (this.selItemsByCheck.subSong.missing.Count) {
-							bSuccess = essentia.calculateHighLevelTags({ fromHandleList: this.selItemsByCheck.subSong.missing, tagName, bQuiet, bDebug, bProfile });
+							bSuccess = essentia.calculateHighLevelTags({ fromHandleList: this.selItemsByCheck.subSong.missing, tagName, bQuiet, essentiaPath: this.paths.essentiaExtractor, bDebug, bProfile });
 						}
-					} else { bSuccess = essentia.calculateHighLevelTags({ fromHandleList: this.selItems, tagName, bQuiet, bDebug, bProfile }); }
+					} else { bSuccess = essentia.calculateHighLevelTags({ fromHandleList: this.selItems, tagName, bQuiet, essentiaPath: this.paths.essentiaExtractor, bDebug, bProfile }); }
 				} else { bSuccess = false; }
 				break;
 			case 11:
@@ -662,6 +670,18 @@ function Tagger({
 		if (this.toolsByKey.essentiaFastKey) { include('..\\tags\\essentia-utils.js'); }
 		if (this.toolsByKey.essentiaKey || this.toolsByKey.essentiaBPM || this.toolsByKey.essentiaDanceness || this.toolsByKey.essentiaLRA) { include('..\\tags\\essentia-utils.js'); }
 		if (this.toolsByKey.folksonomy) { include('..\\tags\\folksonomy-utils.js'); }
+		// Install binaries dependencies
+		[
+			folders.binaries,
+			folders.binaries + 'ffmpeg\\',
+			folders.binaries + 'fpcalc\\',
+			folders.binaries + 'essentia\\'
+		].forEach((path, i) => {
+			if (!_isFolder(path)) {
+				_createFolder(path);
+				if (i !== 0) { _copyFile(path.replace(folders.binaries, folders.xxx + 'helpers-external\\') + '*.*', path); }
+			}
+		});
 	};
 
 	this.isRunning = () => {

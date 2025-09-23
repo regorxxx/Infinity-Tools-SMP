@@ -2,13 +2,13 @@
 according to the current selected track and tags. Conditions are
 calculated using combinations of tag values instead of simple queries.
 
-Playlist Tools Usage:
+Playlist Tools button usage:
 	- The number of output tracks may be set at global config.
 	- Forced query to pre-filter tracks may be set at global config.
 	- Tags and number of matches may be set at the appropriate submenu.
 	- Duplicates are filtered by title, artist & date.
 
-Buttons usage:
+Other Buttons usage:
 	- The number of output tracks may be set at properties panel.
 	- Forced query to pre-filter tracks may be set at properties panel.
 	- Tags and number of matches may be set at properties panel.

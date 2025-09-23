@@ -72,7 +72,7 @@ written as "INITIAL KEY".
 into one new field. I could simply retag all my tracks this way with a new
 tag name "GENRE" which contains the values of the other 3.
 
-(3) Probably the best option. For ex. Playlist Tools or Music Map
+(3) Probably the best option. For ex. Playlist Tools or Music Map buttons
 already allow to remap any group of tags to GENRE, merging their values
 and removing duplicates, without touching the files. I will have to look
 for "Tag remapping" at the associated buttons in their config.

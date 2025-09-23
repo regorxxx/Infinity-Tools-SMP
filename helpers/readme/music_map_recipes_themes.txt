@@ -12,17 +12,13 @@ a link to a theme file (using its path or filename).
 Both may be used in buttons, tools or with Playlist Tools:
 	- Playlist Tools's Pools can link to these files on some sources.
 	- Custom buttons may use recipes and themes to tweak their behavior.
+	- Basic buttons also show them at 'Other recipes' submenu.
 
 Recipe files may be created via files or custom button:
 	- On custom buttons, use the recipe menu (Ctrl + Left Click).
 	- Otherwise, directly edit the JSON files at the recipes folder.
 
-Theme files may be created via files, custom button or Playlist Tools:
-	- On Playlist Tools script there is a menu entry (see
-	Configuration\Music Map) to use the selected track's tags
-	as reference and save them to a json file directly. The tags names
-	set at the properties panel will be used. i.e. genre can be
-	remapped to 'GENRE' and 'ALL MUSIC GENRE', etc.
+Theme files may be created via files or Music Map custom button:
 	- On custom buttons, use the theme menu	(Shift + Left Click).
 	- Otherwise, directly edit the JSON files at the themes folder.
 
