@@ -13,6 +13,7 @@
 - Merged [Fingerprint-Tools-SMP](https://github.com/regorxxx/Fingerprint-Tools-SMP) script.
 - Merged [Wrapped-SMP](https://github.com/regorxxx/Wrapped-SMP) script.
 ### Changed
+- Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
 ### Removed
 ### Fixed
 
