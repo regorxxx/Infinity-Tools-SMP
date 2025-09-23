@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/09/25
+//20/09/25
 
 /*
 	Quickmatch same....
@@ -11,7 +11,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, MF_STRING:readable, MF_GRAYED:readable, VK_CONTROL:readable, folders:readable, MF_MENUBREAK:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getButtonVersion:readable, getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\menu_xxx.js');
 /* global _menu:readable  */
 include('..\\helpers\\buttons_xxx_menu.js');
@@ -38,9 +38,8 @@ include('..\\main\\bio\\bio_tags.js');
 /* global lastfmListeners:readable */
 
 var prefix = 'qm'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Quickmatch button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ }  // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Quickmatch button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
@@ -172,8 +171,7 @@ addButton({
 		prefix, buttonsProperties: newButtonsProperties,
 		icon: chars.search,
 		variables: { bioSelectionMode: 'Prefer nowplaying', bioTags: {} },
-		listener: lastfmListeners,
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		listener: lastfmListeners
 	}),
 });
 

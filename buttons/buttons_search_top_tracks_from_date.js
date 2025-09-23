@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/09/25
+//20/09/25
 
 /*
 	Top Tracks
@@ -11,7 +11,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globQuery:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getButtonVersion:readable, getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
@@ -26,9 +26,8 @@ include('..\\main\\search\\top_tracks_from_date.js');
 /* global topTracksFromDate:readable  */
 
 var prefix = 'ttd'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Top Tracks Button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Top Tracks Button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
@@ -66,7 +65,6 @@ addButton({
 			return info;
 		},
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: chars.calendar,
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		icon: chars.calendar
 	}),
 });

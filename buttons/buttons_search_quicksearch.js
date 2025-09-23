@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/09/25
+//20/09/25
 
 /*
 	Quicksearch for same....
@@ -11,7 +11,7 @@
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globQuery:readable, globTags:readable, MF_STRING:readable, MF_GRAYED:readable, VK_CONTROL:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getButtonVersion:readable, getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\menu_xxx.js');
 /* global _menu:readable  */
 include('..\\helpers\\menu_xxx_extras.js');
@@ -32,9 +32,8 @@ include('..\\main\\main_menu\\main_menu_custom.js');
 /* global bindDynamicMenus:readable, deleteMainMenuDynamic:readable */
 
 var prefix = 'qs'; // NOSONAR[global]
-var version = getButtonVersion('Playlist-Tools-SMP'); // NOSONAR[global]
 
-try { window.DefineScript('Quicksearch button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) {  /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Quicksearch button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
@@ -204,8 +203,7 @@ addButton({
 					}
 				});
 			}
-		},
-		update: { scriptName: 'Playlist-Tools-SMP', version }
+		}
 	}),
 });
 
