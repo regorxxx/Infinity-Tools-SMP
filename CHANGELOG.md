@@ -5,6 +5,7 @@
 
 ## [Unreleased][]
 ### Added
+- Merged [Playlist-Tools-SMP](https://github.com/regorxxx/Playlist-Tools-SMP) script.
 ### Changed
 ### Removed
 ### Fixed

@@ -1,0 +1,28 @@
+{
+	"readme": "Mixes which use 'MOOD', 'GENRE/STYLES' and 'BPM' tags for theme related playlists.",
+	"pools": [{
+		"name": "sep"
+	},
+	{
+		"name": "Workout music",
+		"pool": {
+			"fromPls": {
+				"_LIBRARY_0": 10,
+				"_LIBRARY_1": 25,
+				"_LIBRARY_2": 15
+			},
+			"query": {
+				"_LIBRARY_0": "((GENRE IS rock OR GENRE IS alt. rock OR GENRE IS hard rock) AND NOT (STYLE IS r&b OR STYLE IS acoustic OR STYLE IS americana OR STYLE IS classic rock) AND (MOOD IS uplifting OR MOOD IS upbeat OR MOOD IS heavy OR MOOD IS fast)) AND NOT (MOOD IS acoustic OR MOOD IS not electronic OR MOOD IS relaxed) AND BPM GREATER 120",
+				"_LIBRARY_1": "((GENRE IS hip-hop AND NOT (MOOD IS acoustic OR MOOD IS not electronic)) OR (GENRE IS electronic AND NOT (MOOD IS acoustic OR MOOD IS not electronic OR MOOD IS relaxed))) AND BPM GREATER 90",
+				"_LIBRARY_2": "(STYLE IS gangsta OR STYLE IS future bass OR STYLE IS dance OR STYLE IS deep house) AND NOT (MOOD IS acoustic OR MOOD IS not electronic) AND BPM GREATER 90"
+			},
+			"toPls": "Workout playlist",
+			"sort": "",
+			"pickMethod": {
+				"_LIBRARY_0": "random",
+				"_LIBRARY_1": "random",
+				"_LIBRARY_2": "random"
+			}
+		}
+	}]
+}

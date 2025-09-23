@@ -1,0 +1,38 @@
+{
+	"readme": "Test for Music Map integration. Uses linked files for recipes and themes. Uses entire library as sources, without global forced query.",
+	"pools": [{
+		"name": "sep"
+	},
+	{
+		"name": "Music Map test",
+		"pool": {
+			"fromPls": {
+				"_SEARCHBYGRAPH_0": 50,
+				"_SEARCHBYWEIGHT_0": 50,
+				"_SEARCHBYDYNGENRE_0": 50
+			},
+			"recipe": {
+				"_SEARCHBYGRAPH_0": "test_graph.json",
+				"_SEARCHBYWEIGHT_0": "test_weight.json",
+				"_SEARCHBYDYNGENRE_0": "test_dyngenre.json"
+			},
+			"theme": {
+				"_SEARCHBYGRAPH_0": "test.json",
+				"_SEARCHBYWEIGHT_0": "test.json",
+				"_SEARCHBYDYNGENRE_0": "test.json"
+			},
+			"query": {
+				"_SEARCHBYGRAPH_0": "ALL",
+				"_SEARCHBYWEIGHT_0": "ALL",
+				"_SEARCHBYDYNGENRE_0": "ALL"
+			},
+			"toPls": "Music Map test",
+			"sort": "%PLAYLIST_INDEX%",
+			"pickMethod": {
+				"_SEARCHBYGRAPH_0": "random",
+				"_SEARCHBYWEIGHT_0": "random",
+				"_SEARCHBYDYNGENRE_0": "random"
+			}
+		}
+	}]
+}

@@ -1,0 +1,33 @@
+﻿Tool to compare tags between 2 sets of tracks (Source and Destination).
+May be used to compare changes between backups and current library tracks
+and\or apply tags from one source to another.
+
+For ex. applying current library tags to your backup, thus updating it,
+without having to copy all the files again. Useful on local networks.
+
+Usage:
+- Send all tracks from Source to a new playlist:
+	+ Select Source tracks, and save their tags to JSON file.
+
+- Send all tracks from Destination  to a playlist:
+	+ Select Destination tracks and compare them against previously
+	created	JSON tags file (from Source).
+
+- Via input popups, you may replace root paths for comparing:
+	+ Source may be at: H:\Music\...	     ->  Root: 'H:\'
+	+ Destination may be at: D:\Backup\Music\... ->  Root: 'D:\Backup\'
+	+ It's supposed that both directory trees -minus the root- should
+	be identical. Matches are found by path (and filename).
+
+- Tool will report non-matched files. i.e. files at Destination not present
+ on Source.
+	- Comparison is asymmetrical. Files from Source not present on
+	Destination will not be reported but silently skipped.
+	- If you want to report missing files in both directions, then
+	perform the comparison in 2 steps (A to B and B to A).
+
+- Tool will report matched files with tag differences found.
+	- Tags from Source tracks may be applied to Destination tracks in
+	such case, if desired.
+	- Only files with differences will be edited, thus last modified
+	timestamps will only change in such cases.

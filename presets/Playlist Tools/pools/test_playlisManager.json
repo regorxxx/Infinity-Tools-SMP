@@ -1,0 +1,25 @@
+{
+	"readme": "Test for Playlist Manager integration: uses a playlist named 'test' which must be present in some Playlist manager panel. Uses entire playlist as source, without global forced query.",
+	"pools": [{
+		"name": "sep"
+	},
+	{
+		"name": "Playlist Manager test",
+		"pool": {
+			"fromPls": {
+				"test": 12,
+				"_LIBRARY_1": 1
+			},
+			"query": {
+				"test": "ALL",
+				"_LIBRARY_1": "GENRE IS progressive rock OR GENRE IS hard rock OR GENRE IS rock & roll"
+			},
+			"toPls": "Playlist Manager test",
+			"sort": "%PLAYLIST_INDEX%",
+			"pickMethod": {
+				"test": "random",
+				"_LIBRARY_1": "random"
+			}
+		}
+	}]
+}

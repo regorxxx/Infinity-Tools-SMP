@@ -1,0 +1,110 @@
+{
+	"readme": "Mixes which use 'mood' tag to create playlists (tag from Picard\\MusicBrainz).\nModify the presets substituting that tags with All Music or Last FM tag names if required.",
+	"pools": [{
+		"name": "sep"
+	},
+	{
+		"name": "Happy Mix",
+		"pool": {
+			"fromPls": {
+				"_LIBRARY_0": 25,
+				"_LIBRARY_1": 25
+			},
+			"query": {
+				"_LIBRARY_0": "(MOOD IS happy AND NOT MOOD IS aggressive) AND (MOOD IS feel good OR MOOD IS energetic OR MOOD IS positive OR MOOD IS party)",
+				"_LIBRARY_1": "(MOOD IS acoustic AND NOT MOOD IS aggressive) AND (MOOD IS calm OR MOOD IS chill OR MOOD IS fast OR MOOD IS groovy) AND (GENRE IS rock OR GENRE IS folk OR GENRE IS folk-rock OR GENRE IS pop OR GENRE IS blues OR GENRE IS alt. rock)"
+			},
+			"toPls": "Happy Mix",
+			"sort": "",
+			"pickMethod": {
+				"_LIBRARY_0": "random",
+				"_LIBRARY_1": "random"
+			}
+		}
+	},
+	{
+		"name": "Sad Mix",
+		"pool": {
+			"fromPls": {
+				"_LIBRARY_0": 25,
+				"_LIBRARY_1": 25
+			},
+			"query": {
+				"_LIBRARY_0": "(MOOD IS sad AND MOOD IS not happy AND NOT MOOD IS party) AND (MOOD IS calm OR MOOD IS cold OR MOOD IS dramatic OR MOOD IS depressive)",
+				"_LIBRARY_1": "(MOOD IS acoustic AND MOOD IS not happy AND NOT MOOD IS aggressive) AND (MOOD IS calm OR MOOD IS chill OR MOOD IS hopeful OR MOOD IS melancholy OR MOOD IS sentimental) AND (GENRE IS rock OR GENRE IS folk OR GENRE IS folk-rock OR GENRE IS pop OR GENRE IS blues OR GENRE IS alt. rock)"
+			},
+			"toPls": "Sad Mix",
+			"sort": "",
+			"pickMethod": {
+				"_LIBRARY_0": "random",
+				"_LIBRARY_1": "random"
+			}
+		}
+	},
+	{
+		"name": "Angry Mix",
+		"pool": {
+			"fromPls": {
+				"_LIBRARY_0": 17,
+				"_LIBRARY_1": 17,
+				"_LIBRARY_2": 16
+			},
+			"query": {
+				"_LIBRARY_0": "(MOOD IS aggressive AND NOT MOOD IS acoustic) AND (MOOD IS angry OR MOOD IS fast OR MOOD IS dramatic OR MOOD IS heavy)",
+				"_LIBRARY_1": "(NOT MOOD IS electronic AND MOOD IS aggressive) AND (MOOD IS uplifting OR MOOD IS wild OR MOOD IS weird OR MOOD IS melancholy OR MOOD IS sentimental)",
+				"_LIBRARY_2": "(MOOD IS electronic AND MOOD IS aggressive OR MOOD IS angry) AND (MOOD IS uplifting OR MOOD IS wild OR MOOD IS weird OR MOOD IS melancholy OR MOOD IS sentimental)"
+			},
+			"toPls": "Angry Mix",
+			"sort": "",
+			"pickMethod": {
+				"_LIBRARY_0": "random",
+				"_LIBRARY_1": "random",
+				"_LIBRARY_2": "random"
+			}
+		}
+	},
+	{
+		"name": "Chill Mix",
+		"pool": {
+			"fromPls": {
+				"_LIBRARY_0": 17,
+				"_LIBRARY_1": 17,
+				"_LIBRARY_2": 16
+			},
+			"query": {
+				"_LIBRARY_0": "(MOOD IS chill AND MOOD IS acoustic) AND NOT (MOOD IS angry OR MOOD IS fast OR MOOD IS dramatic OR MOOD IS heavy) AND BPM LESS 110 AND NOT GENRE IS classical",
+				"_LIBRARY_1": "((MOOD IS electronic AND MOOD IS chill) OR (MOOD IS calm OR MOOD IS sexy OR MOOD IS soft)) AND BPM LESS 110 AND NOT GENRE IS classical",
+				"_LIBRARY_2": "MOOD IS chill AND BPM LESS 90 AND NOT GENRE IS classical"
+			},
+			"toPls": "Chill Mix",
+			"sort": "",
+			"pickMethod": {
+				"_LIBRARY_0": "random",
+				"_LIBRARY_1": "random",
+				"_LIBRARY_2": "random"
+			}
+		}
+	},
+	{
+		"name": "Slow chill Mix",
+		"pool": {
+			"fromPls": {
+				"_LIBRARY_0": 17,
+				"_LIBRARY_1": 17,
+				"_LIBRARY_2": 16
+			},
+			"query": {
+				"_LIBRARY_0": "(MOOD IS chill AND MOOD IS acoustic) AND NOT (MOOD IS angry OR MOOD IS fast OR MOOD IS dramatic OR MOOD IS heavy) AND BPM LESS 85 AND NOT GENRE IS classical",
+				"_LIBRARY_1": "((MOOD IS electronic AND MOOD IS chill) OR (MOOD IS calm OR MOOD IS sexy OR MOOD IS soft)) AND BPM LESS 90 AND NOT GENRE IS classical",
+				"_LIBRARY_2": "MOOD IS chill AND BPM LESS 90 AND NOT GENRE IS classical"
+			},
+			"toPls": "Chill Mix",
+			"sort": "",
+			"pickMethod": {
+				"_LIBRARY_0": "random",
+				"_LIBRARY_1": "random",
+				"_LIBRARY_2": "random"
+			}
+		}
+	}]
+}

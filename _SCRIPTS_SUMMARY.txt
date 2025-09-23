@@ -1,0 +1,46 @@
+INFO:
+-----
+This is general info for all the scripts. Within all files you will find 5 [*] big scripts: Playlist
+Manager, Timeline, World Map, Not a Waveform Seekbar and Playlist Tools (toolbar).
+
+Every script has a github page with images, descriptions, etc. and updates must be get from there.
+Additionally, when loaded, a popup will be shown with a small readme and any required info for usage.
+
+The root folder (with this readme) contains these scripts which can be loaded in any panel directly:
+	+ playlist_manager.js [*]
+		- https://regorxxx.github.io/foobar2000-SMP.github.io/scripts/playlist-manager-smp/
+		- Playlist manager for UI playlist and also playlist files (m3u8, xspf, etc.).
+		- Full documentation available on PDF. See '.\readmes' folder.
+
+	+ world_map.js [*]
+		- https://regorxxx.github.io/foobar2000-SMP.github.io/scripts/world-map-smp/
+		- Interactive world map with a database of artists per country.
+		- May be used along Biography 1.1.X or 1.2.X+
+		- A pre-built artist-country database is provided:
+			presets\World Map\worldMap.json\worldMap.json
+	+ timeline.js [*]
+		- https://regorxxx.github.io/foobar2000-SMP.github.io/scripts/timeline-smp/
+		- Interactive multi-purpose charts and timelines, fully customizable.
+
+	+ seekbar.js [*]
+		- https://regorxxx.github.io/foobar2000-SMP.github.io/scripts/not-a-waveform-seekbar-smp/
+		- Multi-channel waveform seekbar and multiple visualizations modes.
+	
+	+ buttons_toolbar.js [*]
+		- https://regorxxx.github.io/foobar2000-SMP.github.io/scripts/playlist-tools-smp/
+		- Multi-purpose tools for tagging, searching, macros, quicksearch, top tracks, duplicates,
+		  device priority, Music Map, ListenBrainz, last.fm, etc.
+		- Fully configurable buttons using menus.
+		- Every button and tool has a readme which will be shown when you add them.
+
+It also contains these extra files which can be loaded externally:
+	+ Draw Graph.html
+		- ALSO READ: helpers\music_graph_descriptors_xxx.js
+		- NOT meant to be used within foobar.
+		- Load the file in any browser to use it.
+
+All my scripts require these fonts: Font Awesome 4, Segoe UI and Arial Unicode MS. They can be found 
+at paths below within the package root folder:
+		- _resources\Font Awesome 4.ttf
+		- _resources\Segoe UI.zip\Windows [XX]\seguisym.ttf
+		- _resources\Arial Unicode MS.TTF

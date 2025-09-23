@@ -1,0 +1,190 @@
++---------------------------------------------------------------------+
+|                                Preset                               |
++--------+--------+---------------------+-----------------------------+
+| Key    | Type   | Structure           | Allowed                     |
++--------+--------+---------------------+-----------------------------+
++--------+--------+---------------------+-----------------------------+
+| readme | String | -                   | Any long text valid in JSON |
++--------+--------+---------------------+-----------------------------+
+|        |        | Array of objects {} |                             |
+| pools  | Array  | {name[, pool]}      | See menu entries            |
++--------+--------+---------------------+-----------------------------+
+
+
++---------------------------------------------------------------------+
+|                            Menu   entries                           |
++------+--------+-------------------------+---------------------------+
+| Key  | Type   | Structure               | Allowed                   |
++------+--------+-------------------------+---------------------------+
++------+--------+-------------------------+---------------------------+
+|      |        |                         | Menu entry name.          |
+|      |        |                         |                           |
+| name | String | -                       | "sep" creates a separator |
++------+--------+-------------------------+---------------------------+
+|      |        | Collection of variables |                           |
+|      |        | {fromPls, query, toPls, |                           |
+|      |        | pickMethod[, sort,      |                           |
+|      |        | insertMethod, limit,    |                           |
+| pool | Object | recipe, theme]}         | See pool properties       |
++------+--------+-------------------------+---------------------------+
+
+
++---------------------------------------------------------------------+
+|                          Pool   properties                          |
++-----------------+--------+--------------------+---------------------+
+| Key             | Type   | Structure          | Allowed             |
++-----------------+--------+--------------------+---------------------+
++-----------------+--------+--------------------+---------------------+
+|                 |        |                    | Number (per source) |
+| fromPls         | Object | Pair source-number | See sources         |
++-----------------+--------+--------------------+---------------------+
+| query           | Object | Pair source-string | Query (per source)  |
++-----------------+--------+--------------------+---------------------+
+| toPls           | String | -                  | Any string          |
++-----------------+--------+--------------------+---------------------+
+|                 |        |                    | random (default)    |
+|                 |        | (optional for all) | start               |
+|                 |        |  sources)          | end                 |
+| pickMethod      | Object | Pair source-string | (per source)        |
++-----------------+--------+--------------------+---------------------+
+|                 |        | (optional, once    | TF for sorting      |
+| sort            | String |  per pool)         | "" is random        |
++-----------------+--------+--------------------+---------------------+
+|                 |        | (optional, once    | True to use         |
+| harmonicMix     | Bool.  |  per pool)         | Not set to disable  |
++-----------------+--------+--------------------+---------------------+
+|                 |        | (optional, once    | TF/Tag for sorting  |
+| smartShuffle    | String |  per pool)         | Not set to disable  |
++-----------------+--------+--------------------+---------------------+
+|                 |        | (optional, once    | standard            |
+| insertMethod    | String |  per pool)         | intercalate         |
++-----------------+--------+--------------------+---------------------+
+|                 |        | (optional for all  |                     |
+|                 |        |  _GROUP_# sources) |                     |
+| limit           | Number | Pair source-number | Number (per source) |
++-----------------+--------+--------------------+---------------------+
+|                 |        | (optional for all  |                     |
+|                 |        |  sources)          | Array of TF/Tags    |
+| deDuplicate     | String | Pair source-array  | (per source)        |
++-----------------+--------+--------------------+---------------------+
+|                 |        | (required for all  |                     |
+|                 |        |  _SEARCHBY..._#    | JSON filename       |
+|                 |        |  sources)          | Recipe object       |
+| recipe          | Object | Pair source-recipe | (per source)        |
++-----------------+--------+--------------------+---------------------+
+|                 |        | (required for all  |                     |
+|                 |        |  _SEARCHBY..._#    | JSON filename       |
+|                 |        |  sources)          | Theme object        |
+| theme           | Object | Pair source-theme  | (per source)        |
++-----------------+--------+--------------------+---------------------+
+
+
++---------------------------------------------------------------------+
+|                               Sources                               |
++---------------------+-----------+-----------------------------------+
+| Key                 | Structure |               Notes               |
++---------------------+-----------+-----------------------------------+
++---------------------+-----------+-----------------------------------+
+| _LIBRARY_#          | _KEY_NUM  | Search on library with queries    |
++---------------------+-----------+-----------------------------------+
+|                     | _KEY_NUM  | Random Pools plugin behavior      |
+|                     |           | Groups using TF                   |
+| _GROUP_#            |           | (foo_random_pools)                |
++---------------------+-----------+-----------------------------------+
+|                     |           | Search on playlists with queries  |
+|                     |           | Used along Playlist Manager, both |
+|                     |           | UI-only playlists and playlist    |
+| Playlist names      | String    | files may be used                 |
++---------------------+-----------+-----------------------------------+
+|                     | _KEY_NUM  | Music Map behavior                |
+| _SEARCHBYGRAPH_#    |           | Recipe + Theme                    |
++---------------------+-----------+-----------------------------------+
+|                     | _KEY_NUM  | Music Map behavior                |
+| _SEARCHBYWEIGHT_#   |           | Recipe + Theme                    |
++---------------------+-----------+-----------------------------------+
+|                     | _KEY_NUM  | Music Map behavior                |
+| _SEARCHBYDYNGENRE_# |           | Recipe + Theme                    |
++---------------------+-----------+-----------------------------------+
+
+Sources are defined as _KEY_#, where # is a number. For ex. _LIBRARY_1
+
+Example of classic pool (X groups with configurable size/limit):
+{
+	"name": "Classic Pools (20 random albums)",
+	"pool": {
+		"fromPls": {
+			"_GROUP_0": 20
+		},
+		"group": {
+			"_GROUP_0": "ALBUM"
+		},
+		"query": {
+			"_GROUP_0": ""
+		},
+		"toPls": "Classic Pools (albums)",
+		"sort": "%PLAYLIST_INDEX%"
+	}
+}
+
+Example of pool (X tracks per source):
+{
+	"name": "Happy Mix",
+	"pool": {
+		"fromPls": {
+			"_LIBRARY_0": 25,
+			"_LIBRARY_1": 25
+		},
+		"query": {
+			"_LIBRARY_0": "MOOD IS happy AND NOT MOOD IS aggressive",
+			"_LIBRARY_1": "MOOD IS acoustic"
+		},
+		"toPls": "Happy Mix",
+		"sort": "",
+		"pickMethod": {
+			"_LIBRARY_0": "random",
+			"_LIBRARY_1": "random"
+		}
+	}
+}
+
+Example of pool with Smart shuffle:
+{
+	"name": "Happy Mix (shuffle)",
+	"pool": {
+		"fromPls": {
+			"_LIBRARY_0": 25,
+			"_LIBRARY_1": 25
+		},
+		"query": {
+			"_LIBRARY_0": "MOOD IS happy AND NOT MOOD IS aggressive",
+			"_LIBRARY_1": "MOOD IS acoustic"
+		},
+		"toPls": "Happy Mix",
+		"smartShuffle": "ARTIST",
+		"pickMethod": {
+			"_LIBRARY_0": "random",
+			"_LIBRARY_1": "random"
+		}
+	}
+}
+
+Example of pool with Harmonic mixing
+{
+	"name": "Happy Mix (shuffle)",
+	"pool": {
+		"fromPls": {
+			"_LIBRARY_0": 25,
+			"_LIBRARY_1": 25
+		},
+		"query": {
+			"_LIBRARY_0": "MOOD IS happy AND NOT MOOD IS aggressive",
+			"_LIBRARY_1": "MOOD IS acoustic"
+		},
+		"toPls": "Happy Mix",
+		"harmonicMix": true,
+		"pickMethod": {
+			"_LIBRARY_0": "random",
+			"_LIBRARY_1": "random"
+		}
+	}
+}

@@ -1,0 +1,76 @@
+REQUISITES: (CHOOSE ONE)
+-----------
+Spider Monkey Panel 1.6.1 or greater (only stable releases supported):
+https://theqwertiest.github.io/foo_spider_monkey_panel/
+
+JSplitter 3.6.1.0 or greater (splitter + SMP x64 alternative)
+https://hydrogenaud.io/index.php/topic,126743.0.html
+https://foobar2000.ru/forum/viewtopic.php?t=6378
+
+Note SMP is only available as x32 release, but JSplitter supports both architectures.
+
+ADDITIONAL REQUISITES: (INSTALL ALL)
+----------------------
+All my scripts require these fonts: Font Awesome 4, Segoe UI and Arial Unicode MS.
+They can be found at paths below within the scripts/package root folder:
+	- _resources\Font Awesome 4.ttf
+	- _resources\Segoe UI.zip\Windows [XX]\seguisym.ttf
+	- _resources\Arial Unicode MS.TTF
+
+WINE USERS:
+-----------
+All scripts try to use wine-friendly methods, focusing on config settings that can be changed via
+menus or the UI panel, instead of using HTML (which only works on Windows), known working fonts, etc.
+
+Please read this page and feel free to report (me) any problems with these scripts:
+https://theqwertiest.github.io/foo_spider_monkey_panel/docs/faq/wine/
+
+INSTALLATION AS PACKAGE:
+------------------------
+If the script is provided as package file, use the JSplitter\SMP 'Package Manager' to install it.
+Press Shift + Win + R. click on the JSplitter\SMP panel to show the panel menu (note this combination
+always work even if a script is already installed) and click on 'Configure panel...'. The package
+manager can be found at the shown window. Look at the wiki for a guide. For ex:
+
+https://github.com/regorxxx/Playlist-Manager-SMP/wiki/Installation#as-package-recommended
+
+YOU CAN SKIP ANYTHING BELOW IN THAT CASE.
+
+INSTALLATION AS FILE:
+---------------------
+Copy all files from the zip into a folder within foobar profile path. For ex: [profile]\xxx-scripts\
+If there is no such path, create the required folder and copy the files there.
+
+For ex: c:\Users\xxx\AppData\Roaming\foobar2000\xxx-scripts\
+For portable installations >= 1.6: ...\foobar2000\profile\xxx-scripts\  (*)
+Multiple scripts may share some files (specially helpers) so overwrite if asked to do so.
+
+Then load any script found on the root folder into a JSplitter\SMP panel within foobar ('File'
+as script source). For example 'playlist_manager.js' or 'buttons_toolbar.js' files. Check 'INFO'
+section (at '_SCRIPTS_SUMMARY.tx') for usage.
+
+Some scripts may require additional files or dependencies (like fonts). Check the 'INFO' section
+(at '_SCRIPTS_SUMMARY.tx') for more details, the github page or the related pdf documentation at
+'readmes' folder (if available).
+
+(*) If you upgraded to >1.6 from an older portable version then it may be possible that the ’profile’
+folder does not exist. In such case you have to create it and move all the configuration folders/files
+to it (ask for support at the forum in this case).
+
+SMP 1.5.2+ WIN 11 BUG (crash loading scripts on portable installs):
+-------------------------------------------------------------------
+After loading a script into a panel, the panel may crash if foobar does not has the required [full]
+access to the folder where the scripts reside. This may happen in portable installations since Win 11
+restrict permissions to folders outside 'Program Files' or 'Users'. Ask at foobar forums for support.
+
+SMP 1.5.2+ WINE BUG (crash when installing scripts):
+----------------------------------------------------
+After loading a script into a panel, Foobar2000 may crash (not only the panel). See below.
+There have been no reports about this bug being present on JSplitter.
+
+SMP 1.5.2+ BUG (crash when installing scripts):
+-----------------------------------------------
+After properly installing the files, if Foobar2000 SMP panels keep crashing due to 'missing files',
+check '_switchPaths.zip'. Follow its instructions to fix it. Then report it at
+https://hydrogenaud.io/index.php?topic=116669.0
+There have been no reports about this bug being present on JSplitter.
