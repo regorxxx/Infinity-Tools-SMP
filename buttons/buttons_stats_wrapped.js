@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//22/09/25
 
 /*
 	Wrapped
@@ -31,9 +31,8 @@ include('..\\main\\spotify\\wrapped.js');
 /* global wrapped:readable */
 
 var prefix = 'wp'; // NOSONAR[global]
-var version = '2.0.0'; // NOSONAR[global]
 
-try { window.DefineScript('Wrapped button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) {  /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Wrapped button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
@@ -268,7 +267,8 @@ addButton({
 			if (this.buttonsProperties.lBrainzUser[1]) {
 				wrapped.settings.tokens.listenBrainzUser = this.buttonsProperties.lBrainzUser[1];
 			}
-		},
-		update: { scriptName: 'Wrapped-SMP', version }
+			// Install binaries dependencies
+			wrapped.copyDependencies();
+		}
 	}),
 });

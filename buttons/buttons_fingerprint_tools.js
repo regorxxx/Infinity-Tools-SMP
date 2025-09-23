@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//22/09/25
 
 /*
 	Fingerprint tag (Chromaprint)
@@ -8,11 +8,13 @@
  */
 
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, globTags:readable */
+/* global globFonts:readable, globTags:readable, folders:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global buttonsBar:readable, addButton:readable, ThemedButton:readable */
+include('..\\helpers\\helpers_xxx_file.js');
+/* global _isFolder:readable, _createFolder:readable, _copyFile:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isBoolean:readable, isString:readable, isInt:readable, isBoolean:readable,  */
+/* global isBoolean:readable, isString:readable, isInt:readable, isBoolean:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -25,9 +27,8 @@ include('..\\main\\fingerprint\\fooid-utils-js_fingerprint.js');
 include('helpers\\buttons_fingerprint_tools_menu.js');
 /* global createFpMenuLeft:readable */
 var prefix = 'fp'; // NOSONAR[global]
-var version = '2.0.0'; // NOSONAR[global]
 
-try { window.DefineScript('Fingerprint Tools button', { author: 'regorxxx', version, features: { drag_n_drop: false } }); } catch (e) { /* May be loaded along other buttons */ } // eslint-disable-line no-unused-vars
+if (!window.ScriptInfo.Name) { window.DefineScript('Fingerprint Tools button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
 var newButtonsProperties = { // NOSONAR[global]
 	fpTagC: ['Chromaprint Fingerprint tag', globTags.acoustidFP, { func: isString }, globTags.acoustidFP],
@@ -71,7 +72,17 @@ addButton({
 					parentName: 'Fingerprinting',
 				});
 			}
-		},
-		update: { scriptName: 'Fingerprint-Tools-SMP', version }
+			// Install binaries dependencies
+			[
+				folders.binaries,
+				folders.binaries + 'ffprobe\\',
+				folders.binaries + 'fpcalc\\'
+			].forEach((path, i) => {
+				if (!_isFolder(path)) {
+					_createFolder(path);
+					if (i !== 0) { _copyFile(path.replace(folders.binaries, folders.xxx + 'helpers-external\\') + '*.*', path); }
+				}
+			});
+		}
 	}),
 });
