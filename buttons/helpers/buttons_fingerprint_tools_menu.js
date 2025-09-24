@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/09/25
+//24/09/25
 
 /* exported createFpMenuLeft */
 
@@ -8,7 +8,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\buttons_xxx.js');
 /* global showButtonReadme:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global _isFile:readable, WshShell:readable, popup:readable, _deleteFile:readable, _save:readable, _saveSplitJson:readable, utf8:readable, _jsonParseFile:readable , _jsonParseFileSplit:readable */
+/* global _isFile:readable, WshShell:readable, popup:readable, _deleteFile:readable, _save:readable, _saveSplitJson:readable, utf8:readable, _jsonParseFile:readable , _jsonParseFileSplit:readable, _copyDependencies:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global round:readable, roughSizeOfObject:readable, SetReplacer:readable, _b:readable, _p:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
@@ -142,6 +142,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 					if (answer === popup.no) { return; }
 					// To avoid classes with other calls name the json with UUID
 					fb.ShowConsole();
+					_copyDependencies(['', 'fpcalc']); // Ensure the bat file is present
 					const bDone = chromaPrintUtils.calculateFingerprints({ fromHandleList, tagName: chromaTag, bMerge: ppt.bMergeC[1] });
 					this.selItems = null;
 					// Change hash to force database reloading on next call
@@ -157,6 +158,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 					this.switchAnimation('FooID tagging', true);
 					// Tag
 					if (bFlagsFooid) { fb.ShowConsole(); }
+					_copyDependencies(['', 'fpcalc']); // Ensure the bat file is present
 					const bDone = fooidUtils.calculateFingerprints({ fromHandleList });
 					this.selItems = null;
 					this.switchAnimation('FooID tagging', false);

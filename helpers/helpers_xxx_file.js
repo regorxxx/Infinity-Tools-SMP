@@ -1,7 +1,7 @@
 ﻿'use strict';
-//22/09/25
+//24/09/25
 
-/* exported _getNameSpacePath, _deleteFolder, _copyFile, _recycleFile, _restoreFile, _saveFSO, _saveSplitJson, _jsonParseFileSplit, _jsonParseFileCheck, _parseAttrFile, _explorer, getFiles, _run, _runHidden, _exec, editTextFile, findRecursiveFile, findRelPathInAbsPath, sanitizePath, sanitize, UUID, created, getFileMeta, popup, getPathMeta, testPath, youTubeRegExp, _isNetwork, findRecursiveDirs, _copyFolder, _renameFolder */
+/* exported _getNameSpacePath, _deleteFolder, _copyFile, _recycleFile, _restoreFile, _saveFSO, _saveSplitJson, _jsonParseFileSplit, _jsonParseFileCheck, _parseAttrFile, _explorer, getFiles, _run, _runHidden, _exec, editTextFile, findRecursiveFile, findRelPathInAbsPath, sanitizePath, sanitize, UUID, created, getFileMeta, popup, getPathMeta, testPath, youTubeRegExp, _isNetwork, findRecursiveDirs, _copyFolder, _renameFolder, _copyDependencies */
 
 include(fb.ComponentPath + 'docs\\Codepages.js');
 /* global convertCharsetToCodepage:readable */
@@ -421,6 +421,19 @@ function _copyFolder(oldFolderPath, newFolderPath, bAsync = false) {
 	return false;
 }
 
+function _copyDependencies(paths, root = folders.binaries, bAsync = false) {
+	paths.map((folder) => root + folder + (folder.endsWith('\\') ? '' : '\\')).forEach((path, i) => {
+		let bCopy = false;
+		if (!_isFolder(path)) { _createFolder(path); bCopy = i !== 0; }
+		else if (!_isFile(path + '_CHECKED') && i !== 0) { bCopy = true; }
+		if (bCopy) {
+			console.log('Adding dependencies at: ' + path);
+			_copyFile(path.replace(root, folders.xxx + 'helpers-external\\') + '*.*', path, bAsync);
+			_save(path + '_CHECKED', '');
+		}
+	});
+}
+
 // Sends file to recycle bin, can be undone
 // Works even pressing shift thanks to an external utility
 // Otherwise file would be removed without sending to recycle bin!
@@ -509,9 +522,12 @@ function _save(file, value, bBOM = false) {
 	const filePath = utils.SplitFilePath(file)[0];
 	if (!_isFolder(filePath)) { _createFolder(filePath); }
 	if (round(roughSizeOfObject(value) / 1024 ** 2 / 2, 1) > 110) { console.popup('Data is bigger than 100 Mb, it may crash SMP. Report to use split JSON.', window.Name + ': JSON saving'); }
-	if (_isFolder(filePath) && utils.WriteTextFile(file, value, bBOM)) {
-		return true;
-	} else if (file.length > 255) {
+	if (_isFolder(filePath)) {
+		if (utils.WriteTextFile(file, value, bBOM) || _isFile(file) && value === '') {
+			return true;
+		}
+	}
+	if (file.length > 255) {
 		fb.ShowPopupMessage('Script is trying to save a file in a path containing more than 256 chars which leads to problems on Windows systems.\n\nPath:\n' + file + '\n\nTo avoid this problem, install your foobar portable installation at another path (with less nesting).');
 	}
 	console.log('Error saving to ' + file);

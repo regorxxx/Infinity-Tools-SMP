@@ -1,5 +1,5 @@
 ﻿'use strict';
-//22/09/25
+//24/09/25
 
 /*
 	Automatic tagging...
@@ -17,7 +17,7 @@
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global globTags:readable, folders:readable, soFeat:readable, isFoobarV2:readable, popup:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global WshShell:readable, _isFile:readable, testPath:readable, _isLink:readable, _isFolder:readable, _createFolder:readable, _copyFile:readable */
+/* global WshShell:readable, _isFile:readable, testPath:readable, _isLink:readable, _copyDependencies:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global BiMap:readable, debounce:readable, isArrayStrings:readable , repeatFn:readable, _t:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
@@ -256,8 +256,13 @@ function Tagger({
 	};
 
 	this.run = ({ bDebug, bProfile }) => {
+		// Ensure bat files are present
+		const bEssentia = this.toolsByKey.essentiaKey || this.toolsByKey.essentiaBPM || this.toolsByKey.essentiaDanceness || this.toolsByKey.essentiaLRA;
+		if (this.toolsByKey.ffmpegLRA || bEssentia || this.toolsByKey.essentiaFastKey || this.toolsByKey.chromaPrint) {
+			_copyDependencies(['', 'ffmpeg', 'fpcalc', 'essentia'], void(0), false);
+		}
 		// Usage tips
-		if (this.bToolPopups && (this.toolsByKey.essentiaKey || this.toolsByKey.essentiaBPM || this.toolsByKey.essentiaDanceness || this.toolsByKey.essentiaLRA)) {
+		if (this.bToolPopups && bEssentia) {
 			if (this.toolsByKey.ffmpegLRA) {
 				console.popup('ffmpeg is being used to calculate LRA tag, along Essentia (full extractor) for other tag(s); in such case it\'s recommended to disable ffmpeg and retrieve the LRA tag with Essentia too.\n\nCalculation time will decrease since Essentia computes all low level data even when retrieving only a single tag, thus skipping an additional step with ffmpeg.', 'Tags Automation');
 			}
@@ -671,17 +676,7 @@ function Tagger({
 		if (this.toolsByKey.essentiaKey || this.toolsByKey.essentiaBPM || this.toolsByKey.essentiaDanceness || this.toolsByKey.essentiaLRA) { include('..\\tags\\essentia-utils.js'); }
 		if (this.toolsByKey.folksonomy) { include('..\\tags\\folksonomy-utils.js'); }
 		// Install binaries dependencies
-		[
-			folders.binaries,
-			folders.binaries + 'ffmpeg\\',
-			folders.binaries + 'fpcalc\\',
-			folders.binaries + 'essentia\\'
-		].forEach((path, i) => {
-			if (!_isFolder(path)) {
-				_createFolder(path);
-				if (i !== 0) { _copyFile(path.replace(folders.binaries, folders.xxx + 'helpers-external\\') + '*.*', path); }
-			}
-		});
+		_copyDependencies(['', 'ffmpeg', 'fpcalc', 'essentia'], void(0), true);
 	};
 
 	this.isRunning = () => {

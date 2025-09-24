@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//22/09/25
+//24/09/25
 
 /* exported wrapped */
 
@@ -9,7 +9,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global forEachNested:readable, _bt:readable, _q:readable, round:readable, _asciify:readable, _p:readable, _t:readable, toType:readable, range:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global sanitize:readable, _isFolder:readable,, _isFile:readable, _createFolder:readable, getFiles:readable, _runCmd:readable, _copyFile:readable, _save:readable, _run:readable, _recycleFile:readable, _deleteFolder:readable, _deleteFile:readable, _jsonParseFileCheck:readable, utf8:readable */
+/* global sanitize:readable, _isFolder:readable,, _isFile:readable, _createFolder:readable, getFiles:readable, _runCmd:readable, _copyFile:readable, _save:readable, _run:readable, _recycleFile:readable, _deleteFolder:readable, _deleteFile:readable, _jsonParseFileCheck:readable, utf8:readable, _copyDependencies:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
 include('..\\..\\helpers\\helpers_xxx_statistics.js');
@@ -2338,6 +2338,7 @@ const wrapped = {
 		if (this.settings.bOffline) { console.log('Wrapped: offline mode'); }
 		this.cleanRoot(root);
 		this.copyAssets(root);
+		this.copyDependencies();
 		return this.getData(timePeriod, query, timeKey, fromDate)
 			.then((wrappedData) => this.getDataImages(wrappedData))
 			.then((wrappedData) => {
@@ -3169,6 +3170,7 @@ const wrapped = {
 		if (this.settings.bOffline) { console.log('Wrapped: offline mode'); }
 		this.cleanRoot(root);
 		this.copyAssets(root);
+		this.copyDependencies();
 		return this.getData(timePeriod, query, timeKey, fromDate)
 			.then((wrappedData) => this.getDataImages(wrappedData))
 			.then((wrappedData) => {
@@ -3337,18 +3339,6 @@ const wrapped = {
 				files.forEach((file) => _copyFile(file, path + file.split('\\').slice(-1)[0], true));
 			}
 		});
-		// Binaries
-		[
-			folders.binaries,
-			folders.binaries + 'ghostscript\\',
-			folders.binaries + 'exiftool\\',
-			folders.binaries + 'pingo\\',
-		].forEach((path) => {
-			if (!_isFolder(path)) {
-				_createFolder(path);
-				_copyFile(path.replace(folders.binaries, folders.xxx + 'helpers-external') + '*.*', path);
-			}
-		});
 	},
 	/**
 	 * Copies all binaries dependencies
@@ -3361,17 +3351,7 @@ const wrapped = {
 	 * @param {?string} root - Optional parameter that specifies the root directory for the binaries
 	 */
 	copyDependencies: function (root = folders.binaries) {
-		[
-			root,
-			root + 'ghostscript\\',
-			root + 'exiftool\\',
-			root + 'pingo\\',
-		].forEach((path, i) => {
-			if (!_isFolder(path)) {
-				_createFolder(path);
-				if (i !== 0) { _copyFile(path.replace(root, folders.xxx + 'helpers-external\\') + '*.*', path); }
-			}
-		});
+		_copyDependencies(['', 'ghostscript', 'exiftool', 'pingo'], root, true);
 	},
 	/**
 	 * Cleans temp folder (but not dependencies)

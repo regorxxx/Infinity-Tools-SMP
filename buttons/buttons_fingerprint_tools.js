@@ -1,5 +1,5 @@
 ﻿'use strict';
-//22/09/25
+//24/09/25
 
 /*
 	Fingerprint tag (Chromaprint)
@@ -8,11 +8,11 @@
  */
 
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, globTags:readable, folders:readable */
+/* global globFonts:readable, globTags:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\helpers_xxx_file.js');
-/* global _isFolder:readable, _createFolder:readable, _copyFile:readable  */
+/* global _copyDependencies:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isString:readable, isInt:readable, isBoolean:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
@@ -73,16 +73,7 @@ addButton({
 				});
 			}
 			// Install binaries dependencies
-			[
-				folders.binaries,
-				folders.binaries + 'ffprobe\\',
-				folders.binaries + 'fpcalc\\'
-			].forEach((path, i) => {
-				if (!_isFolder(path)) {
-					_createFolder(path);
-					if (i !== 0) { _copyFile(path.replace(folders.binaries, folders.xxx + 'helpers-external\\') + '*.*', path); }
-				}
-			});
+			_copyDependencies(['', 'ffprobe', 'fpcalc'], void(0), true);
 		}
 	}),
 });

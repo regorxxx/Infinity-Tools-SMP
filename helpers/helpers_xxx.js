@@ -1,5 +1,5 @@
 ﻿'use strict';
-//22/09/25
+//24/09/25
 
 /**
  * Global folders setting
@@ -166,6 +166,10 @@ const globProfiler = globSettings.bProfileInit
 	: { Print: () => void (0), Time: void (0), Reset: () => void (0) };
 
 if (!globSettings.bLogToFile) { console.disableFile(); }
+
+// Allow tweaking of binaries path
+folders.binaries = globSettings.binariesPath.replace('.\\profile\\', fb.ProfilePath);
+folders.binariesName = folders.binaries.replace(fb.ProfilePath, '');
 
 /*
 	SO features

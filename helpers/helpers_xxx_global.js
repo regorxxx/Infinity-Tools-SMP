@@ -46,7 +46,7 @@ function loadUserDefFile(def) {
 									}
 								}
 							} else if (def._type === 'Setting') {
-								if (key.startsWith('b') && typeof def[key] !== 'boolean') {
+								if (key.startsWith('b') && typeof def[key] !== 'boolean' && key !== 'binariesPath') {
 									fb.ShowPopupMessage(
 										'There has been an error trying to parse the setting:\n' + key + ' (' + def._type + ' type)' +
 										'\n' + def[key] +
@@ -325,7 +325,8 @@ const globSettings = {
 	bDebugPaint: false,
 	bTooltip: true,
 	bLogToFile: false,
-	instanceManager: 'v1'
+	instanceManager: 'v1',
+	binariesPath: folders.binaries.replace(fb.ProfilePath, '.\\profile\\')
 };
 
 // No-Split Artist: user replaceable with a presets file at folders.data
