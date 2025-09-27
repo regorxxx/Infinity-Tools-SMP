@@ -473,7 +473,7 @@ function Tagger({
 		});
 	};
 
-	this.nextStepTag = ({ bDebug, bProfile }) => {
+	this.nextStepTag = ({ bDebug = false, bProfile = false } = {}) => {
 		this.debouncedStep({ step: this.iStep, bDebug, bProfile });
 	};
 
