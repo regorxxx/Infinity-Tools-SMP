@@ -1,5 +1,5 @@
 ﻿'use strict';
-//22/09/25
+//26/09/25
 
 /*
 	Wrapped
@@ -209,7 +209,7 @@ addButton({
 		},
 		listener: {
 			on_notify_data: (parent, name, info) => {
-				if (name === 'bio_imgChange' || name === 'biographyTags' || name === 'bio_chkTrackRev' || name === 'xxx-scripts: panel name reply' || name === 'precacheLibraryPaths') { return; }
+				if (name === 'bio_imgChange' || name === 'biographyTags' || name === 'bio_chkTrackRev' || name === 'xxx-scripts: panel name reply' || name === 'xxx-scripts: precacheLibraryPaths') { return; }
 				switch (name) {
 					case 'xxx-scripts: lb token': {
 						if (parent.buttonsProperties.lBrainzToken[1].length) { window.NotifyOthers('xxx-scripts: lb token reply', { lBrainzToken: parent.buttonsProperties.lBrainzToken[1], lBrainzEncrypt: parent.buttonsProperties.lBrainzEncrypt[1], name: window.Name + ' - ' + parent.name }); }
