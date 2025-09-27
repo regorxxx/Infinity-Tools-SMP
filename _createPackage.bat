@@ -1,6 +1,6 @@
 @ECHO off
 REM ------------------------------------------------------------------
-REM Create packages (zip file) from js files v.20/09/2025
+REM Create packages (zip file) from js files v.26/09/2025
 REM Requires 7za.exe on windows to compress (otherwise do it manually)
 REM If it's not provided, can be downloaded from:
 REM 	https://www.7-zip.org/download.html
@@ -15,7 +15,7 @@ REM 	Number		If Number is provided, will build package without
 REM					user input
 REM 	foobarPath	If provided, will copy the package to the SMP
 REM					packages folder at profile, and run foobar2000
-REM					If it's already running, is qracefully quit first
+REM					If it's already running, is gracefully quit first
 REM					If set to '.', will search for the binary file
 REM					relative to the current folder (4 folders up)
 REM ------------------------------------------------------------------
@@ -75,7 +75,7 @@ IF "%version%"=="" (
 	PAUSE>NUL
 	EXIT /B 1
 )
-SET version=%version:if (!window.ScriptInfo.PackageId) { window.DefineScript('World Map', { author: 'regorxxx', version: '=%
+SET version=%version:if (!window.ScriptInfo.PackageId) { window.DefineScript('World-Map-SMP', { author: 'regorxxx', version: '=%
 SET version=%version:', features: { drag_n_drop: false } }); }=%
 REM features
 SET enableDragDrop=false
@@ -208,7 +208,7 @@ IF "%version%"=="" (
 	PAUSE>NUL
 	EXIT /B 1
 )
-SET version=%version:if (!window.ScriptInfo.PackageId) { window.DefineScript('Playlist Manager', { author: 'regorxxx', version: '=%
+SET version=%version:if (!window.ScriptInfo.PackageId) { window.DefineScript('Playlist-Manager-SMP', { author: 'regorxxx', version: '=%
 SET version=%version:', features: { drag_n_drop: true, grab_focus: true } }); }=%
 REM features
 SET enableDragDrop=true
@@ -343,7 +343,7 @@ SET name=Not-A-Waveform-Seekbar-SMP
 SET id=293B12D8-CC8B-4D21-8883-1A29EAFC4074
 SET description=https://github.com/regorxxx/Not-A-Waveform-Seekbar-SMP\r\n\r\nA seekbar for foobar2000, using Spider Monkey Panel, audiowaveform or ffprobe. It's based on RMS, peak levels, the actual waveform or visualization presets.\r\n\r\n• Uses audiowaveform by default (included).\r\n• ffprobe can be used if desired. Download it and copy ffprobe.exe into 'helpers-external\\ffprobe'.\r\n• Visualizer mode to simply show an animation which changes according to BPM (if tag exists).\r\n• Fully configurable using the R. Click menu:\r\n   - Colors\r\n   - Waveform modes\r\n   - Analysis modes\r\n   - Animations\r\n   - Refresh rate (not recommended anything below 100 ms except on really modern CPUs)
 REM version
-FOR /F "tokens=* USEBACKQ" %%F IN (`findstr /R "window.DefineScript" seekbar.js`) DO (SET version=%%F)
+FOR /F "tokens=* USEBACKQ" %%F IN (`findstr /R "window.DefineScript" not_a_waveform_seekbar.js`) DO (SET version=%%F)
 IF "%version%"=="" (
 	ECHO Main file not found or wrong version string
 	PAUSE>NUL
@@ -358,7 +358,7 @@ REM global variable
 SET root=%packagesFolder%\%name: =-%
 REM package folder and file
 CALL :check_root
-CALL :copy_main seekbar.js
+CALL :copy_main not_a_waveform_seekbar.js
 REM docs
 CALL :copy_file _INSTALLATION.txt
 CALL :copy_file _SCRIPTS_SUMMARY.txt
@@ -425,7 +425,7 @@ IF "%version%"=="" (
 	PAUSE>NUL
 	EXIT /B 1
 )
-SET version=%version:if (!window.ScriptInfo.PackageId) { window.DefineScript('Timeline', { author: 'regorxxx', version: '=%
+SET version=%version:if (!window.ScriptInfo.PackageId) { window.DefineScript('Timeline-SMP', { author: 'regorxxx', version: '=%
 SET version=%version:', features: { drag_n_drop: false, grab_focus: true } }); }=%
 REM features
 SET enableDragDrop=false
@@ -534,7 +534,7 @@ IF "%version%"=="" (
 	PAUSE>NUL
 	EXIT /B 1
 )
-SET version=%version:if (!window.ScriptInfo.PackageId) { window.DefineScript('Volume-Seekbar-Slider-SMP', { author: 'regorxxx', version: '=%
+SET version=%version:if (!window.ScriptInfo.PackageId) { window.DefineScript('Volume-Seekbar-SMP', { author: 'regorxxx', version: '=%
 SET version=%version:' }); }=%
 REM features
 SET enableDragDrop=false
@@ -609,7 +609,7 @@ IF "%version%"=="" (
 	PAUSE>NUL
 	EXIT /B 1
 )
-SET version=%version:if (!window.ScriptInfo.Name) { window.DefineScript('Infinity Tools', { author: 'regorxxx', version: '=%
+SET version=%version:if (!window.ScriptInfo.Name) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '=%
 SET version=%version:', features: { drag_n_drop: false } }); }=%
 REM features
 SET enableDragDrop=false
@@ -886,7 +886,7 @@ GOTO:EOF
 :compress
 SET fileName=%1-%version:.=-%-package.zip
 SET version=%2
-IF EXIST %packagesFolder%\%fileName% DEL /Q /F  %packagesFolder%\%fileName%
+IF EXIST %packagesFolder%\%fileName% DEL /Q /F %packagesFolder%\%fileName%
 7za --help >nul 2>&1 && (
 	ECHO Compressing...
 	7za a -aoa -mx=7 -bso0 -bsp0 -bb0 -y -bd %packagesFolder%\%fileName% .\%root%\*
