@@ -1,5 +1,5 @@
 ﻿'use strict';
-//22/09/25
+//27/09/25
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, globTags:readable,  */
@@ -297,8 +297,8 @@ chromaPrintUtils.calculateFingerprints = function calculateFingerprints({
 	if (Array.isArray(fpcalcPath)) {
 		const path = fpcalcPath.find((path) => _isFile(path));
 		if (path) { fpcalcPath = path; }
-		else { fb.ShowPopupMessage('fpcalc executable not found at:\n' + fpcalcPath.split('\n'), 'Fingerprint Tagger'); }
-	} else if (!_isFile(fpcalcPath)) { fb.ShowPopupMessage('fpcalc executable not found:\n' + fpcalcPath, 'Fingerprint Tagger'); }
+		else { fb.ShowPopupMessage('fpcalc executable not found at:\n' + fpcalcPath.join('\n'), 'Fingerprint Tagger'); return false; }
+	} else if (!_isFile(fpcalcPath)) { fb.ShowPopupMessage('fpcalc executable not found:\n' + fpcalcPath, 'Fingerprint Tagger'); return false; }
 	const profile = bProfile ? new FbProfiler('ChromaPrint fingerprint') : null;
 	const batFile = fpcalcPath.replace('_32.exe', '.exe').replace('.exe', '.bat');
 	if (bDebug) { console.log(batFile); }

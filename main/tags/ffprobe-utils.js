@@ -1,5 +1,5 @@
 'use strict';
-//22/09/24
+//27/09/24
 
 /* exported ffprobeUtils */
 
@@ -21,7 +21,7 @@ const ffprobeUtils = {
 	testPath: function testPath() {
 		if (Array.isArray(this.paths)) {
 			if (!this.paths.some((path) => _isFile(path))) {
-				fb.ShowPopupMessage('ffprobe executable not found at:\n' + this.paths.splite('\n'), 'ffprobe Utils');
+				fb.ShowPopupMessage('ffprobe executable not found at:\n' + this.paths.join('\n'), 'ffprobe Utils');
 				return false;
 			}
 		} else if (!_isFile(this.paths)) {

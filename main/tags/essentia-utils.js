@@ -1,5 +1,5 @@
 ﻿'use strict';
-//22/09/25
+//27/09/25
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, globTags:readable */
@@ -26,8 +26,8 @@ essentia.calculateKey = function calculateKey({
 	if (Array.isArray(essentiaPath)) {
 		const path = essentiaPath.find((path) => _isFile(path));
 		if (path) { essentiaPath = path; }
-		else { fb.ShowPopupMessage('essentia_streaming_key executable not found at:\n' + essentiaPath.split('\n'), 'Essentia Key extractor'); }
-	} else if (!_isFile(essentiaPath)) { fb.ShowPopupMessage('essentia_streaming_key executable not found:\n' + essentiaPath, 'Essentia Key extractor'); }
+		else { fb.ShowPopupMessage('essentia_streaming_key executable not found at:\n' + essentiaPath.join('\n'), 'Essentia Key extractor'); return false; }
+	} else if (!_isFile(essentiaPath)) { fb.ShowPopupMessage('essentia_streaming_key executable not found:\n' + essentiaPath, 'Essentia Key extractor'); return false; }
 	const profile = bProfile ? new FbProfiler('Essentia Key extractor') : null;
 	const batFile = essentiaPath.replace('_32.exe', '.exe').replace('.exe', '.bat');
 	if (bDebug) { console.log(batFile); }
@@ -108,8 +108,8 @@ essentia.calculateHighLevelTags = function calculateHighLevelTags({
 	if (Array.isArray(essentiaPath)) {
 		const path = essentiaPath.find((path) => _isFile(path));
 		if (path) { essentiaPath = path; }
-		else { fb.ShowPopupMessage('streaming_extractor_music executable not found at:\n' + essentiaPath.split('\n'), 'Essentia KeMusicy extractor'); }
-	} if (!_isFile(essentiaPath)) { fb.ShowPopupMessage('streaming_extractor_music executable not found:\n' + essentiaPath, 'Essentia Music extractor'); }
+		else { fb.ShowPopupMessage('streaming_extractor_music executable not found at:\n' + essentiaPath.join('\n'), 'Essentia KeMusicy extractor'); return false; }
+	} if (!_isFile(essentiaPath)) { fb.ShowPopupMessage('streaming_extractor_music executable not found:\n' + essentiaPath, 'Essentia Music extractor'); return false; }
 	const profile = bProfile ? new FbProfiler('Essentia Music extractor') : null;
 	const batFile = essentiaPath.replace('_32.exe', '.exe').replace('.exe', '.bat');
 	if (bDebug) { console.log(batFile); }

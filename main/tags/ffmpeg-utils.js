@@ -1,5 +1,5 @@
 ﻿'use strict';
-//22/09/25
+//27/09/25
 
 /* exported ffmpeg */
 
@@ -32,7 +32,7 @@ ffmpeg.calculateLoudness = function calculateLoudness({
 	if (Array.isArray(ffmpegPath)) {
 		const path = ffmpegPath.find((path) => _isFile(path));
 		if (path) { ffmpegPath = path; }
-		else { fb.ShowPopupMessage('ffmpeg executable not found at:\n' + ffmpegPath.split('\n'), 'EBUR 128 Scanner'); }
+		else { fb.ShowPopupMessage('ffmpeg executable not found at:\n' + ffmpegPath.join('\n'), 'EBUR 128 Scanner'); return false; }
 	} else if (!_isFile(ffmpegPath)) { fb.ShowPopupMessage('ffmpeg executable not found:\n' + ffmpegPath, 'EBUR 128 Scanner'); return false; }
 	const profile = bProfile ? new FbProfiler('EBUR 128 Scanner') : null;
 	const batFile = ffmpegPath.replace('_32.exe', '.exe').replace('.exe', bWineBug ? '_wine.bat' : '.bat');
