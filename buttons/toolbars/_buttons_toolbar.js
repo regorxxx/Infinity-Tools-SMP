@@ -1,5 +1,5 @@
 ﻿'use strict';
-//23/09/25
+//26/09/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -17,7 +17,7 @@
 // eslint-disable-next-line no-unused-vars
 var bLoadTags = true; // NOSONAR
 
-if (!window.ScriptInfo.Name) { window.DefineScript('Infinity Tools', { author: 'regorxxx', version: '1.0.0', features: { drag_n_drop: false } }); }
+if (!window.ScriptInfo.Name) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '1.0.0', features: { drag_n_drop: false } }); }
 
 {
 	const dependencies = [
@@ -29,7 +29,7 @@ if (!window.ScriptInfo.Name) { window.DefineScript('Infinity Tools', { author: '
 		'helpers\\helpers_xxx_properties.js',
 		/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable */
 		'helpers\\helpers_xxx_prototypes.js',
-		/* global randomString:readable, isString:readable, isInt:readable, isBoolean:readable, isFloat:readable, isJSON:readable, _b:readable, isJSON:readable, clone:readable */
+		/* global randomString:readable, isString:readable, isInt:readable, isBoolean:readable, isFloat:readable, isJSON:readable, _b:readable, isJSON:readable, clone:readable, _ps:readable */
 		'helpers\\helpers_xxx_UI.js',
 		/* global _scale:readable, _gdiFont:readable */
 		'helpers\\helpers_xxx_file.js',
@@ -214,7 +214,7 @@ function loadButtonsFile(bStartup = false) {
 		].map((preset) =>
 			preset.files.every((file) => _isFile(folders.xxx + 'buttons\\' + file) || file.toLowerCase() === 'separator') ? preset : void (0)
 		).filter(Boolean);
-		const input = Input.number('int positive', presets.length, 'Choose a preset (by number) from the following list, to load the toolbar with pre-defined buttons:\n' + presets.map((p, i) => '\t' + _b((i + 1).toString().padStart(2, '0')) + ' ' + p.name).join('\n') + '\n\nCanceling will load a blank toolbar by default.\n\nNote buttons may be added orremoved at any time later by R. Clicking on the toolbar.', 'Toolbar: preset', 1, [(n) => n > 0 && n <= presets.length]);
+		const input = Input.number('int positive', presets.length, 'Choose a preset (by number) from the following list, to load the toolbar with pre-defined buttons:\n' + presets.map((p, i) => '\t' + _b((i + 1).toString().padStart(2, '0')) + ' ' + p.name).join('\n') + '\n\nCanceling will load a blank toolbar by default.\n\nNote buttons may be added or removed at any time later by R. Clicking on the toolbar.', 'Toolbar: preset', 1, [(n) => n > 0 && n <= presets.length]);
 		if (input == null) { return false; }
 		const preset = presets[input - 1];
 		if (preset) {
@@ -302,8 +302,8 @@ if (barProperties.bLoadAsync[1]) {
 	loadButtonsFile(true) && includeButtonsAsync().finally(() => {
 		if (barProperties.bOnNotifyColors[1]) { // Ask color-servers at init
 			setTimeout(() => {
-				window.NotifyOthers('Colors: ask color scheme', 'Toolbar: set color scheme');
-				window.NotifyOthers('Colors: ask color', 'Toolbar: set colors');
+				window.NotifyOthers('Colors: ask color scheme', window.ScriptInfo.Name + ': set color scheme');
+				window.NotifyOthers('Colors: ask color', window.ScriptInfo.Name + ': set colors');
 			}, 1000);
 		}
 	});
@@ -311,8 +311,8 @@ if (barProperties.bLoadAsync[1]) {
 	loadButtonsFile(true) && includeButtons();
 	if (barProperties.bOnNotifyColors[1]) { // Ask color-servers at init
 		setTimeout(() => {
-			window.NotifyOthers('Colors: ask color scheme', 'Toolbar: set color scheme');
-			window.NotifyOthers('Colors: ask color', 'Toolbar: set colors');
+			window.NotifyOthers('Colors: ask color scheme', window.ScriptInfo.Name + ': set color scheme');
+			window.NotifyOthers('Colors: ask color', window.ScriptInfo.Name + ': set colors');
 		}, 1000);
 	}
 }
@@ -338,14 +338,14 @@ addEventListener('on_mouse_rbtn_up', (x, y, mask) => { // eslint-disable-line no
 addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-unused-vars
 	if (name === 'bio_imgChange' || name === 'biographyTags' || name === 'bio_chkTrackRev' || name === 'xxx-scripts: panel name reply') { return; }
 	switch (name) { // NOSONAR
-		case 'Toolbar: share settings': {
+		case window.ScriptInfo.Name + ': share settings': {
 			if (info) {
 				for (let key in buttonsBar.buttons) {
 					if (Object.hasOwn(buttonsBar.buttons, key)) {
 						buttonsBar.buttons[key].switchHighlight(true);
 					}
 				}
-				const answer = WshShell.Popup('Apply current settings to highlighted toolbar?\nCheck UI.', 0, window.Name + ': Toolbar', popup.question + popup.yes_no);
+				const answer = WshShell.Popup('Apply current settings to highlighted toolbar?\nCheck UI.', 0, window.Name + _ps(window.ScriptInfo.Name), popup.question + popup.yes_no);
 				if (answer === popup.yes) {
 					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'transparency', 'scale', 'iconScale', 'textScale'].forEach((key) => {
 						buttonsBar.config[key] = barProperties[key][1] = Number(info[key][1]);
@@ -375,7 +375,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 			}
 			break;
 		}
-		case 'Toolbar: set colors': { // Needs an array of 5 colors or an object {toolbar, text, button, hover, active}
+		case window.ScriptInfo.Name + ': set colors': { // Needs an array of 5 colors or an object {toolbar, text, button, hover, active}
 			if (info && barProperties.bOnNotifyColors[1]) {
 				const colors = clone(info);
 				const getColor = (key) => Object.hasOwn(colors, key) ? colors.background : colors[['toolbar', 'text', 'button', 'hover', 'active'].indexOf(key)];
@@ -391,7 +391,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 			break;
 		}
 		case 'Colors: set color scheme':
-		case 'Toolbar: set color scheme': { // Needs an array of at least 6 colors to automatically adjust dynamic colors
+		case window.ScriptInfo.Name + ': set color scheme': { // Needs an array of at least 6 colors to automatically adjust dynamic colors
 			if (info && barProperties.bOnNotifyColors[1]) {
 				const bar = buttonsBar.config;
 				const { main, sec, note, mainAlt, secAlt } = dynamicColors( // eslint-disable-line no-unused-vars
