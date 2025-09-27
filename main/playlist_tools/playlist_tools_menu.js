@@ -1,5 +1,5 @@
 ﻿'use strict';
-//18/09/25
+//26/09/25
 
 /*
 	Playlist Tools Menu
@@ -194,9 +194,9 @@ var shortcuts = { // NOSONAR [global]
 const plmPromises = []; // NOSONAR [global]
 addEventListener('on_notify_data', (name, info) => {
 	if (name === 'bio_imgChange' || name === 'biographyTags' || name === 'bio_chkTrackRev' || name === 'xxx-scripts: panel name reply') { return; }
-	if (!name.startsWith('Playlist manager') && !name.startsWith('Playlist Tools')) { return; }
+	if (!name.startsWith('Playlist-Manager-SMP') && !name.startsWith('Playlist Tools')) { return; }
 	switch (name) {
-		case 'Playlist manager: playlistPath': {
+		case 'Playlist-Manager-SMP: playlistPath': {
 			if (info && info.length) {
 				const playlistPath = JSON.parse(menu_panelProperties.playlistPath[1]);
 				let bDone = false;
@@ -218,7 +218,7 @@ addEventListener('on_notify_data', (name, info) => {
 			}
 			break;
 		}
-		case 'Playlist manager: handleList': {
+		case 'Playlist-Manager-SMP: handleList': {
 			if (info) {
 				plmPromises.push(Promise.resolve(info));
 			}
@@ -502,12 +502,35 @@ menu.newCondEntry({
 				const idx = menuList.indexOf(menuKey);
 				if (idx !== -1) { menuList = [...menuList.slice(0, idx), ...tree[menuKey], ...menuList.slice(idx + 1)]; }
 			});
-			const newMacro = { name: 'Test Tools (generated)', entry: [...menuList], bAsync: false };
-			let menuName = 'Macros';
+			const menuName = 'Macros';
 			menu.newSeparator(menuName);
+			const newMacro = { name: 'Test Tools (generated)', entry: [...menuList], bAsync: false };
 			menu.newEntry({
 				menuName, entryText: newMacro.name + (newMacro.bAsync ? '\t(async)' : ''), func: () => {
 					menu.Macros.run(newMacro, true);
+				}
+			});
+			menu.newEntry({
+				menuName, entryText: 'Simulate playback', func: () => {
+					const ap = plman.ActivePlaylist;
+					const count = plman.PlaylistCount;
+					if (ap !== -1) {
+						if (plman.PlaylistItemCount(ap) > 0) {
+							const input = Input.number('real positive', 69, 'Choose how many seconds should be played per track:\n(real number > 0)', 'Simulate playback', 69, [(n) => n > 0 && n <= Infinity]) || (Input.isLastEqual ? Input.lastInput : null);;
+							if (input == null) { return false; }
+							let elapsed = 0;
+							const idx = plman.GetPlaylistFocusItemIndex(ap);
+							if (idx === -1) { plman.SetPlaylistFocusItem(ap, 0); }
+							plman.FlushPlaybackQueue();
+							fb.Play();
+							const checkId = setInterval(() => {
+								if (plman.ActivePlaylist !== ap || plman.PlaylistCount !== count) { clearInterval(checkId); fb.Stop(); }
+								elapsed = fb.PlaybackTime;
+								if (elapsed >= input) { fb.Next(); elapsed = 0; }
+								else if (!fb.IsPlaying) { clearInterval(checkId); }
+							}, 60);
+						}
+					}
 				}
 			});
 		}
