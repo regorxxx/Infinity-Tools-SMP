@@ -64,6 +64,7 @@ The menus are highly customizable. They are created on demand according to the s
  3. [Playback Statistics](https://www.foobar2000.org/components/view/foo_playcount): Optional component required to retrieve playback statistics.
  4. [Enhanced Playback Statistics](https://www.foobar2000.org/components/view/foo_enhanced_playcount): Optional component required to retrieve playback statistics.
  5. [Required fonts](https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts): FontAwesome, Segoe UI, Arial Unicode MS
+ 6. [Optional binaries](https://github.com/regorxxx/foobar2000-assets/tree/main/binaries): ffmpeg, essentia. It depends on the tool (check their readme).
 
 ## Installation
 See [Wiki](../../wiki/Installation) or the [_INSTALLATION (txt)](../main/_INSTALLATION.txt).
@@ -73,7 +74,7 @@ Not properly following the installation instructions will result in scripts not 
  1. [Issues tracker](../../issues).
  2. [Hydrogenaudio forum](https://hydrogenaud.io/index.php/topic,120978.0.html).
  3. [Wiki](../../wiki).
- 4. 
+
 ## Nightly releases
 Automatic package [built from GitHub](https://nightly.link/regorxxx/Infinity-Tools-SMP/workflows/build/main/file.zip) (using the latest commit). Unzip 'file.zip' downloaded and load the '*-package.zip' inside as package within your JS host component.
 
