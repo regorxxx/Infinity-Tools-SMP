@@ -1,13 +1,13 @@
 ﻿
 'use strict';
-//24/09/25
+//25/09/25
 
 /* exported wrapped */
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, globQuery:readable, globTags:readable, isSkipCount:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global forEachNested:readable, _bt:readable, _q:readable, round:readable, _asciify:readable, _p:readable, _t:readable, toType:readable, range:readable */
+/* global forEachNested:readable, _bt:readable, _q:readable, round:readable, _asciify:readable, _p:readable, _t:readable, toType:readable, range:readable, _ps:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global sanitize:readable, _isFolder:readable,, _isFile:readable, _createFolder:readable, getFiles:readable, _runCmd:readable, _copyFile:readable, _save:readable, _run:readable, _recycleFile:readable, _deleteFolder:readable, _deleteFile:readable, _jsonParseFileCheck:readable, utf8:readable, _copyDependencies:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
@@ -1365,7 +1365,7 @@ const wrapped = {
 		}
 		// Top artist by Country
 		if (wrappedData.countries.length && wrappedData.artists.length) {
-			const worldMapData = _jsonParseFileCheck(this.settings.filePaths.worldMapArtists, 'Tags json', window.Name, utf8);
+			const worldMapData = _jsonParseFileCheck(this.settings.filePaths.worldMapArtists, 'Tags json', window.Name + _ps(window.ScriptInfo.Name), utf8);
 			if (worldMapData) {
 				this.stats.countries.byISO.forEach((country) => {
 					const filter = getZoneArtistFilter(country.iso, 'country', worldMapData);
@@ -1526,7 +1526,7 @@ const wrapped = {
 		const ISO = this.stats.countries.byISO.map((country) => country.iso).filter(Boolean);
 		if (ISO.length) {
 			console.log('Wrapped: creating top countries playlist...');
-			const worldMapData = _jsonParseFileCheck(this.settings.filePaths.worldMapArtists, 'Tags json', window.Name, utf8);
+			const worldMapData = _jsonParseFileCheck(this.settings.filePaths.worldMapArtists, 'Tags json', window.Name + _ps(window.ScriptInfo.Name), utf8);
 			if (worldMapData) {
 				const filters = ISO.map((iso) => getZoneArtistFilter(iso, 'country', worldMapData)).filter(Boolean)
 					.map((filter) => queryJoin([globTags.rating + ' MISSING OR ' + globTags.rating + ' GREATER 2', filter.query], 'AND'));
