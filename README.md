@@ -63,7 +63,7 @@ The menus are highly customizable. They are created on demand according to the s
  2. [JSplitter](https://foobar2000.ru/forum/viewtopic.php?t=6378): JavaScript host component required to install this. Both x32 and x64. **(host component)**
  3. [Playback Statistics](https://www.foobar2000.org/components/view/foo_playcount): Optional component required to retrieve playback statistics.
  4. [Enhanced Playback Statistics](https://www.foobar2000.org/components/view/foo_enhanced_playcount): Optional component required to retrieve playback statistics.
- 5. FontAwesome: found at ’.\ resources\fontawesome-webfont.ttf’. See installation notes.
+ 5. [Required fonts](https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts): FontAwesome, Segoe UI, Arial Unicode MS
 
 ## Installation
 See [Wiki](../../wiki/Installation) or the [_INSTALLATION (txt)](../main/_INSTALLATION.txt).
