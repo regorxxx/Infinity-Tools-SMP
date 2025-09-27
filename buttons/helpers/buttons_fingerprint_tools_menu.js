@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/09/25
+//27/09/25
 
 /* exported createFpMenuLeft */
 
@@ -47,12 +47,18 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 	const databasePath = folders.data + 'fpChromaprintReverseMap.json';
 	const databasePathSplit = databasePath.replace('.json', '0.json');
 	const databaseIdxPath = folders.data + 'fpChromaprintReverseMapIdx.json';
+	const fpcalcPath = [
+		folders.binaries + 'fpcalc\\fpcalc_32.exe',
+		folders.xxx + 'helpers-external\\fpcalc\\fpcalc_32.exe',
+		folders.binaries + 'fpcalc\\fpcalc.exe',
+		folders.xxx + 'helpers-external\\fpcalc\\fpcalc.exe',
+	];
 	// Flags
 	const bFlagsSel = this.selItems !== null && this.selItems.Count >= 1;
 	const bFlagsMaxSel = bFlagsSel && this.selItems.Count <= maxSel;
 	const bFlagsDb = _isFile(databasePath) || _isFile(databasePathSplit);
 	const bFlagsFooid = utils.CheckComponent('foo_biometric', true);
-	const bChromaprint = ppt.bChromaprint[1];
+	const bChromaprint = ppt.bChromaprint[1] && fpcalcPath.some((path) => _isFile(path));
 	const bFooId = ppt.bFooId[1];
 	const flagsChroma = bChromaprint ? MF_STRING : MF_GRAYED;
 	const flagsSel = bFlagsSel ? MF_STRING : MF_GRAYED;
@@ -133,7 +139,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 		const menuName = menu.newMenu('Tagging');
 		{	// Tag ChromaPrint
 			menu.newEntry({
-				menuName, entryText: 'Tag with ChromaPrint' + (!bFlagsSel ? '\t(no selection)' : ''), func: () => {
+				menuName, entryText: 'Tag with ChromaPrint' + (!bChromaprint ? '\t(not installed)' : (!bFlagsSel ? '\t(no selection)' : '')), func: () => {
 					this.switchAnimation('ChromaPrint tagging', true);
 					// Rough estimation of processing time based on total duration... bitrate? Sample rate?
 					const t = fromHandleList.CalcTotalDuration() / 3600 * 0.0029, h = Math.floor(t), m = Math.round((t - h) * 60);
@@ -149,7 +155,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 					if (databaseHash !== -1 && fromHandleList.Convert().some((handle) => { return fb.IsMetadbInMediaLibrary(handle); })) { ppt.databaseHash[1] += 1; overwriteProperties(ppt); }
 					this.switchAnimation('ChromaPrint tagging', false);
 					return bDone;
-				}, flags: flagsSel, data: { bDynamicMenu: true }
+				}, flags: flagsSel | flagsChroma, data: { bDynamicMenu: true }
 			});
 		}
 		{	// Tag FooId
@@ -288,7 +294,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 			menu.newCheckMenu(menuName, 'Enable ChromaPrint tools', void (0), () => ppt.bChromaprint[1]);
 			// Enable FFprobe
 			menu.newEntry({
-				menuName, entryText: 'Read directly from files', func: () => {
+				menuName, entryText: 'Read directly from files' + (!bChromaprint ? '\t(not installed)' : ''), func: () => {
 					ppt.bReadFiles[1] = !ppt.bReadFiles[1];
 					overwriteProperties(ppt);
 					if (ppt.bReadFiles[1]) {
@@ -296,7 +302,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 					}
 				}, flags: flagsChroma
 			});
-			menu.newCheckMenu(menuName, 'Read directly from files', void (0), () => ppt.bReadFiles[1]);
+			menu.newCheckMenuLast(() => ppt.bReadFiles[1]);
 			menu.newSeparator(menuName);
 			// Scoring
 			menu.newEntry({
