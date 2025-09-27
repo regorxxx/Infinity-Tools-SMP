@@ -255,7 +255,7 @@ function Tagger({
 		return bPass;
 	};
 
-	this.run = ({ bDebug, bProfile }) => {
+	this.run = ({ bDebug = false, bProfile = false } = {}) => {
 		// Ensure bat files are present
 		const bEssentia = this.toolsByKey.essentiaKey || this.toolsByKey.essentiaBPM || this.toolsByKey.essentiaDanceness || this.toolsByKey.essentiaLRA;
 		if (this.toolsByKey.ffmpegLRA || bEssentia || this.toolsByKey.essentiaFastKey || this.toolsByKey.chromaPrint) {
@@ -624,7 +624,7 @@ function Tagger({
 
 	this.debouncedStep = debounce(this.stepTag, this.timers.debounce); // Only continues next step when last tag update was done > X ms ago
 
-	this.checkHandleList = ({ bDebug, bProfile }) => {
+	this.checkHandleList = ({ bDebug = false, bProfile = false } = {}) => {
 		if (!this.isRunning) { this.stopStepTag(); return; }
 		const i = this.iStep - 1;
 		if (i >= 0) {
@@ -658,7 +658,7 @@ function Tagger({
 		this.nextStepTag({ bDebug, bProfile });
 	};
 
-	this.createListener = ({ bDebug, bProfile }) => {
+	this.createListener = ({ bDebug = false, bProfile = false } = {}) => {
 		if (this.listener !== null) { clearInterval(this.listener); }
 		this.listener = repeatFn(this.checkHandleList, this.timers.listener)({ bDebug, bProfile });
 		return this.listener;
