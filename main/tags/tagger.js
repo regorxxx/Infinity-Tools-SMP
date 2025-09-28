@@ -59,7 +59,7 @@ function Tagger({
 	this.bToolPopups = bToolPopups;
 	this.bRunPopup = bRunPopup;
 	this.paths = {
-		fpcalc: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'fpcalc\\fpcalc' + (soFeat.x64 ? '_32' : '_32') + '.exe',
+		fpcalc: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'fpcalc\\fpcalc' + (soFeat.x64 ? '' : '_32') + '.exe',
 		ffmpeg: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'ffmpeg\\ffmpeg' + (soFeat.x64 ? '' : '_32') + '.exe',
 		essentiaKey: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'essentia\\essentia_streaming_key.exe',
 		essentiaExtractor: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'essentia\\streaming_extractor_music.exe',
