@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/09/25
+//29/09/25
 
 /*
 	Automatic tagging...
@@ -80,6 +80,8 @@ buttonsBar.list.push(newButtonsProperties);
 						menu.newSeparator();
 						menu.newEntry({ entryText: 'Force next step', func: () => this.tAut.nextStepTag({ bDebug: this.buttonsProperties.bDebug[1], bProfile: this.buttonsProperties.bProfile[1] }) });
 						menu.newEntry({ entryText: 'Stop execution', func: this.tAut.stopStepTag });
+					} else {
+						this.tAut.checkAvailabletools();
 					}
 					menu.newSeparator();
 					{

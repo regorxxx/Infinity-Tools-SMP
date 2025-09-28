@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/09/25
+//29/09/25
 
 /*
 	Automatic tagging...
@@ -219,6 +219,30 @@ function Tagger({
 	// Force settings for specific tools
 	this.quietByKey.biometric = true;
 	this.quietByKey.masstagger = true;
+
+	this.checkAvailabletools = () => {
+		this.tools.forEach((tool) => {
+			switch (tool.key) {
+				case 'biometric': tool.bAvailable = utils.CheckComponent('foo_biometric', true); break;
+				case 'chromaPrint': tool.bAvailable = _isFile(folders.xxx + 'main\\fingerprint\\chromaprint-utils-js_fingerprint.js') && _isFile(this.paths.fpcalc); break;
+				case 'masstagger': tool.bAvailable =  utils.CheckComponent('foo_masstag', true); break;
+				case 'audioMd5': tool.bAvailable = utils.CheckComponent('foo_audiomd5', true); break;
+				case 'rgScan': tool.bAvailable = isFoobarV2 || utils.CheckComponent('foo_rgscan', true); break;
+				case 'tpScan': tool.bAvailable = utils.CheckComponent('foo_truepeak', true); break;
+				case 'bpmAnaly': tool.bAvailable = utils.CheckComponent('foo_bpm', true); break;
+				case 'dynamicRange': tool.bAvailable = utils.CheckComponent('foo_dynamic_range', true); break;
+				case 'drMeter': tool.bAvailable = utils.CheckComponent('foo_dr_meter', true); break;
+				case 'ffmpegLRA': tool.bAvailable = _isFile(this.paths.ffmpeg); break;
+				case 'folksonomy': tool.bAvailable = false; break;
+				case 'essentiaFastKey': tool.bAvailable = _isFile(this.paths.essentiaKey); break;
+				case 'essentiaKey': tool.bAvailable = _isFile(this.paths.essentiaExtractor); break;
+				case 'essentiaBPM': tool.bAvailable = _isFile(this.paths.essentiaExtractor); break;
+				case 'essentiaDanceness': tool.bAvailable = _isFile(this.paths.essentiaExtractor); break;
+				case 'essentiaLRA': tool.bAvailable = _isFile(this.paths.essentiaExtractor); break;
+			}
+			this.availableByKey[tool.key] = tool.bAvailable;
+		});
+	};
 
 	this.description = () => {
 		return this.tools.reduce((text, tool) => { return (this.toolsByKey[tool.key] ? (text.length ? text + ', ' + tool.title : tool.title) : text); }, ''); // Initial value is '';

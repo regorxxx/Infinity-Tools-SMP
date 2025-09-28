@@ -283,6 +283,7 @@
 					menu.newCondEntry({
 						entryText: 'Tagger (cond)', condFunc: (bInit = true) => {
 							if (bInit) { tAut.changeTools(JSON.parse(menu_properties['toolsByKey'][1])); }
+							else { tAut.checkAvailabletools(); }
 						}
 					});
 					// -> Config menu
