@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/09/25
+//28/09/25
 
 /*
 	Automatic tagging...
@@ -243,7 +243,7 @@ function Tagger({
 	this.checkIncompatibleTools = (bForce) => {
 		let bPass = true;
 		if (this.toolsByKey.masstagger && this.toolsByKey.audioMd5) {
-			const tag = new Set(this.tagsByKey.audioMd5).intersection(this.tagsByKey.masstagger);
+			const tag = new Set(this.tagsByKey.audioMd5).intersection(new Set(this.tagsByKey.masstagger));
 			if (tag.size > 0) {
 				this.toolsByKey.masstagger = false;
 				if (this.bToolPopups || bForce) {
