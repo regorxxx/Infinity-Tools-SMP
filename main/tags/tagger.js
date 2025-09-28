@@ -59,7 +59,7 @@ function Tagger({
 	this.bToolPopups = bToolPopups;
 	this.bRunPopup = bRunPopup;
 	this.paths = {
-		fpcalc: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'fpcalc\\fpcalc' + (soFeat.x64 ? '' : '_32') + '.exe',
+		fpcalc: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'fpcalc\\fpcalc' + (soFeat.x64 ? '_32' : '_32') + '.exe',
 		ffmpeg: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'ffmpeg\\ffmpeg' + (soFeat.x64 ? '' : '_32') + '.exe',
 		essentiaKey: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'essentia\\essentia_streaming_key.exe',
 		essentiaExtractor: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'essentia\\streaming_extractor_music.exe',
@@ -194,6 +194,7 @@ function Tagger({
 	this.quietByKey = Object.fromEntries(this.tools.map((tool) => [tool.key, tool.bQuiet]));
 	this.menuByKey = Object.fromEntries(this.tools.map((tool) => [tool.key, tool.menu]));
 	this.menuRemoveByKey = Object.fromEntries(this.tools.map((tool) => [tool.key, tool.menuRemove]));
+	// TODO: check availability at menu click
 	// Enabled tools?
 	if (toolsByKey) {
 		Object.keys(toolsByKey).forEach((key) => {
@@ -252,6 +253,10 @@ function Tagger({
 				bPass = false;
 			}
 		}
+		// Remove unavailable tools
+		this.tools.forEach((tool) => {
+			if (!tool.bAvailable && this.toolsByKey[tool.key]) { this.toolsByKey[tool.key] = false; }
+		});
 		return bPass;
 	};
 
@@ -259,7 +264,7 @@ function Tagger({
 		// Ensure bat files are present
 		const bEssentia = this.toolsByKey.essentiaKey || this.toolsByKey.essentiaBPM || this.toolsByKey.essentiaDanceness || this.toolsByKey.essentiaLRA;
 		if (this.toolsByKey.ffmpegLRA || bEssentia || this.toolsByKey.essentiaFastKey || this.toolsByKey.chromaPrint) {
-			_copyDependencies(['', 'ffmpeg', 'fpcalc', 'essentia'], void(0), false);
+			_copyDependencies(['', 'ffmpeg', 'fpcalc', 'essentia'], void (0), false);
 		}
 		// Usage tips
 		if (this.bToolPopups && bEssentia) {
@@ -676,7 +681,7 @@ function Tagger({
 		if (this.toolsByKey.essentiaKey || this.toolsByKey.essentiaBPM || this.toolsByKey.essentiaDanceness || this.toolsByKey.essentiaLRA) { include('..\\tags\\essentia-utils.js'); }
 		if (this.toolsByKey.folksonomy) { include('..\\tags\\folksonomy-utils.js'); }
 		// Install binaries dependencies
-		_copyDependencies(['', 'ffmpeg', 'fpcalc', 'essentia'], void(0), true);
+		_copyDependencies(['', 'ffmpeg', 'fpcalc', 'essentia'], void (0), true);
 	};
 
 	this.isRunning = () => {
