@@ -655,8 +655,6 @@ CALL :copy_file main\window\window_xxx_dynamic_colors.js
 REM Buttons
 CALL :copy_folder buttons
 CALL :copy_folder buttons\helpers
-CALL :copy_folder buttons\examples
-CALL :copy_folder buttons\toolbars
 REM Examples
 CALL :check_folder examples
 CALL :copy_file examples\track_list_to_import.txt
