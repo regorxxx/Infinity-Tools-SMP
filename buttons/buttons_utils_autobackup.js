@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/09/25
+//29/09/25
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -274,7 +274,7 @@ addButton({
 					}
 				});
 				menu.newSeparator();
-				menu.newEntry({ entryText: 'Readme...', func: () => showButtonReadme('buttons_utils_autobackup.js') });
+				menu.newEntry({ entryText: 'Open readme...', func: () => showButtonReadme('buttons_utils_autobackup.js') });
 				menu.btn_up(this.currX, this.currY + this.currH);
 			}
 		},

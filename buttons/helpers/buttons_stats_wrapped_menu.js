@@ -1,5 +1,5 @@
 'use strict';
-//01/08/25
+//29/09/25
 
 /* exported wrappedMenu */
 
@@ -165,6 +165,6 @@ function wrappedMenu({ bSimulate = false } = {}) {
 	menu.newSeparator();
 	menu.newEntry({ entryText: 'Settings...', func: () => this.onClick(MK_SHIFT) });
 	menu.newSeparator();
-	menu.newEntry({ entryText: 'Readme...', func: () => showButtonReadme('buttons_stats_wrapped.js') });
+	menu.newEntry({ entryText: 'Open readme...', func: () => showButtonReadme('buttons_stats_wrapped.js') });
 	return menu;
 }
