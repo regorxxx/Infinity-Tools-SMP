@@ -22,11 +22,11 @@ The root folder (with this readme) contains these scripts which can be loaded in
 		- https://regorxxx.github.io/foobar2000-SMP.github.io/scripts/timeline-smp/
 		- Interactive multi-purpose charts and timelines, fully customizable.
 
-	+ seekbar.js [*]
+	+ not_a_waveform_seekbar.js [*]
 		- https://regorxxx.github.io/foobar2000-SMP.github.io/scripts/not-a-waveform-seekbar-smp/
 		- Multi-channel waveform seekbar and multiple visualizations modes.
 
-	+ buttons_toolbar.js [*]
+	+ infinity_tools.js [*]
 		- https://regorxxx.github.io/foobar2000-SMP.github.io/scripts/infinity-tools-smp/
 		- Multi-purpose tools for tagging, searching, macros, quicksearch, top tracks, duplicates,
 		  device priority, Music Map, ListenBrainz, last.fm, etc.
