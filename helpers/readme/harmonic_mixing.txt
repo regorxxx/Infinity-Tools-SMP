@@ -1,18 +1,39 @@
-﻿DJ-like playlist creation with key changes following harmonic mixing 
-rules... contiguous tracks in the mix are most often either in the same 
-key, or their keys are relative or in a subdominant or dominant 
-relationship with one another. The primary goal is to create a smooth 
-transition between songs, creating an harmonious and consonant mash-up 
-with any music genre. 
+﻿DJ-like playlist creation with key changes following harmonic mixing
+rules... contiguous tracks in the mix are most often either in the same
+key, or their keys are relative or in a subdominant or dominant
+relationship with one another. The primary goal is to create a smooth
+transition between songs, creating an harmonious and consonant mash-up
+with any music genre.
 
-Uses 9 movements described at 'camelotWheel' on camelot_wheel_xxx.js
-The movements creates a 'path' along the track keys, so even changing or 
-skipping one movement changes drastically the path.
+Note this tool is meant as an starting point for DJ-usage, but it may
+not work as intended on really huge playlists or if the input doesn't
+have a proper distribution of keys. Tracks which don't fit elsewhere
+will be added to the end of the playlist. That's expected, either cut
+part of the output or use a better mix as source.
 
-Therefore, the track selection may change on every execution. Specially if 
-there are not tracks on the pool to match all required movements. 
-Those unmatched movements will get skipped (lowering the playlist length 
-per step), but next movements are relative to the currently selected 
-track... so successive calls on a 'small' pool, will give totally different 
-playlist lengths. We are not matching only keys, but a 'key path', which 
-is stricter.
+Supports Camelot Keys, Open Keys and Standard notation, so as long as the
+key tag is filled with any of those, it should work. Even if different
+tracks use different key notation. Note the key tag can be remapped at
+the menus.
+
+Sorting methods:
+----------------
+	- Mix: creates a pattern which is applied to the entire source.
+	It's heavily dependant on track count, so expect big clusters
+	when applied to too many tracks. For ex. if one movement is
+	"matching same key", for small playlists it will be applied
+	on a small subset, but on huge playlists it	may well put
+	together groups of 8 tracks.
+
+	- Cycle: creates a pattern which is applied on small cycles
+	across the entire source. It's much less dependant on total
+	track 	count, so expect it to work better on big playlists.
+	For ex.	"matching same key" would be repeated every 20 tracks,
+	so instead of creating big clusters on huge playlists, it
+	just repeats the pattern multiple times across all tracks.
+
+	- Incremental: standard sorting, ensures all tracks go from
+	1A to 12B in a sequential way.
+
+	- Decremental: standard sorting, ensures all tracks go from
+	12B to 1A in a sequential way.

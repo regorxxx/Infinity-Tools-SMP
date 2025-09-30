@@ -1,9 +1,10 @@
-﻿Sorts tracks by key using Camelot Wheel notation, translating first keys
-to it (A#m -> 3A). Note there is no way to sort tracks by Key using
-standard title formatting since keys don't follow an ordered set with
-numbers and letters which may be naturally sorted.
+﻿Sorts tracks by key using Camelot Wheel notation, first translating keys
+(A#m -> 3A) and then ordering them. Note there is no way to sort tracks
+by Key using standard title formatting since keys don't follow an ordered
+set with numbers and letters which may be naturally sorted in some
+notations.
 
-Uses notation described at 'camelotWheel' on camelot_wheel_xxx.js to sort
-selection by key.
-
-Supports Camelot Keys, Open Keys and Standard notation.
+Supports Camelot Keys, Open Keys and Standard notation, so as long as the
+key tag is filled with any of those, it should work. Even if different
+tracks use different key notation. Note the key tag can be remapped at
+the menus.
