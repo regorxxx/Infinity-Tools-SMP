@@ -13,8 +13,12 @@
 - Merged [Fingerprint-Tools-SMP](https://github.com/regorxxx/Fingerprint-Tools-SMP) script.
 - Merged [Wrapped-SMP](https://github.com/regorxxx/Wrapped-SMP) script.
 - Playlist Manipulation\Harmonic mix: new entries to create a new playlist with key sorting applied.
+- Selection Manipulation\Expand (disjoint): added entry to limit number of tracks to select.
+- Selection Manipulation\Expand (contiguous): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to contiguous tracks, thus ensuring joint selections.
+- Selection Manipulation\Expand (next): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to next tracks to focused one.
 ### Changed
 - Playlist Manipulation\Harmonic mix: cleanup of some menu entries and code logic.
+- Selection Manipulation\Advanced sort: cleanup of some menu entries and code logic.
 - UI: updated icons for Playlist Tools submenu custom button for all new and renamed menus.
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
 ### Removed

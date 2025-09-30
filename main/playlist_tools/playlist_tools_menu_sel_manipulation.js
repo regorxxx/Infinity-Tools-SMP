@@ -1,5 +1,5 @@
 ﻿'use strict';
-//17/09/25
+//30/09/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable */
 
@@ -216,10 +216,7 @@
 						};
 						if (selArgs.length) { selArgs.push({ name: 'sep' }); }
 						selArgs.push({
-							name: 'Harmonic mix (Camelot Wheel)', func: applyHarmonicMix, args: { bSendToPls: false }
-						});
-						selArgs.push({
-							name: 'Random mix (Camelot Wheel)', func: applyHarmonicMix, args: {
+							name: 'Harmonic mix (Camelot Wheel)', func: applyHarmonicMix, args: {
 								bSendToPls: false,
 								patternOptions: {
 									bRandomize: true,
@@ -233,35 +230,15 @@
 								isCycle: true,
 								patternOptions: {
 									movements: { // Values are percentages of the total sum
-										perfectMatch: 30, // perfectMatch (=)
-										energyBoost: 15, // energyBoost (+1)
-										energyDrop: 15, // energyDrop (-1)
-										energySwitch: 10, // energySwitch (B/A)
-										moodBoost: 5, // moodBoost (+3)
-										moodDrop: 5, // moodDrop (-3)
-										energyRaise: 0, // energyRaise (+7)
-										domKey: 10, // domKey (+1 & B/A) = energyBoost & energySwitch
-										subDomKey: 10, // subDomKey (-1 & B/A) = energyDrop & energySwitch
-									},
-									bFillPerfectMatch: true
-								}
-							}
-						});
-						selArgs.push({
-							name: 'Random cycle (Camelot Wheel)', func: applyHarmonicMix, args: {
-								bSendToPls: false,
-								isCycle: true,
-								patternOptions: {
-									movements: { // Values are percentages of the total sum
-										perfectMatch: 40, // perfectMatch (=)
-										energyBoost: 9, // energyBoost (+1)
-										energyDrop: 9, // energyDrop (-1)
-										energySwitch: 10, // energySwitch (B/A)
+										perfectMatch: 20, // perfectMatch (=)
+										energyBoost: 14, // energyBoost (+1)
+										energyDrop: 14, // energyDrop (-1)
+										energySwitch: 15, // energySwitch (B/A)
 										moodBoost: 5, // moodBoost (+3)
 										moodDrop: 4, // moodDrop (-3)
 										energyRaise: 3, // energyRaise (+7)
-										domKey: 10, // domKey (+1 & B/A) = energyBoost & energySwitch
-										subDomKey: 10, // subDomKey (-1 & B/A) = energyDrop & energySwitch
+										domKey: 12, // domKey (+1 & B/A) = energyBoost & energySwitch
+										subDomKey: 13, // subDomKey (-1 & B/A) = energyDrop & energySwitch
 									},
 									bRandomize: true,
 									bFillPerfectMatch: true
