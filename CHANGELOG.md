@@ -15,6 +15,7 @@
 - Playlist Manipulation\Harmonic mix: new entries to create a new playlist with key sorting applied.
 ### Changed
 - Playlist Manipulation\Harmonic mix: cleanup of some menu entries and code logic.
+- UI: updated icons for Playlist Tools submenu custom button for all new and renamed menus.
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
 ### Removed
 ### Fixed
