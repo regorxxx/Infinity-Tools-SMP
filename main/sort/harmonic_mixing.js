@@ -1,7 +1,7 @@
 ﻿'use strict';
-//08/03/25
+//30/09/25
 
-/* exported harmonicMixing, queryReplaceKeys, harmonicMixingCycle */
+/* exported harmonicMixing, queryReplaceKeys, harmonicMixingCycle, harmonicMixingSort */
 /* global globTags:readable */
 
 /*
@@ -82,6 +82,43 @@ function harmonicMixingCycle({
 		newCycle.Convert().forEach((handle) => pool.Remove(handle));
 		handleList.InsertRange(handleList.Count, newCycle);
 	}
+	if (bSendToPls) { return sendToPlaylist(handleList, playlistName); }
+	else { return handleList; }
+}
+
+function harmonicMixingSort({
+	selItems = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
+	playlistName = 'Harmonic sort from ' + plman.GetPlaylistName(plman.ActivePlaylist),
+	keyTag = typeof globTags !== 'undefined' ? globTags.key : 'KEY',
+	bShuffleInput = true,
+	bSendToPls = true,
+	sortOrder = 1,
+	bDebug = false,
+} = {}) {
+	// Safety checks
+	if (!keyTag.length) { return null; }
+	if (!selItems || !selItems.Count) { return null; }
+	// Instead of predefining a mixing pattern, create one randomly each time, with predefined proportions
+	const handleList = bShuffleInput
+		? new FbMetadbHandleList(selItems.Convert().shuffle())
+		: selItems.Clone();
+	let tfo = '';
+	// Translate keys into something usable on TF
+	// Also, instead of adding multiple individual if statements, better to nest them (so only those required are evaluated)
+	const keyTagTF = !keyTag.includes('$') && !keyTag.includes('%') ? '%' + keyTag + '%' : keyTag;
+	let i = 0;
+	camelotWheel.getKeyNotationTable().forEach((val, key) => {
+		const num = val.slice(0, -1);
+		const letter = val.slice(-1);
+		const sortVal = num + (letter === 'A' ? 0 : 1);
+		tfo += '$if($stricmp(' + keyTagTF + ',' + key + '),' + sortVal + ',';
+		i++;
+		// Instead of
+		// tfo += '$if($stricmp(%' + keyTag + '%,' + key + '),' + (sortOrder * val.substring(0, val.length - 1)) +  ')';
+	});
+	tfo += ')'.repeat(i); // Add closures!
+	if (bDebug) { console.log(tfo); }
+	handleList.OrderByFormat(fb.TitleFormat(tfo), sortOrder);
 	if (bSendToPls) { return sendToPlaylist(handleList, playlistName); }
 	else { return handleList; }
 }

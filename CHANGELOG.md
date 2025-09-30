@@ -12,7 +12,9 @@
 - Merged [Device-Priority-SMP](https://github.com/regorxxx/Device-Priority-SMP) script.
 - Merged [Fingerprint-Tools-SMP](https://github.com/regorxxx/Fingerprint-Tools-SMP) script.
 - Merged [Wrapped-SMP](https://github.com/regorxxx/Wrapped-SMP) script.
+- Playlist Manipulation\Harmonic mix: new entries to create a new playlist with key sorting applied.
 ### Changed
+- Playlist Manipulation\Harmonic mix: cleanup of some menu entries and code logic.
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
 ### Removed
 ### Fixed
