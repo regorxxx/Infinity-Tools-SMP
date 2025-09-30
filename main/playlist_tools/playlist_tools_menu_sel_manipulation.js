@@ -1807,61 +1807,114 @@
 			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 		}
 		{	// Expand
-			const name = 'Expand';
-			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
-				const subMenuName = menu.newMenu(name, menuName);
-				menu.newEntry({ menuName: subMenuName, entryText: 'Expand selection by:', func: null, flags: MF_GRAYED });
-				menu.newSeparator(subMenuName);
-				const selArgs = [
-					{ name: 'By Artist', args: ['%ARTIST%'] },
-					{ name: 'By Album Artist', args: ['%ALBUM ARTIST%'] },
-					{ name: 'By Album', args: ['%ALBUM%'] },
-					{ name: 'sep' },
-					{ name: 'By Date', args: [globTags.date] },
-					{ name: 'By Decade', args: ['$div(' + _t(globTags.date) + ',10)0s'] },
-					{ name: 'By Genre', args: ['%' + globTags.genre + '%'] },
-					{ name: 'By Style', args: ['%' + globTags.style + '%'] },
-					{ name: 'By Key', args: [defaultArgs.keyTag] },
-					{ name: 'By Mood', args: ['%' + globTags.mood + '%'] },
-					{ name: 'By Rating', args: [globTags.rating] },
-					{ name: 'sep' },
-					{ name: 'By Directory', args: ['%DIRECTORYNAME%'] },
-					{ name: 'By Protocol', args: ['$left(%_PATH_RAW%,$strstr(%_PATH_RAW%,://))'] },
-					{ name: 'By File/Url', args: ['$if3($strstr(%_PATH_RAW%,file:),$strstr(%_PATH_RAW%,file-relative:),0)'] },
-					{ name: 'sep' },
-					{
-						name: 'By... (tags)', args: () => {
-							let input = globTags.artist + ';%ALBUM%';
-							try { input = utils.InputBox(window.ID, 'Enter tag(s) or TF expression(s):\n(multiple values may be separated by \';\')', scriptName + ': ' + name, input, true); }
-							catch (e) { return []; } // eslint-disable-line no-unused-vars
-							return input.length ? input.split(';') : [];
-						}
-					},
-				];
-				selArgs.forEach((selArg) => {
-					menu.newEntry({
-						menuName: subMenuName, entryText: selArg.name, func: () => {
-							const ap = plman.ActivePlaylist;
-							const selItems = plman.GetPlaylistSelectedItems(ap);
-							const plsItems = plman.GetPlaylistItems(ap);
-							const selIdx = new Set();
-							(isFunction(selArg.args) ? selArg.args() : selArg.args).forEach((tf) => {
-								tf = _t(tf); // Add % to tag names if missing
-								const tags = fb.TitleFormat(tf).EvalWithMetadbs(plsItems);
-								const selTags = fb.TitleFormat(tf).EvalWithMetadbs(selItems);
-								new Set(selTags).forEach((selTag) => {
-									tags.forEach((tag, idx) => {
-										if (tag === selTag) { selIdx.add(idx); }
-									});
-								});
-							});
-							if (selIdx.size) {
-								plman.SetPlaylistSelection(ap, [...selIdx], true);
+			const nameExpand = 'Expand (disjoint)';
+			const nameContiguous = 'Expand (contiguous)';
+			const nameNext = 'Expand (next)';
+			if (!Object.hasOwn(menusEnabled, nameExpand) || menusEnabled[nameExpand] || !Object.hasOwn(menusEnabled, nameContiguous) || menusEnabled[nameContiguous] || !Object.hasOwn(menusEnabled, nameNext) || menusEnabled[nameNext]) {
+				[
+					{ menuName: nameExpand, bContiguous: false },
+					{ menuName: nameContiguous, bContiguous: true },
+					{ menuName: nameNext, bNext: true }
+				].forEach((option) => {
+					const subMenuName = menu.newMenu(option.menuName, menuName);
+					menu.newEntry({ menuName: subMenuName, entryText: 'Expand selection by:', func: null, flags: MF_GRAYED });
+					menu.newSeparator(subMenuName);
+					const selArgs = [
+						{ name: 'By Artist', args: ['%ARTIST%'] },
+						{ name: 'By Album Artist', args: ['%ALBUM ARTIST%'] },
+						{ name: 'By Album', args: ['%ALBUM%'] },
+						{ name: 'sep' },
+						{ name: 'By Date', args: [globTags.date] },
+						{ name: 'By Decade', args: ['$div(' + _t(globTags.date) + ',10)0s'] },
+						{ name: 'By Genre', args: ['%' + globTags.genre + '%'] },
+						{ name: 'By Style', args: ['%' + globTags.style + '%'] },
+						{ name: 'By Key', args: [defaultArgs.keyTag] },
+						{ name: 'By Mood', args: ['%' + globTags.mood + '%'] },
+						{ name: 'By Rating', args: [globTags.rating] },
+						{ name: 'sep' },
+						{ name: 'By Directory', args: ['%DIRECTORYNAME%'] },
+						{ name: 'By Protocol', args: ['$left(%_PATH_RAW%,$strstr(%_PATH_RAW%,://))'] },
+						{ name: 'By File/Url', args: ['$if3($strstr(%_PATH_RAW%,file:),$strstr(%_PATH_RAW%,file-relative:),0)'] },
+						{ name: 'sep' },
+						{
+							name: 'By... (tags)', args: () => {
+								const input = Input.string('string', globTags.artist + ';%ALBUM%', 'Enter tag(s) or TF expression(s):\n(multiple values may be separated by \';\')', scriptName + ': ' + nameExpand, globTags.artist + ';%ALBUM%') || (Input.isLastEqual ? Input.lastInput : null);
+								if (input === null) { return []; }
+								return input.length ? input.split(';') : [];
 							}
-						}, flags: selectedFlags
+						},
+						{
+							name: 'By... (tags and # tracks)', args: () => {
+								const input = Input.string('string', globTags.artist + ';%ALBUM%', 'Enter tag(s) or TF expression(s):\n(multiple values may be separated by \';\')', scriptName + ': ' + nameExpand, globTags.artist + ';%ALBUM%') || (Input.isLastEqual ? Input.lastInput : null);
+								if (input === null) { return []; }
+								return input.length ? input.split(';') : [];
+							}, limit: () => {
+								const input = Input.number('int positive', 5, 'Select number of tracks to select by same TF:\n(> 0)', scriptName + ': ' + nameExpand, 5, [(n) => n > 0]) || (Input.isLastEqual ? Input.lastInput : null);
+								if (input === null) { return 0; }
+								return input;
+							}
+						},
+					];
+					selArgs.forEach((selArg) => {
+						menu.newEntry({
+							menuName: subMenuName, entryText: selArg.name, func: () => {
+								const ap = plman.ActivePlaylist;
+								const selItems = plman.GetPlaylistSelectedItems(ap);
+								const focusIdx = plman.GetPlaylistFocusItemIndex(ap);
+								const plsItems = plman.GetPlaylistItems(ap);
+								const selIdx = new Set();
+								const limit = Object.hasOwn(selArg, 'limit')
+									? isFunction(selArg.limit) ? selArg.limit() : selArg.limit
+									: Infinity;
+								if (limit === 0) { return; }
+								(isFunction(selArg.args) ? selArg.args() : selArg.args).forEach((tf) => {
+									let count = limit;
+									tf = _t(tf); // Add % to tag names if missing
+									const tags = fb.TitleFormat(tf).EvalWithMetadbs(plsItems);
+									const selTags = fb.TitleFormat(tf).EvalWithMetadbs(selItems);
+									if (option.bContiguous) {
+										let last = focusIdx;
+										new Set(selTags).forEach((selTag) => {
+											tags.forEach((tag, idx) => {
+												if (tag === selTag && count > 0) {
+													if (idx === last || idx === last + 1) {
+														last = idx;
+														selIdx.add(idx);
+														count--;
+													}
+												}
+											});
+											if (!option.bNext) {
+												tags.reverse().forEach((tag, idx) => {
+													if (tag === selTag && count > 0) {
+														if (idx === last - 1) {
+															last = idx;
+															selIdx.add(idx);
+															count--;
+														}
+													}
+												});
+											}
+										});
+									} else {
+										new Set(selTags).forEach((selTag) => {
+											tags.forEach((tag, idx) => {
+												if (tag === selTag && count > 0 && (!option.bNext || idx >= focusIdx)) {
+													selIdx.add(idx);
+													count--;
+												}
+											});
+										});
+									}
+								});
+								if (selIdx.size) {
+									plman.SetPlaylistSelection(ap, [...selIdx], true);
+								}
+							}, flags: selectedFlags
+						});
 					});
 				});
-			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+			} else { menuDisabled.push({ menuName: nameExpand, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 		}
 		{	// Jump
 			const name = 'Jump';
