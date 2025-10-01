@@ -12,13 +12,13 @@
 - Merged [Device-Priority-SMP](https://github.com/regorxxx/Device-Priority-SMP) script.
 - Merged [Fingerprint-Tools-SMP](https://github.com/regorxxx/Fingerprint-Tools-SMP) script.
 - Merged [Wrapped-SMP](https://github.com/regorxxx/Wrapped-SMP) script.
-- Playlist Manipulation\Harmonic mix: new entries to create a new playlist with key sorting applied.
-- Selection Manipulation\Expand (disjoint): added entry to limit number of tracks to select.
-- Selection Manipulation\Expand (contiguous): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to contiguous tracks, thus ensuring joint selections.
-- Selection Manipulation\Expand (next): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to next tracks to focused one.
+- Playlist tools\Playlist Manipulation\Harmonic mix: new entries to create a new playlist with key sorting applied.
+- Playlist tools\Selection Manipulation\Expand (disjoint): added entry to limit number of tracks to select.
+- Playlist tools\Selection Manipulation\Expand (contiguous): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to contiguous tracks, thus ensuring joint selections.
+- Playlist tools\Selection Manipulation\Expand (next): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to next tracks to focused one.
 ### Changed
-- Playlist Manipulation\Harmonic mix: cleanup of some menu entries and code logic.
-- Selection Manipulation\Advanced sort: cleanup of some menu entries and code logic.
+- Playlist tools\Playlist Manipulation\Harmonic mix: cleanup of some menu entries and code logic.
+- Playlist tools\Selection Manipulation\Advanced sort: cleanup of some menu entries and code logic.
 - UI: updated icons for Playlist Tools submenu custom button for all new and renamed menus.
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
 - Settings: global support for %fb2k_component_path%, %fb2k_profile_path% and %fb2k_path% in any input asking for paths.
