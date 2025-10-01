@@ -280,7 +280,7 @@ function AutoBackup({
 	this.listeners = [];
 	this.active = true;
 	this.name = 'AutoBackup-SMP';
-	this.backupMinInterval = 30000;
+	this.backupMinInterval = 40000;
 	this.configTimeout = 2000;
 	// Vars
 	this.iBackups = iBackups;
