@@ -89,6 +89,8 @@ function AutoBackup({
 	};
 
 	this.increaseTrackCounter = () => {
+		if (this.counter.savePlayedTracks < 0) { this.counter.savePlayedTracks = 0; }
+		if (this.counter.backupPlayedTracks < 0) { this.counter.backupPlayedTracks = 0; }
 		this.counter.savePlayedTracks++;
 		this.counter.backupPlayedTracks++;
 	};
@@ -124,7 +126,7 @@ function AutoBackup({
 			fileYear = file.created.getUTCFullYear();
 			fileMonth = file.created.getUTCMonth();
 			fileDay = file.created.getUTCDate();
-			fileWeek= Math.floor(fileDay / 7);
+			fileWeek = Math.floor(fileDay / 7);
 			switch (key.toLowerCase()) {
 				case 'year': {
 					if (thisYear !== fileYear) {
@@ -172,7 +174,7 @@ function AutoBackup({
 		let files = getFiles(folderPath, new Set(['.zip']))
 			.filter((path) => path.startsWith(fb.ProfilePath + outputPath))
 			.map((path) => {
-				return { path, created: new Date(created(path)), size: backupsMaxSize > 0 ? utils.GetFileSize(path): 0 };
+				return { path, created: new Date(created(path)), size: backupsMaxSize > 0 ? utils.GetFileSize(path) : 0 };
 			})
 			.sort((a, b) => b.created - a.created);
 		let totalFiles = iBackups > 0 ? files.length : null;
