@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/25
+//01/10/25
 
 include('..\\..\\helpers\\menu_xxx.js');
 include('..\\..\\helpers\\helpers_xxx.js');
@@ -16,7 +16,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\buttons_xxx.js');
 /* global showButtonReadme:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global utf8:readable, _explorer:readable, _jsonParseFileCheck:readable, _parseAttrFile:readable, findRecursiveFile:readable */
+/* global utf8:readable, _explorer:readable, _jsonParseFileCheck:readable, _parseAttrFile:readable, findRecursiveFile:readable ,_foldPath:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global _p:readable */
 
@@ -32,7 +32,7 @@ function choosePresetMenu(parent) {
 			// Omit hidden files
 			const attr = _parseAttrFile(path);
 			if (attr && attr.Hidden) { return null; }
-			path = path.replace(fb.ProfilePath, '.\\profile\\');
+			path = _foldPath(path);
 			const recipe = _jsonParseFileCheck(path, 'Recipe json', sbd.name, utf8);
 			if (!recipe) { return null; }
 			if (!testRecipe({ json: recipe, baseTags: JSON.parse(properties.tags[1]) }).valid) { return null; }

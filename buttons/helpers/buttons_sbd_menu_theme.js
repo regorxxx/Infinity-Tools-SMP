@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/25
+//01/10/25
 
 /* exported createThemeMenu */
 
@@ -12,7 +12,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\buttons_xxx.js');
 /* global showButtonReadme:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global WshShell:readable, _isFile:readable, utf8:readable, _save:readable, _explorer:readable, _jsonParseFileCheck:readable, _parseAttrFile:readable, _runCmd:readable, findRecursiveFile:readable, _resolvePath:readable */
+/* global WshShell:readable, _isFile:readable, utf8:readable, _save:readable, _explorer:readable, _jsonParseFileCheck:readable, _parseAttrFile:readable, _runCmd:readable, findRecursiveFile:readable, _resolvePath:readable, _foldPath:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global overwriteProperties:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
@@ -161,7 +161,7 @@ function createThemeMenu(parent) {
 			return;
 		}
 		// List files, with full path or relative path (portable)
-		options.push(file.replace(fb.ProfilePath, '.\\profile\\'));
+		options.push(_foldPath(file));
 	});
 	const menus = [];
 	if (options.length) {

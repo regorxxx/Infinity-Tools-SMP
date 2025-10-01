@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/25
+//01/10/25
 
 include('..\\..\\helpers\\menu_xxx.js');
 include('..\\..\\helpers\\helpers_xxx.js');
@@ -18,7 +18,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\buttons_xxx.js');
 /* global showButtonReadme:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global WshShell:readable, _isFile:readable,utf8:readable, _save:readable, _explorer:readable, _jsonParseFileCheck:readable, _parseAttrFile:readable, _runCmd:readable, findRecursiveFile:readable, _resolvePath:readable, _recycleFile:readable, sanitizePath:readable, sanitize:readable, _deleteFile:readable, _copyFile:readable */
+/* global WshShell:readable, _isFile:readable,utf8:readable, _save:readable, _explorer:readable, _jsonParseFileCheck:readable, _parseAttrFile:readable, _runCmd:readable, findRecursiveFile:readable, _resolvePath:readable, _recycleFile:readable, sanitizePath:readable, sanitize:readable, _deleteFile:readable, _copyFile:readable, _foldPath:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global overwriteProperties:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
@@ -121,7 +121,7 @@ function createRecipeMenu(parent) {
 		const attr = _parseAttrFile(file);
 		if (attr && attr.Hidden) { return; }
 		// List files with relative path
-		options.push(file.replace(fb.ProfilePath, '.\\profile\\'));
+		options.push(_foldPath(file));
 	});
 	const menus = [];
 	const recipes = [];
@@ -185,7 +185,7 @@ function createRecipeMenu(parent) {
 				'*.json',
 				[sbd.defaultRecipesPath]
 			).map((path) => {
-				const recipe = recipes.find((recipe) => recipe.path === path.replace(sbd.defaultRecipesPath, sbd.recipesPath).replace(fb.ProfilePath, '.\\profile\\'));
+				const recipe = recipes.find((recipe) => recipe.path === _foldPath(path.replace(sbd.defaultRecipesPath, sbd.recipesPath)));
 				return recipe ? { ...recipe, path } : null;
 			}).filter(Boolean).concat({ name: 'dummy' }),
 			input: newRecipe,
@@ -304,7 +304,7 @@ function chooseRecipeMenu(parent) {
 			// Omit hidden files
 			const attr = _parseAttrFile(path);
 			if (attr && attr.Hidden) { return null; }
-			path = path.replace(fb.ProfilePath, '.\\profile\\');
+			path = _foldPath(path);
 			const recipe = _jsonParseFileCheck(path, 'Recipe json', sbd.name, utf8);
 			if (!recipe) { return null; }
 			if (!testRecipe({ json: recipe, baseTags: JSON.parse(properties.tags[1]) }).valid) { return null; }
