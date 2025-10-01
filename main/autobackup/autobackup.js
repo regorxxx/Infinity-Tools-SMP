@@ -33,20 +33,20 @@ function AutoBackup({
 	this.addEventListeners = () => {
 		this.listeners = [
 			addEventListener('on_playback_new_track', () => {
-				if (!this.timePlaying) { this.timePlaying = Date.now(); }
+				if (!this.counter.timePlaying) { this.counter.timePlaying = Date.now(); }
 				else { this.increaseTrackCounter(); }
 			}),
 			addEventListener('on_playback_stop', (reason) => {
 				if (reason === 0 || reason === 1) {
-					this.timePlaying = 0;
-					if (!this.timePaused) { this.timePaused = Date.now(); }
+					this.counter.timePlaying = 0;
+					if (!this.counter.timePaused) { this.counter.timePaused = Date.now(); }
 				}
 			}),
 			addEventListener('on_playback_pause', (state) => {
-				if (state && !this.timePaused) { this.timePaused = Date.now(); }
-				if (!state && this.timePaused) {
-					if (this.timePlaying) { this.timePlaying = Date.now() - (this.timePaused - this.timePlaying); }
-					this.timePaused = 0;
+				if (state && !this.counter.timePaused) { this.counter.timePaused = Date.now(); }
+				if (!state && this.counter.timePaused) {
+					if (this.counter.timePlaying) { this.counter.timePlaying = Date.now() - (this.counter.timePaused - this.counter.timePlaying); }
+					this.counter.timePaused = 0;
 				}
 			}),
 			addEventListener('on_script_unload', () => {
@@ -62,7 +62,7 @@ function AutoBackup({
 		this.addEventListeners();
 		this.id = setInterval(this.backupDebounced, 2500);
 		this.active = true;
-		this.timeInit = Date.now();
+		this.counter.timeInit = Date.now();
 	};
 
 	this.clear = () => {
@@ -71,10 +71,14 @@ function AutoBackup({
 			clearInterval(this.id);
 			this.id = null;
 		}
-		this.lastBackup = this.timePaused = this.counter.savePlayedTracks = this.counter.backupPlayedTracks = this.timePlaying = this.timePaused = 0;
+		this.counter.lastBackup = 0;
+		for (let key in this.counter) {
+			this.counter[key] = 0;
+		}
 	};
 
-	this.saveFooConfig = () => {
+	this.saveFooConfig = (now) => {
+		if (typeof now !== 'undefined') { this.counter.lastSave = now; }
 		try { fb.RunMainMenuCommand('Save configuration'); } catch (e) { console.log(e); return false; }
 		return true;
 	};
@@ -221,61 +225,60 @@ function AutoBackup({
 		// Save routines
 		let bSaved = false;
 		let bDecrTracks = false;
-		if ((now - this.lastSave) >= this.backupMinInterval) {
-			if (this.iTrackSave && this.timePlaying && this.counter.savePlayedTracks >= this.iTrackSave) {
-				this.saveFooConfig();
-				this.lastSave = now;
+		if ((now - this.counter.lastSave) >= this.backupMinInterval) {
+			if (this.iTrackSave && this.counter.timePlaying && this.counter.savePlayedTracks >= this.iTrackSave) {
+				this.saveFooConfig(now);
 				this.counter.savePlayedTracks -= this.iTrackSave;
 				bDecrTracks = bSaved = true;
 			}
 		}
 		// Backup routines
-		if ((now - this.lastBackup) >= this.backupMinInterval) {
+		if ((now - this.counter.lastBackup) >= this.backupMinInterval) {
 			// Run every X minutes should only fire when there are no other conditions or
 			// if they have fired at least once after startup. No configuration changes
 			// are expected if the program was not used at all... (ignoring corner cases)
-			const bAllowInterval = !(this.iPlaying || this.iTrack || this.iStart) || this.lastBackup;
-			if (this.iPlaying && this.timePlaying && (now - this.timePlaying) >= this.iPlaying) {
-				if (!bSaved) { this.saveFooConfig(); this.lastSave = now; }
+			const bAllowInterval = !(this.iPlaying || this.iTrack || this.iStart) || this.counter.lastBackup;
+			if (this.iPlaying && this.counter.timePlaying && (now - this.counter.timePlaying) >= this.iPlaying) {
+				if (!bSaved) { this.saveFooConfig(now); }
 				setTimeout(() => this.backup({ reason: 'playing' }), this.configTimeout);
-				this.lastBackup = now;
-				this.timePlaying = this.timePlaying + this.iPlaying;
-			} else if (this.iStop && this.timePaused && (now - this.timePaused) >= this.iStop) {
-				if (!bSaved) { this.saveFooConfig(); this.lastSave = now; }
+				this.counter.lastBackup = now;
+				this.counter.timePlaying += this.iPlaying;
+			} else if (this.iStop && this.counter.timePaused && (now - this.counter.timePaused) >= this.iStop) {
+				if (!bSaved) { this.saveFooConfig(now); }
 				setTimeout(() => this.backup({ reason: 'paused' }), this.configTimeout);
-				this.lastBackup = now;
-				this.timePaused = 0;
-			} else if (this.iTrack && this.timePlaying && this.counter.backupPlayedTracks >= this.iTrack) {
-				if (!bSaved) { this.saveFooConfig(); this.lastSave = now; }
+				this.counter.lastBackup = now;
+				this.counter.timePaused = 0;
+			} else if (this.iTrack && this.counter.timePlaying && this.counter.backupPlayedTracks >= this.iTrack) {
+				if (!bSaved) { this.saveFooConfig(now); }
 				setTimeout(() => this.backup({ reason: 'tracks' }), this.configTimeout);
-				this.lastBackup = now;
+				this.counter.lastBackup = now;
 				if (!bDecrTracks) { this.counter.backupPlayedTracks -= this.iTrack; }
-			} else if (this.iStart && this.timeInit && (now - this.timeInit) >= this.iStart) {
-				if (!bSaved) { this.saveFooConfig(); this.lastSave = now; }
+			} else if (this.iStart && this.counter.timeInit && (now - this.counter.timeInit) >= this.iStart) {
+				if (!bSaved) { this.saveFooConfig(now); }
 				setTimeout(() => this.backup({ reason: 'startup' }), this.configTimeout);
-				this.lastBackup = now;
-				this.timeInit = 0;
-			} else if (this.iInterval && bAllowInterval && (now - this.lastBackup) >= this.iInterval) {
-				if (!bSaved) { this.saveFooConfig(); this.lastSave = now; console.log('ho');}
+				this.counter.lastBackup = now;
+				this.counter.timeInit = 0;
+			} else if (this.iInterval && bAllowInterval && (now - this.counter.lastBackup) >= this.iInterval) {
+				if (!bSaved) { this.saveFooConfig(now); }
 				setTimeout(() => this.backup({ reason: 'interval' }), this.configTimeout);
-				this.lastBackup = now;
+				this.counter.lastBackup = now;
 			}
 		}
-		return this.lastBackup === now;
+		return this.counter.lastBackup === now;
 	};
 	this.forceBackup = () => {
 		return this.saveFooConfig() && setTimeout(() => this.backup({ reason: 'forced' }), this.configTimeout);
 	};
 	// Internals
-	this.lastBackup = 0;
-	this.lastSave = 0;
 	this.counter = {
 		savePlayedTracks: 0,
 		backupPlayedTracks: 0,
+		timePlaying: 0,
+		timePaused: 0,
+		timeInit: 0,
+		lastBackup: 0,
+		lastSave: 0,
 	};
-	this.timePlaying = 0;
-	this.timePaused = 0;
-	this.timeInit = 0;
 	this.id = null;
 	this.listeners = [];
 	this.active = true;
