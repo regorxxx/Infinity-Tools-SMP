@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/25
+//01/10/25
 
 /*
 	Automatic tagging...
@@ -194,7 +194,6 @@ function Tagger({
 	this.quietByKey = Object.fromEntries(this.tools.map((tool) => [tool.key, tool.bQuiet]));
 	this.menuByKey = Object.fromEntries(this.tools.map((tool) => [tool.key, tool.menu]));
 	this.menuRemoveByKey = Object.fromEntries(this.tools.map((tool) => [tool.key, tool.menuRemove]));
-	// TODO: check availability at menu click
 	// Enabled tools?
 	if (toolsByKey) {
 		Object.keys(toolsByKey).forEach((key) => {
