@@ -23,6 +23,7 @@
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
 ### Removed
 ### Fixed
-
+- Export settings: added missing buttons file on zip.
+- Import settings: multiple fixes to extra data files importing.
 
 [Unreleased]: ../../compare/f039e12...HEAD
