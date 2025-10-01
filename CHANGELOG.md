@@ -24,6 +24,7 @@
 - Settings: global support for %fb2k_component_path%, %fb2k_profile_path% and %fb2k_path% in any input asking for paths.
 ### Removed
 ### Fixed
+- Autobackup: critical bugfix for '[Save] every x tracks' setting. If backup 'Every x tracks' was set to 0, the tool tried to save foobar2000 configuration every 30 seconds (the minimum interval allowed).
 - Export settings: added missing buttons file on zip.
 - Import settings: multiple fixes to extra data files importing.
 

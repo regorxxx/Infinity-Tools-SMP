@@ -1,5 +1,5 @@
 'use strict';
-//06/08/25
+//01/10/25
 
 /* exported AutoBackup */
 
@@ -34,14 +34,12 @@ function AutoBackup({
 		this.listeners = [
 			addEventListener('on_playback_new_track', () => {
 				if (!this.timePlaying) { this.timePlaying = Date.now(); }
-				else { this.playedTracks++; }
+				else { this.increaseTrackCounter(); }
 			}),
 			addEventListener('on_playback_stop', (reason) => {
 				if (reason === 0 || reason === 1) {
 					this.timePlaying = 0;
 					if (!this.timePaused) { this.timePaused = Date.now(); }
-				} else if (reason === 2) {
-					this.playedTracks++;
 				}
 			}),
 			addEventListener('on_playback_pause', (state) => {
@@ -73,7 +71,7 @@ function AutoBackup({
 			clearInterval(this.id);
 			this.id = null;
 		}
-		this.lastBackup = this.timePaused = this.playedTracks = this.timePlaying = this.timePaused = 0;
+		this.lastBackup = this.timePaused = this.counter.savePlayedTracks = this.counter.backupPlayedTracks = this.timePlaying = this.timePaused = 0;
 	};
 
 	this.saveFooConfig = () => {
@@ -84,6 +82,11 @@ function AutoBackup({
 	this.getFreeSpace = () => {
 		const driveMeta = getPathMeta(fb.ProfilePath, 'B');
 		return driveMeta.size.free || 0;
+	};
+
+	this.increaseTrackCounter = () => {
+		this.counter.savePlayedTracks++;
+		this.counter.backupPlayedTracks++;
 	};
 
 	this.checkDriveSpace = (bShowPopup = true) => {
@@ -219,10 +222,10 @@ function AutoBackup({
 		let bSaved = false;
 		let bDecrTracks = false;
 		if ((now - this.lastSave) >= this.backupMinInterval) {
-			if (this.iTrackSave && this.timePlaying && this.playedTracks >= this.iTrackSave) {
+			if (this.iTrackSave && this.timePlaying && this.counter.savePlayedTracks >= this.iTrackSave) {
 				this.saveFooConfig();
 				this.lastSave = now;
-				this.playedTracks -= this.iTrack;
+				this.counter.savePlayedTracks -= this.iTrackSave;
 				bDecrTracks = bSaved = true;
 			}
 		}
@@ -242,18 +245,18 @@ function AutoBackup({
 				setTimeout(() => this.backup({ reason: 'paused' }), this.configTimeout);
 				this.lastBackup = now;
 				this.timePaused = 0;
-			} else if (this.iTrack && this.timePlaying && this.playedTracks >= this.iTrack) {
+			} else if (this.iTrack && this.timePlaying && this.counter.backupPlayedTracks >= this.iTrack) {
 				if (!bSaved) { this.saveFooConfig(); this.lastSave = now; }
 				setTimeout(() => this.backup({ reason: 'tracks' }), this.configTimeout);
 				this.lastBackup = now;
-				if (!bDecrTracks) { this.playedTracks -= this.iTrack; }
+				if (!bDecrTracks) { this.counter.backupPlayedTracks -= this.iTrack; }
 			} else if (this.iStart && this.timeInit && (now - this.timeInit) >= this.iStart) {
 				if (!bSaved) { this.saveFooConfig(); this.lastSave = now; }
 				setTimeout(() => this.backup({ reason: 'startup' }), this.configTimeout);
 				this.lastBackup = now;
 				this.timeInit = 0;
 			} else if (this.iInterval && bAllowInterval && (now - this.lastBackup) >= this.iInterval) {
-				if (!bSaved) { this.saveFooConfig(); this.lastSave = now; }
+				if (!bSaved) { this.saveFooConfig(); this.lastSave = now; console.log('ho');}
 				setTimeout(() => this.backup({ reason: 'interval' }), this.configTimeout);
 				this.lastBackup = now;
 			}
@@ -266,7 +269,10 @@ function AutoBackup({
 	// Internals
 	this.lastBackup = 0;
 	this.lastSave = 0;
-	this.playedTracks = 0;
+	this.counter = {
+		savePlayedTracks: 0,
+		backupPlayedTracks: 0,
+	};
 	this.timePlaying = 0;
 	this.timePaused = 0;
 	this.timeInit = 0;
