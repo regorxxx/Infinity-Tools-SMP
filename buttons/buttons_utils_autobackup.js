@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/25
+//01/10/25
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -31,12 +31,12 @@ prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
 	iPlaying: ['While playing (every X min, 0 = off)', 60, { func: isInt }, 60],
-	iStop: ['When playback stops (after X min, 0 = off)', 5, { func: isInt }, 5],
-	iInterval: ['Always, since last autosave (every X min, 0 = off)', 30, { func: isInt }, 30],
+	iStop: ['When playback stops (after X min, 0 = off)', 5, { func: isInt }, 10],
+	iInterval: ['Always, since last autosave (every X min, 0 = off)', 300, { func: isInt }, 300],
 	iStart: ['On startup (after X min, 0 = off)', 5, { func: isInt }, 5],
 	iTrack: ['Every X tracks (0 = off)', 0, { func: isInt }, 0],
 	iClose: ['On Foobar2000 exit (after X secs, 0 = off)', 20, { func: isInt }, 20],
-	iTrackSave: ['[Save] every X tracks (0 = off)', 5, { func: isInt }, 5],
+	iTrackSave: ['[Save] every X tracks (0 = off)', 20, { func: isInt }, 20],
 	files: ['Files and Folders mask',
 		JSON.stringify([
 			// Foobar folders
