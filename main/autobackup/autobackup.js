@@ -1,14 +1,14 @@
 'use strict';
-//01/10/25
+//03/10/25
 
 /* exported AutoBackup */
 
 include('..\\..\\helpers\\helpers_xxx.js');
-/* global doOnce:readable */
+/* global doOnce:readable, folders:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global round:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global _createFolder:readable, getFiles:readable, _recycleFile:readable, getPathMeta:readable, created:readable */
+/* global _createFolder:readable, getFiles:readable, _recycleFile:readable, getPathMeta:readable, created:readable, _isFile:readable, _isFolder:readable, _deleteFile:readable, _deleteFolder:readable, _copyFile:readable, _copyFolder:readable */
 include('..\\..\\helpers\\helpers_xxx_file_zip.js');
 /* global _zip:readable */
 
@@ -212,13 +212,36 @@ function AutoBackup({
 			(acc, curr) => acc.replace(new RegExp(curr.regex, curr.flag), curr.replacer),
 			new Date().toISOString().split('.')[0]
 		);
+		// Create a copy for files which may be blocked under foobar v2
+		fileMask.forEach((path, i) => {
+			if (this.files[i].bCopy) {
+				if (_isFile(fb.ProfilePath + path)) {
+					_deleteFile(folders.temp + path);
+					_copyFile(fb.ProfilePath + path, folders.temp + path);
+					fileMask[i] = folders.temp + path;
+				} else if (_isFolder(fb.ProfilePath + path)) {
+					_deleteFolder(folders.temp + path);
+					_copyFolder(fb.ProfilePath + path, folders.temp + path);
+					fileMask[i] = folders.temp + path;
+				}
+			}
+		});
 		_zip(fileMask, fb.ProfilePath + outputPath + zipName + '.zip', bAsync, fb.ProfilePath, timeout);
 		if (timeout) {
 			console.log(this.name + ' (' + reason + '): Scheduled backup of items on ' + timeout + ' seconds to ' + outputPath + zipName); // DEBUG
 		} else {
 			console.log(this.name + ' (' + reason + '): Backed up items to ' + outputPath + zipName); // DEBUG
 		}
-		if (!bAsync) { test.Print(reason); }
+		if (!bAsync) {
+			// Delete the file copies
+			fileMask.forEach((path, i) => {
+				if (this.files[i].bCopy && path.startsWith(folders.temp)) {
+					if (_isFile(path)) { _deleteFile(path, true); }
+					else if (_isFolder(path)) { _deleteFolder(path, true); }
+				}
+			});
+			test.Print(reason);
+		}
 		return true;
 	};
 	this.backupDebounced = () => {

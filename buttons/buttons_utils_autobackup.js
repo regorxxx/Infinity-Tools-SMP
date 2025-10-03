@@ -1,9 +1,9 @@
 ﻿'use strict';
-//01/10/25
+//03/10/25
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_CONTROL:readable, VK_CONTROL:readable */
+/* global globFonts:readable, MK_CONTROL:readable, VK_CONTROL:readable, popup:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, showButtonReadme:readable */
 include('..\\helpers\\menu_xxx.js');
@@ -13,7 +13,7 @@ include('..\\helpers\\menu_xxx_extras.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isInt:readable, isJSON:readable, isString:readable */
 include('..\\helpers\\helpers_xxx_file.js');
-/* global _explorer:readable */
+/* global _explorer:readable, WshShell:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -40,25 +40,25 @@ var newButtonsProperties = { // NOSONAR[global]
 	files: ['Files and Folders mask',
 		JSON.stringify([
 			// Foobar folders
-			{ name: 'Main config', path: 'configuration' },
+			{ name: 'Main config', path: 'configuration', bCopy: true },
 			{ name: 'Playlists', path: 'playlists*' },
 			{ name: 'Library', path: 'library*' },
-			{ name: 'Statistics V1', path: 'index-data' },
-			{ name: 'VST presets', path: 'vst-presets' },
-			{ name: 'DSP presets', path: 'dsp-presets' },
+			{ name: 'Statistics V1', path: 'index-data', bCopy: true },
+			{ name: 'VST presets', path: 'vst-presets', bCopy: true },
+			{ name: 'DSP presets', path: 'dsp-presets', bCopy: true },
 			// Foobar Files
-			{ name: 'Theme', path: 'theme.fth' },
-			{ name: 'Main config V2', path: 'config.sqlite' },
-			{ name: 'Main dsp V2', path: 'config.fb2k-dsp' },
-			{ name: 'Tags V2', path: 'metadb.sqlite' },
+			{ name: 'Theme', path: 'theme.fth', bCopy: true },
+			{ name: 'Main config V2', path: 'config.sqlite', bCopy: true },
+			{ name: 'Main dsp V2', path: 'config.fb2k-dsp', bCopy: true },
+			{ name: 'Tags V2', path: 'metadb.sqlite', bCopy: true },
 			{ name: 'File Operations', path: 'FileOps-Presets*' },
-			{ name: 'Large Fields', path: 'LLargeFieldsConfig.txt' },
+			{ name: 'Large Fields', path: 'LargeFieldsConfig.txt' },
 			// Components
 			{ name: 'foo_input_dvda', path: 'dvda_metabase' },
 			{ name: 'foo_input_sacd', path: 'sacd_metabase' },
 			{ name: 'foo_upnp', path: 'foo_upnp*' },
 			// JS scripts
-			{ name: 'Playlist Organizer', path: 'pl_organizer.txt' },
+			{ name: 'Playlist Organizer', path: 'pl_organizer.txt', bCopy: true },
 			{ name: 'JS presets', path: 'js_data\\presets' },
 			{ name: 'JS helpers', path: 'js_data\\helpers' },
 			{ name: 'JS Buttons', path: 'js_data\\buttons_*' },
@@ -144,10 +144,14 @@ addButton({
 								'string', '',
 								'Enter folder path relative to profile folder:\n' +
 								'Ex: js_data\\presets'
-								, 'AutoBackup', 'js_data\\presets', void (0), true
-							)
+								, 'AutoBackup: files', 'js_data\\presets', void (0), true
+							),
+							bCopy: false
 						};
 						if (!entry.path) { return; }
+						if (!entry.path.endsWith('*')) {
+							entry.bCopy = WshShell.Popup('Foobar2000 v2 may show errors accesing files while they are being compressed, due to file blocking restrictions. Creating a temporal copy may help in these cases, specially with critical files like databases.\n\nCopy selected files to temp folder before compressing?', 0, 'Autobackup: temporal copy', popup.question + popup.yes_no) === popup.yes;
+						}
 						return entry;
 					},
 					bNumbered: true,
