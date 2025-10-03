@@ -28,7 +28,8 @@ function AutoBackup({
 	iOldMonth = Math.min(Math.max(Math.round(iBackups / 10), 1), iBackups),
 	iOldYear = Math.min(Math.max(Math.round(iBackups / 10), 1), iBackups),
 	minDriveSize = backupsMaxSize * 2,
-	outputPath, files, backupFormat
+	outputPath, files, backupFormat,
+	zipArgs = ''
 } = {}) {
 	this.addEventListeners = () => {
 		this.listeners = [
@@ -248,7 +249,7 @@ function AutoBackup({
 				}
 			}
 		});
-		_zip(fileMask.flat(Infinity), fb.ProfilePath + outputPath + zipName + '.zip', bAsync, fb.ProfilePath, timeout);
+		_zip(fileMask.flat(Infinity), fb.ProfilePath + outputPath + zipName + '.zip', bAsync, fb.ProfilePath, timeout, this.zipArgs || '');
 		if (timeout) {
 			console.log(this.name + ' (' + reason + '): Scheduled backup of items on ' + timeout + ' seconds to ' + outputPath + zipName); // DEBUG
 		} else {
@@ -353,6 +354,7 @@ function AutoBackup({
 	this.iOldMonth = iOldMonth;
 	this.iOldWeek = iOldWeek;
 	this.iOldDay = iOldDay;
+	this.zipArgs = zipArgs || '';
 
 	this.init();
 }

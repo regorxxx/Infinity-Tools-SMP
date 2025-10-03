@@ -11,7 +11,7 @@ include('..\\helpers\\menu_xxx.js');
 include('..\\helpers\\menu_xxx_extras.js');
 /* global _createSubMenuEditEntries:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isBoolean:readable, isInt:readable, isJSON:readable, isString:readable */
+/* global isBoolean:readable, isInt:readable, isJSON:readable, isString:readable, isStringWeak:readable, _b:readable */
 include('..\\helpers\\helpers_xxx_file.js');
 /* global _explorer:readable, WshShell:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
@@ -86,6 +86,7 @@ var newButtonsProperties = { // NOSONAR[global]
 	bHeadlessMode: ['Headless mode', false, { func: isBoolean }, false],
 	backupsMaxSize: ['Max size of backup files (MB)', 5000, { func: isInt }, 5000],
 	minDriveSize: ['Min free space on drive (MB)', 10000, { func: isInt }, 10000],
+	zipArgs: ['7za extra CMD arguments', '', { func: isStringWeak }, ''],
 };
 newButtonsProperties.files.push(newButtonsProperties.files[1]);
 newButtonsProperties.backupFormat.push(newButtonsProperties.backupFormat[1]);
@@ -242,6 +243,18 @@ addButton({
 						});
 					}
 					menu.newSeparator(menuName);
+					{
+						menu.newEntry({
+							menuName, entryText: '7za cmd extra arguments' + '\t' + _b(this.buttonsProperties.zipArgs[1].cut(5)), func: () => {
+								const input = Input.string('trimmed string', this.buttonsProperties.zipArgs[1], 'Enter 7za cmd extra arguments:\n(Check online help for info)\n\nCompression can be set with \'-mxX\'. Where X can be 0-9.\nTo set no compression (fastest processing), use \'-mx0\'', 'AutoBackup: 7za command line', this.buttonsProperties.zipArgs[3]);
+								if (input === null) { return; }
+								this.autoBackup.zipArgs = this.buttonsProperties.zipArgs[1] = input;
+								overwriteProperties(this.buttonsProperties);
+							}
+						});
+						menu.newCheckMenuLast(() => this.buttonsProperties.zipArgs[1].length);
+					}
+					menu.newSeparator(menuName);
 					['bAsync', 'sep', 'active', 'bStartActive'].forEach((key) => {
 						if (menu.isSeparator(key)) { menu.newEntry({ menuName, entryText: key }); return; }
 						const entryText = this.buttonsProperties[key][0].replace(/[a-zA-Z]*\d*_*\d*\./, '');
@@ -311,6 +324,7 @@ addButton({
 				iClose: Number(newButtonsProperties.iClose[1]),
 				iTrackSave: Number(newButtonsProperties.iTrackSave[1]),
 				minDriveSize: Number(newButtonsProperties.minDriveSize[1]) * 1024 * 1024,
+				zipArgs: newButtonsProperties.zipArgs[1]
 			})
 		},
 		onInit: function () {
