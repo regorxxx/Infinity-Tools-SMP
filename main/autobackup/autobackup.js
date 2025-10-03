@@ -199,6 +199,29 @@ function AutoBackup({
 		return true;
 	};
 
+	this.createTempFile = (path, tempPath) => {
+		if (_isFile(path)) {
+			_deleteFile(tempPath);
+			_copyFile(path, tempPath);
+			return true;
+		} else if (_isFolder(path)) {
+			_deleteFolder(tempPath);
+			_copyFolder(path, tempPath);
+			return true;
+		}
+		return false;
+	};
+
+	this.deleteTempFiles = (fileMask, idx) => {
+		fileMask.forEach((path, i) => {
+			if (Array.isArray(path)) { this.deleteTempFiles(path, i); }
+			else if (this.files[typeof idx === 'undefined' ? i : idx].bCopy && path.startsWith(folders.temp)) {
+				if (_isFile(path)) { _deleteFile(path, true); }
+				else if (_isFolder(path)) { _deleteFolder(path, true); }
+			}
+		});
+	};
+
 	this.backup = ({ iBackups = this.iBackups, backupsMaxSize = this.backupsMaxSize, bAsync = this.bAsync, outputPath = this.outputPath, reason = '', timeout = 0 } = {}) => {
 		if (timeout) { bAsync = true; }
 		let test = !bAsync ? new FbProfiler('AutoBackup') : null;
@@ -215,32 +238,33 @@ function AutoBackup({
 		// Create a copy for files which may be blocked under foobar v2
 		fileMask.forEach((path, i) => {
 			if (this.files[i].bCopy) {
-				if (_isFile(fb.ProfilePath + path)) {
-					_deleteFile(folders.temp + path);
-					_copyFile(fb.ProfilePath + path, folders.temp + path);
+				if (this.createTempFile(fb.ProfilePath + path, folders.temp + path)) {
 					fileMask[i] = folders.temp + path;
-				} else if (_isFolder(fb.ProfilePath + path)) {
-					_deleteFolder(folders.temp + path);
-					_copyFolder(fb.ProfilePath + path, folders.temp + path);
-					fileMask[i] = folders.temp + path;
+				} else if (path.includes('*')) {
+					fileMask[i] = utils.Glob(fb.ProfilePath + path, 0).map((p) => {
+						this.createTempFile(p, folders.temp + p.replace(fb.ProfilePath, ''));
+						return folders.temp + p.replace(fb.ProfilePath, '');
+					});
 				}
 			}
 		});
-		_zip(fileMask, fb.ProfilePath + outputPath + zipName + '.zip', bAsync, fb.ProfilePath, timeout);
+		_zip(fileMask.flat(Infinity), fb.ProfilePath + outputPath + zipName + '.zip', bAsync, fb.ProfilePath, timeout);
 		if (timeout) {
 			console.log(this.name + ' (' + reason + '): Scheduled backup of items on ' + timeout + ' seconds to ' + outputPath + zipName); // DEBUG
 		} else {
 			console.log(this.name + ' (' + reason + '): Backed up items to ' + outputPath + zipName); // DEBUG
 		}
+		// Delete the file copies
 		if (!bAsync) {
-			// Delete the file copies
-			fileMask.forEach((path, i) => {
-				if (this.files[i].bCopy && path.startsWith(folders.temp)) {
-					if (_isFile(path)) { _deleteFile(path, true); }
-					else if (_isFolder(path)) { _deleteFolder(path, true); }
-				}
-			});
+			this.deleteTempFiles(fileMask);
 			test.Print(reason);
+		} else if (reason !== 'unload') {
+			const id = setInterval(() => {
+				if (_isFile(fb.ProfilePath + outputPath + zipName + '.zip')) {
+					this.deleteTempFiles(fileMask);
+					clearInterval(id);
+				}
+			}, this.backupMinInterval);
 		}
 		return true;
 	};

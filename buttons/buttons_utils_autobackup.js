@@ -41,8 +41,8 @@ var newButtonsProperties = { // NOSONAR[global]
 		JSON.stringify([
 			// Foobar folders
 			{ name: 'Main config', path: 'configuration', bCopy: true },
-			{ name: 'Playlists', path: 'playlists*' },
-			{ name: 'Library', path: 'library*' },
+			{ name: 'Playlists', path: 'playlists*', bCopy: true },
+			{ name: 'Library', path: 'library*', bCopy: true },
 			{ name: 'Statistics V1', path: 'index-data', bCopy: true },
 			{ name: 'VST presets', path: 'vst-presets', bCopy: true },
 			{ name: 'DSP presets', path: 'dsp-presets', bCopy: true },
@@ -51,7 +51,7 @@ var newButtonsProperties = { // NOSONAR[global]
 			{ name: 'Main config V2', path: 'config.sqlite', bCopy: true },
 			{ name: 'Main dsp V2', path: 'config.fb2k-dsp', bCopy: true },
 			{ name: 'Tags V2', path: 'metadb.sqlite', bCopy: true },
-			{ name: 'File Operations', path: 'FileOps-Presets*' },
+			{ name: 'File Operations', path: 'FileOps-Presets*', bCopy: true },
 			{ name: 'Large Fields', path: 'LargeFieldsConfig.txt' },
 			// Components
 			{ name: 'foo_input_dvda', path: 'dvda_metabase' },
@@ -149,9 +149,7 @@ addButton({
 							bCopy: false
 						};
 						if (!entry.path) { return; }
-						if (!entry.path.endsWith('*')) {
-							entry.bCopy = WshShell.Popup('Foobar2000 v2 may show errors accesing files while they are being compressed, due to file blocking restrictions. Creating a temporal copy may help in these cases, specially with critical files like databases.\n\nCopy selected files to temp folder before compressing?', 0, 'Autobackup: temporal copy', popup.question + popup.yes_no) === popup.yes;
-						}
+						entry.bCopy = WshShell.Popup('Foobar2000 v2 may show errors accesing files while they are being compressed, due to file blocking restrictions. Creating a temporal copy may help in these cases, specially with critical files like databases.\n\nCopy selected files to temp folder before compressing?', 0, 'Autobackup: temporal copy', popup.question + popup.yes_no) === popup.yes;
 						return entry;
 					},
 					bNumbered: true,
