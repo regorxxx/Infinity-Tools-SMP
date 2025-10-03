@@ -252,7 +252,7 @@ addButton({
 								overwriteProperties(this.buttonsProperties);
 							}
 						});
-						menu.newCheckMenuLast(() => this.buttonsProperties.zipArgs[1].length);
+						menu.newCheckMenuLast(() => this.buttonsProperties.zipArgs[1].length !== 0);
 					}
 					menu.newSeparator(menuName);
 					['bAsync', 'sep', 'active', 'bStartActive'].forEach((key) => {
