@@ -32,5 +32,6 @@
 - Autobackup: critical bugfix for '[Save] every x tracks' setting. If backup 'Every x tracks' was set to 0, the tool tried to save foobar2000 configuration every 30 seconds (the minimum interval allowed).
 - Export settings: added missing buttons file on zip.
 - Import settings: multiple fixes to extra data files importing.
+- Batch tagger: fix handling of custom tags for some tools.
 
 [Unreleased]: ../../compare/f039e12...HEAD

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/10/25
+//04/10/25
 
 /*
 	Automatic tagging...
@@ -505,7 +505,7 @@ function Tagger({
 		this.debouncedStep({ step: this.iStep, bDebug, bProfile });
 	};
 
-	const orderKeys = ['rgScan', 'tpScan', 'biometric', 'masstagger', 'dynamicRange', 'drMeter', 'chromaPrint', 'ffmpegLRA', 'folksonomy', 'essentiaFastKey', ['essentiaKey', 'essentiaBPM', 'essentiaDanceness', 'essentiaLRA']]; // Must follow order at this.stepTag()
+	const orderKeys = ['rgScan', 'tpScan', 'biometric', 'masstagger', 'dynamicRange', 'drMeter', 'chromaPrint', 'ffmpegLRA', 'folksonomy', 'essentiaFastKey', ['essentiaKey', 'essentiaBPM', 'essentiaDanceness', 'essentiaLRA'], 'audioMd5', 'rgScan', 'tpScan', 'bpmAnaly']; // Must follow order at this.stepTag()
 	if (orderKeys.flat(Infinity).some((k) => !Object.hasOwn(this.toolsByKey, k))) { throw new Error('Key not associated to any tool'); }
 	this.stepTag = ({ step, bDebug = false, bProfile = false }) => {
 		const runMenu = (menuArr, handleList, title) => {
@@ -665,8 +665,7 @@ function Tagger({
 				const mergeTags = new Set(['chromaPrint', 'folksonomy']);
 				const handleList = this.notAllowedTools.has(key) ? this.selItemsByCheck[checkKey].missing : this.selItems;
 				if (this.toolsByKey[key] && handleList.Count) {
-					const idx = this.tools.findIndex((tool) => { return tool.key === key; });
-					const tag = this.tools[idx].tag;
+					const tag = this.tagsByKey[key];
 					const itemTags = getHandleListTags(handleList, tag, { bMerged: true })
 						.map((tagArr) => mergeTags.has(key) ? tagArr.join(', ') : tagArr)
 						.flat(Infinity).filter(Boolean);
