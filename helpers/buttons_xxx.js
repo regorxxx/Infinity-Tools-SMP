@@ -655,7 +655,7 @@ function ThemedButton({
 						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, animation.colors[0]);
 					}
 					const now = Date.now();
-					if (now - animation.date > 2000) {
+					if (now - animation.date > 350) {
 						animation.animStep++;
 						animation.date = now;
 					}
@@ -778,7 +778,7 @@ function ThemedButton({
 
 	this.init();
 }
-const throttledRepaint = throttle((parent) => window.RepaintRect(parent.currX, parent.currY, parent.currW, parent.currH), 1000);
+const throttledRepaint = throttle((parent) => window.RepaintRect(parent.currX, parent.currY, parent.currW, parent.currH), 350);
 
 function drawAllButtons(gr) {
 	const orientation = buttonsBar.config.orientation.toLowerCase();
