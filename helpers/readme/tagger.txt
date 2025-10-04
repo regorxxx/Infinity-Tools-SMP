@@ -12,18 +12,11 @@
 	- Essentia (EBUR 128, Key, BPM & Danceness tags).
 
 Dependencies:
-	- Fooid plugin (foo_biometric)and binary file can be found at
-	 '.\_resources'	folder.
+	- Fooid plugin (foo_biometric) and binary file can be found at:
+	https://github.com/regorxxx/foobar2000-assets/tree/main/FooID
 
-	- Chromaprint dependencies should be already included within
-	this download and pre-installed.
-
-	- ffmpeg requires to download 'ffmpeg.exe' from the web and
-	place it into '[profile folder]\binaries\ffmpeg\ffmpeg.exe'.
-
-	- Essentia requires to download 'streaming_extractor_music.exe'
-	and 'essentia_streaming_key.exe' from the web and
-	place them into '[profile folder]\binaries\essentia\...'.
+	- Chromaprint, ffmpeg and Essentia binaries can be found at:
+	https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 
 	- For any other component related feature (foo_***), the plugin
 	needs to be installed first by the user. Some may be available
@@ -61,14 +54,17 @@ Processing order:
 	-> AudioMD5 -> ReplayGain - True Peak Scanner -> BPM
 
 Component Sources:
-	- foo_biometric: bundled with scripts ('.\_resources' folder).
+	- foo_biometric:
 	https://github.com/regorxxx/foobar2000-assets/tree/main/FooID
 
-	- Chromaprint: bundled with scripts (pre-installed).
+	- Chromaprint:
 	https://acoustid.org/chromaprint
+	https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 
 	- foo_masstag:
 	https://www.foobar2000.org/components/view/foo_masstag
+	.\presets\Masstagger\MD5.mts
+	.\presets\Masstagger\AUDIOMD5.mts
 
 	- foo_audiomd5:
 	https://foobar.hyv.fi/?view=foo_audiomd5
@@ -89,9 +85,11 @@ Component Sources:
 
 	- ffmpeg.
 	https://ffmpeg.org/download.html
+	https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 
 	- Essentia:
 	https://github.com/regorxxx/foobar2000-assets/tree/main/essentia-2.1b6
+	https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 
 Warning:
 	This was meant as a private tool, no further support provided.

@@ -23,6 +23,7 @@
 - Playlist tools\Selection Manipulation\Advanced sort: cleanup of some menu entries and code logic.
 - UI: updated icons for Playlist Tools submenu custom button for all new and renamed menus.
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
+- Binaries: external binaries are no longer bundled along scripts, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 - Settings: global support for %fb2k_component_path%, %fb2k_profile_path% and %fb2k_path% in any input asking for paths.
 - Autobackup: minimal allowed interval for saving set to 40 seconds. This is mostly an internal change to be on the safe side with foobar2000 v2.
 ### Removed
