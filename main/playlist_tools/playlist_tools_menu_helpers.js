@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/09/25
+//07/10/25
 
 /* exported overwritePanelProperties, loadProperties, createSubMenuEditEntries, lastActionEntry, focusFlags, playlistCountFlags, playlistCountFlagsRem, playlistCountFlagsAddRem, multipleSelectedFlags, multipleSelectedFlagsReorder, selectedFlags, selectedFlagsReorder, selectedFlagsRem, selectedFlagsAddRem, closeLock */
 
@@ -156,15 +156,15 @@ function createDefaultPreset(options /* name, propName, defaultPreset, defaults*
 function createSubMenuEditEntries(menuName, options /*{name, list, propName, defaults, defaultPreset, input, bAdd, bClone, bCopyCurrent, bImport, bDefaultFile, bUseFolders }*/) { // NOSONAR
 	const subMenuSecondName = menu.newMenu('Edit entries from list', menuName);
 	const optionsNames = new Set();
-	const folders = {};
+	const entryFolders = {};
 	const bAdd = !Object.hasOwn(options, 'bAdd') || options.bAdd;
 	const bClone = bAdd && !Object.hasOwn(options, 'bClone') || options.bClone;
 	const bImport = !Object.hasOwn(options, 'bImport') || options.bImport;
 	options.list.forEach((entry, index) => {
 		let parentMenu = subMenuSecondName;
 		if (options.bUseFolders && Object.hasOwn(entry, 'folder') && entry.folder.length) {
-			if (!Object.hasOwn(folders, entry.folder)) { folders[entry.folder] = menu.findOrNewMenu(entry.folder, parentMenu); }
-			parentMenu = folders[entry.folder];
+			if (!Object.hasOwn(entryFolders, entry.folder)) { entryFolders[entry.folder] = menu.findOrNewMenu(entry.folder, parentMenu); }
+			parentMenu = entryFolders[entry.folder];
 		}
 		const id = menu.isNotSeparator(entry) && optionsNames.has(entry.name)
 			? '\t' + _b('duplicated: ' + index)
