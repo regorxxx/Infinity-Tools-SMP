@@ -21,7 +21,7 @@
 					{	// Submenu
 						const subMenuName = menu.newMenu(name, menuName);
 						// Create new properties with previous args
-						menu_properties['importPlaylistPath'] = ['\'Other tools\\Import track list\' path', _foldPath(folders.data + 'track_list_to_import.txt')];
+						menu_properties['importPlaylistPath'] = ['\'Other tools\\Import track list\' path', _foldPath(folders.export + 'track_list_to_import.txt')];
 						menu_properties['importPlaylistMask'] = ['\'Other tools\\Import track list\' pattern', JSON.stringify(['. ', '%TITLE%', ' - ', globTags.artist])];
 						menu_properties['importPlaylistFilters'] = ['\'Other tools\\Import track list\' filters', JSON.stringify([globQuery.stereo, globQuery.notLowRating, globQuery.noLive, globQuery.noLiveNone])];
 						// Checks
