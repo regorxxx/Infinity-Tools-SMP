@@ -21,15 +21,16 @@
 ### Changed
 - Playlist Tools\Playlist Manipulation\Harmonic mix: cleanup of some menu entries and code logic.
 - Playlist Tools\Selection Manipulation\Advanced sort: cleanup of some menu entries and code logic.
-- Playlist Tools\Presets: are now saved at '.profile/js_data/export' folder when exported.
+- Playlist Tools\Presets: are now saved at '[FOOBAR PROFILE FOLDER]\js_data\export' folder when exported.
 - Playlist Tools\Presets: individual entries can now be exported at the 'Edit entries from list' submenus as long as they are not the default ones.
-- Playlist Tools: tools which output any file now use '.profile/js_data/export' folder at exporting.
+- Playlist Tools: tools which output any file now use '[FOOBAR PROFILE FOLDER]\js_data\export' folder at exporting.
 - UI: updated icons for Playlist Tools submenu custom button for all new and renamed menus.
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
 - Binaries: external binaries are no longer bundled along scripts, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 - Settings: global support for %fb2k_component_path%, %fb2k_profile_path% and %fb2k_path% in any input asking for paths.
 - Autobackup: minimal allowed interval for saving set to 40 seconds. This is mostly an internal change to be on the safe side with foobar2000 v2.
 - UI: animation while buttons are processing is now much faster.
+- Export settings: now uses '[FOOBAR PROFILE FOLDER]\js_data\export' folder at exporting.
 ### Removed
 ### Fixed
 - Autobackup: critical bugfix for '[Save] every x tracks' setting. If backup 'Every x tracks' was set to 0, the tool tried to save foobar2000 configuration every 30 seconds (the minimum interval allowed).
