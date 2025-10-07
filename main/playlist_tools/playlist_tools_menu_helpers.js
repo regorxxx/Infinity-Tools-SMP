@@ -345,7 +345,7 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 			menuName: subMenuSecondName, entryText: 'Export preset...', func: () => {
 				const answer = WshShell.Popup('This will export all user presets (but not the default ones) as a json file, which can be imported later in any Playlist Tools panel.\nThat file can be easily edited with a text editor to add, tune or remove entries.', 0, scriptName + ': ' + options.name, popup.question + popup.yes_no);
 				if (answer === popup.yes) {
-					const path = folders.data + options.propName + '_presets.json';
+					const path = folders.export + options.propName + '_presets.json';
 					_recycleFile(path, true);
 					const readme = 'Backup ' + new Date().toString();
 					if (_save(path, JSON.stringify({ readme, [options.propName]: presets[options.propName] }, null, '\t').replace(/\n/g, '\r\n'))) {
