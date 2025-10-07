@@ -1,5 +1,5 @@
 ﻿'use strict';
-//26/09/25
+//07/10/25
 
 /*
 	Playlist Tools Menu
@@ -30,7 +30,7 @@
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global checkCompatible:readable, folders:readable, globQuery:readable, globTags:readable, MF_GRAYED:readable, MF_STRING:readable, MF_MENUBARBREAK:readable, VK_SHIFT:readable, VK_CONTROL:readable, */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global _isFolder:readable, _createFolder:readable, _jsonParseFile:readable, utf8:readable, _save:readable */
+/* global _isFolder:readable, _createFolder:readable, _jsonParseFile:readable, utf8:readable, _save:readable, _foldPath:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global isJSON:readable, isBoolean:readable, isStringWeak:readable, isInt:readable, isString:readable, range:readable, _b:readable, _t:readable, isFunction:readable, isArrayStrings:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
@@ -212,7 +212,7 @@ addEventListener('on_notify_data', (name, info) => {
 					}
 				}
 				if (bDone) {
-					menu_panelProperties.playlistPath[1] = JSON.stringify(playlistPath);
+					menu_panelProperties.playlistPath[1] = JSON.stringify(playlistPath.map((p) => _foldPath(p)));
 					overwritePanelProperties(); // Updates panel
 				}
 			}
