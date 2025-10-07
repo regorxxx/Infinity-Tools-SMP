@@ -1,9 +1,9 @@
 ﻿'use strict';
-//30/09/25
+//07/10/25
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, multipleSelectedFlagsReorder:readable, isStringWeak:readable, isBoolean:readable, MF_STRING:readable, isPlayCount:readable, Input:readable, playlistCountFlags:readable, selectedFlagsAddRem:readable, _p:readable, _qCond:readable, range:readable, focusInPlaylist:readable, isInt:readable, addLock:readable, selectedFlagsReorder:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, selectedFlags:readable, playlistCountFlagsRem:readable, isFunction:readable, selectedFlagsRem:readable, _t:readable, getHandleListTagsTyped:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, multipleSelectedFlagsReorder:readable, isStringWeak:readable, isBoolean:readable, MF_STRING:readable, Input:readable, playlistCountFlags:readable, selectedFlagsAddRem:readable, _p:readable, _qCond:readable, range:readable, focusInPlaylist:readable, isInt:readable, addLock:readable, selectedFlagsReorder:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, selectedFlags:readable, playlistCountFlagsRem:readable, isFunction:readable, selectedFlagsRem:readable, _t:readable, getHandleListTagsTyped:readable */
 
 // Selection manipulation
 {
@@ -542,6 +542,9 @@
 					if (!Object.hasOwn(menu_properties, 'smartShuffleSortBias')) {
 						menu_properties['smartShuffleSortBias'] = ['Smart shuffle sorting bias', 'random', { func: isStringWeak }, 'random'];
 					}
+					if (!Object.hasOwn(menu_properties, 'smartShuffleTag')) {
+						menu_properties['smartShuffleTag'] = ['Smart shuffle tag', JSON.stringify([globTags.artist]), { func: isJSON }, JSON.stringify([globTags.artist])];
+					}
 					// Helpers
 					const inputShuffle = (bCopyCurrent = false) => {
 						let tagName = '';
@@ -628,69 +631,7 @@
 						}
 					});
 					if (!Object.hasOwn(menusEnabled, configMenu) || menusEnabled[configMenu] === true) {
-						const subMenuName = 'Smart shuffle';
-						if (!menu.hasMenu(subMenuName, configMenu)) {
-							menu.newMenu(subMenuName, configMenu);
-							{	// bSmartShuffleAdvc
-								menu.newEntry({ menuName: subMenuName, entryText: 'For any tool which uses Smart Shuffle:', func: null, flags: MF_GRAYED });
-								menu.newSeparator(subMenuName);
-								menu.newEntry({
-									menuName: subMenuName, entryText: 'Enable extra conditions', func: () => {
-										menu_properties.bSmartShuffleAdvc[1] = !menu_properties.bSmartShuffleAdvc[1];
-										if (menu_properties.bSmartShuffleAdvc[1]) {
-											fb.ShowPopupMessage(
-												'Smart shuffle will also try to avoid consecutive tracks with these conditions:' +
-												'\n\t-Instrumental tracks.' +
-												'\n\t-Live tracks.' +
-												'\n\t-Female/male vocals tracks.' +
-												'\n\nThese rules apply in addition to the main smart shuffle, swapping tracks' +
-												'\nposition whenever possible without altering the main logic.'
-												, scriptName + ': ' + configMenu
-											);
-										}
-										overwriteMenuProperties(); // Updates panel
-									}
-								});
-								menu.newCheckMenu(subMenuName, 'Enable extra conditions', void (0), () => { return menu_properties.bSmartShuffleAdvc[1]; });
-								{
-									const subMenuNameSecond = menu.newMenu('Sorting bias', subMenuName);
-									const options = [
-										{ key: 'Random', flags: MF_STRING },
-										{ key: 'Play count', flags: isPlayCount ? MF_STRING : MF_GRAYED, req: 'foo_playcount' },
-										{ key: 'Rating', flags: MF_STRING },
-										{ key: 'Popularity', flags: utils.GetPackageInfo('{F5E9D9EB-42AD-4A47-B8EE-C9877A8E7851}') ? MF_STRING : MF_GRAYED, req: 'Find & Play' },
-										{ key: 'Last played', flags: isPlayCount ? MF_STRING : MF_GRAYED, req: 'foo_playcount' },
-										{ key: 'Key', flags: MF_STRING },
-										{ key: 'Key 6A centered', flags: MF_STRING },
-									];
-									menu.newEntry({ menuName: subMenuNameSecond, entryText: 'Prioritize tracks by:', flags: MF_GRAYED });
-									menu.newSeparator(subMenuNameSecond);
-									options.forEach((opt) => {
-										const tf = opt.key.replace(/ /g, '').toLowerCase();
-										menu.newEntry({
-											menuName: subMenuNameSecond, entryText: opt.key + (opt.flags ? '\t' + opt.req : ''), func: () => {
-												menu_properties.smartShuffleSortBias[1] = tf;
-												overwriteMenuProperties(); // Updates panel
-											}, flags: opt.flags
-										});
-									});
-									menu.newSeparator(subMenuNameSecond);
-									menu.newEntry({
-										menuName: subMenuNameSecond, entryText: 'Custom TF...', func: () => {
-											const input = Input.string('string', menu_properties.smartShuffleSortBias[1], 'Enter TF expression:', scriptName + ': ' + name, menu_properties.smartShuffleSortBias[3]);
-											if (input === null) { return; }
-											menu_properties.smartShuffleSortBias[1] = input;
-											overwriteMenuProperties(); // Updates panel
-										}
-									});
-									menu.newCheckMenu(subMenuNameSecond, options[0].key, 'Custom TF...', () => {
-										const idx = options.findIndex((opt) => opt.key.replace(/ /g, '').toLowerCase() === menu_properties.smartShuffleSortBias[1]);
-										return idx !== -1 ? idx : options.length;
-									});
-								}
-							}
-							menu.newSeparator(configMenu);
-						}
+						createSmartShuffleMenu(menu);
 					} else { menuDisabled.push({ menuName: configMenu, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 				} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 			}

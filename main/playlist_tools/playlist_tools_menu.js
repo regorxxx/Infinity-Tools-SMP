@@ -313,8 +313,6 @@ include('playlist_tools_menu_std_queries.js');
 // Dynamic queries
 include('playlist_tools_menu_dyn_queries.js');
 
-// Music Map special playlists
-include('playlist_tools_menu_music_map.js');
 
 // Special Playlists
 {	// Create it if it was not already created. Contains entries from multiple scripts
@@ -338,6 +336,9 @@ include('playlist_tools_menu_tagging.js');
 
 // Other tools
 include('playlist_tools_menu_other_tools.js');
+
+// Music Map special playlists
+include('playlist_tools_menu_music_map.js');
 
 // Pools
 include('playlist_tools_menu_pools.js');

@@ -17,6 +17,8 @@
 - Playlist Tools\Selection Manipulation\Expand (contiguous): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to contiguous tracks, thus ensuring joint selections.
 - Playlist Tools\Selection Manipulation\Expand (next): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to next tracks to focused one.
 - Playlist Tools: added default value for duplicates selection and smart shuffle bias.
+- Playlist Tools: added setting for Smart Shuffle tag.
+- Playlist Tools: added missing settings from Music Map.
 - Music Map: added default value for duplicates selection and smart shuffle bias.
 - Autobackup: added a flag to mark specific folders/files to be copied before creating the zipped backup file (with the copy, instead of the original one). This is mostly an internal change to be on the safe side with foobar2000 v2, since compressing a file seems to also block it and foobar2000 v2 seems to have problems in some cases in this situation. See [here](https://hydrogenaudio.org/index.php/topic,128527.0.html). Note defaults settings must be restored at the files and folders submenu to apply this flag.
 - Autobackup: added settings to add extra CMD arguments to 7za processing. For ex. to change the compression level to no compression, use '-mx0'. The full list of commands can be seen [here](https://7-zip.opensource.jp/chm/cmdline/commands/add.htm).

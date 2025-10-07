@@ -1,11 +1,11 @@
 ﻿'use strict';
 //07/10/25
 
-/* exported overwritePanelProperties, loadProperties, createSubMenuEditEntries, lastActionEntry, focusFlags, playlistCountFlags, playlistCountFlagsRem, playlistCountFlagsAddRem, multipleSelectedFlags, multipleSelectedFlagsReorder, selectedFlags, selectedFlagsReorder, selectedFlagsRem, selectedFlagsAddRem, closeLock */
+/* exported overwritePanelProperties, loadProperties, createSubMenuEditEntries, lastActionEntry, focusFlags, playlistCountFlags, playlistCountFlagsRem, playlistCountFlagsAddRem, multipleSelectedFlags, multipleSelectedFlagsReorder, selectedFlags, selectedFlagsReorder, selectedFlagsRem, selectedFlagsAddRem, closeLock, createTagMenu, createSmartShuffleMenu */
 
-/* global configMenu:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, defaultArgs:readable, menu_panelProperties:readable,  shortcutsPath:readable, presets:writable, menu_prefix_panel:readable, shortcuts:writable, menu_propertiesBack:writable, menu_panelPropertiesBack:writable, menu_prefix:readable, deferFunc:readable */ // eslint-disable-line no-unused-vars
+/* global configMenu:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, defaultArgs:readable, menu_panelProperties:readable,  shortcutsPath:readable, presets:writable, menu_prefix_panel:readable, shortcuts:writable, menu_propertiesBack:writable, menu_panelPropertiesBack:writable, menu_prefix:readable, deferFunc:readable, isPlayCount:readable */ // eslint-disable-line no-unused-vars
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, utf8:readable, _save:readable, _explorer:readable, _jsonParseFileCheck:readable, WshShell:readable, popup:readable, MF_STRING:readable, _recycleFile:readable, _open:readable, setProperties:readable, doOnce:readable, getPropertiesPairs:readable, overwriteProperties:readable, isFunction:readable, clone:readable, _q:readable, compareObjects:readable , debounce:readable, _b:readable, tagsCache:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, utf8:readable, _save:readable, _explorer:readable, _jsonParseFileCheck:readable, WshShell:readable, popup:readable, MF_STRING:readable, _recycleFile:readable, _open:readable, setProperties:readable, doOnce:readable, getPropertiesPairs:readable, overwriteProperties:readable, isFunction:readable, clone:readable, _q:readable, compareObjects:readable , debounce:readable, _b:readable, tagsCache:readable, Input:readable */
 
 /*
 	Helpers
@@ -500,4 +500,110 @@ function removeLock(idx = plman.ActivePlaylist) {
 }
 function closeLock(idx = plman.ActivePlaylist) {
 	return flagsCache.getLock(idx).has('RemovePlaylist');
+}
+
+const createTagMenu = (menuName, options, flag = [], hook = null, entryNames = [], info = []) => {
+	options.forEach((key, i) => {
+		if (menu.isSeparator(key)) { menu.newSeparator(menuName); return; }
+		const idxEnd = menu_properties[key][0].indexOf('(');
+		const value = JSON.parse(menu_properties[key][1]).join(',');
+		const entryText = (
+			entryNames[i] ||
+			menu_properties[key][0].substring(menu_properties[key][0].indexOf('.') + 1, idxEnd !== -1
+				? idxEnd - 1
+				: Infinity
+			)
+		).replace('\'Music Map\' ', '') + '...' + '\t[' +
+			(
+				typeof value === 'string'
+					? value.length ? value.cut(10) : '-disabled-'
+					: value
+			) + ']';
+		menu.newEntry({
+			menuName, entryText, func: () => {
+				const example = '["GENRE","GENRE2"]';
+				const input = Input.json('array strings', JSON.parse(menu_properties[key][1]), 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example + (info[i] ? info[i] : ''), scriptName + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true);
+				if (input === null) { return; }
+				menu_properties[key][1] = input.length === 1 && input[0].toUpperCase() === 'DEFAULT'
+					? menu_properties[key][3]
+					: JSON.stringify(input);
+				if (hook) { hook(key, i, menu_properties); }
+				overwriteMenuProperties; // Updates panel
+			}, flags: (flag[i] !== void (0) ? flag[i] : false) ? MF_GRAYED : MF_STRING
+		});
+	});
+};
+
+function createSmartShuffleMenu(menu) {
+	const subMenuName = 'Smart shuffle';
+	if (!menu.hasMenu(subMenuName, configMenu)) {
+		menu.newMenu(subMenuName, configMenu);
+		{	// bSmartShuffleAdvc
+			menu.newEntry({ menuName: subMenuName, entryText: 'For any tool which uses Smart Shuffle:', func: null, flags: MF_GRAYED });
+			menu.newSeparator(subMenuName);
+			menu.newEntry({
+				menuName: subMenuName, entryText: 'Enable extra conditions', func: () => {
+					menu_properties.bSmartShuffleAdvc[1] = !menu_properties.bSmartShuffleAdvc[1];
+					if (menu_properties.bSmartShuffleAdvc[1]) {
+						fb.ShowPopupMessage(
+							'Smart shuffle will also try to avoid consecutive tracks with these conditions:' +
+							'\n\t-Instrumental tracks.' +
+							'\n\t-Live tracks.' +
+							'\n\t-Female/male vocals tracks.' +
+							'\n\nThese rules apply in addition to the main smart shuffle, swapping tracks' +
+							'\nposition whenever possible without altering the main logic.'
+							, scriptName + ': ' + configMenu
+						);
+					}
+					overwriteMenuProperties(); // Updates panel
+				}
+			});
+			menu.newCheckMenu(subMenuName, 'Enable extra conditions', void (0), () => { return menu_properties.bSmartShuffleAdvc[1]; });
+			{
+				const subMenuNameSecond = menu.newMenu('Sorting bias', subMenuName);
+				const options = [
+					{ key: 'Random', flags: MF_STRING },
+					{ key: 'Play count', flags: isPlayCount ? MF_STRING : MF_GRAYED, req: 'foo_playcount' },
+					{ key: 'Rating', flags: MF_STRING },
+					{ key: 'Popularity', flags: utils.GetPackageInfo('{F5E9D9EB-42AD-4A47-B8EE-C9877A8E7851}') ? MF_STRING : MF_GRAYED, req: 'Find & Play' },
+					{ key: 'Last played', flags: isPlayCount ? MF_STRING : MF_GRAYED, req: 'foo_playcount' },
+					{ key: 'Key', flags: MF_STRING },
+					{ key: 'Key 6A centered', flags: MF_STRING },
+				];
+				menu.newEntry({ menuName: subMenuNameSecond, entryText: 'Prioritize tracks by:', flags: MF_GRAYED });
+				menu.newSeparator(subMenuNameSecond);
+				options.forEach((opt) => {
+					const tf = opt.key.replace(/ /g, '').toLowerCase();
+					menu.newEntry({
+						menuName: subMenuNameSecond, entryText: opt.key + (opt.flags ? '\t' + opt.req : ''), func: () => {
+							menu_properties.smartShuffleSortBias[1] = tf;
+							overwriteMenuProperties(); // Updates panel
+						}, flags: opt.flags
+					});
+				});
+				menu.newSeparator(subMenuNameSecond);
+				menu.newEntry({
+					menuName: subMenuNameSecond, entryText: 'Custom TF...', func: () => {
+						const input = Input.string('string', menu_properties.smartShuffleSortBias[1], 'Enter TF expression:', scriptName, menu_properties.smartShuffleSortBias[3]);
+						if (input === null) { return; }
+						menu_properties.smartShuffleSortBias[1] = input;
+						overwriteMenuProperties(); // Updates panel
+					}
+				});
+				menu.newCheckMenu(subMenuNameSecond, options[0].key, 'Custom TF...', () => {
+					const idx = options.findIndex((opt) => opt.key.replace(/ /g, '').toLowerCase() === menu_properties.smartShuffleSortBias[1]);
+					return idx !== -1 ? idx : options.length;
+				});
+			}
+			createTagMenu(subMenuName, ['smartShuffleTag'],
+				void (0), void (0), ['Shuffle by tag'],
+				[
+					'\n\nTag(s) used for smart shuffle sorting. To enable/disable it, directly use the related sorting setting.',
+					null,
+					'\n\nThese genre/style values will be filtered globally and not considered neither for tag similarity scoring nor for genre/style variation analysis.'
+				]
+			);
+		}
+		menu.newSeparator(configMenu);
+	}
 }

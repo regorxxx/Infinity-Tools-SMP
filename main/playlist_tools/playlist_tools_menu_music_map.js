@@ -1,14 +1,14 @@
 ﻿'use strict';
-//17/09/25
+//07/10/25
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, configMenu:readable, specialMenu:readable, deferFunc:readable, menu_propertiesBack:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, configMenu:readable, specialMenu:readable, deferFunc:readable, menu_propertiesBack:readable, createSmartShuffleMenu:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable,  isStringWeak:readable, isBoolean:readable, MF_STRING:readable, isPlayCount:readable, Input:readable, doOnce:readable, debounce:readable, globQuery:readable, globQuery:readable, capitalize:readable, capitalizeAll:readable, focusFlags:readable, popup:readable, WshShell:readable, isFoobarV2:readable, isArrayEqual:readable */
+/* global MF_GRAYED:readable, folders:readable, globTags:readable, _isFile:readable,  isStringWeak:readable, isBoolean:readable, MF_STRING:readable,Input:readable, doOnce:readable, debounce:readable, globQuery:readable, globQuery:readable, capitalize:readable, capitalizeAll:readable, focusFlags:readable, popup:readable, WshShell:readable, isFoobarV2:readable, isArrayEqual:readable, isJSON:readable */
 
 // Music Map
 {
 	const scriptPath = folders.xxx + 'main\\search_by_distance\\search_by_distance.js';
-	/* global SearchByDistance_properties:readable, updateCache:readable, sbd:readable, findStyleGenresMissingGraphCheck:readable, searchByDistance:readable, findStyleGenresMissingGraph:readable, music_graph_descriptors_culture:readable, graphDebug:readable, testGraphNodes:readable, testGraphNodeSets:readable, testGraphNodeSetsWithPath:readable, testGraphCulture:readable, cacheLink:writable, cacheLinkSet:writable, tagsCache:readable */ // eslint-disable-line no-unused-vars
+	/* global SearchByDistance_properties:readable, updateCache:readable, sbd:readable, findStyleGenresMissingGraphCheck:readable, searchByDistance:readable, findStyleGenresMissingGraph:readable, music_graph_descriptors_culture:readable, graphDebug:readable, testGraphNodes:readable, testGraphNodeSets:readable, testGraphNodeSetsWithPath:readable, testGraphCulture:readable, cacheLink:writable, cacheLinkSet:writable, tagsCache:readable, calculateSimilarArtistsFromPls:readable, writeSimilarArtistsTags:readable */ // eslint-disable-line no-unused-vars
 	if (_isFile(scriptPath)) {
 		if (!Object.hasOwn(menusEnabled, specialMenu) || menusEnabled[specialMenu] || !Object.hasOwn(menusEnabled, 'Pools (Music Map)') || menusEnabled['Pools (Music Map)']) {
 			if (!Object.hasOwn(menu_properties, 'bHarmonicMixDoublePass')) { menu_properties['bHarmonicMixDoublePass'] = ['Harmonic mixing double pass to match more tracks', true]; }
@@ -18,11 +18,11 @@
 			// Delete unused properties
 			const toAdd = ['bAscii', 'bTagsCache', 'tags', 'genreStyleFilterTag', 'folksonomyWhitelistTag', 'folksonomyBlacklistTag', 'filePaths'];
 			let toMerge = {}; // Deep copy
-			Object.keys(SearchByDistance_properties).forEach((key) => {
-				if (toAdd.includes(key)) {
+			toAdd.forEach((key) => {
+				if (Object.hasOwn(SearchByDistance_properties, key)) {
 					toMerge[key] = [...SearchByDistance_properties[key]];
 					toMerge[key][0] = '\'Music Map\' ' + toMerge[key][0];
-				}
+				} else { console.log(scriptName + ': error merging music map property (' + key + ')'); }
 			});
 			// Run once at startup
 			deferFunc.push({
@@ -42,6 +42,9 @@
 			}
 			if (!Object.hasOwn(menu_properties, 'smartShuffleSortBias')) {
 				menu_properties['smartShuffleSortBias'] = ['Smart shuffle sorting bias', 'random', { func: isStringWeak }, 'random'];
+			}
+			if (!Object.hasOwn(menu_properties, 'smartShuffleTag')) {
+				menu_properties['smartShuffleTag'] = ['Smart shuffle tag', JSON.stringify([globTags.artist]), { func: isJSON }, JSON.stringify([globTags.artist])];
 			}
 			// Set default args
 			const scriptDefaultArgs = { properties: menu_properties, bNegativeWeighting: true, bUseAntiInfluencesFilter: false, bUseInfluencesFilter: false, method: '', scoreFilter: 70, graphDistance: 100, poolFilteringTag: [], poolFilteringN: -1, bPoolFiltering: false, bRandomPick: true, bInversePick: false, probPick: 100, bSortRandom: false, bProgressiveListOrder: false, bInverseListOrder: false, bScatterInstrumentals: false, bSmartShuffle: true, bSmartShuffleAdvc: menu_properties.bSmartShuffleAdvc[1], smartShuffleSortBias: menu_properties.smartShuffleSortBias[1], artistRegionFilter: -1, bInKeyMixingPlaylist: false, bProgressiveListCreation: false, progressiveListCreationN: 1, bCreatePlaylist: true };
@@ -133,8 +136,61 @@
 					loadMenus(specialMenu, selArgs);
 				}
 			}
+			if (!Object.hasOwn(menusEnabled, 'Tagging') || menusEnabled['Tagging']) {
+				// Similar Artists
+				menu.newSeparator('Tagging');
+				const subMenu = menu.newMenu(sbd.name, 'Tagging');
+				menu.newEntry({
+					menuName: subMenu, entryText: 'Calculate similar artists tag', func: () => {
+						calculateSimilarArtistsFromPls({
+							items: plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
+							properties: Object.fromEntries(toAdd.map((key) => {
+								return Object.hasOwn(menu_properties, key)
+									? [key, [...menu_properties[key]]]
+									: null;
+							}).filter(Boolean))
+						});
+					}
+				});
+				menu.newEntry({
+					menuName: subMenu, entryText: 'Write similar artists tag', func: () => {
+						writeSimilarArtistsTags({ file: folders.data + 'searchByDistance_artists.json', tagName: globTags.sbdSimilarArtist, windowName: scriptName + ': Write similar artists tag' });
+					}, flags: _isFile(folders.data + 'searchByDistance_artists.json') ? MF_STRING : MF_GRAYED
+				});
+			}
 			{	// -> Config menu
 				if (!Object.hasOwn(menusEnabled, configMenu) || menusEnabled[configMenu] === true) {
+					const createTagMenu = (menuName, options, flag = [], hook = null, entryNames = [], info = []) => {
+						options.forEach((key, i) => {
+							if (menu.isSeparator(key)) { menu.newSeparator(menuName); return; }
+							const idxEnd = menu_properties[key][0].indexOf('(');
+							const value = JSON.parse(menu_properties[key][1]).join(',');
+							const entryText = (
+								entryNames[i] ||
+								menu_properties[key][0].substring(menu_properties[key][0].indexOf('.') + 1, idxEnd !== -1
+									? idxEnd - 1
+									: Infinity
+								)
+							).replace('\'Music Map\' ', '') + '...' + '\t[' +
+								(
+									typeof value === 'string'
+										? value.length ? value.cut(10) : '-disabled-'
+										: value
+								) + ']';
+							menu.newEntry({
+								menuName, entryText, func: () => {
+									const example = '["GENRE","GENRE2"]';
+									const input = Input.json('array strings', JSON.parse(menu_properties[key][1]), 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example + (info[i] ? info[i] : ''), sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true);
+									if (input === null) { return; }
+									menu_properties[key][1] = input.length === 1 && input[0].toUpperCase() === 'DEFAULT'
+										? menu_properties[key][3]
+										: JSON.stringify(input);
+									if (hook) { hook(key, i, menu_properties); }
+									overwriteMenuProperties; // Updates panel
+								}, flags: (flag[i] !== void (0) ? flag[i] : false) ? MF_GRAYED : MF_STRING
+							});
+						});
+					};
 					{
 						const subMenu = menu.newMenu(sbd.name, configMenu);
 						{
@@ -187,12 +243,32 @@
 										});
 										[configSubmenu, submenuTwo].forEach((sm) => {
 											menu.newSeparator(sm);
+											{
+												createTagMenu(sm, ['genreStyleFilterTag'], void (0), void (0), void (0), [
+													'\n\nThese genre/style values will be filtered globally and not considered neither for tag similarity scoring nor for genre/style variation analysis.'
+												]);
+												menu.newCheckMenuLast(() => !!JSON.parse(menu_properties.genreStyleFilterTag[1]).length);
+											}
+											{
+												createTagMenu(sm, ['folksonomyWhitelistTag'], void (0), void (0), void (0), [
+													'\n\nOnly these values will be used when comparing folksonomy tags. Anything not listed here will be ignored.'
+												]);
+												menu.newCheckMenuLast(() => !!JSON.parse(menu_properties.folksonomyWhitelistTag[1]).length);
+												createTagMenu(sm, ['folksonomyBlacklistTag'], void (0), void (0), void (0), [
+													'\n\nThese values will be filtered when comparing folksonomy tags. Anything not listed here will used.'
+												]);
+												menu.newCheckMenuLast(() => !!JSON.parse(menu_properties.folksonomyBlacklistTag[1]).length && !JSON.parse(menu_properties.folksonomyWhitelistTag[1]).length);
+											}
+										});
+										[configSubmenu, submenuTwo].forEach((sm) => {
+											menu.newSeparator(sm);
 											{	// Cache
 												const options = ['bAscii', 'bTagsCache'];
 												options.forEach((key) => {
+													if (key === 'bTagsCache') { return; }
 													const propObj = key === 'bTagsCache' ? sbd.panelProperties : menu_properties;
 													const keyText = propObj[key][0];
-													const entryText = (keyText.substring(keyText.indexOf('.') + 1) + (key === 'bTagsCache' && !isFoobarV2 ? '\t-only Fb >= 2.0-' : '')).replace('\'Search similar\' ', '');
+													const entryText = (keyText.substring(keyText.indexOf('.') + 1).replace('\'Music Map\' ', '') + (key === 'bTagsCache' && !isFoobarV2 ? '\t-only Fb >= 2.0-' : '')).replace('\'Search similar\' ', '');
 													menu.newEntry({
 														menuName: sm, entryText, func: () => {
 															propObj[key][1] = !propObj[key][1];
@@ -280,71 +356,7 @@
 							}
 						}
 					}
-					{
-						const subMenuName = 'Smart shuffle';
-						if (!menu.hasMenu(subMenuName, configMenu)) {
-							menu.newMenu(subMenuName, configMenu);
-							{	// bSmartShuffleAdvc
-								menu.newEntry({ menuName: subMenuName, entryText: 'For any tool which uses Smart Shuffle:', func: null, flags: MF_GRAYED });
-								menu.newSeparator(subMenuName);
-								menu.newEntry({
-									menuName: subMenuName, entryText: 'Enable extra conditions', func: () => {
-										menu_properties.bSmartShuffleAdvc[1] = !menu_properties.bSmartShuffleAdvc[1];
-										if (menu_properties.bSmartShuffleAdvc[1]) {
-											fb.ShowPopupMessage(
-												'Smart shuffle will also try to avoid consecutive tracks with these conditions:' +
-												'\n\t-Instrumental tracks.' +
-												'\n\t-Live tracks.' +
-												'\n\t-Female/male vocals tracks.' +
-												'\n\nThese rules apply in addition to the main smart shuffle, swapping tracks' +
-												'\nposition whenever possible without altering the main logic.'
-												, scriptName + ': ' + configMenu
-											);
-										}
-										overwriteMenuProperties(); // Updates panel
-									}
-								});
-								menu.newCheckMenu(subMenuName, 'Enable extra conditions', void (0), () => { return menu_properties.bSmartShuffleAdvc[1]; });
-								{
-									const subMenuNameSecond = menu.newMenu('Sorting bias', subMenuName);
-									const options = [
-										{ key: 'Random', flags: MF_STRING },
-										{ key: 'Play count', flags: isPlayCount ? MF_STRING : MF_GRAYED, req: 'foo_playcount' },
-										{ key: 'Rating', flags: MF_STRING },
-										{ key: 'Popularity', flags: utils.GetPackageInfo('{F5E9D9EB-42AD-4A47-B8EE-C9877A8E7851}') ? MF_STRING : MF_GRAYED, req: 'Find & Play' },
-										{ key: 'Last played', flags: isPlayCount ? MF_STRING : MF_GRAYED, req: 'foo_playcount' },
-										{ key: 'Key', flags: MF_STRING },
-										{ key: 'Key 6A centered', flags: MF_STRING },
-									];
-									menu.newEntry({ menuName: subMenuNameSecond, entryText: 'Prioritize tracks by:', flags: MF_GRAYED });
-									menu.newSeparator(subMenuNameSecond);
-									options.forEach((opt) => {
-										const tf = opt.key.replace(/ /g, '').toLowerCase();
-										menu.newEntry({
-											menuName: subMenuNameSecond, entryText: opt.key + (opt.flags ? '\t' + opt.req : ''), func: () => {
-												menu_properties.smartShuffleSortBias[1] = tf;
-												overwriteMenuProperties(); // Updates panel
-											}, flags: opt.flags
-										});
-									});
-									menu.newSeparator(subMenuNameSecond);
-									menu.newEntry({
-										menuName: subMenuNameSecond, entryText: 'Custom TF...', func: () => {
-											const input = Input.string('string', menu_properties.smartShuffleSortBias[1], 'Enter TF expression:', sbd.name, menu_properties.smartShuffleSortBias[3]);
-											if (input === null) { return; }
-											menu_properties.smartShuffleSortBias[1] = input;
-											overwriteMenuProperties(); // Updates panel
-										}
-									});
-									menu.newCheckMenu(subMenuNameSecond, options[0].key, 'Custom TF...', () => {
-										const idx = options.findIndex((opt) => opt.key.replace(/ /g, '').toLowerCase() === menu_properties.smartShuffleSortBias[1]);
-										return idx !== -1 ? idx : options.length;
-									});
-								}
-							}
-							menu.newSeparator(configMenu);
-						}
-					}
+					createSmartShuffleMenu(menu);
 				} else { menuDisabled.push({ menuName: configMenu, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); } // NOSONAR [global]
 			}
 		}
