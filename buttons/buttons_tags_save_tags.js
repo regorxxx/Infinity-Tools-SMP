@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//07/10/25
 
 /*
 	-> EDIT
@@ -41,7 +41,7 @@ addButton({
 			const readme = _open(readmePath, utf8);
 			if (readme.length) { fb.ShowPopupMessage(readme, 'Save tags and comparison'); }
 			let file;
-			try { file = utils.InputBox(window.ID, 'Path to save JSON tags file:', 'Tags file', folders.data + 'tags.json', true); }
+			try { file = utils.InputBox(window.ID, 'Path to save JSON tags file:', 'Tags file', folders.export + 'tags.json', true); }
 			catch (e) { return; } // eslint-disable-line no-unused-vars
 			if (!file.length) { return; }
 			saveTags({ file });
@@ -55,7 +55,7 @@ addButton({
 		text: 'Compare tags',
 		func: function () {
 			let file;
-			try { file = utils.InputBox(window.ID, 'JSON tags file to load:', 'Tags file', folders.data + 'tags.json', true); }
+			try { file = utils.InputBox(window.ID, 'JSON tags file to load:', 'Tags file', folders.export + 'tags.json', true); }
 			catch (e) { return; } // eslint-disable-line no-unused-vars
 			if (!file.length) { return; }
 			const toTags = _jsonParseFileCheck(file, 'Tags file', 'Save tags', utf8);

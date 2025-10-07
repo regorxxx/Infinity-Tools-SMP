@@ -1,5 +1,5 @@
 ﻿'use strict';
-//18/09/25
+//07/10/25
 
 /* global menusEnabled:readable, configMenu:readable, readmes:readable, menu:readable, newReadmeSep:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, menu_propertiesBack:readable, menu_panelProperties:readable, overwritePanelProperties:readable, shortcutsPath:readable, importPreset:readable, presets:writable, menu_panelPropertiesBack:readable, loadProperties:readable, overwriteDefaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, specialMenu:readable */
 
@@ -339,7 +339,7 @@
 				menuName: configMenu, entryText: 'Export all user presets... ', func: () => {
 					const answer = WshShell.Popup('This will export all user presets (but not the default ones) as a json file, which can be imported later in any Playlist Tools panel.\nThat file can be easily edited with a text editor to add, tune or remove entries. Presets can also be manually deleted in their associated menu.', 0, scriptName + ': ' + configMenu, popup.question + popup.yes_no);
 					if (answer === popup.yes) {
-						const path = folders.data + 'playlistTools_presets.json';
+						const path = folders.export + 'playlistTools_presets.json';
 						_recycleFile(path, true);
 						const readme = 'Backup ' + new Date().toString();
 						if (_save(path, JSON.stringify({ readme, ...presets }, null, '\t').replace(/\n/g, '\r\n'))) {
@@ -354,7 +354,7 @@
 		{	// Reset all config
 			menu.newEntry({
 				menuName: configMenu, entryText: 'Reset all configuration... ', func: () => {
-					const path = folders.data + 'playlistTools_presets.json';
+					const path = folders.export + 'playlistTools_presets.json';
 					const answer = WshShell.Popup('Are you sure you want to restore all configuration to default?\nWill delete any related property, user saved menus, etc..', 0, scriptName + ': ' + configMenu, popup.question + popup.yes_no);
 					if (answer === popup.yes) {
 						const answerPresets = WshShell.Popup('Do you want to maintain your own presets?\n(\'No\' will create a backup file in ' + path + ')', 0, scriptName + ': ' + configMenu, popup.question + popup.yes_no);

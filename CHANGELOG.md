@@ -23,6 +23,7 @@
 - Playlist Tools\Selection Manipulation\Advanced sort: cleanup of some menu entries and code logic.
 - Playlist Tools\Presets: are now saved at '.profile/js_data/export' folder when exported.
 - Playlist Tools\Presets: individual entries can now be exported at the 'Edit entries from list' submenus as long as they are not the default ones.
+- Playlist Tools: tools which output any file now use '.profile/js_data/export' folder at exporting.
 - UI: updated icons for Playlist Tools submenu custom button for all new and renamed menus.
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
 - Binaries: external binaries are no longer bundled along scripts, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
