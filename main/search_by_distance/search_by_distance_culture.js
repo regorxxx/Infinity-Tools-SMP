@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/09/25
+//07/10/25
 
 /* exported getArtistsSameZone, getZoneArtistFilter, getZoneGraphFilter */
 
@@ -14,7 +14,7 @@ include('..\\world_map\\world_map_tables.js');
 /* global getCountryISO:readable, isoMapRev:readable , nameReplacersRev:readable */
 
 // Similar culture zone
-function getLocaleFromId(id, worldMapData = '.\\profile\\' + folders.dataName + 'worldMap.json') {
+function getLocaleFromId(id, worldMapData = folders.data + 'worldMap.json') {
 	const dataId = 'artist';
 	if (typeof worldMapData === 'string') {
 		if (_isFile(worldMapData)) {
@@ -118,7 +118,7 @@ function getCountriesFromISO(iso, mode) {
 		: [filterNodes, oppositeNodes];
 }
 
-function getZoneArtistFilter(iso, mode = 'region', worldMapData = '.\\profile\\' + folders.dataName + 'worldMap.json', localeTag = globTags.locale) {
+function getZoneArtistFilter(iso, mode = 'region', worldMapData = folders.data + 'worldMap.json', localeTag = globTags.locale) {
 	// Retrieve artist
 	const dataId = 'artist';
 	// Retrieve world map data

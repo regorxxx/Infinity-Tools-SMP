@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//07/10/25
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -48,7 +48,7 @@ var bLoadTags = true; // NOSONAR [shared on files]
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global isFoobarV2:readable, checkCompatible:readable, globTags:readable, folders:readable, globQuery:readable, iDelayLibrary:readable */
 /* global debounce:readable, doOnce:readable, clone:readable , memoize:readable */
-/* global _isFile:readable, _deleteFile:readable, utf8:readable, _open:readable, _save:readable, _jsonParseFileCheck:readable, WshShell:readable, popup:readable, findRecursiveFile:readable, _copyFile:readable */
+/* global _isFile:readable, _deleteFile:readable, utf8:readable, _open:readable, _save:readable, _jsonParseFileCheck:readable, WshShell:readable, popup:readable, findRecursiveFile:readable, _copyFile:readable, _foldPath:readable */
 /* global memoryPrint:readable */
 include('..\\..\\helpers\\helpers_xxx_crc.js');
 /* global crc32:readable */
@@ -161,9 +161,9 @@ const SearchByDistance_properties = {
 	folksonomyBlacklistTag: ['Folksonomy black list values', JSON.stringify([])],
 	trackSource: ['Tracks source', JSON.stringify({ sourceType: 'library', sourceArg: null })],
 	filePaths: ['External database paths', JSON.stringify({
-		listenBrainzArtists: '.\\profile\\' + folders.dataName + 'listenbrainz_artists.json',
-		searchByDistanceArtists: '.\\profile\\' + folders.dataName + 'searchByDistance_artists.json',
-		worldMapArtists: '.\\profile\\' + folders.dataName + 'worldMap.json'
+		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
+		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
+		worldMapArtists: _foldPath(folders.data + 'worldMap.json')
 	})]
 };
 // Checks

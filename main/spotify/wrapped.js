@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//25/09/25
+//07/10/25
 
 /* exported wrapped */
 
@@ -9,7 +9,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global forEachNested:readable, _bt:readable, _q:readable, round:readable, _asciify:readable, _p:readable, _t:readable, toType:readable, range:readable, _ps:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global sanitize:readable, _isFolder:readable,, _isFile:readable, _createFolder:readable, getFiles:readable, _runCmd:readable, _copyFile:readable, _save:readable, _run:readable, _recycleFile:readable, _deleteFolder:readable, _deleteFile:readable, _jsonParseFileCheck:readable, utf8:readable, _copyDependencies:readable */
+/* global sanitize:readable, _isFolder:readable,, _isFile:readable, _createFolder:readable, getFiles:readable, _runCmd:readable, _copyFile:readable, _save:readable, _run:readable, _recycleFile:readable, _deleteFolder:readable, _deleteFile:readable, _jsonParseFileCheck:readable, utf8:readable, _copyDependencies:readable, _foldPath:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
 include('..\\..\\helpers\\helpers_xxx_statistics.js');
@@ -66,7 +66,7 @@ const wrapped = {
 		tokens: { listenBrainz: '', listenBrainzUser: '' },
 		imageStubPath: '.\\yttm\\art_img\\$lower($cut(%1,1))\\%1\\',
 		filePaths: {
-			worldMapArtists: '.\\profile\\' + folders.dataName + 'worldMap.json'
+			worldMapArtists: _foldPath(folders.data + 'worldMap.json')
 		}
 	},
 	isWorking: [],

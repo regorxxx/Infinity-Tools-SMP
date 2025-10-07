@@ -1,9 +1,9 @@
 ﻿'use strict';
-//25/09/25
+//07/10/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, libSearchMenu:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, globTags:readable globQuery:readable, isString:readable, isJSON:readable, Input:readable, sanitizePath:readable, checkQuery:readable, _ps:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, globTags:readable globQuery:readable, isString:readable, isJSON:readable, Input:readable, sanitizePath:readable, checkQuery:readable, _ps:readable, _foldPath:readable */
 
 // Other tools
 {
@@ -21,7 +21,7 @@
 					{	// Submenu
 						const subMenuName = menu.newMenu(name, menuName);
 						// Create new properties with previous args
-						menu_properties['importPlaylistPath'] = ['\'Other tools\\Import track list\' path', '.\\profile\\' + folders.dataName + 'track_list_to_import.txt'];
+						menu_properties['importPlaylistPath'] = ['\'Other tools\\Import track list\' path', _foldPath(folders.data + 'track_list_to_import.txt')];
 						menu_properties['importPlaylistMask'] = ['\'Other tools\\Import track list\' pattern', JSON.stringify(['. ', '%TITLE%', ' - ', globTags.artist])];
 						menu_properties['importPlaylistFilters'] = ['\'Other tools\\Import track list\' filters', JSON.stringify([globQuery.stereo, globQuery.notLowRating, globQuery.noLive, globQuery.noLiveNone])];
 						// Checks
