@@ -9,7 +9,7 @@ include('search_by_distance.js');
 include('..\\music_graph\\music_graph_descriptors_xxx_node.js');
 // music_graph_descriptors.nodeList
 include('..\\..\\helpers\\helpers_xxx_tags_extra.js');
-/* global updateTrackSimilarTags:readable, updateSimilarDataFile:readable, updateSimilarDataFile:readable */
+/* global updateTrackSimilarTags:readable, updateSimilarDataFile:readable, updateSimilarDataFile:readable, _foldPath:readable */
 
 /**
  * Output similar artists to the one from input FbMetadbHandle using (@see {@link searchByDistance})
@@ -149,7 +149,7 @@ async function calculateSimilarArtists({ selHandle = fb.GetFocusItem(), properti
 async function calculateSimilarArtistsFromPls({ items = plman.GetPlaylistSelectedItems(plman.ActivePlaylist), file = folders.data + 'searchByDistance_artists.json', iNum = 10, tagName = 'SIMILAR ARTISTS SEARCHBYDISTANCE', properties } = {}) {
 	const handleList = removeDuplicates({ handleList: items, sortOutput: globTags.artist, checkKeys: [globTags.artist] });
 	const time = secondsToTime(Math.round(handleList.Count * 5 * fb.GetLibraryItems().Count / 70000));
-	if (WshShell.Popup('Process [different] artists from currently selected items and calculate their most similar artists?\nResults are output to console and saved to JSON:\n' + file + '\n\nEstimated time: <= ' + time, 0, sbd.name, popup.question + popup.yes_no) === popup.no) { return; }
+	if (WshShell.Popup('Process [different] artists from currently selected items and calculate their most similar artists?\nResults are output to console and saved to JSON:\n' + _foldPath(file) + '\n\nEstimated time: <= ' + time, 0, sbd.name, popup.question + popup.yes_no) === popup.no) { return; }
 	let profiler = new FbProfiler('Calculate similar artists');
 	const newData = [];
 	const handleArr = handleList.Convert();
@@ -166,7 +166,7 @@ async function calculateSimilarArtistsFromPls({ items = plman.GetPlaylistSelecte
 		).join('\n\t') || '-NONE-')
 	).join('\n\n');
 	fb.ShowPopupMessage(report, sbd.name);
-	if (WshShell.Popup('Write similar artist tags to all tracks by selected artists?\n(It will also rewrite previously added similar artist tags)\nOnly first ' + iNum + ' artists with highest score will be used.', 0, 'Similar artists', popup.question + popup.yes_no) === popup.yes) {
+	if (WshShell.Popup('Write similar artist tags to all tracks by selected artists?\n(It will also rewrite previously added similar artist tag)\n\nOnly first ' + iNum + ' artists with highest score will be used.', 0, 'Similar artists', popup.question + popup.yes_no) === popup.yes) {
 		updateTrackSimilarTags({ data: newData, iNum, tagName, windowName: sbd.name, bPopup: false });
 	}
 	return newData;

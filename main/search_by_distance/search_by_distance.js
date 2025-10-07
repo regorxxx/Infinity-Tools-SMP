@@ -2014,10 +2014,10 @@ async function searchByDistance({
 		scoreData.sort((a, b) => a.mapDistance - b.mapDistance); // First sorted by graph distance, then by weight
 		poolLength = scoreData.length;
 		if (poolLength < playlistLength) { bMin = true; }
-		if (bMin && minScoreFilter !== scoreFilter) {
-			console.log('Not enough tracks on pool with current score filter ' + scoreFilter + '%, using minimum score instead ' + minScoreFilter + '%.');
-		}
 		if (bBasicLogging) {
+			if (bMin && minScoreFilter !== scoreFilter) {
+				console.log('Not enough tracks on pool with current score filter ' + scoreFilter + '%, using minimum score instead ' + minScoreFilter + '%.');
+			}
 			console.log(
 				'Pool of tracks with tags similarity greater than ' + (bMin ? minScoreFilter : scoreFilter) + '% and genre variation lower than ' + graphDistance + ': ' + poolLength + ' tracks',
 				bIsBreak ? '\n\t (Processing was stopped after playlist filling, there may be more similar tracks on library)' : ''
