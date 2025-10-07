@@ -160,6 +160,15 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 	const bAdd = !Object.hasOwn(options, 'bAdd') || options.bAdd;
 	const bClone = bAdd && !Object.hasOwn(options, 'bClone') || options.bClone;
 	const bImport = !Object.hasOwn(options, 'bImport') || options.bImport;
+	const findPresetIdx = (preset, name = preset.name) => {
+		const presetIdxJSON = presets[options.propName].findIndex((obj) => JSON.stringify(obj) === preset);
+		const presetIdxName = presetIdxJSON === -1
+			? presets[options.propName].findIndex((obj) => obj.name === name)
+			: -1;
+		return presetIdxJSON !== -1 // Harden against manual changes since name is unique
+			? presetIdxJSON
+			: presetIdxName;
+	};
 	options.list.forEach((entry, index) => {
 		let parentMenu = subMenuSecondName;
 		if (options.bUseFolders && Object.hasOwn(entry, 'folder') && entry.folder.length) {
@@ -191,13 +200,7 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 				menu_properties[options.propName][1] = JSON.stringify(options.list);
 				// Presets
 				if (Object.hasOwn(presets, options.propName)) {
-					const presetIdxJSON = presets[options.propName].findIndex((obj) => JSON.stringify(obj) === oriEntry);
-					const presetIdxName = presetIdxJSON === -1
-						? presets[options.propName].findIndex((obj) => obj.name === entry.name)
-						: -1;
-					const presetIdx = presetIdxJSON !== -1 // Harden against manual changes since name is unique
-						? presetIdxJSON
-						: presetIdxName;
+					const presetIdx = findPresetIdx(oriEntry, entry.name);
 					if (presetIdx !== -1) {
 						presets[options.propName][presetIdx] = newEntry;
 						menu_properties.presets[1] = JSON.stringify(presets);
@@ -266,13 +269,7 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 					menu_properties[options.propName][1] = JSON.stringify(options.list);
 					// Presets
 					if (Object.hasOwn(presets, options.propName)) {
-						const presetIdxJSON = presets[options.propName].findIndex((obj) => JSON.stringify(obj) === oriEntry);
-						const presetIdxName = presetIdxJSON === -1
-							? presets[options.propName].findIndex((obj) => obj.name === entry.name)
-							: -1;
-						const presetIdx = presetIdxJSON !== -1 // Harden against manual changes since name is unique
-							? presetIdxJSON
-							: presetIdxName;
+						const presetIdx = findPresetIdx(oriEntry, entry.name);
 						if (presetIdx !== -1) {
 							presets[options.propName][presetIdx] = options.list[index];
 							menu_properties.presets[1] = JSON.stringify(presets);
@@ -290,7 +287,7 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 				menu_properties[options.propName][1] = JSON.stringify(options.list);
 				// Presets
 				if (Object.hasOwn(presets, options.propName)) {
-					const presetIdx = presets[options.propName].findIndex((obj) => { return JSON.stringify(obj) === JSON.stringify(entry); });
+					const presetIdx = findPresetIdx(entry);
 					if (presetIdx !== -1) {
 						presets[options.propName].splice(presetIdx, 1);
 						if (!presets[options.propName].length) { delete presets[options.propName]; }
@@ -300,6 +297,23 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 				overwriteMenuProperties(); // Updates panel
 			}
 		});
+		if (bImport) {
+			menu.newSeparator(subMenuThirdName);
+			const presetIdx = Object.hasOwn(presets, options.propName) && presets[options.propName].length > 0
+				? findPresetIdx(entry)
+				: - 1;
+			menu.newEntry({
+				menuName: subMenuThirdName, entryText: 'Export preset...', func: () => {
+					const path = folders.export + options.propName + '_' + entry.name.replaceAll(' ', '_') + '.json';
+					_recycleFile(path, true);
+					const readme = 'Backup ' + new Date().toString();
+					if (_save(path, JSON.stringify({ readme, [options.propName]: presets[options.propName][presetIdx] }, null, '\t').replace(/\n/g, '\r\n'))) {
+						_explorer(path);
+						console.log('Playlist tools: presets backup saved at ' + path);
+					}
+				}, flags: presetIdx !== -1 ? MF_STRING : MF_GRAYED
+			});
+		}
 	});
 	if (!options.list.length) { menu.newEntry({ menuName: subMenuSecondName, entryText: '(none saved yet)', func: null, flags: MF_GRAYED }); }
 	if (bImport || bAdd) { menu.newSeparator(subMenuSecondName); }
@@ -337,12 +351,12 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 	if (bImport) {
 		menu.newSeparator(subMenuSecondName);
 		menu.newEntry({
-			menuName: subMenuSecondName, entryText: 'Import preset...', func: () => {
+			menuName: subMenuSecondName, entryText: 'Import presets...', func: () => {
 				importPreset(options.defaultPreset);
 			}
 		});
 		menu.newEntry({
-			menuName: subMenuSecondName, entryText: 'Export preset...', func: () => {
+			menuName: subMenuSecondName, entryText: 'Export presets...', func: () => {
 				const answer = WshShell.Popup('This will export all user presets (but not the default ones) as a json file, which can be imported later in any Playlist Tools panel.\nThat file can be easily edited with a text editor to add, tune or remove entries.', 0, scriptName + ': ' + options.name, popup.question + popup.yes_no);
 				if (answer === popup.yes) {
 					const path = folders.export + options.propName + '_presets.json';
