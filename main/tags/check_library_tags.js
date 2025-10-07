@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/09/25
+//07/10/25
 
 /*
 	Check Library Tags
@@ -54,7 +54,7 @@
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, iStepsLibrary:readable, iDelayLibrary:readable, popup:readable, globTags:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global _isFile:readable, utf8:readable, _open:readable, WshShell:readable, _jsonParseFileCheck:readable, _save:readable, _resolvePath:readable */
+/* global _isFile:readable, utf8:readable, _open:readable, WshShell:readable, _jsonParseFileCheck:readable, _save:readable, _resolvePath:readable, _foldPath:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertyByKey:readable, getPropertiesPairs:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
@@ -72,7 +72,7 @@ include('..\\..\\helpers-external\\typo\\typo.js'); // Dictionary helper: https:
 const checkTags_properties = {
 	tagNamesToCheck: ['Tags to be checked (\'tag name,...\')', [globTags.genre, globTags.style, globTags.mood, globTags.composer, globTags.titleRaw, 'INVOLVEDPEOPLE', 'ALBUM', 'FRONT'].join(',')],
 	tagsToCompare: ['Tags to compare against (\'tag name,...\')', [[globTags.genre, globTags.style].join(','), [...new Set([globTags.composer, globTags.artistRaw, 'ARTIST', 'INVOLVEDPEOPLE'])]].join(';')],
-	tagValuesExcludedPath: ['File listing tag values to be excluded', '.\\profile\\' + folders.dataName + 'check_library_tags_exclusion.json'],
+	tagValuesExcludedPath: ['File listing tag values to be excluded', _foldPath(folders.data + 'check_library_tags_exclusion.json')],
 	tagNamesExcludedDic: ['Tags to be excluded at dictionary checking (\'tag name,...\')', [...new Set([globTags.composer, globTags.titleRaw, globTags.artistRaw, 'INVOLVEDPEOPLE', 'ARTIST', 'ALBUM'])].join(',')],
 	bAskForConfigTags: ['Enables popup asking to config excluded tags', false],
 	bUseDic: ['Enables dictionary checking for every tag value (slow!)', false],
