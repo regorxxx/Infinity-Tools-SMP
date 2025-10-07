@@ -24,6 +24,7 @@
 - Playlist Tools\Presets: are now saved at '[FOOBAR PROFILE FOLDER]\js_data\export' folder when exported.
 - Playlist Tools\Presets: individual entries can now be exported at the 'Edit entries from list' submenus as long as they are not the default ones.
 - Playlist Tools: tools which output any file now use '[FOOBAR PROFILE FOLDER]\js_data\export' folder at exporting.
+- Playlist Tools: added default value for duplicates selection and smart shuffle bias.
 - Music Map: added default value for duplicates selection and smart shuffle bias.
 - Music Map: renamed 'Other tools' submenu to 'Tagging tools'.
 - UI: updated icons for Playlist Tools submenu custom button for all new and renamed menus.

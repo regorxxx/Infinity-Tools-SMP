@@ -177,9 +177,11 @@
 				});
 				menu.newEntry({
 					menuName: subMenuName, entryText: 'Track selection bias...', func: () => {
-						const input = Input.string('string', menu_properties.sortBias[1], 'Enter TF expression for track selection when finding duplicates:\n\nHigher valued tracks will be preferred.', scriptName + ': ' + configMenu, globQuery.remDuplBias, void (0), false);
+						const input = Input.string('string', menu_properties.sortBias[1], 'Enter TF expression for track selection when finding duplicates:\n\nOutput must be numbers separated by \'|\'.\nHigher valued tracks will be preferred.\n\n\'DEFAULT\' restores default setting.', scriptName + ': ' + configMenu, globQuery.remDuplBias, void (0), false);
 						if (input === null) { return; }
-						menu_properties.sortBias[1] = input;
+						menu_properties.sortBias[1] = input.toUpperCase() === 'DEFAULT'
+							? menu_properties.sortBias[3]
+							: input;;
 						overwriteMenuProperties(); // Updates panel
 					}
 				});
