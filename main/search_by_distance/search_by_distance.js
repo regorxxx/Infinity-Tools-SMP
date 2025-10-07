@@ -1109,7 +1109,7 @@ async function searchByDistance({
 		}
 	});
 	if (bSearchDebug) { console.log(JSON.stringify(calcTags, void (0), '\t')); }
-	const smartShuffleTag = (recipeProperties.smartShuffleTag || JSON.parse(properties.smartShuffleTag[1])).filter(Boolean);
+	const smartShuffleTag = (recipeProperties.smartShuffleTag || (Object.hasOwn(properties, 'smartShuffleTag') ? JSON.parse(properties.smartShuffleTag[1]) : [])).filter(Boolean);
 	const genreStyleTag = Array.from(new Set(calcTags.genreStyle.tf), (tag) => (!tag.includes('$') ? _t(tag) : tag));
 	const genreStyleTagQuery = Array.from(new Set(calcTags.genreStyle.tf), (tag) => (!tag.includes('$') ? tag : _q(tag)));
 
