@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/09/25
+//07/10/25
 
 /*
 	Quickmatch same....
@@ -21,7 +21,7 @@ include('..\\helpers\\menu_xxx_extras.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, _t:readable, _b:readable, _p:readable, _ps:readable */
 include('..\\helpers\\helpers_xxx_file.js');
-/* global _isFile:readable, utf8:readable, _jsonParseFileCheck:readable */
+/* global _isFile:readable, utf8:readable, _jsonParseFileCheck:readable, _foldPath:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -75,9 +75,9 @@ var newButtonsProperties = { // NOSONAR[global]
 	bOmitSortPls: ['Omit sorting on playlist sources', true, { func: isBoolean }, true],
 	bBioTags: ['Use tags from Bio panel', false, { func: isBoolean }, false],
 	filePaths: ['External database paths', JSON.stringify({
-		listenBrainzArtists: '.\\profile\\' + folders.dataName + 'listenbrainz_artists.json',
-		searchByDistanceArtists: '.\\profile\\' + folders.dataName + 'searchByDistance_artists.json',
-		worldMapArtists: '.\\profile\\' + folders.dataName + 'worldMap.json'
+		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
+		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
+		worldMapArtists: _foldPath(folders.data + 'worldMap.json')
 	})]
 };
 newButtonsProperties.filePaths.push({ func: isJSON }, newButtonsProperties.filePaths[1]);

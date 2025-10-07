@@ -1,5 +1,5 @@
 'use strict';
-//20/09/25
+//07/10/25
 
 /*
 	Integrates Last.fm recommendations statistics within foobar2000 library.
@@ -11,7 +11,9 @@ include('..\\helpers\\helpers_xxx.js');
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
-/* global settingsMenu:readable  */
+/* global settingsMenu:readable */
+include('..\\helpers\\helpers_xxx_file.js');
+/* global _foldPath:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isStringWeak:readable, _t:readable, _b:readable, isInt:readable, isJSON:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
@@ -60,9 +62,9 @@ var newButtonsProperties = { // NOSONAR[global]
 	])],
 	cacheTime: ['YouTube lookups cache expiration', 86400000, { func: isInt }, 86400000],
 	filePaths: ['External database paths', JSON.stringify({
-		listenBrainzArtists: '.\\profile\\' + folders.dataName + 'listenbrainz_artists.json',
-		searchByDistanceArtists: '.\\profile\\' + folders.dataName + 'searchByDistance_artists.json',
-		worldMapArtists: '.\\profile\\' + folders.dataName + 'worldMap.json'
+		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
+		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
+		worldMapArtists: _foldPath(folders.data + 'worldMap.json')
 	})]
 };
 newButtonsProperties.tags.push({ func: isJSON }, newButtonsProperties.tags[1]);

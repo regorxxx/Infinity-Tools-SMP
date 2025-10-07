@@ -1,5 +1,5 @@
 ﻿'use strict';
-//26/09/25
+//07/10/25
 
 /*
 	Wrapped
@@ -13,6 +13,8 @@ include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
+include('..\\helpers\\helpers_xxx_file.js');
+/* global _foldPath:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable, MF_GRAYED:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
@@ -51,9 +53,9 @@ var newButtonsProperties = { // NOSONAR[global]
 	bDynamicMenus: ['Menus at  \'File\\Spider Monkey Panel\\...\'', false, { func: isBoolean }, false],
 	bIconMode: ['Icon-only mode', false, { func: isBoolean }, false],
 	filePaths: ['External database paths', JSON.stringify({
-		listenBrainzArtists: '.\\profile\\' + folders.dataName + 'listenbrainz_artists.json',
-		searchByDistanceArtists: '.\\profile\\' + folders.dataName + 'searchByDistance_artists.json',
-		worldMapArtists: '.\\profile\\' + folders.dataName + 'worldMap.json'
+		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
+		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
+		worldMapArtists: _foldPath(folders.data + 'worldMap.json')
 	})]
 };
 newButtonsProperties.filePaths.push({ func: isJSON }, newButtonsProperties.filePaths[1]);

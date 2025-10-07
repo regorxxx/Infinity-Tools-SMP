@@ -1,5 +1,5 @@
 ﻿'use strict';
-//26/09/25
+//07/10/25
 
 /*
 	Integrates ListenBrainz feedback and recommendations statistics within foobar2000 library.
@@ -15,7 +15,7 @@ include('..\\helpers\\buttons_xxx_menu.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isStringWeak:readable, isJSON:readable, isString:readable , _p:readable */
 include('..\\helpers\\helpers_xxx_file.js');
-/* global utf8:readable, _isFile:readable, _jsonParseFile:readable, _recycleFile:readable, _save:readable */
+/* global utf8:readable, _isFile:readable, _jsonParseFile:readable, _recycleFile:readable, _save:readable, _foldPath:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -49,7 +49,7 @@ var newButtonsProperties = { // NOSONAR[global]
 	firstPopup: ['ListenBrainz Tools: Fired once', false, { func: isBoolean }, false],
 	bTagFeedback: ['Tag files with feedback', false, { func: isBoolean }, false],
 	feedbackTag: ['Feedback tag', globTags.feedback, { func: isString }, globTags.feedback],
-	feedbackCache: ['Feedback cache file', '.\\profile\\' + folders.dataName + 'listenbrainz_feedback.json', { func: isString }, '.\\profile\\' + folders.dataName + 'listenbrainz_feedback.json'],
+	feedbackCache: ['Feedback cache file', _foldPath(folders.data + 'listenbrainz_feedback.json'), { func: isString }, _foldPath(folders.data + 'listenbrainz_feedback.json')],
 	feedbackQuery: ['Query to pre-filter feedback matches', globQuery.filter, { func: (query) => { return checkQuery(query, true); } }, globQuery.filter],
 	bFeedbackLookup: ['Lookup feedback tracks using tags', true, { func: isBoolean }, true],
 	userCache: ['User name cache', '', { func: isStringWeak }, ''],
@@ -68,9 +68,9 @@ var newButtonsProperties = { // NOSONAR[global]
 		{ name: 'Mood & Theme(s)', tf: [...new Set([globTags.mood, 'MOOD', 'THEME', 'ALBUMMOOD', 'ALBUM THEME ALLMUSIC', 'ALBUM MOOD ALLMUSIC'])], type: 'getRecordingsByTag' }
 	])],
 	filePaths: ['External database paths', JSON.stringify({
-		listenBrainzArtists: '.\\profile\\' + folders.dataName + 'listenbrainz_artists.json',
-		searchByDistanceArtists: '.\\profile\\' + folders.dataName + 'searchByDistance_artists.json',
-		worldMapArtists: '.\\profile\\' + folders.dataName + 'worldMap.json'
+		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
+		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
+		worldMapArtists: _foldPath(folders.data + 'worldMap.json')
 	})]
 };
 newButtonsProperties.tags.push({ func: isJSON }, newButtonsProperties.tags[1]);
