@@ -675,9 +675,11 @@ function createConfigMenu(parent) {
 
 				menu.newEntry({
 					menuName: subMenuName, entryText: getEntryText('sortBias', 'Duplicates selection bias...'), func: () => {
-						const input = Input.string('string', properties['sortBias'][1], 'Enter TF expression for track selection when finding duplicates:\nOutput must be a numbers separated by \'|\'.\nHigher valued tracks will be preferred.', sbd.name + ': Duplicates selection bias', globQuery.remDuplBias, void (0), false);
+						const input = Input.string('string', properties['sortBias'][1], 'Enter TF expression for track selection when finding duplicates:\n\nOutput must be numbers separated by \'|\'.\nHigher valued tracks will be preferred.\n\n\'DEFAULT\' restores default setting.', sbd.name + ': Duplicates selection bias', globQuery.remDuplBias, void (0), false);
 						if (input === null) { return; }
-						properties['sortBias'][1] = input;
+						properties.sortBias[1] = input.toUpperCase() === 'DEFAULT'
+							? properties.sortBias[3]
+							: input;
 						overwriteProperties(properties); // Updates panel
 					}, flags: Object.hasOwn(recipe, 'sortBias') || !isEnabled ? MF_GRAYED : MF_STRING
 				});
@@ -1272,9 +1274,11 @@ function createConfigMenu(parent) {
 						const currValue = options.find((opt) => opt.tf === properties.smartShuffleSortBias[1])
 							? shuffleBiasTf(properties.smartShuffleSortBias[1])
 							: properties.smartShuffleSortBias[1];
-						const input = Input.string('string', currValue, 'Enter TF expression:', sbd.name + ': Smart Shuffle sorting bias', shuffleBiasTf('rating'));
+						const input = Input.string('string', currValue, 'Enter TF expression:\n\n\'DEFAULT\' restores default setting.', sbd.name + ': Smart Shuffle sorting bias', shuffleBiasTf('rating'));
 						if (input === null) { return; }
-						properties.smartShuffleSortBias[1] = input;
+						properties.smartShuffleSortBias[1] = input.toUpperCase() === 'DEFAULT'
+							? properties.smartShuffleSortBias[3]
+							: input;
 						overwriteProperties(properties); // Updates panel
 					}, flags: Object.hasOwn(recipe, 'smartShuffleSortBias') ? MF_GRAYED : MF_STRING
 				});
@@ -1396,7 +1400,7 @@ function createConfigMenu(parent) {
 	}
 	menu.newSeparator();
 	{	// Other tools
-		const subMenu = menu.newMenu('Other tools');
+		const subMenu = menu.newMenu('Tagging tools');
 		menu.newEntry({ menuName: subMenu, entryText: 'Tagging related tools:', func: null, flags: MF_GRAYED });
 		menu.newSeparator(subMenu);
 		{	// Similar Artists

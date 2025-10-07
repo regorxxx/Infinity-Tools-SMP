@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/25
+//07/10/25
 
 /* exported graphInfoMenu */
 
@@ -20,7 +20,6 @@ include('..\\..\\helpers\\helpers_xxx_statistics.js');
 /* global calcStatistics:readable */
 include('..\\..\\main\\search_by_distance\\search_by_distance.js'); // Load after buttons_xxx.js so properties are only set once
 /* global sbd:readable, music_graph_descriptors:readable */
-include('..\\..\\main\\search_by_distance\\search_by_distance_extra.js');
 include('..\\..\\main\\search_by_distance\\search_by_distance_genres.js');
 /* global getNearestGenreStylesV2:readable, calcMeanDistanceV2:readable */
 include('..\\..\\main\\search_by_distance\\search_by_distance_culture.js');
