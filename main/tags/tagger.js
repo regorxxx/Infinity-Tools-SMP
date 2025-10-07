@@ -653,7 +653,7 @@ function Tagger({
 	this.debouncedStep = debounce(this.stepTag, this.timers.debounce); // Only continues next step when last tag update was done > X ms ago
 
 	this.checkHandleList = ({ bDebug = false, bProfile = false } = {}) => {
-		if (!this.isRunning) { this.stopStepTag(); return; }
+		if (!this.isRunning()) { this.stopStepTag(); return; }
 		const i = this.iStep - 1;
 		if (i >= 0) {
 			const key = orderKeys[i];
