@@ -33,6 +33,7 @@
 			"weight": 0
 		}
 	},
+	"bFilterWithGraph": true,
 	"bNegativeWeighting": true,
 	"bConditionAntiInfluences": false,
 	"bUseAntiInfluencesFilter": true,
