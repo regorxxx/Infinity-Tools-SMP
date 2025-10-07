@@ -16,6 +16,8 @@
 - Playlist Tools\Selection Manipulation\Expand (disjoint): added entry to limit number of tracks to select.
 - Playlist Tools\Selection Manipulation\Expand (contiguous): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to contiguous tracks, thus ensuring joint selections.
 - Playlist Tools\Selection Manipulation\Expand (next): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to next tracks to focused one.
+- Playlist Tools: added default value for duplicates selection and smart shuffle bias.
+- Music Map: added default value for duplicates selection and smart shuffle bias.
 - Autobackup: added a flag to mark specific folders/files to be copied before creating the zipped backup file (with the copy, instead of the original one). This is mostly an internal change to be on the safe side with foobar2000 v2, since compressing a file seems to also block it and foobar2000 v2 seems to have problems in some cases in this situation. See [here](https://hydrogenaudio.org/index.php/topic,128527.0.html). Note defaults settings must be restored at the files and folders submenu to apply this flag.
 - Autobackup: added settings to add extra CMD arguments to 7za processing. For ex. to change the compression level to no compression, use '-mx0'. The full list of commands can be seen [here](https://7-zip.opensource.jp/chm/cmdline/commands/add.htm).
 ### Changed
@@ -24,8 +26,6 @@
 - Playlist Tools\Presets: are now saved at '[FOOBAR PROFILE FOLDER]\js_data\export' folder when exported.
 - Playlist Tools\Presets: individual entries can now be exported at the 'Edit entries from list' submenus as long as they are not the default ones.
 - Playlist Tools: tools which output any file now use '[FOOBAR PROFILE FOLDER]\js_data\export' folder at exporting.
-- Playlist Tools: added default value for duplicates selection and smart shuffle bias.
-- Music Map: added default value for duplicates selection and smart shuffle bias.
 - Music Map: renamed 'Other tools' submenu to 'Tagging tools'.
 - UI: updated icons for Playlist Tools submenu custom button for all new and renamed menus.
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
