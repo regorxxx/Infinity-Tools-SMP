@@ -1,12 +1,12 @@
 ﻿'use strict';
-//27/09/25
+//07/10/25
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, globTags:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global _isFile:readable, _deleteFile:readable, _runHidden:readable, _jsonParseFile:readable, utf8:readable, _open:readable */
+/* global _isFile:readable, _deleteFile:readable, _runHidden:readable, _jsonParseFile:readable, utf8:readable, _open:readable, _runCmd:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global _q:readable, round:readable */
+/* global _q:readable, round:readable, range:readable */
 
 const essentia = {};
 
@@ -89,6 +89,98 @@ essentia.calculateKey = function calculateKey({
 	else { console.popup(report, 'Essentia Key extractor'); }
 	if (bProfile) { profile.Print('Save Key tags to files - completed in '); }
 	return bDone;
+};
+
+essentia.calculateKeyAsync = function calculateKeyAsync({
+	fromHandleList = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
+	tagName = globTags.key,
+	essentiaPath = [
+		folders.binaries + 'essentia\\essentia_streaming_key.exe',
+		folders.xxx + 'helpers-external\\essentia\\essentia_streaming_key.exe'
+	],
+	threads = 4,
+	bDebug = false,
+	bProfile = true,
+	bQuiet = false
+}) {
+	// Safecheck
+	if (!fromHandleList || !fromHandleList.Count || !tagName.length) { return Promise.resolve(false); }
+	if (Array.isArray(essentiaPath)) {
+		const path = essentiaPath.find((path) => _isFile(path));
+		if (path) { essentiaPath = path; }
+		else { fb.ShowPopupMessage('essentia_streaming_key executable not found at:\n' + essentiaPath.join('\n'), 'Essentia Key extractor'); return Promise.resolve(false); }
+	} else if (!_isFile(essentiaPath)) { fb.ShowPopupMessage('essentia_streaming_key executable not found:\n' + essentiaPath, 'Essentia Key extractor'); return Promise.resolve(false); }
+	const profile = bProfile ? new FbProfiler('Essentia Key extractor') : null;
+	const batFile = essentiaPath.replace('_32.exe', '.exe').replace('.exe', '.bat');
+	if (bDebug) { console.log(batFile); }
+	if (!_isFile(batFile)) { fb.ShowPopupMessage('Essentia bat file not found:\n' + batFile, 'Essentia Key extractor'); return Promise.resolve(false); }
+	const handleListArr = fromHandleList.Convert()
+		.filter((handle) => handle.Path.split('.').slice(-1)[0] !== 'dsf');
+	if (!handleListArr.length) { return Promise.resolve(false); }
+	const totalTracks = handleListArr.length, maxCount = Math.ceil(totalTracks / threads);
+	let totalItems = 0;
+	let bDone = true;
+	let failedItems = [];
+	const regexKey = /.*key: "(.*)"/i;
+	const regexScale = /.*key_scale: "(.*)"/i;
+	const calcKEY = (count) => {
+		const currMax = (count + 1) === maxCount ? totalTracks : (count + 1) * threads;
+		console.log('Processing items: ' + currMax + '/' + totalTracks);
+		const items = [];
+		const KEY = [];
+		let prevProgress = -1, iSteps = (count + 1) === maxCount ? currMax : threads;
+		return new Promise((resolve) => {
+			Promise.parallel(handleListArr.slice(count * threads, currMax), (handle, i) => {
+				const essentiaJSON = folders.temp + 'essentiaJSON' + (new Date().toDateString() + Date.now()).split(' ').join('_') + '.json';
+				return new Promise((resolve) => {
+					const path = handle.Path;
+					if (_isFile(path)) {
+						if (bDebug) { console.log(_q(essentiaPath) + _q(path) + ' ' + _q(essentiaJSON)); }
+						_deleteFile(essentiaJSON);
+						_runCmd([batFile, path, essentiaJSON, essentiaPath].map((a) => _q(a)).join(' '), false);
+						const id = setInterval(() => {
+							if (_isFile(essentiaJSON)) {
+								const data = _open(essentiaJSON);
+								if (data) {
+									// eslint-disable-next-line no-sparse-arrays
+									const tag = (data.match(regexKey) || [,])[1]; // NOSONAR
+									// eslint-disable-next-line no-sparse-arrays
+									const tagScale = (data.match(regexScale) || [,])[1]; // NOSONAR
+									const tagMerged = tag + (tagScale.toLowerCase() === 'minor' ? 'm' : '');
+									if (tag && tagScale && tag.length && tagScale.length) {
+										items.push(handle);
+										KEY.push(tagMerged);
+									}
+								} else { failedItems.push(path); }
+								const progress = Math.round((i + 1) / iSteps * 10) * 10;
+								if (progress > prevProgress) { prevProgress = progress; console.log('Essentia Key extracting ' + progress + '%.'); }
+								clearInterval(id);
+								resolve(path);
+							}
+						}, 60);
+					} else { failedItems.push(path); resolve(path); }
+				}).finally(() => _deleteFile(essentiaJSON));
+			}, 60).then(() => resolve(true));
+		}).then(() => {
+			const itemsLength = items.length;
+			totalItems += itemsLength;
+			if (itemsLength) {
+				const tags = KEY.map((value) => { return { [tagName]: value }; });
+				if (itemsLength === tags.length) {
+					new FbMetadbHandleList(items).UpdateFileInfoFromJSON(JSON.stringify(tags));
+					if (maxCount > 1) { console.log(itemsLength, 'items tagged.'); } // Don't repeat this line when all is done in 1 step. Will be printed also later
+				} else { bDone = false; console.log('Tagging failed: unknown error.'); }
+			}
+		});
+	};
+	return Promise.serial(range(0, maxCount - 1, 1), calcKEY, 60).then(() => {
+		const failedItemsLen = failedItems.length;
+		const report = totalTracks + ' items processed.\n' + totalItems + ' items tagged.\n' + failedItemsLen + ' items failed.' + (failedItemsLen ? '\n\nList of failed items:\n' + failedItems.join('\n') : '');
+		if (bQuiet) { console.log('Essentia Key extractor:\n\t' + report.replace(/\n/g, '\n\t')); }
+		else { console.popup(report, 'Essentia Key extractor'); }
+		if (bProfile) { profile.Print('Save Key tags to files - completed in '); }
+		return Promise.resolve(bDone);
+	});
 };
 
 essentia.calculateHighLevelTags = function calculateHighLevelTags({
