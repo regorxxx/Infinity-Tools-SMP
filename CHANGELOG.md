@@ -12,15 +12,15 @@
 - Merged [Device-Priority-SMP](https://github.com/regorxxx/Device-Priority-SMP) script.
 - Merged [Fingerprint-Tools-SMP](https://github.com/regorxxx/Fingerprint-Tools-SMP) script.
 - Merged [Wrapped-SMP](https://github.com/regorxxx/Wrapped-SMP) script.
-- Playlist tools\Playlist Manipulation\Harmonic mix: new entries to create a new playlist with key sorting applied.
-- Playlist tools\Selection Manipulation\Expand (disjoint): added entry to limit number of tracks to select.
-- Playlist tools\Selection Manipulation\Expand (contiguous): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to contiguous tracks, thus ensuring joint selections.
-- Playlist tools\Selection Manipulation\Expand (next): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to next tracks to focused one.
+- Playlist Tools\Playlist Manipulation\Harmonic mix: new entries to create a new playlist with key sorting applied.
+- Playlist Tools\Selection Manipulation\Expand (disjoint): added entry to limit number of tracks to select.
+- Playlist Tools\Selection Manipulation\Expand (contiguous): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to contiguous tracks, thus ensuring joint selections.
+- Playlist Tools\Selection Manipulation\Expand (next): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to next tracks to focused one.
 - Autobackup: added a flag to mark specific folders/files to be copied before creating the zipped backup file (with the copy, instead of the original one). This is mostly an internal change to be on the safe side with foobar2000 v2, since compressing a file seems to also block it and foobar2000 v2 seems to have problems in some cases in this situation. See [here](https://hydrogenaudio.org/index.php/topic,128527.0.html). Note defaults settings must be restored at the files and folders submenu to apply this flag.
 - Autobackup: added settings to add extra CMD arguments to 7za processing. For ex. to change the compression level to no compression, use '-mx0'. The full list of commands can be seen [here](https://7-zip.opensource.jp/chm/cmdline/commands/add.htm).
 ### Changed
-- Playlist tools\Playlist Manipulation\Harmonic mix: cleanup of some menu entries and code logic.
-- Playlist tools\Selection Manipulation\Advanced sort: cleanup of some menu entries and code logic.
+- Playlist Tools\Playlist Manipulation\Harmonic mix: cleanup of some menu entries and code logic.
+- Playlist Tools\Selection Manipulation\Advanced sort: cleanup of some menu entries and code logic.
 - UI: updated icons for Playlist Tools submenu custom button for all new and renamed menus.
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
 - Binaries: external binaries are no longer bundled along scripts, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
@@ -33,5 +33,7 @@
 - Export settings: added missing buttons file on zip.
 - Import settings: multiple fixes to extra data files importing.
 - Batch tagger: fix handling of custom tags for some tools.
+- Playlist Tools\Pools: 'SORTED BY' expressions not working properly on 'Custom pool...' entry.
+- Playlist Tools: error exporting user presets for specific tools.
 
 [Unreleased]: ../../compare/f039e12...HEAD
