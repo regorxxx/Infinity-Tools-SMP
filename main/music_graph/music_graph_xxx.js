@@ -1,5 +1,5 @@
 ﻿'use strict';
-//12/08/25
+//08/10/25
 
 /* exported musicGraphForDrawing, graphDebug, graphStatistics */
 
@@ -23,7 +23,7 @@ if (typeof include !== 'undefined') { // On foobar2000
 	if (utils.IsFile(userDescriptor)) {
 		try {
 			include(userDescriptor);
-			console.log('User\'s music_graph_descriptors - File loaded: ' + userDescriptor);
+			console.log('User\'s music_graph_descriptors - File loaded:\n\t ' + userDescriptor);
 		} catch (e) { // eslint-disable-line no-unused-vars
 			console.log('Error loading user\'s music_graph_descriptors. Using default file instead.');
 		}

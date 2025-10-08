@@ -236,7 +236,7 @@ function _pools({
 		}
 	};
 	/**
-	 * Executes a pool preset and returns a handelist.
+	 * Executes a pool preset and returns a handle list.
 	 * @property
 	 * @name processPool
 	 * @kind method

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/10/25
+//08/10/25
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -336,7 +336,7 @@ if (!sbd.panelProperties.firstPopup[1]) {
 ].forEach((descr) => {
 	if (sbd.panelProperties[descr.prop][1]) {
 		if (_isFile(folders.xxx + 'main\\' + descr.file)) {
-			if (sbd.panelProperties.bStartLogging[1]) { console.log(descr.name + '\'s music_graph_descriptors - File loaded: ' + folders.xxx + descr.file); }
+			if (sbd.panelProperties.bStartLogging[1]) { console.log(descr.name + '\'s music_graph_descriptors - File loaded:\n\t ' + folders.xxx + descr.file); }
 			include('..\\' + descr.file);
 		}
 	}
