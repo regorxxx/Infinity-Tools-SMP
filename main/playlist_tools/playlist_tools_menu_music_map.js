@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/10/25
+//08/10/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, configMenu:readable, specialMenu:readable, deferFunc:readable, menu_propertiesBack:readable, createSmartShuffleMenu:readable */
 
@@ -8,9 +8,9 @@
 // Music Map
 {
 	const scriptPath = folders.xxx + 'main\\search_by_distance\\search_by_distance.js';
-	/* global SearchByDistance_properties:readable, updateCache:readable, sbd:readable, findStyleGenresMissingGraphCheck:readable, searchByDistance:readable, findStyleGenresMissingGraph:readable, music_graph_descriptors_culture:readable, graphDebug:readable, testGraphNodes:readable, testGraphNodeSets:readable, testGraphNodeSetsWithPath:readable, testGraphCulture:readable, cacheLink:writable, cacheLinkSet:writable, tagsCache:readable, calculateSimilarArtistsFromPls:readable, writeSimilarArtistsTags:readable */ // eslint-disable-line no-unused-vars
+	/* global SearchByDistance_properties:readable, updateCache:readable, sbd:readable, findStyleGenresMissingGraphCheck:readable, searchByDistance:readable, findStyleGenresMissingGraph:readable, music_graph_descriptors_culture:readable, graphDebug:readable, testGraphNodes:readable, testGraphNodeSets:readable, testGraphNodeSetsWithPath:readable, testGraphCulture:readable, cacheLink:writable, cacheLinkSet:writable, tagsCache:readable, calculateSimilarArtistsFromPls:readable, writeSimilarArtistsTags:readable, SearchByDistance_panelProperties:readable */ // eslint-disable-line no-unused-vars
 	if (_isFile(scriptPath)) {
-		if (!Object.hasOwn(menusEnabled, specialMenu) || menusEnabled[specialMenu] || !Object.hasOwn(menusEnabled, 'Pools (Music Map)') || menusEnabled['Pools (Music Map)']) {
+		if (!Object.hasOwn(menusEnabled, specialMenu) || menusEnabled[specialMenu] || !Object.hasOwn(menusEnabled, 'Pools (' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ')') || menusEnabled['Pools (' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ')']) {
 			if (!Object.hasOwn(menu_properties, 'bHarmonicMixDoublePass')) { menu_properties['bHarmonicMixDoublePass'] = ['Harmonic mixing double pass to match more tracks', true]; }
 			include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
 			readmes[newReadmeSep()] = 'sep';
@@ -21,14 +21,17 @@
 			toAdd.forEach((key) => {
 				if (Object.hasOwn(SearchByDistance_properties, key)) {
 					toMerge[key] = [...SearchByDistance_properties[key]];
-					toMerge[key][0] = '\'Music Map\' ' + toMerge[key][0];
-				} else { console.log(scriptName + ': error merging music map property (' + key + ')'); }
+					toMerge[key][0] = '\'' + sbd.name + '\' ' + toMerge[key][0];
+				} else if (Object.hasOwn(SearchByDistance_panelProperties, key)) {
+					toMerge[key] = [...SearchByDistance_panelProperties[key]];
+					toMerge[key][0] = '\'' + sbd.name + '\' ' + toMerge[key][0];
+				} else { console.log(scriptName + ': error merging ' + sbd.name + ' property (' + key + ')'); }
 			});
 			// Run once at startup
 			deferFunc.push({
 				name: sbd.name + ' initialization', func: () => {
 					// Update cache with user set tags and genre/style check
-					doOnce('Update SBD cache', debounce(updateCache, 3000))({ properties: menu_properties });
+					doOnce('Update ' + sbd.name + ' cache', debounce(updateCache, 3000))({ properties: menu_properties });
 					if (!sbd.panelProperties.firstPopup[1]) {
 						doOnce('findStyleGenresMissingGraphCheck', debounce(findStyleGenresMissingGraphCheck, 500))(menu_properties);
 					}
@@ -171,7 +174,7 @@
 									? idxEnd - 1
 									: Infinity
 								)
-							).replace('\'Music Map\' ', '') + '...' + '\t[' +
+							).replace('\'' + sbd.name + '\' ', '') + '...' + '\t[' +
 								(
 									typeof value === 'string'
 										? value.length ? value.cut(10) : '-disabled-'
@@ -268,7 +271,7 @@
 													if (key === 'bTagsCache') { return; }
 													const propObj = key === 'bTagsCache' ? sbd.panelProperties : menu_properties;
 													const keyText = propObj[key][0];
-													const entryText = (keyText.substring(keyText.indexOf('.') + 1).replace('\'Music Map\' ', '') + (key === 'bTagsCache' && !isFoobarV2 ? '\t-only Fb >= 2.0-' : '')).replace('\'Search similar\' ', '');
+													const entryText = (keyText.substring(keyText.indexOf('.') + 1).replace('\'' + sbd.name + '\' ', '') + (key === 'bTagsCache' && !isFoobarV2 ? '\t-only Fb >= 2.0-' : '')).replace('\'Search similar\' ', '');
 													menu.newEntry({
 														menuName: sm, entryText, func: () => {
 															propObj[key][1] = !propObj[key][1];
@@ -361,7 +364,7 @@
 			}
 		}
 	} else {
-		menu.newEntry({ menuName: specialMenu, entryText: 'Based on Music Map:', func: null, flags: MF_GRAYED });
+		menu.newEntry({ menuName: specialMenu, entryText: 'Based on ' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ':', func: null, flags: MF_GRAYED });
 		menu.newSeparator(specialMenu);
 		menu.newEntry({ menuName: specialMenu, entryText: '-Not installed-', func: null, flags: MF_GRAYED });
 	}
