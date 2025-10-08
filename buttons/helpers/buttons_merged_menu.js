@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/10/25
+//08/10/25
 
 /* exported createButtonsMenu, importSettingsMenu */
 
@@ -50,7 +50,7 @@ function createButtonsMenu(name) {
 			case '_playlist_tools': return 'Playlist Tools';
 			case '_others_': return 'Other tools';
 			case '_search_': return '(Quick)Search';
-			case '_music_map': return 'Music Map';
+			case '_music_map': return typeof sbd !== 'undefined' ? sbd.name : 'Music Map';
 			case '_stats_': return 'Library statistics';
 			case '_tags_': return 'Tagging tools';
 			case 'Settings, Tags and Queries': return s;

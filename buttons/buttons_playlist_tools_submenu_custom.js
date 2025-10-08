@@ -1,5 +1,5 @@
 ﻿'use strict';
-//30/09/25
+//08/10/25
 
 /*
 	Playlist Tools Submenu Custom
@@ -7,7 +7,7 @@
 	Calls a configurable submenu from Playlist Tools
  */
 
-/* global menu:readable, barProperties:readable, menuTooltip:readable, _setClipboardData:readable */
+/* global menu:readable, barProperties:readable, menuTooltip:readable, _setClipboardData:readable, sbd:readable */
 include('..\\helpers\\helpers_xxx.js');
 /* global globFonts:readable, MK_SHIFT:readable, MK_CONTROL:readable */
 include('..\\helpers\\buttons_xxx.js');
@@ -181,7 +181,7 @@ addButton({
 					case 'batch tagger':
 					case 'group tagger': icon = chars.tags; break;
 					case 'pools':
-					case 'pools (music map)': icon = chars.music; break;
+					case 'pools (' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ')': icon = chars.music; break;
 					case 'macros': icon = chars.hourglassHalf; break;
 					case 'script integration':
 					case 'configuration': icon = chars.cogs; break;

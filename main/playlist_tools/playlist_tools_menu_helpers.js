@@ -1,9 +1,9 @@
 ﻿'use strict';
-//07/10/25
+//08/10/25
 
 /* exported overwritePanelProperties, loadProperties, createSubMenuEditEntries, lastActionEntry, focusFlags, playlistCountFlags, playlistCountFlagsRem, playlistCountFlagsAddRem, multipleSelectedFlags, multipleSelectedFlagsReorder, selectedFlags, selectedFlagsReorder, selectedFlagsRem, selectedFlagsAddRem, closeLock, createTagMenu, createSmartShuffleMenu */
 
-/* global configMenu:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, defaultArgs:readable, menu_panelProperties:readable,  shortcutsPath:readable, presets:writable, menu_prefix_panel:readable, shortcuts:writable, menu_propertiesBack:writable, menu_panelPropertiesBack:writable, menu_prefix:readable, deferFunc:readable, isPlayCount:readable */ // eslint-disable-line no-unused-vars
+/* global configMenu:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, defaultArgs:readable, menu_panelProperties:readable,  shortcutsPath:readable, presets:writable, menu_prefix_panel:readable, shortcuts:writable, menu_propertiesBack:writable, menu_panelPropertiesBack:writable, menu_prefix:readable, deferFunc:readable, isPlayCount:readable, sbd:readable */ // eslint-disable-line no-unused-vars
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, utf8:readable, _save:readable, _explorer:readable, _jsonParseFileCheck:readable, WshShell:readable, popup:readable, MF_STRING:readable, _recycleFile:readable, _open:readable, setProperties:readable, doOnce:readable, getPropertiesPairs:readable, overwriteProperties:readable, isFunction:readable, clone:readable, _q:readable, compareObjects:readable , debounce:readable, _b:readable, tagsCache:readable, Input:readable */
 
@@ -513,7 +513,7 @@ const createTagMenu = (menuName, options, flag = [], hook = null, entryNames = [
 				? idxEnd - 1
 				: Infinity
 			)
-		).replace('\'Music Map\' ', '') + '...' + '\t[' +
+		).replace('\'' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + '\' ', '') + '...' + '\t[' +
 			(
 				typeof value === 'string'
 					? value.length ? value.cut(10) : '-disabled-'

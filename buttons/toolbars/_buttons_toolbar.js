@@ -1,15 +1,8 @@
 ﻿'use strict';
-//26/09/25
+//08/10/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
-	Compatible with:
-		- Music Map
-		- Playlist Tools
-		- Fingerprint Tools
-		- ListenBrainz Tools
-		...
-
 	Loading single buttons scripts in a panel is allowed but not supported.
 */
 

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/10/25
+//08/10/25
 
 /*
 	Playlist Tools Menu
@@ -46,7 +46,7 @@ include('..\\..\\helpers\\helpers_xxx_input.js');
 include('playlist_tools_menu_helpers.js');
 /* global loadProperties:readable, overwritePanelProperties:readable, flagsCache:readable */
 
-/* global exportDevices:readable, exportDSP:readable, deleteMainMenuDynamic:readable, onMainMenuDynamicEntries:readable, mainMenuSMP:readable , lastActionEntry:readable, barProperties:readable */
+/* global exportDevices:readable, exportDSP:readable, deleteMainMenuDynamic:readable, onMainMenuDynamicEntries:readable, mainMenuSMP:readable , lastActionEntry:readable, barProperties:readable, sbd:readable */
 
 checkCompatible('1.6.1', 'smp');
 
@@ -70,7 +70,7 @@ var menu_properties = { // NOSONAR [global]
 	bPlaylistNameCommands: ['Enable playlist name commands', false],
 	keyTag: ['Key tag remap', JSON.stringify([globTags.key]), { func: isJSON }, JSON.stringify([globTags.key])],
 	styleGenreTag: ['Style/Genre tags for Dyngenre translation', JSON.stringify(['$ascii(%' + globTags.genre + '%)', '$ascii(%' + globTags.style + '%)'])],
-	async: ['Async processing', JSON.stringify({ 'Check tags': true, 'Tagger': true, 'Music Map': true, 'Remove duplicates': false })],
+	async: ['Async processing', JSON.stringify({ 'Check tags': true, 'Tagger': true, [typeof sbd !== 'undefined' ? sbd.name : 'Music Map']: true, 'Remove duplicates': false })],
 	dynQueryEvalSel: ['Dynamic Queries evaluated on entire selection', JSON.stringify({ 'Dynamic queries': true, 'Playlist manipulation': true })],
 	checkDuplicatesBy: ['Remove duplicates by', JSON.stringify(globTags.remDupl), { func: isJSON }, JSON.stringify(globTags.remDupl)],
 	bAdvTitle: ['Duplicates RegExp title matching', true, { func: isBoolean }, true],
@@ -391,7 +391,7 @@ include('playlist_tools_menu_last_action.js');
 	let i = 0;
 	let bLastSep = false;
 	const mainMenuName = menu.getMainMenuName();
-	const notInMainMenu = (name, subMenu) => subMenu === mainMenuName && name !== 'Pools (Music Map)';
+	const notInMainMenu = (name, subMenu) => subMenu === mainMenuName && name !== 'Pools (' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ')';
 	menuList.forEach((menuEntry, idx) => {
 		const menuName = menuEntry.bIsMenu ? menuEntry.menuName : menuEntry.entryText;
 		const entryName = menuEntry.bIsMenu
@@ -412,7 +412,7 @@ include('playlist_tools_menu_last_action.js');
 			if (!bLastSep && nextEntry && nextEntry.subMenuFrom === mainMenuName && i < 16) { bLastSep = true; bSep = true; }
 			else { bLastSep = false; }
 		}
-		if (menuName === 'Pools (Music Map)') { bSep = true; }
+		if (menuName === 'Pools (' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ')') { bSep = true; }
 		if (!Object.hasOwn(menusEnabled, menuName)) { menusEnabled[menuName] = true; }
 		menuAlt.newEntry({
 			entryText: entryName, func: () => {
@@ -565,12 +565,12 @@ function createMainMenuDynamic() {
 			const mainMenu = menu.getMainMenuName();
 			const tree = {};
 			const dynamicTree = {};
-			const toSkip = new Set(['Add new entry to list...', 'Remove entry from list', 'Configuration', 'Find track(s) in', 'Check tags', 'Tagger', 'Playlist History', 'Custom pool...', 'Start recording a macro', 'Stop recording and Save macro', 'Playlist Names Commands', 'Include scripts', 'Music Map', 'Set Global Forced Query...', 'Readmes', 'SMP Main menu', 'Script integration', 'Split playlist list submenus at', 'Show locked playlist (autoplaylists, etc.)?', 'Show current playlist?', 'Selection manipulation', 'Close playlist', 'Go to playlist', 'Send playlist\'s tracks to', 'Remove track(s) from', 'Find now playing track in', 'Tagging', 'Configure dictionary', 'By halves', 'By quarters', 'By thirds', 'Send selection to', 'Don\'t try to find tracks if selecting more than', 'Set tags (for duplicates)...', 'Set tags (for filtering)...', 'Set number allowed (for filtering)...', 'Sets similarity threshold...', 'UI', 'Logging', 'Asynchronous processing', 'SMP Dynamic menu', 'Report all from', 'Check only', 'Difference with playlist', 'Intersect with playlist', 'Merge with playlist', 'Tags...', 'Available tools', 'Enable double pass to match more tracks', 'Available tools', 'Harmonic mixing', 'Dynamic queries evaluation', 'Global Forced Query', 'Configure filters...', 'Additional pre-defined filters', 'Set menus', 'Move entry...', 'Remove entry', 'Edit entry...', 'Clone entry...', 'Update with current settings', 'Duplicates handling']);
-			const toSkipStarts = ['(Send sel. to)', 'Remove entry from list', '(Close) Playlists', '(Go to) Playlists', '(Send all to) Playlists', 'Global pls. length', 'Tag remapping', 'Music Map', '(Merge with)', '(Difference with)', '(Intersect with)', 'Edit entries from list', '------(separator)------'];
+			const toSkip = new Set(['Add new entry to list...', 'Remove entry from list', 'Configuration', 'Find track(s) in', 'Check tags', 'Tagger', 'Playlist History', 'Custom pool...', 'Start recording a macro', 'Stop recording and Save macro', 'Playlist Names Commands', 'Include scripts', typeof sbd !== 'undefined' ? sbd.name : 'Music Map', 'Set Global Forced Query...', 'Readmes', 'SMP Main menu', 'Script integration', 'Split playlist list submenus at', 'Show locked playlist (autoplaylists, etc.)?', 'Show current playlist?', 'Selection manipulation', 'Close playlist', 'Go to playlist', 'Send playlist\'s tracks to', 'Remove track(s) from', 'Find now playing track in', 'Tagging', 'Configure dictionary', 'By halves', 'By quarters', 'By thirds', 'Send selection to', 'Don\'t try to find tracks if selecting more than', 'Set tags (for duplicates)...', 'Set tags (for filtering)...', 'Set number allowed (for filtering)...', 'Sets similarity threshold...', 'UI', 'Logging', 'Asynchronous processing', 'SMP Dynamic menu', 'Report all from', 'Check only', 'Difference with playlist', 'Intersect with playlist', 'Merge with playlist', 'Tags...', 'Available tools', 'Enable double pass to match more tracks', 'Available tools', 'Harmonic mixing', 'Dynamic queries evaluation', 'Global Forced Query', 'Configure filters...', 'Additional pre-defined filters', 'Set menus', 'Move entry...', 'Remove entry', 'Edit entry...', 'Clone entry...', 'Update with current settings', 'Duplicates handling']);
+			const toSkipStarts = ['(Send sel. to)', 'Remove entry from list', '(Close) Playlists', '(Go to) Playlists', '(Send all to) Playlists', 'Global pls. length', 'Tag remapping', '(Merge with)', '(Difference with)', '(Intersect with)', 'Edit entries from list', '------(separator)------'];
 			const toRegEx = [/(Switch lock playlist\\)(?!Active playlist$)/, /(Lock playlist( \(by SMP\):)?\\)(?!Active playlist$)/, /(Unlock playlist\\)(?!Active playlist$)/];
 			const toSkipExport = new Set(['By... (pairs of tags)', 'By... (query)', 'Filter playlist by... (query)', 'Filter playlist by... (tags)', 'From year...', 'From last...', 'By... (tags)', 'By... (expression)', 'Find or create playlist...', 'To specified position', 'Select next # tracks...', 'At year...', 'Since last...', 'Custom TF...', 'By... (tag-value)', 'By... (tag)', 'Select by... (query)', 'Import from file \\ url...', 'Set custom path...']);
 			const toSkipDynamic = new Set([]);
-			const toSkipParentDynamic = ['Pools', 'Pools (Music Map)'];
+			const toSkipParentDynamic = ['Pools', 'Pools (' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ')'];
 			const invRe = menu.getHiddenCharsRegEx();
 			const parentMenus = allEntries.filter((entry) => entry.bIsMenu);
 			// console.log(menuList);

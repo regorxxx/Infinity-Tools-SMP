@@ -1,7 +1,7 @@
 ﻿'use strict';
-//07/10/25
+//08/10/25
 
-/* global menusEnabled:readable, configMenu:readable, readmes:readable, menu:readable, newReadmeSep:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, menu_propertiesBack:readable, menu_panelProperties:readable, overwritePanelProperties:readable, shortcutsPath:readable, importPreset:readable, presets:writable, menu_panelPropertiesBack:readable, loadProperties:readable, overwriteDefaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, specialMenu:readable */
+/* global menusEnabled:readable, configMenu:readable, readmes:readable, menu:readable, newReadmeSep:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, menu_propertiesBack:readable, menu_panelProperties:readable, overwritePanelProperties:readable, shortcutsPath:readable, importPreset:readable, presets:writable, menu_panelPropertiesBack:readable, loadProperties:readable, overwriteDefaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, specialMenu:readable, sbd:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, utf8:readable, globQuery:readable, _p:readable, _save:readable, _explorer:readable, isArrayEqual:readable, _jsonParseFileCheck:readable, Input:readable, globRegExp:readable, capitalize:readable, WshShell:readable, popup:readable, MF_STRING:readable, _recycleFile:readable, _open:readable, MF_MENUBREAK:readable, _qCond:readable, globTags:readable */
 
@@ -266,7 +266,7 @@
 					entryText: 'async', condFunc: () => {
 						const async = JSON.parse(menu_properties.async[1]);
 						const options = Object.keys(async);
-						const notAvailable = ['Tagger', 'Music Map'];
+						const notAvailable = ['Tagger', typeof sbd !== 'undefined' ? sbd.name : 'Music Map'];
 						options.forEach((key) => {
 							if (key === 'Music Map' && (Object.hasOwn(menusEnabled, specialMenu) && !menusEnabled[specialMenu] || typeof sbd === 'undefined')) { return; }
 							const bNotAvailable = notAvailable.includes(key);
