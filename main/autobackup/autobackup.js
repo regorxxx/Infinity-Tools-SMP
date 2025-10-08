@@ -1,5 +1,5 @@
 'use strict';
-//03/10/25
+//08/10/25
 
 /* exported AutoBackup */
 
@@ -182,19 +182,26 @@ function AutoBackup({
 		let totalSize = backupsMaxSize > 0 ? files.reduce((acc, curr) => acc + curr.size, 0) : null;
 		// Take out files from specific date ranges from rotation
 		files = ['year', 'month', 'week', 'day'].reduce((acc, key) => this.popFilesByDateKey(acc, key), files);
-		// Delete by number
-		if (iBackups > 0) {
-			while (totalFiles >= iBackups) {
-				_recycleFile(files.pop().path, true);
+		const deleteBackupFile = () => {
+			const toDelete = files.pop();
+			if (toDelete) {
+				_recycleFile(toDelete.path, true);
 				totalFiles--;
+				totalSize -= toDelete.size;
+				return true;
+			}
+			return false;
+		};
+		// Delete by number
+		if (iBackups > 0 && totalFiles > 0) {
+			while (totalFiles >= iBackups) {
+				if (!deleteBackupFile()) { break; }
 			}
 		}
 		// Delete by file size
-		if (backupsMaxSize > 0) {
+		if (backupsMaxSize > 0 && totalFiles > 0) {
 			while (totalSize >= backupsMaxSize) {
-				const toDelete = files.pop();
-				_recycleFile(toDelete.path, true);
-				totalSize -= toDelete.size;
+				if (!deleteBackupFile()) { break; }
 			}
 		}
 		return true;
@@ -251,9 +258,9 @@ function AutoBackup({
 		});
 		_zip(fileMask.flat(Infinity), fb.ProfilePath + outputPath + zipName + '.zip', bAsync, fb.ProfilePath, timeout, this.zipArgs || '');
 		if (timeout) {
-			console.log(this.name + ' (' + reason + '): Scheduled backup of items on ' + timeout + ' seconds to ' + outputPath + zipName); // DEBUG
+			console.log(this.name + ' (' + reason + '): Scheduled backup of items on ' + timeout + ' seconds to\n\t ' + outputPath + zipName); // DEBUG
 		} else {
-			console.log(this.name + ' (' + reason + '): Backed up items to ' + outputPath + zipName); // DEBUG
+			console.log(this.name + ' (' + reason + '): Backed up items to\n\t ' + outputPath + zipName); // DEBUG
 		}
 		// Delete the file copies
 		if (!bAsync) {
