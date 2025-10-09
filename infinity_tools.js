@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/10/25
+//09/10/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -276,7 +276,7 @@ const includeButton = (() => {
 function includeButtons() {
 	if (buttonsPath.length) {
 		for (const path of buttonsPath) { includeButton(path); }
-		console.log('Buttons loaded:\n\t ' + buttonsBar.listKeys.flat(Infinity).joinEvery(', ', 4));
+		console.log(window.ScriptInfo.Name + ' - buttons loaded:\n\t ' + buttonsBar.listKeys.flat(Infinity).joinEvery(', ', 4));
 		return true;
 	}
 	return false;
@@ -285,7 +285,7 @@ function includeButtons() {
 function includeButtonsAsync(timeout = 100) {
 	if (buttonsPath.length) {
 		return Promise.serial(buttonsPath, includeButton, timeout)
-			.then(() => console.log('Buttons loaded:\n\t ' + buttonsBar.listKeys.flat(Infinity).joinEvery(', ', 8, '\n\t ')));
+			.then(() => console.log(window.ScriptInfo.Name + ' - buttons loaded:\n\t ' + buttonsBar.listKeys.flat(Infinity).joinEvery(', ', 8, '\n\t ')));
 	}
 	return Promise.resolve(false);
 }
