@@ -509,6 +509,7 @@ function Tagger({
 	if (orderKeys.flat(Infinity).some((k) => !Object.hasOwn(this.toolsByKey, k))) { throw new Error('Key not associated to any tool'); }
 	this.stepTag = ({ step, bDebug = false, bProfile = false }) => {
 		const runMenu = (menuArr, handleList, title) => {
+			if (!handleList) { return false; }
 			bSuccess = menuArr.some((name) => fb.RunContextCommandWithMetadb(name, handleList, 8));
 			if (!bSuccess) { fb.ShowPopupMessage('Contextual menu entries not found:\n\n  - ' + menuArr.join('\n  - ') + '\n\nCheck they match the contextual menus associated to the component and don\'t have any typo. Otherwise report to the component\'s dev.', title); }
 			return bSuccess;
