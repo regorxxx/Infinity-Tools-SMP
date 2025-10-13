@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/10/25
+//13/10/25
 
 /*
 	Wrapped
@@ -22,7 +22,7 @@ include('..\\helpers\\helpers_xxx_prototypes.js');
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
-/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
+/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable  */
 include('..\\main\\main_menu\\main_menu_custom.js');
 /* global bindDynamicMenus:readable, deleteMainMenuDynamic:readable */
 include('helpers\\buttons_stats_wrapped_menu.js');
@@ -55,12 +55,14 @@ var newButtonsProperties = { // NOSONAR[global]
 	filePaths: ['External database paths', JSON.stringify({
 		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
 		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
-		worldMapArtists: _foldPath(folders.data + 'worldMap.json')
+		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
+		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
 	})]
 };
-newButtonsProperties.filePaths.push({ func: isJSON }, newButtonsProperties.filePaths[1]);
+newButtonsProperties.filePaths.push({ func: isJSON, forceDefaults: true }, newButtonsProperties.filePaths[1]);
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 newButtonsProperties = getPropertiesPairs(newButtonsProperties, prefix, 0);
+checkJsonProperties(newButtonsProperties);
 buttonsBar.list.push(newButtonsProperties);
 
 addButton({

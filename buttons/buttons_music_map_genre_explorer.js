@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/09/25
+//13/10/25
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -9,7 +9,7 @@ include('..\\helpers\\buttons_xxx.js');
 include('..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
-/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
+/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isJSON:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
@@ -45,6 +45,7 @@ newButtonsProperties.entries.push(newButtonsProperties.entries[1]);
 newButtonsProperties = { ...newButtonsProperties }; // Add default properties at the beginning to be sure they work
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 newButtonsProperties = getPropertiesPairs(newButtonsProperties, prefix, 0); // And retrieve
+checkJsonProperties(newButtonsProperties);
 buttonsBar.list.push(newButtonsProperties);
 
 addButton({

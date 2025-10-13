@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/09/25
+//13/10/25
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -7,7 +7,7 @@ include('..\\helpers\\helpers_xxx.js');
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
-/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
+/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isJSON:readable, _p:readable , isStringWeak:readable, _ps:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
@@ -40,6 +40,7 @@ var newButtonsProperties = { // NOSONAR [shared on files]
 newButtonsProperties = { ...SearchByDistance_properties, ...newButtonsProperties }; // Add default properties at the beginning to be sure they work
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 newButtonsProperties = getPropertiesPairs(newButtonsProperties, prefix, 0); // And retrieve
+checkJsonProperties(newButtonsProperties);
 buttonsBar.list.push(newButtonsProperties);
 // Update cache with user set tags
 doOnce('Update SBD cache', debounce(updateCache, 3000))({ properties: newButtonsProperties });

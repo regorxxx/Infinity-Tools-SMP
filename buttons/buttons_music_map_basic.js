@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//13/10/25
 
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
@@ -15,7 +15,7 @@ include('..\\helpers\\helpers_xxx_UI.js');
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 include('..\\main\\search_by_distance\\search_by_distance.js'); // Load after buttons_xxx.js so properties are only set once
-/* global SearchByDistance_properties:readable, sbd:readable, updateCache:readable, findStyleGenresMissingGraphCheck:readable, testBaseTags:readable */
+/* global SearchByDistance_properties:readable, sbd:readable, updateCache:readable, findStyleGenresMissingGraphCheck:readable, testBaseTags:readable, checkJsonProperties:readable */
 include('helpers\\buttons_sbd_menu_presets.js'); // Button menu
 /* global choosePresetMenu:readable */
 
@@ -56,6 +56,7 @@ delete newButtonsProperties.dynQueries;
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 {
 	const properties = getPropertiesPairs(newButtonsProperties, prefix, 0);
+	checkJsonProperties(properties);
 	newButtonsProperties = properties;
 	buttonsBar.list.push(properties);
 	// Update cache with user set tags

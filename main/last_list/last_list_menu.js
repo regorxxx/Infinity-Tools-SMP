@@ -82,7 +82,8 @@ function _lastListMenu({ bSimulate = false, bDynamicMenu = false /* on SMP main 
 		// Similar artists tags
 		[
 			{ file: filePaths.listenBrainzArtists, dataId: 'artist', tag: globTags.lbSimilarArtist },
-			{ file: filePaths.searchByDistanceArtists, dataId: 'artist', tag: globTags.sbdSimilarArtist }
+			{ file: filePaths.searchByDistanceArtists, dataId: 'artist', tag: globTags.sbdSimilarArtist },
+			{ file: filePaths.lastfmArtists, dataId: 'artist', tag: globTags.lfmSimilarArtist }
 		].forEach((option) => {
 			if (_isFile(option.file)) {
 				const dataId = option.dataId;

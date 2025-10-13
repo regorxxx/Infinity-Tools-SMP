@@ -25,7 +25,7 @@ include('..\\helpers\\helpers_xxx_file.js');
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
-/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
+/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable  */
 include('..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
@@ -60,7 +60,7 @@ var newButtonsProperties = { // NOSONAR[global]
 		},
 		{
 			name: 'By Similar artist',
-			tf: [...new Set([globTags.sbdSimilarArtist, 'LASTFM_SIMILAR_ARTIST', 'SIMILAR ARTISTS LAST.FM', globTags.lbSimilarArtist])]
+			tf: [...new Set([globTags.sbdSimilarArtist, 'LASTFM_SIMILAR_ARTIST', globTags.lfmSimilarArtist, globTags.lbSimilarArtist])]
 		},
 		{
 			name: 'By Folksonomy',
@@ -77,13 +77,15 @@ var newButtonsProperties = { // NOSONAR[global]
 	filePaths: ['External database paths', JSON.stringify({
 		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
 		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
-		worldMapArtists: _foldPath(folders.data + 'worldMap.json')
+		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
+		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
 	})]
 };
-newButtonsProperties.filePaths.push({ func: isJSON }, newButtonsProperties.filePaths[1]);
+newButtonsProperties.filePaths.push({ func: isJSON, forceDefaults: true }, newButtonsProperties.filePaths[1]);
 newButtonsProperties.entries.push(newButtonsProperties.entries[1]);
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 newButtonsProperties = getPropertiesPairs(newButtonsProperties, prefix, 0);
+checkJsonProperties(newButtonsProperties);
 buttonsBar.list.push(newButtonsProperties);
 
 addButton({
@@ -241,7 +243,8 @@ function quickmatchMenu() {
 		// Similar artists tags
 		[
 			{ file: filePaths.listenBrainzArtists, dataId: 'artist', tag: globTags.lbSimilarArtist },
-			{ file: filePaths.searchByDistanceArtists, dataId: 'artist', tag: globTags.sbdSimilarArtist }
+			{ file: filePaths.searchByDistanceArtists, dataId: 'artist', tag: globTags.sbdSimilarArtist },
+			{ file: filePaths.lastfmArtists, dataId: 'artist', tag: globTags.lfmSimilarArtist }
 		].forEach((option) => {
 			if (_isFile(option.file)) {
 				const dataId = option.dataId;

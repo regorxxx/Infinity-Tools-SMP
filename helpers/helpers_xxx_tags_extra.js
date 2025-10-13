@@ -79,7 +79,8 @@ function getSimilarDataFromFile(file, newData = null, iNum = Infinity) {
 		}
 		data.forEach((obj) => {
 			obj.val.forEach((val) => {
-				if (Object.hasOwn(val, 'scoreW')) { val.score = val.scoreW; delete val.scoreW; }
+				if (Object.hasOwn(val, 'scoreW')) { val.score = val.scoreW; delete val.scoreW; delete val.count; }
+				if (Object.hasOwn(val, 'count')) { delete val.count; }
 			});
 			obj.val.sort((a, b) => { return b.score - a.score; });
 		});

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/10/25
+//13/10/25
 
 /*
 	Integrates ListenBrainz feedback and recommendations statistics within foobar2000 library.
@@ -19,7 +19,7 @@ include('..\\helpers\\helpers_xxx_file.js');
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
-/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
+/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable  */
 include('..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
@@ -61,7 +61,7 @@ var newButtonsProperties = { // NOSONAR[global]
 		{ name: 'Artist top tracks', tf: [...new Set([globTags.artistRaw, 'ARTIST', 'ALBUM ARTIST'])], type: 'getPopularRecordingsByArtist' },
 		// {name: 'Artist shuffle', tf: [...new Set([globTags.artistRaw, 'ARTIST', 'ALBUM ARTIST'], type: '??'}, TODO
 		{ name: 'Similar artists to', tf: [...new Set([globTags.artistRaw, 'ARTIST', 'ALBUM ARTIST'])], type: 'retrieveSimilarArtists' },
-		{ name: 'Similar artists', tf: [...new Set([globTags.sbdSimilarArtist, 'LASTFM_SIMILAR_ARTIST', 'SIMILAR ARTISTS LAST.FM', globTags.lbSimilarArtist])], type: 'getPopularRecordingsBySimilarArtist' },
+		{ name: 'Similar artists', tf: [...new Set([globTags.sbdSimilarArtist, 'LASTFM_SIMILAR_ARTIST', globTags.lfmSimilarArtist, globTags.lbSimilarArtist])], type: 'getPopularRecordingsBySimilarArtist' },
 		{ name: 'Similar tracks', tf: [globTags.titleRaw], type: 'retrieveSimilarRecordings' },
 		{ name: 'Genre & Style(s)', tf: [...new Set([globTags.genre, globTags.style, 'GENRE', 'STYLE', 'ARTIST GENRE LAST.FM', 'ARTIST GENRE ALLMUSIC', 'ALBUM GENRE LAST.FM', 'ALBUM GENRE ALLMUSIC', 'ALBUM GENRE WIKIPEDIA', 'ARTIST GENRE WIKIPEDIA'])], type: 'getRecordingsByTag' },
 		{ name: 'Folksonomy & Date(s)', tf: [...new Set([globTags.folksonomy, 'FOLKSONOMY', 'OCCASION', 'ALBUMOCCASION', globTags.locale, 'LOCALE', 'LOCALE LAST.FM', 'DATE', 'LOCALE WORLD MAP'])], type: 'getRecordingsByTag' },
@@ -70,13 +70,15 @@ var newButtonsProperties = { // NOSONAR[global]
 	filePaths: ['External database paths', JSON.stringify({
 		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
 		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
-		worldMapArtists: _foldPath(folders.data + 'worldMap.json')
+		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
+		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
 	})]
 };
 newButtonsProperties.tags.push({ func: isJSON }, newButtonsProperties.tags[1]);
-newButtonsProperties.filePaths.push({ func: isJSON }, newButtonsProperties.filePaths[1]);
+newButtonsProperties.filePaths.push({ func: isJSON, forceDefaults: true }, newButtonsProperties.filePaths[1]);
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 newButtonsProperties = getPropertiesPairs(newButtonsProperties, prefix, 0);
+checkJsonProperties(newButtonsProperties);
 buttonsBar.list.push(newButtonsProperties);
 
 addButton({

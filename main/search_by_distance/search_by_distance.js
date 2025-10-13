@@ -53,7 +53,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_crc.js');
 /* global crc32:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global isInt:readable, isJSON:readable, isBoolean:readable, regExBool:readable, isString:readable, isStringWeak:readable, _t:readable, _p:readable, isArrayStrings:readable, round:readable, _q:readable, _b:readable, _bt:readable, _qCond:readable, range:readable */
+/* global isInt:readable, isJSON:readable, isBoolean:readable, regExBool:readable, isString:readable, isStringWeak:readable, _t:readable, _p:readable, isArrayStrings:readable, round:readable, _q:readable, _b:readable, _bt:readable, _qCond:readable, range:readable, checkJsonProperties:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
@@ -163,7 +163,8 @@ const SearchByDistance_properties = {
 	filePaths: ['External database paths', JSON.stringify({
 		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
 		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
-		worldMapArtists: _foldPath(folders.data + 'worldMap.json')
+		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
+		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
 	})]
 };
 // Checks
@@ -178,7 +179,7 @@ Object.keys(SearchByDistance_properties).forEach((key) => { // Checks
 	} else if (regExBool.test(key)) {
 		SearchByDistance_properties[key].push({ func: isBoolean }, SearchByDistance_properties[key][1]);
 	} else if (['filePaths'].map((s) => s.toLowerCase()).includes(k)) {
-		SearchByDistance_properties[key].push({ func: isJSON }, SearchByDistance_properties[key][1]);
+		SearchByDistance_properties[key].push({ func: isJSON, forceDefaults: true }, SearchByDistance_properties[key][1]);
 	}
 });
 
@@ -299,6 +300,7 @@ const sbd = {
 		};
 	}
 };
+if (typeof buttonsBar === 'undefined' && typeof bNotProperties === 'undefined') { checkJsonProperties(sbd.panelProperties); }
 [sbd.genreMap, sbd.styleMap, sbd.genreStyleMap] = dynGenreMap();
 
 // Info Popup
