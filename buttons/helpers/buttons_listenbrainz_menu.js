@@ -1,5 +1,5 @@
 'use strict';
-//25/09/25
+//13/10/25
 
 /* exported listenBrainzMenu */
 
@@ -10,7 +10,7 @@ include('..\\..\\helpers\\helpers_xxx_input.js');
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global WshShell:readable, _isFile:readable, _jsonParseFileCheck:readable, utf8:readable, _jsonParseFileCheck:readable, _jsonParseFileCheck:readable, _runCmd:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global _b:readable, _t:readable, _q:readable, _p:readable, _asciify:readable, isArrayEqual:readable, isUUID:readable, range:readable, isString:readable, _ps:readable */
+/* global _b:readable, _t:readable, _q:readable, _p:readable, _asciify:readable, isArrayEqual:readable, isUUID:readable, range:readable, isString:readable, _ps:readable, capitalizeAll:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global overwriteProperties:readable */
 include('..\\..\\helpers\\buttons_xxx_menu.js');
@@ -100,7 +100,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				if (idx !== -1) {
 					let count = info.MetaValueCount(idx);
 					while (count--) {
-						const val = info.MetaValue(idx, count).trim();
+						const val = info.MetaValue(idx, count).trim().toLowerCase();
 						tag.val[i].push(val);
 						if (i === 0 || i !== 0 && !/TITLE|ALBUM_TRACKS/i.test(tag.type)) { tag.valSet.add(val); }
 					}
@@ -113,7 +113,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 							.filter(Boolean)
 							.slice(0, 10)
 							.forEach((val) => {
-								val = val.trim();
+								val = val.trim().toLowerCase();
 								tag.val[i].push(val);
 								tag.valSet.add(val);
 							});
@@ -125,7 +125,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 					if (key) {
 						let count = bioTags[key].length;
 						while (count--) {
-							const val = bioTags[key][count].trim();
+							const val = bioTags[key][count].trim().toLowerCase();
 							tag.val[i].push(val);
 							if (i === 0 || i !== 0 && !/TITLE|ALBUM_TRACKS/i.test(tag.type)) { tag.valSet.add(val); }
 						}
@@ -148,8 +148,8 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 					const lbData = new Set();
 					if (data) {
 						data.forEach((item) => {
-							if (selIds.some((id) => item[dataId] === id)) {
-								item.val.slice(0, 10).forEach((val) => lbData.add(val.artist));
+							if (selIds.some((id) => item[dataId].toLowerCase() === id.toLowerCase())) {
+								item.val.slice(0, 10).forEach((val) => lbData.add(val.artist.toLowerCase()));
 							}
 						});
 					}
@@ -173,8 +173,8 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				const worldMapData = new Set();
 				if (data) {
 					data.forEach((item) => {
-						if (selIds.some((id) => item[dataId] === id)) {
-							item.val.forEach((val) => worldMapData.add(val));
+						if (selIds.some((id) => item[dataId].toLowerCase() === id.toLowerCase())) {
+							item.val.forEach((val) => worldMapData.add(val.toLowerCase()));
 						}
 					});
 				}
@@ -615,7 +615,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 					if (tag.valSet.size === 0) { tag.valSet.add(''); }
 					[...tag.valSet].sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base' })).forEach((val, i) => {
 						menu.newEntry({
-							menuName: subMenu, entryText: bSingle ? tag.name + '\t[' + (val.cut(20) || (sel ? 'no tag' : 'no sel')) + ']' : val.cut(20), func: () => {
+							menuName: subMenu, entryText: bSingle ? tag.name + '\t[' + (capitalizeAll(val).cut(20) || (sel ? 'no tag' : 'no sel')) + ']' : capitalizeAll(val).cut(20), func: () => {
 								switch (tag.type) {
 									case 'getPopularRecordingsByArtist':
 										runSimilar(tag.type, 'By artist top tracks', 50, val); break;
@@ -648,7 +648,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				case 'getPopularRecordingsByArtist': {
 					const selMbids = await lb.getArtistMBIDs(new FbMetadbHandleList(sel), token, bLookupMBIDs, false);
 					const artistDic = await lb.joinArtistMBIDs([val], selMbids, token, true);
-					selMbid = [(artistDic.find((entry) => entry.artist === val) || { mbids: [] }).mbids[0]].filter(Boolean);
+					selMbid = [(artistDic.find((entry) => entry.artist.toLowerCase() === val.toLowerCase()) || { mbids: [] }).mbids[0]].filter(Boolean);
 					break;
 				}
 				case 'getPopularRecordingsBySimilarArtist': {
@@ -660,7 +660,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				case 'retrieveSimilarArtists': {
 					const selMbids = await lb.getArtistMBIDs(new FbMetadbHandleList(sel), token, bLookupMBIDs, false);
 					const artistDic = await lb.joinArtistMBIDs([val], selMbids, token, true);
-					selMbid = (artistDic.find((entry) => entry.artist === val) || { mbids: [] }).mbids[0];
+					selMbid = (artistDic.find((entry) => entry.artist.toLowerCase() === val.toLowerCase()) || { mbids: [] }).mbids[0];
 					break;
 				}
 				case 'getRecordingsByTag': {
@@ -898,7 +898,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 									, 'OR');
 								return query;
 							}).filter(Boolean);
-							const artistItems = fb.GetQueryItems(libItems, 'ARTIST IS ' + tags.ARTIST[0] + ' OR ALBUM ARTIST IS ' + tags.ARTIST[0]);
+							const artistItems = fb.GetQueryItems(libItems, 'ARTIST IS ' + tags.ARTIST[0].toLowerCase() + ' OR ALBUM ARTIST IS ' + tags.ARTIST[0].toLowerCase());
 							items = queryArr.map((query, i) => {
 								let itemHandleList;
 								try { itemHandleList = fb.GetQueryItems(artistItems, query); } // Sanity check

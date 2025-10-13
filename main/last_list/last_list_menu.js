@@ -1,5 +1,5 @@
 'use strict';
-//25/09/25
+//13/10/25
 
 /* exported _lastListMenu */
 
@@ -12,7 +12,7 @@ include('..\\..\\helpers\\helpers_xxx_file.js');
 include('..\\..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global isString:readable, isFunction:readable, _ps:readable */
+/* global isString:readable, isFunction:readable, _ps:readable, capitalizeAll:readable */
 include('..\\..\\helpers\\helpers_xxx_tags_extra.js');
 /* global getSimilarDataFromFile:readable */
 
@@ -46,7 +46,7 @@ function _lastListMenu({ bSimulate = false, bDynamicMenu = false /* on SMP main 
 				if (idx !== -1) {
 					let count = info.MetaValueCount(idx);
 					while (count--) {
-						const val = info.MetaValue(idx, count).trim();
+						const val = info.MetaValue(idx, count).trim().toLowerCase();
 						tag.val[i].push(val);
 						if (i === 0 || i !== 0 && !/TITLE|ALBUM_TRACKS/i.test(tag.type)) { tag.valSet.add(val); }
 					}
@@ -59,7 +59,7 @@ function _lastListMenu({ bSimulate = false, bDynamicMenu = false /* on SMP main 
 							.filter(Boolean)
 							.slice(0, 10)
 							.forEach((val) => {
-								val = val.trim();
+								val = val.trim().toLowerCase();
 								tag.val[i].push(val);
 								tag.valSet.add(val);
 							});
@@ -71,8 +71,8 @@ function _lastListMenu({ bSimulate = false, bDynamicMenu = false /* on SMP main 
 					if (key) {
 						let count = bioTags[key].length;
 						while (count--) {
-							const val = bioTags[key][count].trim();
-							tag.val[i].push(val);
+							const val = bioTags[key][count].trim().toLowerCase();
+							tag.val[i].push(val.toLowerCase());
 							if (i === 0 || i !== 0 && !/TITLE|ALBUM_TRACKS/i.test(tag.type)) { tag.valSet.add(val); }
 						}
 					}
@@ -93,8 +93,8 @@ function _lastListMenu({ bSimulate = false, bDynamicMenu = false /* on SMP main 
 					const lbData = new Set();
 					if (data) {
 						data.forEach((item) => {
-							if (selIds.some((id) => item[dataId] === id)) {
-								item.val.slice(0, 10).forEach((val) => lbData.add(val.artist));
+							if (selIds.some((id) => item[dataId].toLowerCase() === id.toLowerCase())) {
+								item.val.slice(0, 10).forEach((val) => lbData.add(val.artist.toLowerCase()));
 							}
 						});
 					}
@@ -118,8 +118,8 @@ function _lastListMenu({ bSimulate = false, bDynamicMenu = false /* on SMP main 
 				const worldMapData = new Set();
 				if (data) {
 					data.forEach((item) => {
-						if (selIds.some((id) => item[dataId] === id)) {
-							item.val.forEach((val) => worldMapData.add(val));
+						if (selIds.some((id) => item[dataId].toLowerCase() === id.toLowerCase())) {
+							item.val.forEach((val) => worldMapData.add(val.toLowerCase()));
 						}
 					});
 				}
@@ -208,7 +208,7 @@ function _lastListMenu({ bSimulate = false, bDynamicMenu = false /* on SMP main 
 				if (tag.valSet.size === 0) { tag.valSet.add(''); }
 				const val = [...tag.valSet][0];
 				menu.newEntry({
-					menuName: subMenu, entryText: tag.name + '\t[' + (val.cut(20) || (sel ? 'no tag' : 'no sel')) + ']', func: () => {
+					menuName: subMenu, entryText: tag.name + '\t[' + (capitalizeAll(val).cut(20) || (sel ? 'no tag' : 'no sel')) + ']', func: () => {
 						const url = buildUrl(tag, val);
 						if (url) {
 							parent.url = url;
@@ -231,7 +231,7 @@ function _lastListMenu({ bSimulate = false, bDynamicMenu = false /* on SMP main 
 				if (tag.valSet.size === 0) { tag.valSet.add(''); }
 				[...tag.valSet].sort((a, b) => a.localeCompare(b, void(0), { sensitivity: 'base' })).forEach((val, i) => {
 					menu.newEntry({
-						menuName: subMenu, entryText: bSingle ? tag.name + '\t[' + (val.cut(25) || (sel ? 'no tag' : 'no sel')) + ']' : val.cut(25), func: () => {
+						menuName: subMenu, entryText: bSingle ? tag.name + '\t[' + (capitalizeAll(val).cut(25) || (sel ? 'no tag' : 'no sel')) + ']' : capitalizeAll(val).cut(25), func: () => {
 							const url = buildUrl(tag, val);
 							if (url) {
 								parent.url = url;

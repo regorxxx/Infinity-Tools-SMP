@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/10/25
+//13/10/25
 
 /* exported getArtistsSameZone, getZoneArtistFilter, getZoneGraphFilter */
 
@@ -32,7 +32,7 @@ function getLocaleFromId(id, worldMapData = folders.data + 'worldMap.json') {
 	if (Array.isArray(id)) { return id.map((subId) => getLocaleFromId(subId, worldMapData)); }
 	else {
 		const output = { locale: [''], country: '', iso: '', worldMapData: null };
-		output.locale = (worldMapData.find((obj) => { return (obj[dataId] === id); }) || {}).val || [''];
+		output.locale = (worldMapData.find((obj) => { return (obj[dataId].toLowerCase() === id.toLowerCase()); }) || {}).val || [''];
 		output.country = output.locale.length ? (output.locale.slice(-1)[0] || '') : '';
 		output.iso = output.country.length ? (getCountryISO(output.country) || '') : '';
 		output.worldMapData = worldMapData;
@@ -141,14 +141,14 @@ function getZoneArtistFilter(iso, mode = 'region', worldMapData = folders.data +
 	});
 	// Query
 	let query = [];
-	query.push(queryJoin(artists.map((artist) => globTags.artist + ' IS ' + artist), 'OR'));
+	query.push(queryJoin(artists.map((artist) => globTags.artist + ' IS ' + artist.toLowerCase()), 'OR'));
 	// Compare if negating countries is smaller than the opposite list, which should be faster for queries
 	if (noCountryISO.length < countryISO.length) {
 		const noCountryName = new Set(noCountryISO.map((iso) => isoMapRev.get(iso).toLowerCase()).filter(Boolean));
 		noCountryName.forEach((name) => { if (nameReplacersRev.has(name)) { countryName.add(nameReplacersRev.get(name)); } });
-		query.push(_qCond(localeTag) + ' PRESENT AND NOT ' + _p(queryJoin(Array.from(noCountryName, (country) => _qCond(localeTag) + ' IS ' + country), 'OR')));
+		query.push(_qCond(localeTag) + ' PRESENT AND NOT ' + _p(queryJoin(Array.from(noCountryName, (country) => _qCond(localeTag) + ' IS ' + country.toLowerCase()), 'OR')));
 	} else {
-		query.push(queryJoin(Array.from(countryName, (country) => _qCond(localeTag) + ' IS ' + country), 'OR'));
+		query.push(queryJoin(Array.from(countryName, (country) => _qCond(localeTag) + ' IS ' + country.toLowerCase()), 'OR'));
 	}
 	query = queryJoin(query, 'OR');
 	return { artists, countries: { iso: countryISO, name: countryName }, query };

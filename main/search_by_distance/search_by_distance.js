@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/10/25
+//13/10/25
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -1636,7 +1636,7 @@ async function searchByDistance({
 			if (!bSameArtistFilter) { similTags.push(artist); } // Always add the original artist as a valid value
 		}
 		if (similTags.length) {
-			querySimil = similTags.map((artist) => globTags.artistRaw + ' IS ' + artist);
+			querySimil = similTags.map((artist) => globTags.artistRaw + ' IS ' + artist.toLowerCase());
 			querySimil = queryJoin(querySimil, 'OR');
 		}
 		if (querySimil.length) {

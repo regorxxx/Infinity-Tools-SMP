@@ -1,5 +1,5 @@
 'use strict';
-//25/09/25
+//13/10/25
 
 /* exported writeSimilarArtistsTags, updateSimilarDataFile, mergeSimilarDataFromFiles */
 
@@ -32,7 +32,7 @@ function updateTrackSimilarTags({ data, iNum = 10, tagName = globTags.lbSimilarA
 			fb.GetLibraryItems(),
 			_p(queryJoin(
 				[
-					artist.map((a) => { return globTags.artist + ' IS ' + a; }).join(' OR '),
+					artist.map((a) => { return globTags.artist + ' IS ' + a.toLowerCase(); }).join(' OR '),
 					obj.mbid ? 'MUSICBRAINZ_ALBUMARTISTID IS ' + obj.mbid : ''
 				],
 				'OR'

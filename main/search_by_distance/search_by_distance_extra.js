@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/09/25
+//13/10/25
 
 /* exported calculateSimilarArtistsFromPls, addTracksRelation, calculateTrackSimilarity */
 
@@ -38,7 +38,7 @@ async function calculateSimilarArtists({ selHandle = fb.GetFocusItem(), properti
 	const test = sbd.panelProperties.bProfile[1] ? new FbProfiler('calculateSimilarArtists') : null;
 	// Retrieve all tracks for the selected artist and compare them against the library (any other track not by the artist)
 	const artist = getHandleListTags(new FbMetadbHandleList(selHandle), [globTags.artist], { bMerged: true }).flat().filter(Boolean);
-	const libQuery = artist.map((tag) => { return _p(globTags.artist + ' IS ' + tag); }).join(' AND ');
+	const libQuery = artist.map((tag) => { return _p(globTags.artist + ' IS ' + tag.toLowerCase()); }).join(' AND ');
 	// Retrieve artist's tracks and remove duplicates
 	let selArtistTracks = fb.GetQueryItems(fb.GetLibraryItems(), libQuery);
 	selArtistTracks = removeDuplicates({ handleList: selArtistTracks, sortBias: globQuery.remDuplBias, bPreserveSort: false, bAdvTitle: true, bMultiple: true });
@@ -55,7 +55,7 @@ async function calculateSimilarArtists({ selHandle = fb.GetFocusItem(), properti
 		const genreStyle = getHandleListTags(new FbMetadbHandleList(selHandle), genreStyleTag, { bMerged: true }).flat().filter(Boolean);
 		const allowedGenres = getNearestGenreStyles(genreStyle, 50, sbd.allMusicGraph);
 		const allowedGenresQuery = queryCombinations(allowedGenres, genreStyleTagQuery, 'OR', 'AND');
-		forcedQuery = _p(artist.map((tag) => { return _p('NOT ' + globTags.artist + ' IS ' + tag); }).join(' AND ')) + (allowedGenresQuery.length ? ' AND ' + _p(allowedGenresQuery) : '');
+		forcedQuery = _p(artist.map((tag) => { return _p('NOT ' + globTags.artist + ' IS ' + tag.toLowerCase()); }).join(' AND ')) + (allowedGenresQuery.length ? ' AND ' + _p(allowedGenresQuery) : '');
 	}
 	// Weight with all artist's tracks
 	const genreStyleWeight = new Map();
@@ -78,7 +78,7 @@ async function calculateSimilarArtists({ selHandle = fb.GetFocusItem(), properti
 			const genreStyle = getHandleListTags(new FbMetadbHandleList(sel), genreStyleTag, { bMerged: true }).flat().filter(Boolean);
 			const allowedGenres = getNearestGenreStyles(genreStyle, 50, sbd.allMusicGraph);
 			const allowedGenresQuery = queryJoin(queryCombinations(allowedGenres, genreStyleTagQuery, 'OR'), 'OR');
-			forcedQuery = _p(artist.map((tag) => { return _p('NOT ' + globTags.artist + ' IS ' + tag); }).join(' AND ')) + (allowedGenresQuery.length ? ' AND ' + _p(allowedGenresQuery) : '');
+			forcedQuery = _p(artist.map((tag) => { return _p('NOT ' + globTags.artist + ' IS ' + tag.toLowerCase()); }).join(' AND ')) + (allowedGenresQuery.length ? ' AND ' + _p(allowedGenresQuery) : '');
 			if (method === 'weighted') { // Weight will be <= 1 according to how representative of the artist's works is
 				weight = [...new Set(genreStyle)].reduce((total, val) => { return total + (genreStyleWeight.has(val) ? genreStyleWeight.get(val) : 0); }, 0);
 			}
