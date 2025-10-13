@@ -17,11 +17,7 @@
 - Playlist Tools\Selection Manipulation\Expand (contiguous): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to contiguous tracks, thus ensuring joint selections.
 - Playlist Tools\Selection Manipulation\Expand (next): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to next tracks to focused one.
 - Playlist Tools: added default value for duplicates selection and smart shuffle bias.
-- Playlist Tools: added setting for Smart Shuffle tag.
-- Playlist Tools: added missing settings from Music Map.
 - Music Map: added default value for duplicates selection and smart shuffle bias.
-- Autobackup: added a flag to mark specific folders/files to be copied before creating the zipped backup file (with the copy, instead of the original one). This is mostly an internal change to be on the safe side with foobar2000 v2, since compressing a file seems to also block it and foobar2000 v2 seems to have problems in some cases in this situation. See [here](https://hydrogenaudio.org/index.php/topic,128527.0.html). Note defaults settings must be restored at the files and folders submenu to apply this flag.
-- Autobackup: added settings to add extra CMD arguments to 7za processing. For ex. to change the compression level to no compression, use '-mx0'. The full list of commands can be seen [here](https://7-zip.opensource.jp/chm/cmdline/commands/add.htm).
 ### Changed
 - Playlist Tools\Playlist Manipulation\Harmonic mix: cleanup of some menu entries and code logic.
 - Playlist Tools\Selection Manipulation\Advanced sort: cleanup of some menu entries and code logic.
@@ -33,17 +29,9 @@
 - Fonts: fonts are no longer bundled at '_resources' folder, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts
 - Binaries: external binaries are no longer bundled along scripts, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 - Settings: global support for %fb2k_component_path%, %fb2k_profile_path% and %fb2k_path% in any input asking for paths.
-- Autobackup: minimal allowed interval for saving set to 40 seconds. This is mostly an internal change to be on the safe side with foobar2000 v2.
 - UI: animation while buttons are processing is now much faster.
 - Export settings: now uses '[FOOBAR PROFILE FOLDER]\js_data\export' folder at exporting.
 ### Removed
 ### Fixed
-- Autobackup: critical bugfix for '[Save] every x tracks' setting. If backup 'Every x tracks' was set to 0, the tool tried to save foobar2000 configuration every 30 seconds (the minimum interval allowed).
-- Autobackup: fixed error while trying to delete old backup files and no more are available after discarding by date.
-- Export settings: added missing buttons file on zip.
-- Import settings: multiple fixes to extra data files importing.
-- Batch tagger: fix handling of custom tags for some tools.
-- Playlist Tools\Pools: 'SORTED BY' expressions not working properly on 'Custom pool...' entry.
-- Playlist Tools: error exporting user presets for specific tools.
 
 [Unreleased]: ../../compare/f039e12...HEAD
