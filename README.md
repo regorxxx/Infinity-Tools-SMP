@@ -11,7 +11,7 @@ To use this plugin at its best and to benefit the most from your library, you wi
 
 **WARNING: THESE ARE ADVANCED TOOLS, IF YOU ARE EXPECTING A FOOLPROOF TOOL, LOOK ELSEWHERE. WHILE BUG REPORTS AND CONSTRUCTIVE FEEDBACK ARE WELCOME, DON'T COMPLAIN ABOUT THINGS BEING TOO COMPLEX. THEY ARE MEANT THIS WAY.**
 
-<img width="1373" height="493" alt="{ECB3A41A-70EB-46DD-9E04-C962B81AB50B}" src="https://github.com/user-attachments/assets/41b35506-21a3-42f4-8645-7d3659434f71" />
+<img width="1370" height="174" alt="{63A745E1-3384-4B77-8E53-1F8997EF0C80}" src="https://github.com/user-attachments/assets/a9874ef9-cb25-4f11-b02e-9b9a9831fb2b" />
 
 ## Features
 
@@ -45,7 +45,7 @@ It's impossible to offer a complete list of the things that can be done with the
   
 * **Wine - Unix - non IE SOs compatible:** all the UI, tools, popups, configuration and external helpers have been carefully designed to work in all systems without requiring IE installation, HTML popups or editing the panel properties. Scripts are expected to work 100% the same in any SO.
   
-* **Configurable UI and accessibility design:** most of the UI is configurable (size, colors, position, draggable buttons). All the UI is managed within menus, so it may be used with a narrator (for blindness).
+* **Configurable UI and accessibility design:** most of the UI is configurable (size, colors, position, draggable buttons). All the UI is managed within menus, so it may be used with a narrator (for visual impairment accessibility).
 
 ![infinity2](https://github.com/user-attachments/assets/ab35f49f-b06a-4994-a383-a02adcf6cc70)
 
@@ -61,7 +61,7 @@ It's impossible to offer a complete list of the things that can be done with the
  9. [Camelot-Wheel-Notation](https://github.com/regorxxx/Camelot-Wheel-Notation): Javascript implementation of the Camelot Wheel, ready to use "harmonic mixing" rules and translations for standard key notation
  10. [Menu-Framework-SMP](https://github.com/regorxxx/Menu-Framework-SMP): Helper which allows to easily create customizable and dynamic menus.
 
-TODO GIF
+![infinity3](https://github.com/user-attachments/assets/ca6cf815-e0eb-4e74-a627-f05b55ecc42d)
 
 ## Requirements (only one host component required)
  1. [Spider Monkey Panel](https://theqwertiest.github.io/foo_spider_monkey_panel): JavaScript host component required to install this. Only x32. **(host component)**
