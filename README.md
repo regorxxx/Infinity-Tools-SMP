@@ -11,11 +11,11 @@ To use this plugin at its best and to benefit the most from your library, you wi
 
 **WARNING: THESE ARE ADVANCED TOOLS, IF YOU ARE EXPECTING A FOOLPROOF TOOL, LOOK ELSEWHERE. WHILE BUG REPORTS AND CONSTRUCTIVE FEEDBACK ARE WELCOME, DON'T COMPLAIN ABOUT THINGS BEING TOO COMPLEX. THEY ARE MEANT THIS WAY.**
 
-TODO IMAGE
+<img width="1373" height="493" alt="{ECB3A41A-70EB-46DD-9E04-C962B81AB50B}" src="https://github.com/user-attachments/assets/41b35506-21a3-42f4-8645-7d3659434f71" />
 
 ## Features
 
-TODO GIF
+![infinity1](https://github.com/user-attachments/assets/3b7785e7-5b22-4a55-b2b9-ffa127344e66)
 
 It's impossible to offer a complete list of the things that can be done with these tools, in a few words: anything related to playlist creation, sorting, library maintenance, automation, etc. but a readme for every tool and button can be found using the corresponding menu (on configuration menu, R. Click on the toolbar). Non-exhaustive higlight of features:
 
@@ -47,13 +47,7 @@ It's impossible to offer a complete list of the things that can be done with the
   
 * **Configurable UI and accessibility design:** most of the UI is configurable (size, colors, position, draggable buttons). All the UI is managed within menus, so it may be used with a narrator (for blindness).
 
-TODO GIF
-
-TODO
-
-The menus are highly customizable. They are created on demand according to the selected tracks or current playlist, and many entries can be added, removed or edited to suit your needs. Also if some scripts are missing, the menu is rebuilt skipping those entries (letting you to install selectively what you need).
-
-TODO GIF
+![infinity2](https://github.com/user-attachments/assets/ab35f49f-b06a-4994-a383-a02adcf6cc70)
 
 ### Integrates (just for info purposes)
  1. [Playlist-Tools-SMP](https://github.com/regorxxx/Playlist-Tools-SMP): the origin of these seet of tools.
