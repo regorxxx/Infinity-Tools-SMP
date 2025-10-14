@@ -1,0 +1,6 @@
+Provides rating stars indicators (DUI).
+Rating is associated to %RATING% tag; adjust as needed if using other tags.
+
+---------------------- At Playlist View\Custom Columns\Name (DUI) -----------------------
+
+$pad($repeat(★,%rating%), 5,✩)

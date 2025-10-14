@@ -1,0 +1,19 @@
+Provides loved and hated indicators with color codes (CUI).
+Loved/hated are associated to %FEEDBACK% tags; adjust as needed if using other tags.
+
+----------------------  At Playlist View\Columns\Options\Title (CUI) ----------------------
+
+💜
+
+----------------------  At Playlist View\Columns\Display Script (CUI) ----------------------
+
+$select($add(%FEEDBACK%,2),🤢,$if($strstr(%TRACKDSP%,BEST),$char(9836),-),💜)
+
+---------------------- At Playlist View\Columns\Style Script (CUI) ----------------------
+
+$select($add(%FEEDBACK%,2),
+	,
+	$if($strstr($lower(%TRACKDSP%),best),$set_style(text,$rgb(117,223,0)),)
+	,
+	$if($strstr($lower(%TRACKDSP%),best),$set_style(text,$rgb(117,223,0)),$set_style(text,$rgb(232,0,0)))
+)

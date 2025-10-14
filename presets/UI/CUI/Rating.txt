@@ -1,0 +1,16 @@
+Provides rating stars indicators with color codes (CUI).
+Rating is associated to %RATING% tag; adjust as needed if using other tags.
+
+----------------------  At Playlist View\Columns\Display Script (CUI) ----------------------
+
+$pad($repeat(★,%rating%), 5,✩)
+
+---------------------- At Playlist View\Columns\Style Script (CUI) ----------------------
+
+$select(%RATING%,
+	$set_style(text,$rgb(96,63,23)),
+	$set_style(text,$rgb(160,96,37)),
+	$set_style(text,$rgb(221,165,49)),
+	$set_style(text,$rgb(185,180,70)),
+	$set_style(text,$rgb(112,174,81))
+)

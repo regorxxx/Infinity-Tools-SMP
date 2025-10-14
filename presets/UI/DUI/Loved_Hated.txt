@@ -1,0 +1,10 @@
+Provides loved and hated indicators (DUI).
+Loved/hated are associated to %FEEDBACK% tags; adjust as needed if using other tags.
+
+---------------------- At Playlist View\Custom Columns\Name (DUI) -----------------------
+
+💜
+
+---------------------- At Playlist View\Custom Columns\Pattern (DUI) -----------------------
+
+$select($add(%FEEDBACK%,2),🤢,$if($strstr(%TRACKDSP%,BEST),$char(9836),-),💜)
