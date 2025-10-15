@@ -311,7 +311,7 @@ function ThemedButton({
 			: buttonsBar.config.hoverColor;
 	};
 	let iconCache = null;
-	this.draw = function (gr, x = this.x, y = this.y, w = this.w, h = this.h, bAlign = false) {
+	this.draw = function (/** @type {GdiGraphics} */ gr, x = this.x, y = this.y, w = this.w, h = this.h, bAlign = false) {
 		// Draw?
 		if (this.state === buttonStates.hide) {
 			let { x: xCalc, y: yCalc, w: wCalc, h: hCalc } = calcNextButtonCoordinates({ x, y, w: 0, h: 0 });
@@ -592,6 +592,7 @@ function ThemedButton({
 					const g = iconImage.GetGraphics();
 					g.DrawString(iconCalculated, this.gFontIcon, lightenColor(buttonsBar.config.activeColor, 50), 0, 0, this.gFontIcon.Size, this.gFontIcon.Size, DT_CENTER | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX);
 					iconImage = iconImage.Resize(this.gFontIcon.Size + 2, this.gFontIcon.Size + 2, InterpolationMode.Bilinear);
+					iconImage.StackBlur(2);
 					iconImage.ReleaseGraphics(g);
 					// Image gets shifted in x and y axis... since it's not using text flags
 					if (bVerticalAlignIcon) {
@@ -643,7 +644,7 @@ function ThemedButton({
 			if (iconImage) {
 				const coords = this.iconImage ? iconCoords : iconCoordsBg;
 				coords.w = iconImage.Width; coords.h = iconImage.Height;
-				gr.DrawImage(iconImage, coords.x, coords.y + hCalc / 2 - coords.h * 1 / 2, coords.w, coords.h, 0, 0, coords.w, coords.h, 0);
+				gr.DrawImage(iconImage, coords.x, coords.y + hCalc / 2 - coords.h * 1 / 2, coords.w, coords.h, 0, 0, coords.w, coords.h, 0, 100);
 			}
 			if (!this.iconImage && this.icon) {
 				const iconColor = this.active
