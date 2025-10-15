@@ -32,6 +32,10 @@
 - Binaries: external binaries are no longer bundled along scripts, but found at: https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 - Settings: global support for %fb2k_component_path%, %fb2k_profile_path% and %fb2k_path% in any input asking for paths.
 - UI: animation while buttons are processing is now much faster.
+- UI: adjusted default colors to foobar2000's color settings and dark/light mode. Also adjusted dynamic hover color behavior and themed buttons (text color).
+- UI: icons based on images are now refreshed when changing foobar2000's theme (not requiring a panel reload).
+- UI: slightly adjusted text and icon position on button down, to mimic native foobar2000's buttons behavior.
+- UI: adjusted default settings on first installation to mimic native foobar2000's buttons appearance.
 - Export settings: now uses '[FOOBAR PROFILE FOLDER]\js_data\export' folder at exporting.
 ### Removed
 ### Fixed

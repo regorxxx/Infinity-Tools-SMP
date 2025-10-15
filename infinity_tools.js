@@ -1,5 +1,5 @@
 ﻿'use strict';
-//09/10/25
+//15/10/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -53,10 +53,10 @@ globProfiler.Print('helpers');
 let barProperties = {
 	name: ['Name of config json file', 'buttons_' + randomString(5), { func: isString }],
 	toolbarColor: ['Toolbar color', -1, { func: isInt }],
-	textColor: ['Buttons\' text color', buttonsBar.config.textColor, { func: isInt }],
+	textColor: ['Buttons\' text color', -1, { func: isInt }],
 	firstPopup: ['Toolbar: Fired once', false, { func: isBoolean }],
 	bShowId: ['Show Ids on tooltip', false, { func: isBoolean }],
-	bBgButtons: ['Buttons with background', true, { func: isBoolean }],
+	bBgButtons: ['Buttons\' theme enabled', false, { func: isBoolean }],
 	orientation: ['Toolbar orientation', 'x', { func: isString }],
 	bReflow: ['Reflow according to width / height', false, { func: isBoolean }],
 	bAlignSize: ['Align buttons according to size', true, { func: isBoolean }],
@@ -66,13 +66,13 @@ let barProperties = {
 	bIconMode: ['Show only button\'s icons', false, { func: isBoolean }],
 	bIconModeExpand: ['Expand to full button on hover', false, { func: isBoolean }],
 	buttonColor: ['Buttons\' color', -1, { func: isInt }],
-	transparency: ['Buttons\' transparency', 0, { func: isInt, range: [[0, 100]] }],
+	transparency: ['Buttons\' transparency', 80, { func: isInt, range: [[0, 100]] }],
 	offset: ['Buttons\' offset', JSON.stringify({ button: { x: 0, y: 0 }, text: { x: 0, y: 0 }, icon: { x: 0, y: 0 } }), { func: isJSON }],
 	bFullSize: ['Full size buttons', false, { func: isBoolean }],
-	hoverColor: ['Buttons\' hover color', buttonsBar.config.hoverColor, { func: isInt }],
+	hoverColor: ['Buttons\' hover color', -1, { func: isInt }],
 	bDynHoverColor: ['Buttons\' hover dynamic color', true, { func: isBoolean }],
-	bHoverGrad: ['Buttons\' hover gradient', true, { func: isBoolean }],
-	bBorders: ['Buttons\' borders', true, { func: isBoolean }],
+	bHoverGrad: ['Buttons\' hover gradient', false, { func: isBoolean }],
+	bBorders: ['Buttons\' borders', false, { func: isBoolean }],
 	bAutoUpdateCheck: ['Automatically check updates', globSettings.bAutoUpdateCheck, { func: isBoolean }, globSettings.bAutoUpdateCheck],
 	bLoadAsync: ['Asynchronous loading', true, { func: isBoolean }],
 	iconScale: ['UI icon scale', _scale(0.7, false), { func: (v) => isFloat(v) || isInt(v) }],

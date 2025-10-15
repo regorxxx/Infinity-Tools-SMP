@@ -1,11 +1,11 @@
 ﻿'use strict';
-//04/10/25
+//15/10/25
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme */
 
 /* global buttonsPath:readable, barProperties:readable */
 include('helpers_xxx.js');
-/* global globFonts:readable, InterpolationMode:readable, DT_CENTER:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_LEFT:readable, DT_RIGHT:readable, DT_TOP:readable, DT_NOCLIP:readable, IDC_SIZEALL:readable, IDC_NO:readable, IDC_HAND:readable, IDC_ARROW:readable, MK_RBUTTON:readable, MK_SHIFT:readable, folders:readable, _save:readable, globSettings:readable */
+/* global globFonts:readable, InterpolationMode:readable, DT_CENTER:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_LEFT:readable, DT_RIGHT:readable, DT_TOP:readable, DT_NOCLIP:readable, IDC_SIZEALL:readable, IDC_NO:readable, IDC_HAND:readable, IDC_ARROW:readable, MK_RBUTTON:readable, MK_SHIFT:readable, folders:readable, _save:readable, globSettings:readable, ColourTypeCUI:readable, ColourTypeDUI:readable */
 include('helpers_xxx_basic_js.js');
 /* global doOnce:readable, throttle:readable */
 include('helpers_xxx_file.js');
@@ -31,7 +31,6 @@ include('callbacks_xxx.js');
 	Check '_buttons_example_merged.js' for a working example of a buttons bar within foobar2000.
 	Check '_buttons_example_merged_double.js' for a working example of merging multiple buttons and bars within foobar2000.
 */
-
 const buttonsBar = {};
 // General config
 buttonsBar.config = {
@@ -40,7 +39,7 @@ buttonsBar.config = {
 	toolbarColor: utils.GetSysColour(15),
 	toolbarTransparency: 0,
 	bToolbar: false, // Change this on buttons bars files to set the background color
-	textColor: RGB(0, 0, 0),
+	textColor: window[(window.InstanceType ? 'GetColourDUI' : 'GetColourCUI')](ColourTypeCUI.text),
 	buttonColor: -1,
 	activeColor: RGB(0, 163, 240),
 	animationColors: [RGBA(10, 120, 204, 50), RGBA(199, 231, 255, 30)],
@@ -59,7 +58,7 @@ buttonsBar.config = {
 	bIconInvert: false,
 	bFullSize: false,
 	offset: { button: { x: 0, y: 0 }, text: { x: 0, y: 0 }, icon: { x: 0, y: 0 } },
-	hoverColor: 4294967295, // RGB(255, 255, 255) but not -1
+	hoverColor: -1,
 	bHoverGrad: true,
 	bDynHoverColor: true,
 	bBorders: true,
@@ -304,7 +303,11 @@ function ThemedButton({
 				? invert(buttonsBar.config.buttonColor, true)
 				: buttonsBar.config.bToolbar
 					? invert(buttonsBar.config.toolbarColor, true)
-					: RGB(255, 255, 255)
+					: buttonsBar.config.hoverColor !== -1
+						? buttonsBar.config.hoverColor
+						: window.InstanceType
+							? window.GetColourDUI(ColourTypeDUI.highlight)
+							: window.GetColourCUI(ColourTypeCUI.selection_background)
 			: buttonsBar.config.hoverColor;
 	};
 	let iconCache = null;
@@ -319,6 +322,12 @@ function ThemedButton({
 			return;
 		}
 		const bDrawBackground = buttonsBar.config.partAndStateID === 1;
+		// Default colors
+		const textColor = buttonsBar.config.textColor !== -1
+			? buttonsBar.config.textColor
+			: buttonsBar.useThemeManager() && bDrawBackground
+				? RGB(0, 0, 0)
+				: window[(window.InstanceType ? 'GetColourDUI' : 'GetColourCUI')](ColourTypeCUI.text);
 		// Check if OS allows button theme
 		if (!this.isSeparator) {
 			if (buttonsBar.useThemeManager() && !this.g_theme) { // may have been changed before drawing but initially not set
@@ -396,9 +405,9 @@ function ThemedButton({
 		};
 		if (this.isSeparator) {
 			if (round(this.currY, 2) < round(this.currH + buttonsBar.config.offset.button.y, 2)) {
-				gr.DrawLine(this.currX + this.currW / 2, this.currY + _scale(1), this.currX + this.currW / 2, this.currH - 2 * _scale(1), _scale(1), opaqueColor(buttonsBar.config.textColor, 50));
+				gr.DrawLine(this.currX + this.currW / 2, this.currY + _scale(1), this.currX + this.currW / 2, this.currH - 2 * _scale(1), _scale(1), opaqueColor(textColor, 50));
 			} else {
-				gr.DrawLine(this.currX + _scale(1), this.currY + this.currH / 2, (bAlign ? Math.min(this.currW, window.Width) : window.Width) - 2 * _scale(1), this.currY + this.currH / 2, _scale(1), opaqueColor(buttonsBar.config.textColor, 50));
+				gr.DrawLine(this.currX + _scale(1), this.currY + this.currH / 2, (bAlign ? Math.min(this.currW, window.Width) : window.Width) - 2 * _scale(1), this.currY + this.currH / 2, _scale(1), opaqueColor(textColor, 50));
 			}
 			return;
 		}
@@ -443,15 +452,13 @@ function ThemedButton({
 						gr.FillRoundRect(x, y + h / 2, w, h / 2, arc, arc, RGBA(17, 166, 248, 50));
 					} else if (buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) {
 						const hoverColor = this.getHoverColor();
-						if (toolbarAlpha) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(buttonsBar.config.buttonColor, Math.max(1, toolbarAlpha / 5))); }
+						if (toolbarAlpha) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(hoverColor, toolbarAlpha* 75 / 100)); }
 						if (buttonsBar.config.bHoverGrad) {
 							const alpha = buttonsBar.config.bToolbar
 								? (isDark(...toRGB(hoverColor)) ? 10 : 20)
 								: 20;
 							gr.FillRoundRect(x, y + 1, w, h / 2 - 1, arc, arc, opaqueColor(hoverColor, alpha));
 							gr.FillRoundRect(x, y + h / 2, w, h / 2, arc, arc, opaqueColor(invert(hoverColor), 4));
-						} else {
-							gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(hoverColor, buttonsBar.config.bDynHoverColor ? 5 : 75));
 						}
 					}
 					break;
@@ -488,10 +495,14 @@ function ThemedButton({
 								gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(hoverColor, 10));
 							}
 						} else {
-							gr.FillRoundRect(x, y, w, h / 8, arc / 4, arc / 4, RGBA(0, 0, 0, 20));
-							gr.FillRoundRect(x, y, w, h / 6, arc / 4, arc / 4, RGBA(0, 0, 0, 20));
-							gr.FillRoundRect(x, y + h / 6, w, h / 6, arc / 4, arc / 4, RGBA(0, 0, 0, 10));
-							gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, RGBA(0, 0, 0, 10));
+							if (buttonsBar.config.bHoverGrad) {
+								gr.FillRoundRect(x, y, w, h / 8, arc / 4, arc / 4, opaqueColor(hoverColor, 20));
+								gr.FillRoundRect(x, y, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 30));
+								gr.FillRoundRect(x, y + h / 6, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 30));
+								gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, opaqueColor(hoverColor, 20));
+							} else {
+								gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, opaqueColor(hoverColor, 20));
+							}
 						}
 					}
 					if (buttonsBar.config.bBorders || bDrawBackground) {
@@ -525,12 +536,12 @@ function ThemedButton({
 			const iconWidthCalculated = isFunction(this.icon) ? this.iconWidth(this) : this.iconWidth;
 			const iconHeightCalculated = isFunction(this.icon) ? this.iconHeight(this) : this.iconHeight;
 			if (this.iconImage) { // Icon image
-				const iconCalculatedDarkMode = !isDark(...toRGB(buttonsBar.config.textColor))
+				const iconCalculatedDarkMode = !isDark(...toRGB(textColor))
 					? iconCalculated.replace(/(icons\\.*)(\..*$)/i, '$1_dark$2')
 					: null;
 				const iconColor = this.active
 					? buttonsBar.config.activeColor
-					: buttonsBar.config.textColor;
+					: textColor;
 				const bMask = ![RGB(255, 255, 255), -1, RGB(0, 0, 0)].includes(iconColor);
 				const iconDarkMode = iconCalculatedDarkMode && !bMask
 					? gdi.Image(iconCalculatedDarkMode)
@@ -542,7 +553,7 @@ function ThemedButton({
 					if (!iconCache) {
 						if (bMask) {
 							const iconGr = iconImage.GetGraphics();
-							iconGr.FillSolidRect(0, 0, iconImage.Width, iconImage.Height, this.active ? buttonsBar.config.activeColor : buttonsBar.config.textColor);
+							iconGr.FillSolidRect(0, 0, iconImage.Width, iconImage.Height, iconColor);
 							iconImage.ReleaseGraphics(iconGr);
 							let iconMask = gdi.Image(iconCalculated.replace(/(icons\\.*)(\..*$)/i, '$1_mask$2'));
 							if (iconMask) {
@@ -617,6 +628,15 @@ function ThemedButton({
 			else if (textPos === 'right') { textCoords.x += iconWidthCalculated / 2 + _scale(1); }
 			else if (textPos === 'left') { textCoords.x -= iconWidthCalculated / 2; }
 		}
+		// Adjust per button state
+		if (this.state === buttonStates.down) {
+			textCoords.x += 1;
+			textCoords.y += 1;
+			iconCoords.x += 1;
+			iconCoords.y += 1;
+			iconCoordsBg.x += 1;
+			iconCoordsBg.y += 1;
+		}
 		// Icon
 		if (iconCalculated) {
 			for (const key in buttonsBar.config.offset.icon) { iconCoords[key] += buttonsBar.config.offset.icon[key]; }
@@ -626,18 +646,20 @@ function ThemedButton({
 				gr.DrawImage(iconImage, coords.x, coords.y + hCalc / 2 - coords.h * 1 / 2, coords.w, coords.h, 0, 0, coords.w, coords.h, 0);
 			}
 			if (!this.iconImage && this.icon) {
-				gr.GdiDrawText(iconCalculated, this.gFontIcon, this.active ? buttonsBar.config.activeColor : buttonsBar.config.textColor, iconCoords.x, iconCoords.y, iconCoords.w, iconCoords.h, DT_CENTER | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX);
+				const iconColor = this.active
+					? buttonsBar.config.activeColor
+					: textColor;
+				gr.GdiDrawText(iconCalculated, this.gFontIcon, iconColor, iconCoords.x, iconCoords.y, iconCoords.w, iconCoords.h, DT_CENTER | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX);
 			}
 		}
 		for (const key in buttonsBar.config.offset.text) { textCoords[key] += buttonsBar.config.offset.text[key]; }
 		// text
-
 		if (this.textFlags.has(DT_RIGHT)) {
 			textCoords.x -= _scale(2);
 		} else if (this.textFlags.has(DT_LEFT, [DT_TOP, DT_LEFT])) {
 			textCoords.x += _scale(1);
 		}
-		gr.GdiDrawText(textCalculated, this.gFont, buttonsBar.config.textColor, textCoords.x, textCoords.y, textCoords.w, textCoords.h, this.textFlags.get());
+		gr.GdiDrawText(textCalculated, this.gFont, textColor, textCoords.x, textCoords.y, textCoords.w, textCoords.h, this.textFlags.get());
 		// Process all animations but only paint once
 		let bDone = false;
 		this.animation.forEach((animation) => {
@@ -691,7 +713,7 @@ function ThemedButton({
 	};
 
 	this.changeScale = function (scale) {
-		iconCache = null;
+		this.clearIconCache();
 		const newScale = scale / buttonsBar.config.scale;
 		this.w *= newScale;
 		this.h *= newScale;
@@ -706,7 +728,7 @@ function ThemedButton({
 			: _gr.CalcTextWidth(this.text, this.gFont);
 	};
 	this.changeIconScale = function (scale) {
-		iconCache = null;
+		this.clearIconCache();
 		const newScale = scale / buttonsBar.config.iconScale;
 		if (!this.iconImage) {
 			this.gFontIcon = _gdiFont(this.gFontIcon.Name, this.gFontIcon.Size * newScale);
@@ -721,6 +743,10 @@ function ThemedButton({
 				? () => 12.25 * scale
 				: 12.25 * scale;
 		}
+	};
+
+	this.clearIconCache = function () {
+		iconCache = null;
 	};
 
 	this.changePosSize = function () {
@@ -774,6 +800,7 @@ function ThemedButton({
 		}
 		if (this.isHeadlessMode()) { this.state = buttonStates.hide; }
 		if (['top', 'bottom'].includes(buttonsBar.config.textPosition.toLowerCase())) { this.changePosSize(true); }
+		this.clearIconCache();
 	};
 
 	this.init();
@@ -1024,6 +1051,7 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 });
 
 addEventListener('on_mouse_leave', () => {
+	if (buttonsBar.bOnClick) { return false; }
 	buttonsBar.gDown = false;
 	if (buttonsBar.curBtn) {
 		buttonsBar.curBtn.changeState(buttonStates.normal);
@@ -1059,14 +1087,22 @@ addEventListener('on_mouse_lbtn_down', (x, y, mask) => { // eslint-disable-line 
 addEventListener('on_mouse_lbtn_up', (x, y, mask) => {
 	buttonsBar.gDown = false;
 	if (buttonsBar.curBtn) {
-		buttonsBar.curBtn.onClick(mask);
-		// Solves error if you create a new WshShell Popup (curBtn becomes null) after pressing the button and firing curBtn.onClick()
-		if (buttonsBar.curBtn && window.IsVisible) {
-			buttonsBar.curBtn.changeState(buttonStates.hover);
-			buttonsBar.curBtn.repaint();
+		const curr = buttonsBar.curBtn;
+		buttonsBar.bOnClick = true;
+		curr.changeState(buttonStates.down);
+		curr.onClick(mask);
+		buttonsBar.bOnClick = false;
+		// Solves error if a WshShell Popup is created (curBtn becomes null) after pressing the button and firing curBtn.onClick()
+		if (window.IsVisible) {
+			curr.changeState(buttonStates.hover);
+			curr.repaint();
 		}
 	} else if (mask === MK_SHIFT) {
-		if (Object.hasOwn(buttonsBar, 'shiftMenu')) { buttonsBar.shiftMenu().btn_up(x, this.y + this.h); }
+		if (Object.hasOwn(buttonsBar, 'shiftMenu')) {
+			buttonsBar.bOnClick = true;
+			buttonsBar.shiftMenu().btn_up(x, this.y + this.h);
+			buttonsBar.bOnClick = false;
+		}
 	}
 });
 
@@ -1138,6 +1174,18 @@ addEventListener('on_key_up', (k) => {
 
 addEventListener('on_focus', (is_focused) => {
 	if (!is_focused) { buttonsBar.keyDown.clear(); }
+});
+
+addEventListener('on_colours_changed', () => {
+	for (let key in buttonsBar.buttons) {
+		if (Object.hasOwn(buttonsBar.buttons, key)) {
+			const button = buttonsBar.buttons[key];
+			if (button.iconImage) {
+				button.clearIconCache();
+			}
+		}
+	}
+	window.Repaint();
 });
 
 function getUniquePrefix(string, sep = '_') {

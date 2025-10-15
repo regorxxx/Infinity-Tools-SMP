@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/10/25
+//15/10/25
 
 /* exported createButtonsMenu, importSettingsMenu */
 
@@ -250,9 +250,9 @@ function createButtonsMenu(name) {
 				buttonsBar.config.bDynHoverColor = barProperties.bDynHoverColor[1] = !barProperties.bDynHoverColor[1]; // buttons_xxx.js
 				overwriteProperties(barProperties);
 				window.Repaint();
-			}, flags: !barProperties.bBgButtons[1] ? MF_STRING : MF_GRAYED
+			}, flags: !barProperties.bBgButtons[1] && (!barProperties.bOnNotifyColors[1] || buttonsBar.config.hoverColor === -1)  ? MF_STRING : MF_GRAYED
 		});
-		menu.newCheckMenuLast(() => barProperties.bDynHoverColor[1]);
+		menu.newCheckMenuLast(() => barProperties.bDynHoverColor[1] && (!barProperties.bOnNotifyColors[1] || buttonsBar.config.hoverColor === -1));
 		menu.newEntry({
 			menuName, entryText: 'Use hover color gradient', func: () => {
 				buttonsBar.config.bHoverGrad = barProperties.bHoverGrad[1] = !barProperties.bHoverGrad[1]; // buttons_xxx.js
