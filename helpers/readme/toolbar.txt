@@ -1,35 +1,63 @@
-﻿Toolbar panel allows to fully configure sub-modules loaded as buttons.
-R. Click to open toolbar menu:
-	- Add new buttons
-	- Remove
-	- Change order
-	- Restore defaults
-	- Change colors
-	- Change text size
-	- Change orientation and buttons wrap
-	
-Hold R. Click to reorder buttons.
+﻿Toolbar panel with sub-modules loaded as buttons. Use the toolbar menu to
+add new buttons or tweak its settings.
 
-M. Click to show headless buttons for 2 seconds. Then they are hidden.
+Mouse shortcuts:
+----------------
+	- R. Click to open toolbar menu.
 
-Shift + Win + R. Click to open SMP/JSplitter panel menu (works globally
-on any script and panel, at any position).
-	
-The button list is automatically built from this path: '.\buttons\*.js'
+	- Hold R. Click to reorder buttons.
 
+	- M. Click to show headless buttons for 2 seconds.
+
+	- Shift + Win + R. Click to open SMP/JSplitter panel menu (works
+	globally on any script and panel, at any position).
+
+	- Ctrl + Win + R. Click to open script panel menu.
+
+Buttons:
+--------
 Some buttons can be 'duplicated'. i.e. having multiple instances with
-different settings. Whenever that's not possible, menu entry will be
-greyed if there is already copy of the same button on the toolbar.
+different settings. Whenever that's not possible, menu entry will be greyed
+if there is already copy of the same button on the toolbar.
 
-Finally, some buttons may require another one to be loaded first... it's
-also indicated in the related entry if the requirement is not met.
+Some buttons may require another one to be loaded first... it's also warned
+in the related entry if the requirement is not met.
 
-Once added, check their tooltips to find relevant info about their usage, 
-settings, mouse + key modifiers, etc. Buttons which are meant to be
-configured using the properties panel have their prefix added to the
-tooltip text ('sbd0', 'rd0', ...) to make it easier to find their
-associated properties.
+Once added, check their tooltips to find relevant info about their usage,
+settings, mouse + key modifiers, etc.
 
-Note every button has its own configuration, they are NOT shared. i.e.
-if you add 3 buttons of the same tool, everyone must be configured
-separately (for ex. for tag remapping).
+Note every button has its own configuration, they are NOT shared. i.e. if
+you add 3 buttons of the same tool, everyone must be configured separately
+(for ex. for tag remapping).
+
+Color settings:
+---------------
+The bar, buttons, text, hover and animation colors can be individually set.
+By setting them to '-none-' (Ctrl + Click) that element is disabled (bar
+and button colors) or uses default values according to theme (hover and
+text colors).
+
+When using dynamic hover color, it will be set according to theme, instead
+of a fixed color. So if you change between dark or light themes, it's
+adjusted automatically.
+
+The transparency setting affects all button effects and states, along
+the background color.
+
+Like other scripts, the panel can also listen to color servers to tint all
+elements according to artwork colors. Note only non-disabled elements (i.e.
+color not '-none-') will be adjusted. If you want to use this feature but
+force the hover color to follow CUI/DUI settings, then first set it to none
+and afterwards check 'Use dynamic hover color'. That way foobar2000's theme
+will override any artwork colors received (only for hover color).
+
+Tip: when using the panel with pseudotransparency, it's recommended to
+disable the background color, so it matches the theme by default.
+
+UI settings:
+------------
+Size, alignment and multiple position settings can be tweaked at the
+toolbar menu.
+
+By default the toolbar is thought to be used in an horizontal axis, but it
+can be tweaked to work in vertical, even showing only icons.
