@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/10/25
+//16/10/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -79,7 +79,8 @@ let barProperties = {
 	textScale: ['UI text scale', _scale(0.7, false), { func: (v) => isFloat(v) || isInt(v) }],
 	textPosition: ['UI text position', 'right', { func: isString }],
 	bTooltipInfo: ['Show shortcuts on tooltip', true, { func: isBoolean }],
-	bOnNotifyColors: ['Adjust colors on panel notify', true, { func: isBoolean }]
+	bOnNotifyColors: ['Adjust colors on panel notify', true, { func: isBoolean }],
+	darkMode: ['Dark mode: auto (0), enabled (1), disabled (2)', 0, { func: isInt, range: [[0, 2]] }]
 };
 Object.keys(barProperties).forEach(p => barProperties[p].push(barProperties[p][1]));
 setProperties(barProperties);
@@ -99,6 +100,7 @@ buttonsBar.config.toolbarTransparency = barProperties.transparency[1];
 buttonsBar.config.activeColor = barProperties.activeColor[1];
 buttonsBar.config.animationColors = JSON.parse(barProperties.animationColors[1]);
 buttonsBar.config.bBorders = barProperties.bBorders[1];
+buttonsBar.config.darkMode = barProperties.darkMode[1];
 // Show Id on tooltips
 buttonsBar.config.bShowID = barProperties.bShowId[1];
 // Orientation

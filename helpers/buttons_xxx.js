@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/10/25
+//16/10/25
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme */
 
@@ -39,7 +39,7 @@ buttonsBar.config = {
 	toolbarColor: utils.GetSysColour(15),
 	toolbarTransparency: 0,
 	bToolbar: false, // Change this on buttons bars files to set the background color
-	textColor: window[(window.InstanceType ? 'GetColourDUI' : 'GetColourCUI')](ColourTypeCUI.text),
+	textColor: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')](ColourTypeCUI.text),
 	buttonColor: -1,
 	activeColor: RGB(0, 163, 240),
 	animationColors: [RGBA(10, 120, 204, 50), RGBA(199, 231, 255, 30)],
@@ -63,6 +63,7 @@ buttonsBar.config = {
 	bDynHoverColor: true,
 	bBorders: true,
 	hiddenTimeout: 2000,
+	darkMode: 0
 };
 buttonsBar.config.default = Object.fromEntries(Object.entries(buttonsBar.config));
 // Drag n drop (internal use)
@@ -297,7 +298,10 @@ function ThemedButton({
 		return this.bHeadlessMode && !this.headlessModeTempShow;
 	};
 
-	this.getHoverColor = function () {
+	this.getHoverColor = function (state) {
+		const darkTheme = buttonsBar.config.darkMode === 0
+			? Object.hasOwn(window, 'IsDark') ? window.IsDark : false
+			: buttonsBar.config.darkMode === 1;
 		return buttonsBar.config.bDynHoverColor
 			? buttonsBar.config.buttonColor !== -1
 				? invert(buttonsBar.config.buttonColor, true)
@@ -305,11 +309,46 @@ function ThemedButton({
 					? invert(buttonsBar.config.toolbarColor, true)
 					: buttonsBar.config.hoverColor !== -1
 						? buttonsBar.config.hoverColor
-						: window.InstanceType
-							? window.GetColourDUI(ColourTypeDUI.highlight)
-							: window.GetColourCUI(ColourTypeCUI.selection_background)
+						: window.InstanceType === 1
+							? state === buttonStates.down
+								? window.GetColourDUI(ColourTypeDUI.highlight)
+								: window.GetColourDUI(ColourTypeDUI.highlight)
+							: state === buttonStates.down
+								? darkTheme ? RGB(33, 33, 33) : RGB(204, 232, 255)
+								: darkTheme ? RGB(64, 64, 64) : RGB(229, 243, 255)
 			: buttonsBar.config.hoverColor;
 	};
+
+	this.getBorderColor = function () {
+		const darkTheme = buttonsBar.config.darkMode === 0
+			? Object.hasOwn(window, 'IsDark') ? window.IsDark : false
+			: buttonsBar.config.darkMode === 1;
+		return buttonsBar.config.bDynHoverColor
+			? buttonsBar.config.buttonColor !== -1
+				? invert(buttonsBar.config.buttonColor, true)
+				: window.InstanceType === 1
+					? darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
+					: darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
+			: RGB(243, 243, 243);
+	};
+
+	this.getTextColor = function (state) {
+		const bDrawBackground = buttonsBar.config.partAndStateID === 1;
+		if (buttonsBar.config.textColor === -1 && (!buttonsBar.useThemeManager() || !bDrawBackground) && [buttonStates.down, buttonStates.hover].includes(state)) {
+			const hover = this.getHoverColor(state);
+			const text = window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')](ColourTypeCUI.text);
+			return invert(hover, true) === invert(text, true)
+				? invert(text, true)
+				: text;
+		} else {
+			return buttonsBar.config.textColor !== -1
+				? buttonsBar.config.textColor
+				: buttonsBar.useThemeManager() && bDrawBackground
+					? RGB(0, 0, 0)
+					: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')](ColourTypeCUI.text);
+		}
+	};
+
 	let iconCache = null;
 	this.draw = function (/** @type {GdiGraphics} */ gr, x = this.x, y = this.y, w = this.w, h = this.h, bAlign = false) {
 		// Draw?
@@ -323,11 +362,7 @@ function ThemedButton({
 		}
 		const bDrawBackground = buttonsBar.config.partAndStateID === 1;
 		// Default colors
-		const textColor = buttonsBar.config.textColor !== -1
-			? buttonsBar.config.textColor
-			: buttonsBar.useThemeManager() && bDrawBackground
-				? RGB(0, 0, 0)
-				: window[(window.InstanceType ? 'GetColourDUI' : 'GetColourCUI')](ColourTypeCUI.text);
+		const textColor = this.getTextColor(this.state);
 		// Check if OS allows button theme
 		if (!this.isSeparator) {
 			if (buttonsBar.useThemeManager() && !this.g_theme) { // may have been changed before drawing but initially not set
@@ -444,15 +479,14 @@ function ThemedButton({
 						gr.FillGradRect(x, y + h / 2, w, h - 10, 180, RGB(219, 219, 219), RGB(207, 207, 207));
 						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, RGB(0, 0, 0));
 					} else if (buttonsBar.config.bBorders) {
-						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, RGB(160, 160, 160));
+						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, this.getBorderColor(this.state));
 					}
-					if (buttonsBar.config.bBorders || bDrawBackground) { gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 1, RGB(243, 243, 243)); }
 					if (bDrawBackground) {
 						gr.FillRoundRect(x, y + 1, w, h / 2 - 1, arc, arc, RGBA(225, 243, 252, 255));
 						gr.FillRoundRect(x, y + h / 2, w, h / 2, arc, arc, RGBA(17, 166, 248, 50));
 					} else if (buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) {
-						const hoverColor = this.getHoverColor();
-						if (toolbarAlpha) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(hoverColor, toolbarAlpha* 75 / 100)); }
+						const hoverColor = this.getHoverColor(this.state);
+						if (toolbarAlpha) { gr.FillRoundRect(x, y, w, h, arc, arc, hoverColor); }
 						if (buttonsBar.config.bHoverGrad) {
 							const alpha = buttonsBar.config.bToolbar
 								? (isDark(...toRGB(hoverColor)) ? 10 : 20)
@@ -474,7 +508,7 @@ function ThemedButton({
 						gr.FillRoundRect(x, y + h / 2, w, h, arc, arc, RGBA(37, 196, 255, 80));
 						gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 3, RGBA(0, 0, 0, 50));
 					} else if (buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) {
-						const hoverColor = this.getHoverColor();
+						const hoverColor = this.getHoverColor(this.state);
 						if (buttonsBar.config.buttonColor !== -1) {
 							if (toolbarAlpha) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(buttonsBar.config.buttonColor, Math.max(25, toolbarAlpha / 5))); }
 							gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(invert(hoverColor), 5));
@@ -501,7 +535,7 @@ function ThemedButton({
 								gr.FillRoundRect(x, y + h / 6, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 30));
 								gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, opaqueColor(hoverColor, 20));
 							} else {
-								gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, opaqueColor(hoverColor, 20));
+								gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, hoverColor);
 							}
 						}
 					}
@@ -515,7 +549,7 @@ function ThemedButton({
 						} else if (buttonsBar.config.bToolbar) {
 							gr.DrawRoundRect(x, y, w, h, arc, arc, 1, invert(buttonsBar.config.toolbarColor, true));
 						} else {
-							gr.DrawRoundRect(x, y, w, h, arc, arc, 1, RGB(0, 0, 0));
+							gr.DrawRoundRect(x, y, w, h, arc, arc, 1, this.getBorderColor(this.state));
 						}
 					}
 					break;
