@@ -885,7 +885,10 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 	} else if (buttonsBar.gDown && buttonsBar.curBtn && buttonsBar.curBtn.state !== buttonStates.down) {
 		buttonsBar.curBtn.changeState(buttonStates.down);
 		buttonsBar.curBtn.repaint();
-		if (old) { old.repaint(); }
+		if (old) {
+			old.changeState(buttonStates.normal);
+			old.repaint();
+		}
 		return;
 	}
 
@@ -1059,6 +1062,12 @@ addEventListener('on_mouse_leave', () => {
 		buttonsBar.curBtn.repaint();
 		buttonsBar.curBtn = null;
 	}
+	for (let key in buttonsBar.buttons) {
+		if (buttonsBar.buttons[key].state === buttonStates.down || buttonsBar.buttons[key].state === buttonStates.hover) {
+			buttonsBar.buttons[key].changeState(buttonStates.normal);
+			buttonsBar.buttons[key].repaint();
+		}
+	}
 	if (buttonsBar.config.bIconModeExpand) {
 		let bDone = false;
 		for (let key in buttonsBar.buttons) {
@@ -1104,6 +1113,8 @@ addEventListener('on_mouse_lbtn_up', (x, y, mask) => {
 			buttonsBar.shiftMenu().btn_up(x, this.y + this.h);
 			buttonsBar.bOnClick = false;
 		}
+	} else {
+		buttonsBar.bOnClick = false;
 	}
 });
 

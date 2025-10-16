@@ -39,5 +39,6 @@
 - Export settings: now uses '[FOOBAR PROFILE FOLDER]\js_data\export' folder at exporting.
 ### Removed
 ### Fixed
+- UI: fixed some repaint artifacts related to maintaining L. Mouse click down while moving within and outside the panel.
 
 [Unreleased]: ../../compare/f039e12...HEAD
