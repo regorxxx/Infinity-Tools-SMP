@@ -1,5 +1,5 @@
 ﻿'use strict';
-//16/10/25
+//17/10/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -15,7 +15,7 @@ if (!window.ScriptInfo.Name) { window.DefineScript('Infinity-Tools-SMP', { autho
 {
 	const dependencies = [
 		'helpers\\buttons_xxx.js',
-		/* global buttonsBar:readable, addButtonSeparator:readable, VK_CONTROL:readable, VK_LWIN:readable */
+		/* global buttonsBar:readable, addButtonSeparator:readable, VK_CONTROL:readable, VK_LWIN:readable, forEachButton:readable */
 		'helpers\\helpers_xxx.js',
 		/* global globSettings:readable, folders:readable, globFonts:readable, DT_VCENTER:readable, DT_CENTER:readable, DT_END_ELLIPSIS:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, checkUpdate:readable , globProfiler:readable */
 		'helpers\\helpers_xxx_foobar.js',
@@ -72,7 +72,7 @@ let barProperties = {
 	hoverColor: ['Buttons\' hover color', -1, { func: isInt }],
 	bDynHoverColor: ['Buttons\' hover dynamic color', true, { func: isBoolean }],
 	bHoverGrad: ['Buttons\' hover gradient', false, { func: isBoolean }],
-	bBorders: ['Buttons\' borders', false, { func: isBoolean }],
+	bBorders: ['Buttons\' borders', true, { func: isBoolean }],
 	bAutoUpdateCheck: ['Automatically check updates', globSettings.bAutoUpdateCheck, { func: isBoolean }, globSettings.bAutoUpdateCheck],
 	bLoadAsync: ['Asynchronous loading', true, { func: isBoolean }],
 	iconScale: ['UI icon scale', _scale(0.7, false), { func: (v) => isFloat(v) || isInt(v) }],
@@ -335,11 +335,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 	switch (name) { // NOSONAR
 		case window.ScriptInfo.Name + ': share settings': {
 			if (info) {
-				for (let key in buttonsBar.buttons) {
-					if (Object.hasOwn(buttonsBar.buttons, key)) {
-						buttonsBar.buttons[key].switchHighlight(true);
-					}
-				}
+				forEachButton((button) => { button.switchHighlight(true); });
 				const answer = WshShell.Popup('Apply current settings to highlighted toolbar?\nCheck UI.', 0, window.Name + _ps(window.ScriptInfo.Name), popup.question + popup.yes_no);
 				if (answer === popup.yes) {
 					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'transparency', 'scale', 'iconScale', 'textScale'].forEach((key) => {
@@ -361,11 +357,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 					buttonsBar.config.partAndStateID = info.bBgButtons[1] ? 1 : 6;
 					overwriteProperties(barProperties);
 				}
-				for (let key in buttonsBar.buttons) {
-					if (Object.hasOwn(buttonsBar.buttons, key)) {
-						buttonsBar.buttons[key].switchHighlight(false);
-					}
-				}
+				forEachButton((button) => { button.switchHighlight(false); });
 				window.Repaint();
 			}
 			break;
@@ -397,7 +389,10 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 					true
 				);
 				if (bar.bToolbar) { bar.toolbarColor = main; }
-				if (bar.textColor !== -1 && bar.bToolbar) { bar.textColor = mostContrastColor(bar.toolbarColor).color; }
+				if (bar.textColor !== -1 && bar.bToolbar) {
+					bar.textColor = mostContrastColor(bar.toolbarColor).color;
+					forEachButton((button) => {	button.clearIconCache(); });
+				}
 				if (bar.buttonColor !== -1) { bar.buttonColor = note; }
 				if (bar.hoverColor !== -1) { bar.hoverColor = mainAlt; }
 				if (bar.activeColor !== -1) { bar.activeColor = sec; }

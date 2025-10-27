@@ -1,9 +1,9 @@
 ﻿'use strict';
-//15/10/25
+//17/10/25
 
 /* exported createButtonsMenu, importSettingsMenu */
 
-/* global buttonsPath:readable, buttonsBar:readable, barProperties:readable, buttonStates:readable, buttonSizeCheck:readable,moveButton:readable, addButtonSeparator:readable, showButtonReadme:readable */
+/* global buttonsPath:readable, buttonsBar:readable, barProperties:readable, buttonStates:readable, buttonSizeCheck:readable,moveButton:readable, addButtonSeparator:readable, showButtonReadme:readable, forEachButton:readable */
 
 include('..\\..\\helpers\\menu_xxx.js');
 /* global _menu:readable */
@@ -225,6 +225,7 @@ function createButtonsMenu(name) {
 					console.log('Toolbar (' + window.Name + '): Selected color ->\n\t Android: ' + barProperties.textColor[1] + ' - RGB: ' + Chroma(barProperties.textColor[1]).rgb());
 					buttonsBar.config.textColor = barProperties.textColor[1]; // buttons_xxx.js
 				}
+				forEachButton((button) => {	button.clearIconCache(); });
 				overwriteProperties(barProperties);
 				window.Repaint();
 			}
@@ -397,10 +398,7 @@ function createButtonsMenu(name) {
 					input = Input.number('real positive', buttonsBar.config.textScale, 'Enter value:\n(real number > 0)', 'Buttons bar', 0.8, [n => n > 0 && n < Infinity]);
 					if (input === null) { return; }
 				}
-				for (let key in buttonsBar.buttons) {
-					if (!Object.hasOwn(buttonsBar.buttons, key)) { continue; }
-					buttonsBar.buttons[key].changeTextScale(input);
-				}
+				forEachButton((button) => { button.changeTextScale(input); });
 				barProperties.textScale[1] = buttonsBar.config.textScale = input;
 				overwriteProperties(barProperties);
 				window.Repaint();
@@ -524,9 +522,7 @@ function createButtonsMenu(name) {
 				buttonsBar.config.bFullSize = barProperties.bFullSize[1] = !barProperties.bFullSize[1];
 				overwriteProperties(barProperties);
 				if (!buttonsBar.config.bFullSize) {
-					for (let key in buttonsBar.buttons) {
-						buttonsBar.buttons[key].currH = buttonsBar.buttons[key].h;
-					}
+					forEachButton((button) => { button.currH = button.h; });
 				}
 				window.Repaint();
 			}

@@ -42,5 +42,6 @@
 ### Removed
 ### Fixed
 - UI: fixed some repaint artifacts related to maintaining L. Mouse click down while moving within and outside the panel.
+- UI: changing text color immediately clears icon mask cache for icons which rely on images instead of font.
 
 [Unreleased]: ../../compare/f039e12...HEAD
