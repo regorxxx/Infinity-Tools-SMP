@@ -1,5 +1,5 @@
 ﻿'use strict';
-//13/10/25
+//27/10/25
 
 /*
 	Quickmatch same....
@@ -206,8 +206,8 @@ function quickmatchMenu() {
 				if (idx !== -1) {
 					let count = info.MetaValueCount(idx);
 					while (count--) {
-						const val = info.MetaValue(idx, count).trim();
-						tag.val[i].push(val).toLowerCase();
+						const val = info.MetaValue(idx, count).trim().toLowerCase();
+						tag.val[i].push(val);
 						if (i === 0 || i !== 0 && !/TITLE|ALBUM_TRACKS/i.test(tag.type)) { tag.valSet.add(val); }
 					}
 				} else {
