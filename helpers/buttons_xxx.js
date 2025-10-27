@@ -678,7 +678,7 @@ function ThemedButton({
 			if (iconImage) {
 				const coords = this.iconImage ? iconCoords : iconCoordsBg;
 				coords.w = iconImage.Width; coords.h = iconImage.Height;
-				gr.DrawImage(iconImage, coords.x, coords.y + hCalc / 2 - coords.h * 1 / 2, coords.w, coords.h, 0, 0, coords.w, coords.h, 0, 100);
+				gr.DrawImage(iconImage, coords.x, coords.y + hCalc / 2 - coords.h * 1 / 2, coords.w, coords.h, 0, 0, coords.w, coords.h);
 			}
 			if (!this.iconImage && this.icon) {
 				const iconColor = this.active
@@ -852,23 +852,20 @@ function drawAllButtons(gr) {
 	// Size check
 	doOnce('Buttons Size Check', buttonSizeCheck)();
 	// Then draw
-	for (let key in buttonsBar.buttons) {
-		if (Object.hasOwn(buttonsBar.buttons, key)) {
-			const button = buttonsBar.buttons[key];
-			if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
-			else if (button.state === buttonStates.hide && Object.hasOwn(button.buttonsProperties, 'bHeadlessMode')) { button.state = buttonStates.normal; }
-			// Don't normalize size in certain axis if not needed
-			if (bAlignSize && orientation === 'x') {
-				const bNormalize = maxSize.totalW > window.Width && maxSizeNoReflow.totalW > window.Width;
-				button.draw(gr, void (0), void (0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
-			} else if (bAlignSize && orientation === 'y') {
-				const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
-				button.draw(gr, void (0), void (0), maxSize.w, bReflow && bNormalize ? maxSize.h : void (0), true);
-			} else {
-				button.draw(gr);
-			}
+	forEachButton((button) => {
+		if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
+		else if (button.state === buttonStates.hide && Object.hasOwn(button.buttonsProperties, 'bHeadlessMode')) { button.state = buttonStates.normal; }
+		// Don't normalize size in certain axis if not needed
+		if (bAlignSize && orientation === 'x') {
+			const bNormalize = maxSize.totalW > window.Width && maxSizeNoReflow.totalW > window.Width;
+			button.draw(gr, void (0), void (0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
+		} else if (bAlignSize && orientation === 'y') {
+			const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
+			button.draw(gr, void (0), void (0), maxSize.w, bReflow && bNormalize ? maxSize.h : void (0), true);
+		} else {
+			button.draw(gr);
 		}
-	}
+	});
 }
 
 function chooseButton(x, y) {
@@ -963,14 +960,14 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 						curBtn.bIconModeExpand = true;
 						if (oldBtn) { // In case mouse is moved fast, multiple buttons may be 'old'
 							let bContract = false;
-							for (let key in buttons) {
-								oldBtn = buttons[key];
-								if (oldBtn.state === buttonStates.hide) { continue; }
+							forEachButton((button) => {
+								oldBtn = button;
+								if (oldBtn.state === buttonStates.hide) { return; }
 								if (oldBtn !== curBtn) {
-									if (!bContract) { continue; }
+									if (!bContract) { return; }
 									oldBtn.bIconModeExpand = false;
 								} else { bContract = true; }
-							}
+							});
 						}
 						window.Repaint();
 					}
@@ -1047,14 +1044,12 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 				buttonsBar.move.toKey = null;
 				for (let key in buttonsBar.move.rec) { if (Object.hasOwn(buttonsBar.move.rec, key)) { buttonsBar.move.rec[key] = null; } }
 			}
-			for (let key in buttons) {
-				if (Object.hasOwn(buttons, key)) {
-					if (buttons[key] !== buttonsBar.move.btn) { buttons[key].moveX = null; buttons[key].moveY = null; }
-				}
-			}
+			forEachButton((button) => {
+				if (button !== buttonsBar.move.btn) { button.moveX = null; button.moveY = null; }
+			});
 		} else {
-			for (let key in buttons) { if (Object.hasOwn(buttons, key)) { buttons[key].moveX = null; buttons[key].moveY = null; } }
-			for (let key in buttonsBar.move.rec) { if (Object.hasOwn(buttons, key)) { buttonsBar.move.rec[key] = null; } }
+			forEachButton((button) => {	button.moveX = null; button.moveY = null; });
+			for (let key in buttonsBar.move.rec) { if (Object.hasOwn(buttonsBar.move.rec, key)) { buttonsBar.move.rec[key] = null; } }
 			if (mask !== MK_RBUTTON) {
 				buttonsBar.move.bIsMoving = false;
 				if (buttonsBar.move.btn) {
@@ -1096,22 +1091,20 @@ addEventListener('on_mouse_leave', () => {
 		buttonsBar.curBtn.repaint();
 		buttonsBar.curBtn = null;
 	}
-	for (let key in buttonsBar.buttons) {
-		if (buttonsBar.buttons[key].state === buttonStates.down || buttonsBar.buttons[key].state === buttonStates.hover) {
-			buttonsBar.buttons[key].changeState(buttonStates.normal);
-			buttonsBar.buttons[key].repaint();
+	forEachButton((button) => {
+		if (button.state === buttonStates.down || button.state === buttonStates.hover) {
+			button.changeState(buttonStates.normal);
+			button.repaint();
 		}
-	}
+	});
 	if (buttonsBar.config.bIconModeExpand) {
 		let bDone = false;
-		for (let key in buttonsBar.buttons) {
-			if (buttonsBar.buttons[key].bIconModeExpand) { bDone = true; break; }
-		}
+		forEachButton((button) => {
+			if (button.bIconModeExpand) { bDone = true; return true; }
+		});
 		if (bDone) {
 			setTimeout(() => {
-				for (let key in buttonsBar.buttons) {
-					buttonsBar.buttons[key].bIconModeExpand = false;
-				}
+				forEachButton((button) => {	button.bIconModeExpand = false; });
 				window.Repaint();
 			}, 200);
 		}
@@ -1175,15 +1168,18 @@ addEventListener('on_mouse_rbtn_down', (x, y, mask) => { // eslint-disable-line 
 // Show hidden buttons
 addEventListener('on_mouse_mbtn_up', (x, y, mask) => { // eslint-disable-line no-unused-vars, no-unused-vars, no-unused-vars
 	let bRepaint = false;
-	const buttons = buttonsBar.buttons;
 	const oldState = buttonsBar.hidden.bShow;
-	for (let key in buttons) {
-		if (Object.hasOwn(buttons, key)) {
-			const button = buttons[key];
-			if (button.state === buttonStates.hide && button.isHeadlessMode()) { button.headlessModeTempShow = true; bRepaint = true; buttonsBar.hidden.bShow = true; }
-			else if (button.headlessModeTempShow) { button.headlessModeTempShow = false; bRepaint = true; buttonsBar.hidden.bShow = false; }
+	forEachButton((button) => {
+		if (button.state === buttonStates.hide && button.isHeadlessMode()) {
+			button.headlessModeTempShow = true;
+			bRepaint = true;
+			buttonsBar.hidden.bShow = true;
+		} else if (button.headlessModeTempShow) {
+			button.headlessModeTempShow = false;
+			bRepaint = true;
+			buttonsBar.hidden.bShow = false;
 		}
-	}
+	});
 	if (bRepaint) {
 		window.Repaint(true);
 		if (!oldState && buttonsBar.hidden.bShow) { buttonsBar.hidden.id = setTimeout(on_mouse_mbtn_up, buttonsBar.config.hiddenTimeout); }
@@ -1193,29 +1189,23 @@ addEventListener('on_mouse_mbtn_up', (x, y, mask) => { // eslint-disable-line no
 
 // Update tooltip with key mask if required
 addEventListener('on_key_down', (k) => {
-	for (let key in buttonsBar.buttons) {
-		if (Object.hasOwn(buttonsBar.buttons, key)) {
-			const button = buttonsBar.buttons[key];
-			if (button.state === buttonStates.hover && !buttonsBar.keyDown.has(k)) {
-				buttonsBar.keyDown.add(k);
-				if (button.description !== null) { buttonsBar.tooltipButton.SetValue(button.tooltipText(), true); }
-				else if (isString(buttonsBar.tooltipButton.text)) { buttonsBar.tooltipButton.SetValue('', false); }
-			}
+	forEachButton((button) => {
+		if (button.state === buttonStates.hover && !buttonsBar.keyDown.has(k)) {
+			buttonsBar.keyDown.add(k);
+			if (button.description !== null) { buttonsBar.tooltipButton.SetValue(button.tooltipText(), true); }
+			else if (isString(buttonsBar.tooltipButton.text)) { buttonsBar.tooltipButton.SetValue('', false); }
 		}
-	}
+	});
 });
 
 addEventListener('on_key_up', (k) => {
 	buttonsBar.keyDown.delete(k);
-	for (let key in buttonsBar.buttons) {
-		if (Object.hasOwn(buttonsBar.buttons, key)) {
-			const button = buttonsBar.buttons[key];
-			if (button.state === buttonStates.hover) {
-				if (button.description !== null) { buttonsBar.tooltipButton.SetValue(button.tooltipText(), true); }
-				else if (isString(buttonsBar.tooltipButton.text)) { buttonsBar.tooltipButton.SetValue('', false); }
-			}
+	forEachButton((button) => {
+		if (button.state === buttonStates.hover) {
+			if (button.description !== null) { buttonsBar.tooltipButton.SetValue(button.tooltipText(), true); }
+			else if (isString(buttonsBar.tooltipButton.text)) { buttonsBar.tooltipButton.SetValue('', false); }
 		}
-	}
+	});
 });
 
 addEventListener('on_focus', (is_focused) => {
@@ -1223,14 +1213,9 @@ addEventListener('on_focus', (is_focused) => {
 });
 
 addEventListener('on_colours_changed', () => {
-	for (let key in buttonsBar.buttons) {
-		if (Object.hasOwn(buttonsBar.buttons, key)) {
-			const button = buttonsBar.buttons[key];
-			if (button.iconImage) {
-				button.clearIconCache();
-			}
-		}
-	}
+	forEachButton((button) => {
+		if (button.iconImage) {	button.clearIconCache(); }
+	});
 	window.Repaint();
 });
 
@@ -1336,8 +1321,7 @@ function buttonSizeCheck() {
 function getButtonsMaxSize(bCurrent = true) {
 	const orientation = buttonsBar.config.orientation.toLowerCase();
 	let maxSize = { w: -1, h: -1, totalW: 0, totalH: 0 };
-	for (let key in buttonsBar.buttons) {
-		const button = buttonsBar.buttons[key];
+	forEachButton((button) => {
 		maxSize.h = Math.max(bCurrent ? button.currH : button.h, maxSize.h);
 		if (button.isIconMode()) {
 			maxSize.w = Math.max(30, maxSize.w);
@@ -1346,7 +1330,7 @@ function getButtonsMaxSize(bCurrent = true) {
 		}
 		if (orientation === 'x') { maxSize.totalW += (bCurrent ? button.currW : button.w); }
 		if (orientation === 'y') { maxSize.totalH += (bCurrent ? button.currH : button.h); }
-	}
+	});
 	if (orientation === 'x') { maxSize.totalH = maxSize.h; }
 	if (orientation === 'y') { maxSize.totalW = maxSize.w; }
 	return maxSize;
@@ -1365,4 +1349,12 @@ function showButtonReadme(fileName) {
 	if (readme.length) { fb.ShowPopupMessage(readme, readmeFile); }
 	else { console.log(readmeFile + ' not found.'); }
 	return readme;
+}
+
+function forEachButton(callback) {
+	for (let key in buttonsBar.buttons) {
+		if (Object.hasOwn(buttonsBar.buttons, key)) {
+			if (callback(buttonsBar.buttons[key])) { break; };
+		}
+	}
 }
