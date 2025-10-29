@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/09/25
+//28/10/25
 
 /* exported createConfigMenu */
 
@@ -760,7 +760,10 @@ function createConfigMenu(parent) {
 					{ name: 'Rated ≥4 tracks', query: globQuery.ratingGr3 },
 					{ name: 'Fav tracks', query: globQuery.fav },
 					{ name: 'Loved tracks', query: globQuery.loved },
-					{ name: 'Length < 6 min', query: globQuery.shortLength },
+					{ name: 'No short length tracks', query: 'NOT ' + globQuery.shortLength },
+					{ name: 'Short length tracks', query: globQuery.shortLength },
+					{ name: 'Medium length tracks', query: globQuery.mediumLength },
+					{ name: 'Long length tracks', query: globQuery.longLength },
 					{ name: 'Only Stereo', query: globQuery.stereo },
 					{ name: 'sep' },
 					{ name: 'Not recently listened', query: 'NOT ' + globQuery.recent },

@@ -19,6 +19,7 @@
 - Playlist Tools: added default value for duplicates selection and smart shuffle bias.
 - Music Map: added default value for duplicates selection and smart shuffle bias.
 - Presets: added Rating and Loved/Hated UI columns presets for DUI and CUI (at 'presets\UI').
+- Presets: new predefined presets for forced query filters.
 - Added support for [Biography-v1.4.2.mod.11](https://hydrogenaudio.org/index.php/topic,112914.msg1070993.html#msg1070993) similar artists database.
 ### Changed
 - Playlist Tools\Playlist Manipulation\Harmonic mix: cleanup of some menu entries and code logic.
