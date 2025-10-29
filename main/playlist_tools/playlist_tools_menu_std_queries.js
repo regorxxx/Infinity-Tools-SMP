@@ -1,5 +1,5 @@
 ﻿'use strict';
-//18/09/25
+//29/10/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, globQuery:readable, libSearchMenu */
 
@@ -139,7 +139,7 @@
 									list: queryFilter,
 									propName: 'searchQueries',
 									defaults: queryFilterDefaults,
-									defaultPreset: folders.xxx + 'presets\\Playlist Tools\\std_query_filter\\default.json',
+									defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_std_query_filter.json',
 									input: inputStdQuery,
 									bDefaultFile: true,
 									bCopyCurrent: true

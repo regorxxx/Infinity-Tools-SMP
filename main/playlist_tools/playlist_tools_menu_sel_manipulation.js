@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/10/25
+//29/10/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable */
 
@@ -135,7 +135,7 @@
 									list: sortLegacy,
 									propName: 'sortLegacy',
 									defaults: sortLegacyDefaults,
-									defaultPreset: folders.xxx + 'presets\\Playlist Tools\\sort\\default.json',
+									defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_sort.json',
 									input: inputSort,
 									bDefaultFile: true,
 									bCopyCurrent: true
@@ -393,7 +393,7 @@
 									list: scatter,
 									propName: 'scatter',
 									defaults: scatterDefaults,
-									defaultPreset: folders.xxx + 'presets\\Playlist Tools\\scatter\\default.json',
+									defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_scatter.json',
 									input: inputScatter,
 									bDefaultFile: true,
 									bCopyCurrent: true
@@ -502,7 +502,7 @@
 									list: intercalate,
 									propName: 'intercalate',
 									defaults: intercalateDefaults,
-									defaultPreset: folders.xxx + 'presets\\Playlist Tools\\intercalate\\default.json',
+									defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_intercalate.json',
 									input: inputIntercalate,
 									bDefaultFile: true,
 									bCopyCurrent: true
@@ -623,7 +623,7 @@
 									list: shuffle,
 									propName: 'shuffle',
 									defaults: shuffleDefaults,
-									defaultPreset: folders.xxx + 'presets\\Playlist Tools\\shuffle\\default.json',
+									defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_shuffle.json',
 									input: inputShuffle,
 									bDefaultFile: true
 								});
@@ -730,7 +730,7 @@
 									list: group,
 									propName: 'group',
 									defaults: groupDefaults,
-									defaultPreset: folders.xxx + 'presets\\Playlist Tools\\group\\default.json',
+									defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_group.json',
 									input: inputGroup,
 									bDefaultFile: true,
 									bCopyCurrent: true
@@ -1423,7 +1423,7 @@
 								list: selQueryFilter,
 								propName: 'selQueryFilter',
 								defaults: selQueryFilterDefaults,
-								defaultPreset: folders.xxx + 'presets\\Playlist Tools\\pls_sel_filter\\default.json',
+								defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_pls_sel_filter.json',
 								input: inputPlsQuery,
 								bDefaultFile: true,
 								bCopyCurrent: true

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//18/09/25
+//29/10/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, specialMenu:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, focusFlags:readable */
 
@@ -141,7 +141,7 @@
 									list: sameByQueries,
 									propName: 'sameByQueries',
 									defaults: sameByQueriesDefaults,
-									defaultPreset: folders.xxx + 'presets\\Playlist Tools\\same_by_queries\\default.json',
+									defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_same_by_queries.json',
 									input: inputSameByQuery,
 									bDefaultFile: true,
 									bCopyCurrent: true

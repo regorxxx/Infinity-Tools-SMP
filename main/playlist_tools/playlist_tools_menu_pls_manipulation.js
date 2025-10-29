@@ -1,5 +1,5 @@
 ﻿'use strict';
-//30/09/25
+//29/10/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable */
 
@@ -277,7 +277,7 @@
 								list: queryFilter,
 								propName: 'queryFilter',
 								defaults: queryFilterDefaults,
-								defaultPreset: folders.xxx + 'presets\\Playlist Tools\\pls_query_filter\\default.json',
+								defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_pls_query_filter.json',
 								input: inputPlsQuery,
 								bDefaultFile: true,
 								bCopyCurrent: true

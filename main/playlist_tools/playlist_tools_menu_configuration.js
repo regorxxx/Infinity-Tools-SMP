@@ -1,5 +1,5 @@
 ﻿'use strict';
-//14/10/25
+//29/10/25
 
 /* global menusEnabled:readable, configMenu:readable, readmes:readable, menu:readable, newReadmeSep:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, menu_propertiesBack:readable, menu_panelProperties:readable, overwritePanelProperties:readable, shortcutsPath:readable, importPreset:readable, presets:writable, menu_panelPropertiesBack:readable, loadProperties:readable, overwriteDefaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, specialMenu:readable, sbd:readable */
 
@@ -76,7 +76,7 @@
 							{ // Menu to configure properties: additional filters
 								const subMenuNameThree = menu.newMenu('Additional pre-defined filters', subMenuNameTwo);
 								let options = [];
-								const file = folders.xxx + 'presets\\Playlist Tools\\filters\\playlist_tools_filters.json';
+								const file = folders.userPresets + 'filters\\playlist_tools_filters.json';
 								const bFile = _isFile(file);
 								if (bFile) {
 									options = _jsonParseFileCheck(file, 'Query filters json', 'Playlist Tools', utf8) || [];

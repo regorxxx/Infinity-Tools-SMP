@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/10/25
+//29/10/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, menu_panelProperties:readable, configMenu:readable, createSubMenuEditEntries:readable, stripSort:readable, globTags:readable, createSmartShuffleMenu:readable, sbd:readable */
 
@@ -184,7 +184,7 @@
 								list: pools,
 								propName: 'pools',
 								defaults: poolsDefaults,
-								defaultPreset: folders.xxx + 'presets\\Playlist Tools\\pools\\default.json',
+								defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_pools.json',
 								input: poolsGen.inputPool,
 								bDefaultFile: true,
 								bUseFolders: true

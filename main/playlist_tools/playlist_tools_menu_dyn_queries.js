@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/09/25
+//29/10/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, selectedFlags:readable, createSubMenuEditEntries:readable, libSearchMenu:readable */
 
@@ -220,7 +220,7 @@
 										list: queryFilter,
 										propName: 'dynamicQueries',
 										defaults: queryFilterDefaults,
-										defaultPreset: folders.xxx + 'presets\\Playlist Tools\\dyn_query_filter\\default.json',
+										defaultPreset: folders.data + 'presets\\defaults\\playlist_tools_dyn_query_filter.json',
 										input: inputDynQuery,
 										bDefaultFile: true,
 										bCopyCurrent: true
