@@ -3,7 +3,7 @@
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable */
 
 // Playlist manipulation...
 {
@@ -901,18 +901,10 @@
 										? ' (partially locked)'
 										: ''
 								);
-								if ((obj.action === 'lock' || obj.action === 'switch') && !bLocked) {
+								if (!bLocked || obj.action === 'unlock' || obj.action === 'switch') {
 									menu.newEntry({
 										menuName, entryText, func: () => {
-											const newLock = [...playlistLockTypes.union(new Set(lockTypes))];
-											plman.SetPlaylistLockedActions(index, newLock);
-										}, flags
-									});
-								} else if ((obj.action === 'unlock' || obj.action === 'switch') && bLocked) {
-									menu.newEntry({
-										menuName, entryText, func: () => {
-											const newLock = [...playlistLockTypes.difference(new Set(lockTypes))];
-											plman.SetPlaylistLockedActions(index, newLock);
+											setLocks(index, lockTypes, obj.action.replace('unlock', 'remove').replace('lock', 'add'));
 										}, flags
 									});
 								} else { return false; }
@@ -972,12 +964,7 @@
 										menuName: obj.subMenuName, entryText: 'Active playlist', func: () => {
 											const ap = plman.ActivePlaylist;
 											if (ap === -1) { return; }
-											if ((obj.action === 'lock' || obj.action === 'switch') && !bLocked) {
-												plman.SetPlaylistLockedActions(ap, lockTypes);
-											} else if ((obj.action === 'unlock' || obj.action === 'switch') && bLocked) {
-												const newLock = [...playlistLockTypes.difference(new Set(lockTypes))];
-												plman.SetPlaylistLockedActions(ap, newLock);
-											}
+											setLocks(ap, lockTypes, obj.action.replace('unlock', 'remove').replace('lock', 'add'));
 										}, flags
 									});
 								}
