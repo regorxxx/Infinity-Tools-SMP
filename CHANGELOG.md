@@ -43,6 +43,7 @@
 - UI: adjusted default settings on first installation to mimic native foobar2000's buttons appearance.
 - Export settings: now uses '[FOOBAR PROFILE FOLDER]\js_data\export' folder at exporting.
 ### Removed
+- Playlist locks: removed workaround for bugged SMP playlists locks for newest marc2003's SMP mod versions since it was fixed at the component level. 'ExecuteDefaultAction' lock is now available. See [here](https://hydrogenaudio.org/index.php/topic,116669.msg1071792.html#msg1071792).
 ### Fixed
 - UI: fixed some repaint artifacts related to maintaining L. Mouse click down while moving within and outside the panel.
 - UI: changing text color immediately clears icon mask cache for icons which rely on images instead of font.
