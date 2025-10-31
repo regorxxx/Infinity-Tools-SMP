@@ -1,7 +1,7 @@
 ﻿Dynamic queries are the usual foobar2000's query expressions but improved
 with non-static values which are replaced before execution according to
-selection or the player state. WilB's Library tree script also has a s
-imilar functinality with the usage of $nowplaying{} and $selected{} on
+selection or the player state. WilB's Library tree script also has a
+similar functionality with the usage of $nowplaying{} and $selected{} on
 filter patterns.
 
 Dynamic queries usage are supported in multiple scripts and tools like
@@ -35,7 +35,7 @@ shown as a popup.
 
 Special global variables:
 -------------------------
-Doesn't requires a track to be evaluated (i.e. they always work):
+Don't require a track to be evaluated (i.e. they always work):
 	- #DAY# 	  -> 8 (current day)
 	- #DDAY# 	  -> 08 (current day DD)
 	- #WEEK# 	  -> 5 (first day of week)
@@ -73,7 +73,7 @@ Doesn't requires a track to be evaluated (i.e. they always work):
 
 Special selection variables:
 ----------------------------
-Requires a selection to be evaluated:
+Require a selection to be evaluated:
 	- #SELTRACKS#	  -> 10 (number of selected tracks)
 	- #SELDURATION#	  -> 3:09:37 (duration of selected tracks)
 	- #SELSIZE#	  -> 1.88 GB (size of selected tracks)
@@ -87,7 +87,7 @@ not work when evaluated on a selection).
 
 Special active playlist variables:
 ----------------------------------
-Requires an active playlist to be evaluated:
+Require an active playlist to be evaluated:
 	- #PLSIDX#	  -> 3 (index)
 	- #PLSNAME#	  -> My playlist (name)
 	- #PLSTRACKS#	  -> 27 (number of tracks)
@@ -100,7 +100,7 @@ Requires an active playlist to be evaluated:
 
 Special playing playlist variables:
 ----------------------------------
-Requires a playing playlist to be evaluated:
+Require a playing playlist to be evaluated:
 	- #PLSPLAYIDX#	  -> 3 (index)
 	- #PLSPLAYNAME#	  -> My playlist (name)
 	- #PLSPLAYTRACKS# -> 27 (number of tracks)
@@ -165,7 +165,7 @@ And
 %DATE% GREATER #$add(%DATE%,10)# -> %DATE% GREATER 1979
 Are equivalent and valid, since both ensure tracks with date > 1979.
 
-But this similar query is non valid (and will throw an error):
+But this similar query is not valid (and will throw an error):
 %DATE% GREATER "$add(#DATE#,10)" -> %DATE% GREATER "$add(1969,10)"
 Since the TF expression is not executed during query evaluation!
 
@@ -176,4 +176,4 @@ string/number, not another function (like the last example).
 (*) Since '#TAG# IS VALUE' forces tag to be equal to value, multi-value
 tags follow the same rationale. If you want to use another logic (OR,
 combinations, etc.) between different values of the same tag
-then the tool to use would be 'Search Same By'.
+then use other tools, like 'Search Same By' on Infinity-Tools-SMP.
