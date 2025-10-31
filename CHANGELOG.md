@@ -18,6 +18,7 @@
 - Playlist Tools\Selection Manipulation\Expand (next): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to next tracks to focused one.
 - Playlist Tools: added default value for duplicates selection and smart shuffle bias.
 - Music Map: added default value for duplicates selection and smart shuffle bias.
+- Display TF button: now supports editable presets. 8 built-in presets are now available by default.
 - Presets: added Rating and Loved/Hated UI columns presets for DUI and CUI (at 'presets\UI').
 - Presets: new predefined presets for forced query filters.
 - Added support for [Biography-v1.4.2.mod.11](https://hydrogenaudio.org/index.php/topic,112914.msg1070993.html#msg1070993) similar artists database.
@@ -41,11 +42,14 @@
 - UI: icons based on images are now refreshed when changing foobar2000's theme (not requiring a panel reload).
 - UI: slightly adjusted text and icon position on button down, to mimic native foobar2000's buttons behavior.
 - UI: adjusted default settings on first installation to mimic native foobar2000's buttons appearance.
+- Display TF button: better support for dynamic queries. Tooltip will show 'Global' instead of a reference to the track being used for special variables (like '#VOLUMEDB#').
 - Export settings: now uses '[FOOBAR PROFILE FOLDER]\js_data\export' folder at exporting.
 ### Removed
 - Playlist locks: removed workaround for bugged SMP playlists locks for newest marc2003's SMP mod versions since it was fixed at the component level. 'ExecuteDefaultAction' lock is now available. See [here](https://hydrogenaudio.org/index.php/topic,116669.msg1071792.html#msg1071792).
 ### Fixed
 - UI: fixed some repaint artifacts related to maintaining L. Mouse click down while moving within and outside the panel.
 - UI: changing text color immediately clears icon mask cache for icons which rely on images instead of font.
+- Display TF button: special variables for dynamic queries (like '#VOLUMEDB#') were replaced on button click with evaluated value, instead of displaying the original expression.
+- Display TF button: display errors with expressions containing '|' char, which is now replaced by $char(124) automatically.
 
 [Unreleased]: ../../compare/f039e12...HEAD

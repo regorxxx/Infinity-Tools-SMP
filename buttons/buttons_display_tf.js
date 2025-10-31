@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/09/25
+//31/10/25
 
 /*
 	Volume controls and display
@@ -11,9 +11,11 @@ include('..\\helpers\\helpers_xxx.js');
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, Flag:readable, buttonStates:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
-/* global settingsMenu:readable  */
+/* global settingsMenu:readable */
+include('..\\helpers\\menu_xxx_extras.js');
+/* global _createSubMenuEditEntries:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isFunction:readable, isBoolean:readable, isStringWeak:readable, isFloat:readable, isInt:readable, _t:readable */
+/* global isFunction:readable, isBoolean:readable, isStringWeak:readable, isFloat:readable, isInt:readable, _t:readable, isJSON:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
 /* global queryReplaceWithStatic:readable, sanitizeTagTfo:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
@@ -38,8 +40,19 @@ var newButtonsProperties = { // NOSONAR[global]
 	bRelSize: ['Relative size (window)', false, { func: isBoolean }, false],
 	fontSize: ['Font size scale', 1.2, { range: [[0, Infinity]], func: (v) => isFloat(v) || isInt(v) }, 1.2],
 	fontStyle: ['Font style', 'Bold', { func: new Function('s', 'return ' + JSON.stringify(Object.keys(FontStyle)) + '.includes(s);') }, 'Bold'],
-	textFlags: ['Text flags', DT_LEFT | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX | DT_NOCLIP | DT_END_ELLIPSIS, { func: isInt }, DT_LEFT | DT_VCENTER | DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_END_ELLIPSIS],
+	textFlags: ['Text flags', DT_LEFT | DT_VCENTER | DT_CENTER | DT_CALCRECT | DT_NOPREFIX | DT_NOCLIP | DT_END_ELLIPSIS, { func: isInt }, DT_LEFT | DT_VCENTER | DT_CENTER | DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_END_ELLIPSIS],
+	presets: ['Presets', JSON.stringify([
+		{ name: 'Rating', settings: { tf: '$pad($repeat(★,' + _t(globTags.rating) + '), 5,✩)', fallback: sanitizeTagTfo(chars.sadEmoji) } },
+		{ name: 'Loved', settings: { tf: '$if(' + globTags.isLoved + ',' + sanitizeTagTfo(chars.loveEmojiV2) + ',' + sanitizeTagTfo(chars.sadEmoji) + ')', fallback: sanitizeTagTfo(chars.sadEmoji) } },
+		{ name: 'Playback time', settings: { tf: '[%playback_time% / ][%length%]', fallback: '- / -' } },
+		{ name: 'Volume', settings: { tf: '#VOLUMEDB#', fallback: '#VOLUMEDB#' } },
+		{ name: 'Playback stats', settings: { tf: '$if(%is_status_pane%,%artist% - %title%$crlf(),$if(%ispaused%,Paused,$if(%ISPLAYING%,Playing,Stopped)) | )%codec% $if($meta(pre_emphasis),\'(Pre-Emphasis) \')$if($info(hdcd),\'(HDCD) \')[| %trackdsp% ]| %bitrate% kbps | %samplerate% Hz | %channels% | %playback_time%[ / %length%]', fallback: sanitizeTagTfo(chars.loveEmojiV2) } },
+		{ name: 'Selection stats (1)', settings: { tf: '#SELDURATION# / #SELSIZE#', fallback: '#SELDURATION# / #SELSIZE#' } },
+		{ name: 'Selection stats (2)', settings: { tf: '#SELTRACKS# tracks', fallback: '#SELTRACKS# tracks' } },
+		{ name: 'Playlist stats', settings: { tf: '#PLSTRACKS# tracks / #PLSDURATION#', fallback: '#PLSTRACKS# / #PLSDURATION#' } }
+	]), { func: isJSON }],
 };
+newButtonsProperties.presets.push(newButtonsProperties.presets[1]);
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 newButtonsProperties = getPropertiesPairs(newButtonsProperties, prefix, 0);
 buttonsBar.list.push(newButtonsProperties);
@@ -81,7 +94,8 @@ addButton({
 						textFlags: {
 							input: 'Enter text flags:\n\nDon\'t edit here, use the text submenus settings instead.',
 							bHide: true
-						}
+						},
+						presets: { bHide: true }
 					},
 					{
 						'*':
@@ -166,6 +180,53 @@ addButton({
 								const idx = options.findIndex((o) => this.textFlags.has(o.flag));
 								return idx !== -1 ? idx : 0;
 							}, options);
+							menu.newSeparator();
+							const subMenuName = menu.newMenu('Presets');
+							JSON.parse(this.buttonsProperties.presets[1]).forEach((entry) => {
+								// Add separators
+								if (menu.isSeparator(entry)) {
+									menu.newSeparator(subMenuName);
+								} else {
+									menu.newEntry({
+										menuName: subMenuName, entryText: entry.name, func: () => {
+											for (const key in entry.settings) {
+												this.buttonsProperties[key][1] = entry.settings[key];
+											}
+											overwriteProperties(this.buttonsProperties);
+											this.tfSet();
+											this.repaint();
+										}
+									});
+									menu.newCheckMenuLast(
+										() => Object.keys(entry.settings).every(
+											(key) => this.buttonsProperties[key][1] === entry.settings[key]
+										)
+									);
+								}
+							});
+							menu.newSeparator(subMenuName);
+							_createSubMenuEditEntries(menu, subMenuName, {
+								name: 'Title Format display',
+								list: JSON.parse(this.buttonsProperties.presets[1]),
+								defaults: JSON.parse(this.buttonsProperties.presets[3]),
+								input: () => {
+									const entry = {
+										settings: {
+											tf: this.tfSource(),
+											fallback: this.buttonsProperties.fallback[1],
+											bPlaying: this.buttonsProperties.bPlaying[1]
+										},
+									};
+									return entry;
+								},
+								bNumbered: true,
+								bCopyCurrent: true,
+								onBtnUp: (presets) => {
+									this.buttonsProperties.presets[1] = JSON.stringify(presets);
+									overwriteProperties(this.buttonsProperties);
+
+								}
+							});
 						}
 					}, { parentName: 'Title Format display' }
 				).btn_up(this.currX, this.currY + this.currH);
@@ -176,9 +237,17 @@ addButton({
 		description: function () {
 			const bShift = utils.IsKeyPressed(VK_SHIFT);
 			const bInfo = typeof barProperties === 'undefined' || barProperties.bTooltipInfo[1];
-			let info = this.buttonsProperties.bPlaying[1] && fb.IsPlaying
-				? 'Playing item:'
-				: 'Focused item:';
+			let info;
+			if (this.hasDynamicQueries()) {
+				const dynTagRe = [/#((PREV)?(DECADE|YEAR|(M)?MONTH|(D)?DAY|(D)?WEEK)|NOW(_TS)?|TODAY(_TS)?|(YESTER|PREV)DAY(_TS)?)#/i, /#(VOLUME(DB)?|VERSION|ISPLAYING|ISPAUSED|PLAYSTATE|SAC|PLSCOUNT)#/i, /#(DEVICE(ID)?)#/i, /#(RGMODE)#/i, /#(PLAYMODE)#/i, /#(SEL(TRACKS|DURATION|SIZE))#/i, /#(SELTYPE)#/i, /#(SEL(PLAYING|INLIBRARY))#/i, /#(PLS(IDX|NAME|TRACKS|ISAUTOPLS|ISLOCKED|LOCKS|LOCKNAME))#/i, /#(PLSPLAY(IDX|NAME|TRACKS))#/i, /#(PLS(DURATION|SIZE))#/i, /#(PLSPLAY(DURATION|SIZE))#/i];
+				const tf = this.tfSource();
+				if (dynTagRe.some((r) => r.test(tf))) { info = 'Global:'; }
+			}
+			if (!info) {
+				info = this.buttonsProperties.bPlaying[1] && fb.IsPlaying
+					? 'Playing item:'
+					: 'Focused item:';
+			}
 			info += '\n' + this.tfEval();
 			const np = fb.IsPlaying && plman.GetPlayingItemLocation().IsValid;
 			if (np || bShift || bInfo) {
@@ -202,7 +271,13 @@ addButton({
 					: fb.GetFocusItem(true) || fb.GetNowPlaying();
 			},
 			tfSet: function () { // Call when strictly needed, may require evaluation of entire selection
-				this.tf = fb.TitleFormat(queryReplaceWithStatic(this.buttonsProperties.tf[1]));
+				this.tf = fb.TitleFormat(queryReplaceWithStatic(this.tfSource()));
+			},
+			tfClean: function (parent, s) {
+				return s.replace(this.sep, '').replaceAll('|', '$char(124)');
+			},
+			tfSource: function () {
+				return this.tfClean(this.buttonsProperties.tf[1]);
 			},
 			fallbackGet: function () {
 				return fb.TitleFormat(queryReplaceWithStatic(this.buttonsProperties.fallback[1]));
@@ -227,19 +302,19 @@ addButton({
 				};
 			})(),
 			hasDynamicQueries: function () {
-				return this.buttonsProperties.tf[1].includes('#') || this.buttonsProperties.fallback[1].includes('#');
+				return this.tfSource().includes('#') || this.tfSource().includes('#');
 			},
 			displayFunc: function () {
 				const val = String(this.tfEval());
 				return val.length ? val : ' ';
 			},
-			inputFunc: function () { return this.tf.Expression + this.sep; },
+			inputFunc: function () { return this.tfSource() + this.sep; },
 			restoreDisplay: function () {
 				this.isInput = false;
 				this.text = this.displayFunc;
 			},
 			sep: '‎|‎',
-			inputRe: /([\x20-\xFF]+)/,
+			inputRe: /([^\u200E|]+)/,
 			startInput: function () {
 				this.isInput = true;
 				this.text = this.inputFunc();
@@ -250,7 +325,7 @@ addButton({
 			applyInput: function () {
 				this.clearTimeout();
 				if (isFunction(this.text)) { return; }
-				this.buttonsProperties.tf[1] = this.text.replace(this.sep, '');
+				this.buttonsProperties.tf[1] = this.tfClean(this.text);
 				this.restoreDisplay();
 				overwriteProperties(this.buttonsProperties);
 			},
@@ -292,7 +367,7 @@ addButton({
 		},
 		listener: {
 			on_volume_change: function () {
-				if (/#(VOLUME|VOLUMEDB)#/i.test(this.buttonsProperties.tf[1])) { this.throttleRefresh(); }
+				if (/#(VOLUME|VOLUMEDB)#/i.test(this.tfSource())) { this.throttleRefresh(); }
 			},
 			on_item_focus_change: function () {
 				if (!this.buttonsProperties.bPlaying[1] || !fb.IsPlaying || this.hasDynamicQueries()) { this.throttleRefresh(); }
@@ -330,14 +405,8 @@ addButton({
 			on_char: function (parent, code) {
 				if (this.isInput) {
 					const char = String.fromCharCode(code);
-					if (isFunction(this.text)) { this.text = this.buttonsProperties.tf[1]; }
-					if (this.inputRe.test(char)) {
-						this.text = this.text.replace(this.sep, '') + char + this.sep;
-						this.repaint();
-						this.clearTimeout();
-						this.setTimeout();
-						this.setAnimation();
-					} else if (code === VK_BACK) {
+					if (isFunction(this.text)) { this.text = this.tfSource(); }
+					if (code === VK_BACK) {
 						this.text = this.text.replace(this.sep, '').slice(0, -1) + this.sep;
 						this.repaint();
 						this.clearTimeout();
@@ -348,6 +417,12 @@ addButton({
 						this.clearTimeout();
 						this.restoreDisplay();
 						this.repaint();
+					} else if (this.inputRe.test(char)) {
+						this.text = this.text.replace(this.sep, '') + char + this.sep;
+						this.repaint();
+						this.clearTimeout();
+						this.setTimeout();
+						this.setAnimation();
 					}
 				}
 			}
