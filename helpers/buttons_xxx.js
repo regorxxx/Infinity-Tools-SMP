@@ -1,5 +1,5 @@
 ﻿'use strict';
-//16/10/25
+//03/11/25
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme */
 
@@ -11,7 +11,7 @@ include('helpers_xxx_basic_js.js');
 include('helpers_xxx_file.js');
 /* global _isFile:readable, _jsonParseFileCheck:readable, utf8:readable, _open:readable */
 include('helpers_xxx_prototypes.js');
-/* global isFunction:readable, isString, round:readable, _ps:readable */
+/* global isFunction:readable, isString, round:readable, _ps:readable, isGetter:readable, isSetter:readable */
 include('helpers_xxx_prototypes_smp.js');
 /* global extendGR:readable */
 include('helpers_xxx_properties.js');
@@ -810,7 +810,15 @@ function ThemedButton({
 		if (variables) {
 			if (typeof variables === 'object') {
 				for (let key in variables) {
-					if (isFunction(variables[key])) {
+					if (isGetter(variables, key)) {
+						Object.defineProperty(this, key, {
+							get: Object.getOwnPropertyDescriptor(variables, key).get.bind(this)
+						});
+					} else if (isSetter(variables, key)) {
+						Object.defineProperty(this, key, {
+							set: Object.getOwnPropertyDescriptor(variables, key).get.bind(this)
+						});
+					} else if (isFunction(variables[key])) {
 						this[key] = variables[key].bind(this, this);
 					} else {
 						this[key] = variables[key];

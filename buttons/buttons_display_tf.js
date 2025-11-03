@@ -1,5 +1,5 @@
 ﻿'use strict';
-//31/10/25
+//03/11/25
 
 /*
 	Volume controls and display
@@ -7,7 +7,7 @@
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, checkCompatible:readable, VK_RETURN:readable, FontStyle:readable, MK_SHIFT:readable, VK_SHIFT:readable, VK_BACK:readable, DT_LEFT:readable, DT_CENTER:readable, DT_RIGHT:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_END_ELLIPSIS:readable, DT_PATH_ELLIPSIS:readable, DT_WORD_ELLIPSIS:readable, DT_NOCLIP:readable, globTags:readable */
+/* global globFonts:readable, checkCompatible:readable, VK_RETURN:readable, FontStyle:readable, MK_SHIFT:readable, VK_SHIFT:readable, VK_BACK:readable, DT_LEFT:readable, DT_CENTER:readable, DT_RIGHT:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_END_ELLIPSIS:readable, DT_PATH_ELLIPSIS:readable, DT_WORD_ELLIPSIS:readable, DT_NOCLIP:readable, globTags:readable, MF_STRING:readable, MF_GRAYED:readable, compareVersions:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, Flag:readable, buttonStates:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
@@ -51,6 +51,7 @@ var newButtonsProperties = { // NOSONAR[global]
 		{ name: 'Selection stats (2)', settings: { tf: '#SELTRACKS# tracks', fallback: '#SELTRACKS# tracks' } },
 		{ name: 'Playlist stats', settings: { tf: '#PLSTRACKS# tracks / #PLSDURATION#', fallback: '#PLSTRACKS# / #PLSDURATION#' } }
 	]), { func: isJSON }],
+	onClick: ['On click action', 1, { range: [[0, 5]] }, 1],
 };
 newButtonsProperties.presets.push(newButtonsProperties.presets[1]);
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
@@ -95,7 +96,8 @@ addButton({
 							input: 'Enter text flags:\n\nDon\'t edit here, use the text submenus settings instead.',
 							bHide: true
 						},
-						presets: { bHide: true }
+						presets: { bHide: true },
+						onClick: { bHide: true },
 					},
 					{
 						'*':
@@ -181,6 +183,19 @@ addButton({
 								return idx !== -1 ? idx : 0;
 							}, options);
 							menu.newSeparator();
+							{
+								const menuName = menu.newMenu('On click action');
+								this.onClickOptions.forEach((o, i) => {
+									menu.newEntry({
+										menuName, entryText: o.text, func: () => {
+											this.buttonsProperties.onClick[1] = i;
+											overwriteProperties(this.buttonsProperties);
+										}, flags: o.bAvailable ? MF_STRING : MF_GRAYED
+									});
+								});
+								menu.newCheckMenuLast(() => Math.min(Math.max(this.buttonsProperties.onClick[1], 0), this.onClickOptions.length - 1), this.onClickOptions);
+							}
+							menu.newSeparator();
 							const subMenuName = menu.newMenu('Presets');
 							JSON.parse(this.buttonsProperties.presets[1]).forEach((entry) => {
 								// Add separators
@@ -230,8 +245,10 @@ addButton({
 						}
 					}, { parentName: 'Title Format display' }
 				).btn_up(this.currX, this.currY + this.currH);
-			} else if (!this.isInput) { this.startInput(); }
-			else { this.applyInput(); }
+			} else {
+				const action = this.onClickOption;
+				if (action.func) { action.func(); }
+			}
 		},
 		gFont: _gdiFont(globFonts.button.name, globFonts.button.size * newButtonsProperties.fontSize[1] * buttonsBar.config.textScale, FontStyle[newButtonsProperties.fontStyle[1]]),
 		description: function () {
@@ -252,7 +269,10 @@ addButton({
 			const np = fb.IsPlaying && plman.GetPlayingItemLocation().IsValid;
 			if (np || bShift || bInfo) {
 				info += '\n-----------------------------------------------------';
-				if (np) {
+				const action = this.onClickOption;
+				if (action.func) {
+					info += '\n(L. Click to ' + action.text + ')';
+				} else if (np) {
 					info += '\n(Double + L. Click to show now playing)';
 				}
 				if (bShift || bInfo) {
@@ -269,6 +289,21 @@ addButton({
 				return this.buttonsProperties.bPlaying[1]
 					? fb.GetNowPlaying() || fb.GetFocusItem(true)
 					: fb.GetFocusItem(true) || fb.GetNowPlaying();
+			},
+			showHandle: function () {
+				let plsIdx = -1;
+				let idx = -1;
+				if (fb.IsPlaying) {
+					const loc = plman.GetPlayingItemLocation();
+					if (loc.IsValid) {
+						plsIdx = loc.PlaylistIndex;
+						idx = loc.PlaylistItemIndex;
+					}
+				} else {
+					plsIdx = plman.ActivePlaylist;
+					idx = plman.GetPlaylistFocusItemIndex(plman.ActivePlaylist);
+				}
+				if (plsIdx !== -1 && idx !== -1) { plman.EnsurePlaylistItemVisible(plsIdx, idx); }
 			},
 			tfSet: function () { // Call when strictly needed, may require evaluation of entire selection
 				this.tf = fb.TitleFormat(queryReplaceWithStatic(this.tfSource()));
@@ -363,7 +398,43 @@ addButton({
 					clearInterval(this.inputInterval);
 					this.inputInterval = null;
 				}
-			}
+			},
+			get onClickOptions() {
+				const bLibraryTree = compareVersions((utils.GetPackageInfo('{E85C9EF0-778B-46DD-AF20-F4BE831360DD}') || { Version: '2.4.0'}).Version, '2.4.0.mod.11');
+				return [
+					{ text: 'None', func: null, bAvailable: true },
+					{ text: this.buttonsProperties.bPlaying[1] ? 'Show Now playing / Selection' : 'Show Selection', func: this.showHandle, bAvailable: true },
+					{
+						text: 'Quicksearch on Library Tree', func: () => {
+							window.NotifyOthers('Library Tree: Quicksearch', { search: this.displayFunc() });
+						}, bAvailable: bLibraryTree
+					},
+					{
+						text: 'Search on Library Tree', func: () => {
+							window.NotifyOthers('Library Tree: Search', { search: this.displayFunc() });
+						}, bAvailable: bLibraryTree
+					},
+					{
+						text: 'Show on Library Tree', func: () => {
+							window.NotifyOthers('Library Tree: Show handle', { handle: this.handle() });
+						}, bAvailable: bLibraryTree
+					},
+					{
+						text: 'Show on library search UI', func: () => {
+							fb.ShowLibrarySearchUI(this.displayFunc());
+						}, bAvailable: bLibraryTree
+					},
+					{
+						text: 'Edit TF expression', func: () => {
+							if (!this.isInput) { this.startInput(); }
+							else { this.applyInput(); }
+						}, bAvailable: true
+					}
+				];
+			},
+			get onClickOption() {
+				return this.onClickOptions[this.buttonsProperties.onClick[1]] || { text: 'None', func: null };
+			},
 		},
 		listener: {
 			on_volume_change: function () {
@@ -391,13 +462,7 @@ addButton({
 				if (!this.buttonsProperties.bPlaying[1] || !fb.IsPlaying || this.hasDynamicQueries()) { this.throttleRefresh(); }
 			},
 			on_mouse_lbtn_dblclk: function () {
-				if (fb.IsPlaying) {
-					const loc = plman.GetPlayingItemLocation();
-					if (loc.IsValid) {
-						plman.ActivePlaylist = loc.PlaylistIndex;
-						plman.SetPlaylistFocusItem(loc.PlaylistIndex, loc.PlaylistItemIndex);
-					}
-				}
+				this.showHandle();
 			},
 			on_key_up: function (parent, vKey) {
 				if (this.isInput && vKey === VK_RETURN) { this.applyInput(); this.throttleRefresh(); }
