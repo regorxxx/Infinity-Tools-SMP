@@ -1,5 +1,5 @@
 ﻿'use strict';
-//03/11/25
+//04/11/25
 
 /*
 	Volume controls and display
@@ -7,15 +7,17 @@
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, checkCompatible:readable, VK_RETURN:readable, FontStyle:readable, MK_SHIFT:readable, VK_SHIFT:readable, VK_BACK:readable, DT_LEFT:readable, DT_CENTER:readable, DT_RIGHT:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_END_ELLIPSIS:readable, DT_PATH_ELLIPSIS:readable, DT_WORD_ELLIPSIS:readable, DT_NOCLIP:readable, globTags:readable, MF_STRING:readable, MF_GRAYED:readable, compareVersions:readable */
+/* global globFonts:readable, checkCompatible:readable, VK_RETURN:readable, FontStyle:readable, MK_SHIFT:readable, VK_SHIFT:readable, VK_BACK:readable, DT_LEFT:readable, DT_CENTER:readable, DT_RIGHT:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_END_ELLIPSIS:readable, DT_PATH_ELLIPSIS:readable, DT_WORD_ELLIPSIS:readable, DT_NOCLIP:readable, globTags:readable, MF_STRING:readable, MF_GRAYED:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, Flag:readable, buttonStates:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable */
 include('..\\helpers\\menu_xxx_extras.js');
 /* global _createSubMenuEditEntries:readable */
+include('..\\helpers\\helpers_xxx_input.js');
+/* global Input:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isFunction:readable, isBoolean:readable, isStringWeak:readable, isFloat:readable, isInt:readable, _t:readable, isJSON:readable */
+/* global isFunction:readable, isBoolean:readable, isStringWeak:readable, isFloat:readable, isInt:readable, _t:readable, isJSON:readable, _bt:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
 /* global queryReplaceWithStatic:readable, sanitizeTagTfo:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
@@ -42,16 +44,17 @@ var newButtonsProperties = { // NOSONAR[global]
 	fontStyle: ['Font style', 'Bold', { func: new Function('s', 'return ' + JSON.stringify(Object.keys(FontStyle)) + '.includes(s);') }, 'Bold'],
 	textFlags: ['Text flags', DT_LEFT | DT_VCENTER | DT_CENTER | DT_CALCRECT | DT_NOPREFIX | DT_NOCLIP | DT_END_ELLIPSIS, { func: isInt }, DT_LEFT | DT_VCENTER | DT_CENTER | DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_END_ELLIPSIS],
 	presets: ['Presets', JSON.stringify([
-		{ name: 'Rating', settings: { tf: '$pad($repeat(★,' + _t(globTags.rating) + '), 5,✩)', fallback: sanitizeTagTfo(chars.sadEmoji) } },
-		{ name: 'Loved', settings: { tf: '$if(' + globTags.isLoved + ',' + sanitizeTagTfo(chars.loveEmojiV2) + ',' + sanitizeTagTfo(chars.sadEmoji) + ')', fallback: sanitizeTagTfo(chars.sadEmoji) } },
-		{ name: 'Playback time', settings: { tf: '[%playback_time% / ][%length%]', fallback: '- / -' } },
-		{ name: 'Volume', settings: { tf: '#VOLUMEDB#', fallback: '#VOLUMEDB#' } },
-		{ name: 'Playback stats', settings: { tf: '$if(%is_status_pane%,%artist% - %title%$crlf(),$if(%ispaused%,Paused,$if(%ISPLAYING%,Playing,Stopped)) | )%codec% $if($meta(pre_emphasis),\'(Pre-Emphasis) \')$if($info(hdcd),\'(HDCD) \')[| %trackdsp% ]| %bitrate% kbps | %samplerate% Hz | %channels% | %playback_time%[ / %length%]', fallback: sanitizeTagTfo(chars.loveEmojiV2) } },
-		{ name: 'Selection stats (1)', settings: { tf: '#SELDURATION# / #SELSIZE#', fallback: '#SELDURATION# / #SELSIZE#' } },
-		{ name: 'Selection stats (2)', settings: { tf: '#SELTRACKS# tracks', fallback: '#SELTRACKS# tracks' } },
-		{ name: 'Playlist stats', settings: { tf: '#PLSTRACKS# tracks / #PLSDURATION#', fallback: '#PLSTRACKS# / #PLSDURATION#' } }
+		{ name: 'Rating', settings: { tf: '$pad($repeat(★,' + _t(globTags.rating) + '), 5,✩)', fallback: sanitizeTagTfo(chars.sadEmoji), onClick: 8, onClickArg: globTags.rating } },
+		{ name: 'Loved', settings: { tf: '$if(' + globTags.isLoved + ',' + sanitizeTagTfo(chars.loveEmojiV2) + ',' + sanitizeTagTfo(chars.sadEmoji) + ')', fallback: sanitizeTagTfo(chars.sadEmoji), onClick: 7, onClickArg: globTags.feedback } },
+		{ name: 'Playback time', settings: { tf: '[%playback_time% / ][%length%]', fallback: '- / -', onClick: 6 } },
+		{ name: 'Volume', settings: { tf: '#VOLUMEDB#', fallback: '#VOLUMEDB#', onClick: 5 } },
+		{ name: 'Playback stats', settings: { tf: '$if(%is_status_pane%,%artist% - %title%$crlf(),$if(%ispaused%,Paused,$if(%ISPLAYING%,Playing,Stopped)) | )%codec% $if($meta(pre_emphasis),\'(Pre-Emphasis) \')$if($info(hdcd),\'(HDCD) \')[| %trackdsp% ]| %bitrate% kbps | %samplerate% Hz | %channels% | %playback_time%[ / %length%]', fallback: sanitizeTagTfo(chars.loveEmojiV2), onClick: 1 } },
+		{ name: 'Selection stats (1)', settings: { tf: '#SELDURATION# / #SELSIZE#', fallback: '#SELDURATION# / #SELSIZE#', onClick: 1 } },
+		{ name: 'Selection stats (2)', settings: { tf: '#SELTRACKS# tracks', fallback: '#SELTRACKS# tracks', onClick: 1 } },
+		{ name: 'Playlist stats', settings: { tf: '#PLSTRACKS# tracks / #PLSDURATION#', fallback: '#PLSTRACKS# / #PLSDURATION#', onClick: 1 } }
 	]), { func: isJSON }],
-	onClick: ['On click action', 1, { range: [[0, 5]] }, 1],
+	onClick: ['On click action', 1, { range: [[0, 9]] }, 1],
+	onClickArg: ['On click action argument', '', { func: isStringWeak }, ''],
 };
 newButtonsProperties.presets.push(newButtonsProperties.presets[1]);
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
@@ -188,6 +191,10 @@ addButton({
 								this.onClickOptions.forEach((o, i) => {
 									menu.newEntry({
 										menuName, entryText: o.text, func: () => {
+											if (this.buttonsProperties.onClick[1] !== i) {
+												this.buttonsProperties.onClickArg[1] = '';
+											}
+											if (o.input) { o.input(); }
 											this.buttonsProperties.onClick[1] = i;
 											overwriteProperties(this.buttonsProperties);
 										}, flags: o.bAvailable ? MF_STRING : MF_GRAYED
@@ -229,7 +236,9 @@ addButton({
 										settings: {
 											tf: this.tfSource(),
 											fallback: this.buttonsProperties.fallback[1],
-											bPlaying: this.buttonsProperties.bPlaying[1]
+											bPlaying: this.buttonsProperties.bPlaying[1],
+											onClick: this.buttonsProperties.onClick[1],
+											onClickArg: this.buttonsProperties.onClickArg[1]
 										},
 									};
 									return entry;
@@ -400,29 +409,99 @@ addButton({
 				}
 			},
 			get onClickOptions() {
-				const bLibraryTree = compareVersions((utils.GetPackageInfo('{E85C9EF0-778B-46DD-AF20-F4BE831360DD}') || { Version: '2.4.0'}).Version, '2.4.0.mod.11');
+				const bLibraryTree = !!utils.GetPackageInfo('{E85C9EF0-778B-46DD-AF20-F4BE831360DD}');
 				return [
 					{ text: 'None', func: null, bAvailable: true },
 					{ text: this.buttonsProperties.bPlaying[1] ? 'Show Now playing / Selection' : 'Show Selection', func: this.showHandle, bAvailable: true },
 					{
+						text: 'Show on Library Tree', func: () => {
+							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
+							window.NotifyOthers('Library Tree: Show handle', { handle: this.handle(), window: panels });
+						},
+						input: () => {
+							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], 'Specify Library Tree panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-v2.4.0.mod.11 or later and only works for panels within same JS host component.', 'Library Tree panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
+							if (panels === null) { return; }
+							this.buttonsProperties.onClickArg[1] = panels;
+						}, bAvailable: bLibraryTree
+					},
+					{
 						text: 'Quicksearch on Library Tree', func: () => {
-							window.NotifyOthers('Library Tree: Quicksearch', { search: this.displayFunc() });
+							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
+							window.NotifyOthers('Library Tree: Quicksearch', { search: this.displayFunc(), window: panels });
+						},
+						input: () => {
+							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], 'Specify Library Tree panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-v2.4.0.mod.11 or later and only works for panels within same JS host component.', 'Library Tree panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
+							if (panels === null) { return; }
+							this.buttonsProperties.onClickArg[1] = panels;
 						}, bAvailable: bLibraryTree
 					},
 					{
 						text: 'Search on Library Tree', func: () => {
-							window.NotifyOthers('Library Tree: Search', { search: this.displayFunc() });
+							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
+							window.NotifyOthers('Library Tree: Search', { search: this.displayFunc(), window: panels });
+						},
+						input: () => {
+							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], 'Specify Library Tree panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-v2.4.0.mod.11 or later and only works for panels within same JS host component.', 'Library Tree panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
+							if (panels === null) { return; }
+							this.buttonsProperties.onClickArg[1] = panels;
 						}, bAvailable: bLibraryTree
 					},
 					{
-						text: 'Show on Library Tree', func: () => {
-							window.NotifyOthers('Library Tree: Show handle', { handle: this.handle() });
-						}, bAvailable: bLibraryTree
+						text: 'Mute volume', func: () => {
+							fb.VolumeMute();
+						}, bAvailable: true
 					},
 					{
-						text: 'Show on library search UI', func: () => {
-							fb.ShowLibrarySearchUI(this.displayFunc());
-						}, bAvailable: bLibraryTree
+						text: 'Play / Pause', func: () => {
+							fb.PlayOrPause();
+						}, bAvailable: true
+					},
+					{
+						text: 'Love track', func: () => {
+							const handle = this.handle();
+							if (!handle) { return; }
+							const tag = this.buttonsProperties.onClickArg[1];
+							const tf = fb.TitleFormat(_bt(tag));
+							FbMetadbHandleList(handle).UpdateFileInfoFromJSON(
+								JSON.stringify({ [tag.replaceAll('%', '')]: tf.EvalWithMetadb(this.handle()) === '1' ? '' : 1 })
+							);
+						},
+						input: () => {
+							const tag = Input.string('string', this.buttonsProperties.onClickArg[1] || globTags.feedback, 'Specify feedback tag (for loved/hated):', 'Feedback tag', 'feedback') || (Input.isLastEqual ? Input.lastInput : null);
+							if (tag === null) { return; }
+							this.buttonsProperties.onClickArg[1] = tag;
+						}, bAvailable: true
+					},
+					{
+						text: 'Cycle rating', func: () => {
+							const handle = this.handle();
+							if (!handle) { return; }
+							const tag = this.buttonsProperties.onClickArg[1];
+							const tf = fb.TitleFormat(_bt(tag));
+							switch (tag.toUpperCase().replaceAll('%', '')) {
+								case 'RATING': {
+									if (tf.EvalWithMetadb(this.handle()) === '5') {
+										fb.RunContextCommandWithMetadb('Playback Statistics/Rating/<not set>', handle, 8);
+									} else {
+										fb.RunContextCommandWithMetadb('Playback Statistics/Rating/+', handle, 8);
+									}
+									break;
+								}
+								case '2003_RATING': {
+									if (tf.EvalWithMetadb(this.handle()) === '10') {
+										fb.RunContextCommandWithMetadb('Playback Statistics/Rating/Clear', handle, 8);
+									} else {
+										fb.RunContextCommandWithMetadb('Playcount 2003/Rating/+', handle, 8);
+									}
+									break;
+								}
+							}
+						},
+						input: () => {
+							const tag = Input.string('string', this.buttonsProperties.onClickArg[1] || globTags.feedback, 'Specify feedback tag (for loved/hated):', 'Feedback tag', 'feedback') || (Input.isLastEqual ? Input.lastInput : null);
+							if (tag === null) { return; }
+							this.buttonsProperties.onClickArg[1] = tag;
+						}, bAvailable: true
 					},
 					{
 						text: 'Edit TF expression', func: () => {
