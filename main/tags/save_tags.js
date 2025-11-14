@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/10/25
+//07/11/25
 
 /*
 	Save tags
@@ -18,7 +18,11 @@
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, popup:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global WshShell:readable, _jsonParseFileCheck:readable, utf8:readable, _save:readable,  */
+/* global WshShell:readable, _jsonParseFileCheck:readable, utf8:readable, _save:readable */
+include('..\\..\\helpers\\helpers_xxx_tags.js');
+/* global fileRegex:readable */
+include('..\\..\\helpers\\helpers_xxx_playlists_files.js');
+/* global resolveTrackRelativePath:readable */
 
 function saveTags({
 	selItems = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
@@ -37,7 +41,9 @@ function saveTags({
 		const fileInfo = handle.GetFileInfo();
 		const metaCount = fileInfo.MetaCount;
 		const md5Idx = fileInfo.InfoFind('md5');
-		handleInfo.rawPath = handle.RawPath;
+		handleInfo.rawPath = fileRegex.test(handle.RawPath)
+			? 'file://' + resolveTrackRelativePath(handle.RawPath.replace(fileRegex, ''))
+			: handle.RawPath;
 		handleInfo.subSong = handle.SubSong;
 		handleInfo.md5 = md5Idx !== -1 ? fileInfo.InfoValue(md5Idx) : -1;
 		for (let j = 0; j < metaCount; j++) {
@@ -78,7 +84,9 @@ function compareTags({
 		const fileInfo = handle.GetFileInfo();
 		const metaCount = fileInfo.MetaCount;
 		const md5Idx = fileInfo.InfoFind('md5');
-		handleInfo.rawPath = handle.RawPath;
+		handleInfo.rawPath = fileRegex.test(handle.RawPath)
+			? 'file://' + resolveTrackRelativePath(handle.RawPath.replace(fileRegex, ''))
+			: handle.RawPath;
 		handleInfo.subSong = handle.SubSong;
 		handleInfo.md5 = md5Idx !== -1 ? fileInfo.InfoValue(md5Idx) : -1;
 		for (let j = 0; j < metaCount; j++) {
