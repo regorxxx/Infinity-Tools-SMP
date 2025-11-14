@@ -16,6 +16,7 @@
 - Playlist Tools\Selection Manipulation\Expand (disjoint): added entry to limit number of tracks to select.
 - Playlist Tools\Selection Manipulation\Expand (contiguous): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to contiguous tracks, thus ensuring joint selections.
 - Playlist Tools\Selection Manipulation\Expand (next): added tool similar to 'Selection Manipulation\Expand (disjoint)' but limited to next tracks to focused one.
+- Playlist Tools\Selection Manipulation\Find prev. played track in: tool to find previously played track across all playlist, but also indicating the original playlist and position. See [here](https://hydrogenaudio.org/index.php/topic,128713.0.html).
 - Playlist Tools: added default value for duplicates selection and smart shuffle bias.
 - Music Map: added default value for duplicates selection and smart shuffle bias.
 - Display TF button: now supports editable presets. 8 built-in presets are now available by default.

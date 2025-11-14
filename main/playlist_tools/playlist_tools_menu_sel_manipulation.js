@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/10/25
+//14/11/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable */
 
@@ -747,10 +747,11 @@
 			const scriptPath = folders.xxx + 'main\\playlists\\find_remove_from_playlists.js';
 			/* global findInPlaylists:readable, removeFromPlaylist:readable,  */
 			if (_isFile(scriptPath)) {
+				const namePrevFind = 'Find prev. played track in';
 				const nameNowFind = 'Find now playing track in';
 				const nameFind = 'Find track(s) in';
 				const nameRemove = 'Remove track(s) from';
-				if (!Object.hasOwn(menusEnabled, nameNowFind) || !Object.hasOwn(menusEnabled, nameFind) || !Object.hasOwn(menusEnabled, nameRemove) || menusEnabled[nameNowFind] === true || menusEnabled[nameFind] === true || menusEnabled[nameRemove] === true) {
+				if ([namePrevFind, nameNowFind, nameFind, nameRemove].some((name) => !Object.hasOwn(menusEnabled, name) || menusEnabled[name] === true)) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
 					readmes[menuName + '\\' + 'Find in and Remove from'] = folders.xxx + 'helpers\\readme\\find_remove_from_playlists.txt';
 					// Add properties
@@ -793,14 +794,10 @@
 												const subMenu_i = menu.newMenu(idx, subMenuName);
 												for (let j = bottomIdx; j <= topIdx && j < playlistsNum; j++) {
 													const playlist = inPlaylist[j];
-													const entryText = playlist.name.cut(30) +
-														(plman.PlayingPlaylist === playlist.index && ap === playlist.index
-															? ' (current | playing)'
-															: ap === playlist.index
-																? ' (current)'
-																: plman.PlayingPlaylist === playlist.index
-																	? ' (playing)'
-																	: '');
+													const flag = [];
+													if (ap === playlist.index) { flag.push('current'); }
+													if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
+													const entryText = playlist.name.cut(30) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
 													menu.newEntry({ menuName: subMenu_i, entryText, func: () => { focusInPlaylist(sel, playlist.index); }, flags: (ap === playlist.index ? MF_GRAYED : MF_STRING) });
 													// Add radio check on current playlist
 													if (playlist.index === ap) { menu.newCheckMenu(subMenu_i, entryText, entryText, () => 0); }
@@ -808,14 +805,10 @@
 											}
 										} else { // Or just show all
 											for (const playlist of inPlaylist) {
-												const entryText = playlist.name.cut(30) +
-													(plman.PlayingPlaylist === playlist.index && ap === playlist.index
-														? ' (current | playing)'
-														: ap === playlist.index
-															? ' (current)'
-															: plman.PlayingPlaylist === playlist.index
-																? ' (playing)'
-																: '');
+												const flag = [];
+												if (ap === playlist.index) { flag.push('current'); }
+												if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
+												const entryText = playlist.name.cut(30) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
 												menu.newEntry({ menuName: subMenuName, entryText, func: () => { focusInPlaylist(sel, playlist.index); }, flags: (ap === playlist.index ? MF_GRAYED : MF_STRING) });
 												// Add radio check on current playlist
 												if (playlist.index === ap) { menu.newCheckMenu(subMenuName, entryText, entryText, () => 0); }
@@ -828,6 +821,64 @@
 								}
 							});
 						} else { menuDisabled.push({ menuName: nameNowFind, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+					}
+					{	// Find now playing in
+						if (!Object.hasOwn(menusEnabled, namePrevFind) || menusEnabled[namePrevFind] === true) {
+							include('..\\..\\helpers\\helpers_xxx_prototypes_smp_post.js');
+							const subMenuName = menu.newMenu(namePrevFind, menuName);
+							menu.newCondEntry({
+								entryText: 'Find prev. playing track in (cond)', condFunc: () => {
+									const profiler = defaultArgs.bProfile ? new FbProfiler('Find prev. playing in') : null;
+									menu.newEntry({ menuName: subMenuName, entryText: 'Set focus on playlist with prev. playing track:', func: null, flags: MF_GRAYED });
+									menu.newSeparator(subMenuName);
+									const prevPlay = fb.GetPrevPlaying();
+									if (!prevPlay) { menu.newEntry({ menuName: subMenuName, entryText: 'No prev. playing track.', func: null, flags: MF_GRAYED }); return; }
+									const sel = new FbMetadbHandleList(prevPlay.handle);
+									let inPlaylist = findInPlaylists(sel);
+									const ap = plman.ActivePlaylist;
+									const playlistsNum = inPlaylist.length;
+									if (playlistsNum) {
+										// Split entries in sub-menus if there are too many playlists...
+										let ss = menu_properties['findRemoveSplitSize'][1];
+										const splitBy = playlistsNum < ss * 5 ? ss : ss * 2; // Double split size when total exceeds 5 times the value (good enough for really high # of playlists)
+										if (playlistsNum > splitBy) {
+											const subMenusCount = Math.ceil(playlistsNum / splitBy);
+											for (let i = 0; i < subMenusCount; i++) {
+												const bottomIdx = i * splitBy;
+												const topIdx = (i + 1) * splitBy - 1;
+												const idx = 'Playlists ' + bottomIdx + ' - ' + topIdx;
+												const subMenu_i = menu.newMenu(idx, subMenuName);
+												for (let j = bottomIdx; j <= topIdx && j < playlistsNum; j++) {
+													const playlist = inPlaylist[j];
+													const flag = [];
+													if (ap === playlist.index) { flag.push('current'); }
+													if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
+													if (prevPlay.plsName === playlist.name) { flag.push('prev playing'); }
+													const entryText = playlist.name.cut(30) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
+													menu.newEntry({ menuName: subMenu_i, entryText, func: () => { focusInPlaylist(sel, playlist.index); } });
+													// Add radio check on current playlist
+													if (playlist.index === ap) { menu.newCheckMenu(subMenu_i, entryText, entryText, () => 0); }
+												}
+											}
+										} else { // Or just show all
+											for (const playlist of inPlaylist) {
+												const flag = [];
+												if (ap === playlist.index) { flag.push('current'); }
+												if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
+												if (prevPlay.plsName === playlist.name) { flag.push('prev playing'); }
+												const entryText = playlist.name.cut(30) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
+												menu.newEntry({ menuName: subMenuName, entryText, func: () => { focusInPlaylist(sel, playlist.index); } });
+												// Add radio check on current playlist
+												if (playlist.index === ap) { menu.newCheckMenu(subMenuName, entryText, entryText, () => 0); }
+											}
+										}
+									} else {
+										menu.newEntry({ menuName: subMenuName, entryText: 'Not found.', func: null, flags: MF_GRAYED });
+									}
+									if (defaultArgs.bProfile) { profiler.Print(); }
+								}
+							});
+						} else { menuDisabled.push({ menuName: namePrevFind, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 					}
 					{	// Find in Playlists
 						if (!Object.hasOwn(menusEnabled, nameFind) || menusEnabled[nameFind] === true) {
