@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/06/25
+//10/11/25
 
 /* exported createPoolPresets */
 
@@ -1353,7 +1353,7 @@ function createPoolPresets({ size = 50 } = {}) {
 							[
 								queryJoin(
 									queryCombinations(
-										['traditional european folk', 'ambient classical', 'ambient folk', 'ambient new age', 'american primitive guitar', 'neo-classical new age', 'new acoustic'],
+										['traditional european folk', 'ambient classical', 'ambient folk', 'ambient new age', 'american primitive guitar', 'neo-classical new age', 'new acoustic', 'celtic new age'],
 										[globTags.genre, globTags.style],
 										'OR'
 									),
