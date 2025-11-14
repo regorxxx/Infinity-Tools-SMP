@@ -48,6 +48,7 @@
 ### Removed
 - Playlist locks: removed workaround for bugged SMP playlists locks for newest marc2003's SMP mod versions since it was fixed at the component level. 'ExecuteDefaultAction' lock is now available. See [here](https://hydrogenaudio.org/index.php/topic,116669.msg1071792.html#msg1071792).
 ### Fixed
+- UI: replaced offline font awesome cheatsheet link at some places. See [Issue 89](https://github.com/regorxxx/Playlist-Manager-SMP/issues/89).
 - UI: fixed some repaint artifacts related to maintaining L. Mouse click down while moving within and outside the panel.
 - UI: changing text color immediately clears icon mask cache for icons which rely on images instead of font.
 - Display TF button: special variables for dynamic queries (like '#VOLUMEDB#') were replaced on button click with evaluated value, instead of displaying the original expression.

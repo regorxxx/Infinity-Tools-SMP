@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/25
+//14/11/25
 
 /*
 	Main Menu shortcut
@@ -269,7 +269,7 @@ buttonsBar.list.push(newButtonsProperties);
 					});
 					menu.newEntry({
 						entryText: 'Configure icon...', func: () => {
-							const input = Input.string('unicode', this.buttonsProperties.icon[1], 'Enter button\'s icon: (unicode)\n\nLook for values at:\nhttps://www.fontawesomecheatsheet.com', window.Name + _ps(window.ScriptInfo.Name) + ': Main Menu Shortcut', this.buttonsProperties.icon[3], void (0), false);
+							const input = Input.string('unicode', this.buttonsProperties.icon[1], 'Enter button\'s icon: (unicode - fxxx)\n\nLook for values at:\ngithub.com/regorxxx/foobar2000-assets/blob/main/Fonts/FA_4_7_0.pdf', window.Name + _ps(window.ScriptInfo.Name) + ': Main Menu Shortcut', this.buttonsProperties.icon[3], void (0), false);
 							if (input === null) { return; }
 							this.icon = this.buttonsProperties.icon[1] = input;
 							overwriteProperties(this.buttonsProperties); // Force overwriting
