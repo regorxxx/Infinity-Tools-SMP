@@ -1,5 +1,5 @@
 ﻿'use strict';
-//06/08/25
+//15/11/25
 
 /* exported scatterByTags, intercalateByTags, shuffleByTags */
 
@@ -8,6 +8,8 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_basic_js.js');
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global range:readable, _p:readable, ReverseIterableMap:readable */
+include('..\\..\\helpers\\helpers_xxx_playlists.js');
+/* global focusOnItem:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global getHandleListTags:readable, getHandleListTagsV2:readable */
 
@@ -106,10 +108,7 @@ function scatterByTags({
 				if (plsItemsOver.Count === totalTracks) { idx = range(focusIdx, focusIdx + totalTracks - 1, 1); }
 			}
 		}
-		if (idx.length === totalTracks) {
-			plman.SetPlaylistSelection(plman.ActivePlaylist, idx, true);
-			plman.SetPlaylistFocusItem(plman.ActivePlaylist, focusIdx);
-		}
+		if (idx.length === totalTracks) { focusOnItem(plman.ActivePlaylist, focusIdx, idx); }
 		console.log('Selection scattered by tag(s) \'' + tagValue.join(', ') + '\' (' + tagName.join(', ') + ') on playlist: ' + plman.GetPlaylistName(plman.ActivePlaylist));
 	}
 	return selItemsArray;
@@ -221,10 +220,7 @@ function intercalateByTags({
 				if (plsItemsOver.Count === totalTracks) { idx = range(focusIdx, focusIdx + totalTracks - 1, 1); }
 			}
 		}
-		if (idx.length === totalTracks) {
-			plman.SetPlaylistSelection(plman.ActivePlaylist, idx, true);
-			plman.SetPlaylistFocusItem(plman.ActivePlaylist, focusIdx);
-		}
+		if (idx.length === totalTracks) { focusOnItem(plman.ActivePlaylist, focusIdx, idx); }
 		console.log('Selection scattered by tag(s) \'' + tagName.join(',') + '\' on playlist: ' + plman.GetPlaylistName(plman.ActivePlaylist));
 	}
 	return selItemsArray;
@@ -557,10 +553,7 @@ function shuffleByTags({
 				if (plsItemsOver.Count === totalTracks) { idx = range(focusIdx, focusIdx + totalTracks - 1, 1); }
 			}
 		}
-		if (idx.length === totalTracks) {
-			plman.SetPlaylistSelection(plman.ActivePlaylist, idx, true);
-			plman.SetPlaylistFocusItem(plman.ActivePlaylist, focusIdx);
-		}
+		if (idx.length === totalTracks) { focusOnItem(plman.ActivePlaylist, focusIdx, idx); }
 		console.log('Selection scattered by tag(s) \'' + tagName.join(',') + '\' on playlist: ' + plman.GetPlaylistName(plman.ActivePlaylist));
 	}
 	return { handleList: selItemsList, handleArray: selItemsArrayOut, dataArray: dataValuesOut, tagsArray: tagValuesOut };

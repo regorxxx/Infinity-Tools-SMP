@@ -1,11 +1,13 @@
 ﻿'use strict';
-//06/08/25
+//15/11/25
 
 /* exported groupByTags */
 
 include('..\\..\\helpers\\helpers_xxx_basic_js.js');
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global range:readable */
+include('..\\..\\helpers\\helpers_xxx_playlists.js');
+/* global focusOnItem:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global getHandleListTags:readable */
 
@@ -70,10 +72,7 @@ function groupByTags({
 				if (plsItemsOver.Count === totalTracks) { idx = range(focusIdx, focusIdx + totalTracks - 1, 1); }
 			}
 		}
-		if (idx.length === totalTracks) {
-			plman.SetPlaylistSelection(plman.ActivePlaylist, idx, true);
-			plman.SetPlaylistFocusItem(plman.ActivePlaylist, focusIdx);
-		}
+		if (idx.length === totalTracks) { focusOnItem(plman.ActivePlaylist, focusIdx, idx); }
 		console.log('Selection grouped by tag(s) \'' + tagName.join(', ') + '\' on playlist: ' + plman.GetPlaylistName(plman.ActivePlaylist));
 	}
 	return selItemsArray;
