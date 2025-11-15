@@ -1,5 +1,5 @@
 ﻿'use strict';
-//04/11/25
+//15/11/25
 
 /*
 	Volume controls and display
@@ -22,6 +22,8 @@ include('..\\helpers\\helpers_xxx_tags.js');
 /* global queryReplaceWithStatic:readable, sanitizeTagTfo:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _gdiFont:readable, _scale:readable, chars:readable */
+include('..\\helpers\\helpers_xxx_playlists.js');
+/* global focusOnItem:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
 
@@ -312,7 +314,25 @@ addButton({
 					plsIdx = plman.ActivePlaylist;
 					idx = plman.GetPlaylistFocusItemIndex(plman.ActivePlaylist);
 				}
-				if (plsIdx !== -1 && idx !== -1) { plman.EnsurePlaylistItemVisible(plsIdx, idx); }
+				if (plsIdx !== -1 && idx !== -1) { focusOnItem(plsIdx, idx); }
+			},
+			showHandleV2: function () {
+				let plsIdx = -1;
+				let idx = -1;
+				if (fb.IsPlaying) {
+					const loc = plman.GetPlayingItemLocation();
+					if (loc.IsValid) {
+						plsIdx = loc.PlaylistIndex;
+						idx = loc.PlaylistItemIndex;
+					}
+				} else {
+					const prevPlay = fb.GetPrevPlaying();
+					if (prevPlay) {
+						plsIdx = prevPlay.plsIdx;
+						idx = prevPlay.idx;
+					}
+				}
+				if (plsIdx !== -1 && idx !== -1) { focusOnItem(plsIdx, idx); }
 			},
 			tfSet: function () { // Call when strictly needed, may require evaluation of entire selection
 				this.tf = fb.TitleFormat(queryReplaceWithStatic(this.tfSource()));
@@ -412,7 +432,8 @@ addButton({
 				const bLibraryTree = !!utils.GetPackageInfo('{E85C9EF0-778B-46DD-AF20-F4BE831360DD}');
 				return [
 					{ text: 'None', func: null, bAvailable: true },
-					{ text: this.buttonsProperties.bPlaying[1] ? 'Show Now playing / Selection' : 'Show Selection', func: this.showHandle, bAvailable: true },
+					{ text: this.buttonsProperties.bPlaying[1] ? 'Show Now Playing / Selection' : 'Show Selection', func: this.showHandle, bAvailable: true },
+					{ text: 'Show Now / Prev. Playing', func: this.showHandleV2, bAvailable: true },
 					{
 						text: 'Show on Library Tree', func: () => {
 							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
