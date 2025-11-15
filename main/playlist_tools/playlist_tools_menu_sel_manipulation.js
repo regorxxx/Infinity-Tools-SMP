@@ -1,5 +1,5 @@
 ﻿'use strict';
-//14/11/25
+//15/11/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable */
 
@@ -853,7 +853,7 @@
 													const flag = [];
 													if (ap === playlist.index) { flag.push('current'); }
 													if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
-													if (prevPlay.plsName === playlist.name) { flag.push('prev playing'); }
+													if (prevPlay.plsName === playlist.name || (prevPlay.plsGUID && prevPlay.plsGUID === playlist.GUID)) { flag.push('prev playing'); }
 													const entryText = playlist.name.cut(30) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
 													menu.newEntry({ menuName: subMenu_i, entryText, func: () => { focusInPlaylist(sel, playlist.index); } });
 													// Add radio check on current playlist
@@ -865,7 +865,7 @@
 												const flag = [];
 												if (ap === playlist.index) { flag.push('current'); }
 												if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
-												if (prevPlay.plsName === playlist.name) { flag.push('prev playing'); }
+												if (prevPlay.plsName === playlist.name || (prevPlay.plsGUID && prevPlay.plsGUID === playlist.GUID)) { flag.push('prev playing'); }
 												const entryText = playlist.name.cut(30) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
 												menu.newEntry({ menuName: subMenuName, entryText, func: () => { focusInPlaylist(sel, playlist.index); } });
 												// Add radio check on current playlist
@@ -1139,7 +1139,7 @@
 			const name = 'Send selection to';
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 				include(folders.xxx + 'helpers\\helpers_xxx_playlists.js');
-				/* global playlistCountLocked:readable */
+				/* global playlistCountLocked:readable, focusOnItem:readable */
 				// Add properties
 				if (!Object.hasOwn(menu_properties, 'playlistSplitSize')) {
 					menu_properties['playlistSplitSize'] = ['Playlist lists submenu size', 20];
@@ -1185,7 +1185,9 @@
 											menu.newEntry({
 												menuName: subMenu_i_send, entryText, func: () => {
 													plman.UndoBackup(playlist.index);
-													plman.InsertPlaylistItems(playlist.index, plman.PlaylistItemCount(playlist.index), handleList);
+													const pos = plman.PlaylistItemCount(playlist.index);
+													plman.InsertPlaylistItems(playlist.index, pos, handleList);
+													focusOnItem(playlist.index, pos, range(pos, pos + handleList.Count - 1, 1));
 												}, flags: (ap === playlist.index ? MF_GRAYED : MF_STRING)
 											});
 											// Add radio check on current playlist
@@ -1207,7 +1209,10 @@
 														: '');
 										menu.newEntry({
 											menuName: subMenuNameSend, entryText, func: () => {
-												plman.InsertPlaylistItems(playlist.index, plman.PlaylistItemCount(playlist.index), handleList);
+												plman.UndoBackup(playlist.index);
+												const pos = plman.PlaylistItemCount(playlist.index);
+												plman.InsertPlaylistItems(playlist.index, pos, handleList);
+												focusOnItem(playlist.index, pos, range(pos, pos + handleList.Count - 1, 1));
 											}, flags: (ap === playlist.index ? MF_GRAYED : MF_STRING)
 										});
 										// Add radio check on current playlist
@@ -1227,7 +1232,7 @@
 			const name = 'Move selection to';
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 				include(folders.xxx + 'helpers\\helpers_xxx_playlists.js');
-				/* global getPlaylistSelectedIndexFirst:readable, getPlaylistSelectedIndexLast:readable */
+				/* global getPlaylistSelectedIndexFirst:readable, getPlaylistSelectedIndexLast:readable, focusOnItem:readable */ // eslint-disable-line no-redeclare
 				readmes[menuName + '\\' + 'Move, expand & jump'] = folders.xxx + 'helpers\\readme\\selection_expand_jump.txt';
 				const subMenuName = menu.newMenu(name, menuName);
 				menu.newEntry({ menuName: subMenuName, entryText: 'On current playlist:', func: null, flags: MF_GRAYED });
@@ -1250,7 +1255,7 @@
 						const count = plman.PlaylistItemCount(ap);
 						const pos = count ? Math.floor(count / 2) : 0;
 						plman.InsertPlaylistItems(ap, pos, selItems, true);
-						plman.SetPlaylistFocusItem(ap, pos);
+						focusOnItem(ap, pos, null, false);
 					}, flags: selectedFlagsAddRem
 				});
 				menu.newEntry({
@@ -1264,10 +1269,11 @@
 				menu.newSeparator(subMenuName);
 				menu.newEntry({
 					menuName: subMenuName, entryText: 'After playing now track', func: () => {
-						const playingItemLocation = plman.GetPlayingItemLocation();
+						let playingItemLocation = plman.GetPlayingItemLocation();
 						if (!playingItemLocation.IsValid) { return; }
 						const pp = playingItemLocation.PlaylistIndex;
 						if (pp === -1) { return; }
+						if (plman.IsPlaylistItemSelected(pp, playingItemLocation.PlaylistItemIndex)) { return; }
 						const ap = plman.ActivePlaylist;
 						if (ap === -1) { return; }
 						const selItems = plman.GetPlaylistSelectedItems(ap);
@@ -1276,10 +1282,13 @@
 						if (pp !== ap) {
 							plman.ActivePlaylist = pp;
 							plman.UndoBackup(pp);
+						} else {
+							playingItemLocation = plman.GetPlayingItemLocation();
+							if (!playingItemLocation.IsValid) { plman.Redo(ap); return; }
 						}
 						const pos = playingItemLocation.PlaylistItemIndex + 1;
 						plman.InsertPlaylistItems(pp, pos, selItems, true);
-						plman.SetPlaylistFocusItem(pp, pos);
+						focusOnItem(pp, pos, null, false);
 					}, flags: () => { return (fb.IsPlaying ? selectedFlagsAddRem() : MF_GRAYED); }
 				});
 				menu.newSeparator(subMenuName);
@@ -1911,6 +1920,8 @@
 		{	// Jump
 			const name = 'Jump';
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
+				include(folders.xxx + 'helpers\\helpers_xxx_playlists.js');
+				/* global focusOnItem:readable */ // eslint-disable-line no-redeclare
 				const subMenuName = menu.newMenu(name, menuName);
 				const subMenus = [
 					menu.newMenu('Next', subMenuName),
@@ -1969,11 +1980,7 @@
 										if (bDone) { break; }
 									}
 								});
-								if (selIdx !== - 1) {
-									plman.ClearPlaylistSelection(ap);
-									plman.SetPlaylistSelection(ap, [selIdx], true);
-									plman.SetPlaylistFocusItem(ap, selIdx);
-								}
+								if (selIdx !== - 1) { focusOnItem(ap, selIdx); }
 							}, flags: selectedFlags
 						});
 					});

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/04/24
+//15/11/25
 
 /*
 	Find/Remove From Playlist(s)
@@ -46,7 +46,7 @@ function findInPlaylists(selList = fb.GetFocusItem(), lockType = []) {
 				if (playlists[i].BSearch(sel) !== -1) {
 					const lockActions = plman.GetPlaylistLockedActions(i);
 					const bLocked = bAll ? lockActions.length : new Set(lockActions).isSuperset(new Set(lockType));
-					inPlaylist.push({ index: i, name: plman.GetPlaylistName(i), bLocked });
+					inPlaylist.push({ index: i, name: plman.GetPlaylistName(i), GUID: plman.GetGUID(i), bLocked });
 					inPlaylistSet.add(i);
 				}
 			}
@@ -64,12 +64,15 @@ function focusInPlaylist(selList, playlistIndex) {
 	}
 	if (plman.PlaylistCount <= playlistIndex) { return; }
 	let idx = -1;
+	let focus = 0;
 	const handleList = plman.GetPlaylistItems(playlistIndex);
-	plman.ActivePlaylist = playlistIndex;
 	plman.ClearPlaylistSelection(playlistIndex);
 	for (const sel of selList) {
 		idx = handleList.Find(sel);
-		if (idx !== -1) { plman.SetPlaylistSelection(plman.ActivePlaylist, [idx], true); }
+		if (idx !== -1) { plman.SetPlaylistSelection(playlistIndex, [idx], true); }
+		if (idx !== -1) { focus = idx; }
 	}
-	plman.SetPlaylistFocusItem(plman.ActivePlaylist, idx);
+	plman.ActivePlaylist = playlistIndex;
+	plman.SetPlaylistFocusItem(playlistIndex, focus);
+	plman.EnsurePlaylistItemVisible(playlistIndex, focus);
 }
