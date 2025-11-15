@@ -562,7 +562,7 @@ addButton({
 				if (!this.buttonsProperties.bPlaying[1] || !fb.IsPlaying || this.hasDynamicQueries()) { this.throttleRefresh(); }
 			},
 			on_mouse_lbtn_dblclk: function () {
-				this.showHandle();
+				this.showHandleV2();
 			},
 			on_key_up: function (parent, vKey) {
 				if (this.isInput && vKey === VK_RETURN) { this.applyInput(); this.throttleRefresh(); }
