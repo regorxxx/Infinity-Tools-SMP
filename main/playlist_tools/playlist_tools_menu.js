@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/10/25
+//15/11/25
 
 /*
 	Playlist Tools Menu
@@ -43,6 +43,7 @@ include('..\\..\\helpers\\menu_xxx.js');
 include('..\\..\\helpers\\callbacks_xxx.js');
 /* global callbacksListener:readable */
 include('..\\..\\helpers\\helpers_xxx_input.js');
+/* global Input:readable */
 include('playlist_tools_menu_helpers.js');
 /* global loadProperties:readable, overwritePanelProperties:readable, flagsCache:readable */
 
