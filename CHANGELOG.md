@@ -45,6 +45,7 @@
 - UI: slightly adjusted text and icon position on button down, to mimic native foobar2000's buttons behavior.
 - UI: adjusted default settings on first installation to mimic native foobar2000's buttons appearance.
 - Display TF button: better support for dynamic queries. Tooltip will show 'Global' instead of a reference to the track being used for special variables (like '#VOLUMEDB#').
+- Display TF button: double L. Click shows now playing or previously played track while stopped (if available).
 - Export settings: now uses '[FOOBAR PROFILE FOLDER]\js_data\export' folder at exporting.
 ### Removed
 - Playlist locks: removed workaround for bugged SMP playlists locks for newest marc2003's SMP mod versions since it was fixed at the component level. 'ExecuteDefaultAction' lock is now available. See [here](https://hydrogenaudio.org/index.php/topic,116669.msg1071792.html#msg1071792).

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/11/25
+//18/11/25
 
 /*
 	Volume controls and display
@@ -26,6 +26,7 @@ include('..\\helpers\\helpers_xxx_playlists.js');
 /* global focusOnItem:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
+include('..\\helpers\\helpers_xxx_prototypes_smp_post.js');
 
 var prefix = 'dtf'; // NOSONAR[global]
 
@@ -285,6 +286,11 @@ addButton({
 					info += '\n(L. Click to ' + action.text + ')';
 				} else if (np) {
 					info += '\n(Double + L. Click to show now playing)';
+				} else {
+					const prevPlay = fb.GetPrevPlaying();
+					if (prevPlay) {
+						info += '\n(Double + L. Click to show prev. played)';
+					}
 				}
 				if (bShift || bInfo) {
 					info += '\n(Shift + L. Click to open config menu)';
