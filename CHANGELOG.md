@@ -64,7 +64,8 @@
 - Display TF button: special variables for dynamic queries (like '#VOLUMEDB#') were replaced on button click with evaluated value, instead of displaying the original expression.
 - Display TF button: display errors with expressions containing '|' char, which is now replaced by $char(124) automatically.
 - Playlist Tools\Selection Manipulation\Move selection to\After playing now track: avoids processing when selection contains the now playing track too.
-- Playlist Tools\Selection Manipulation\Move selection to\Af
+- Playlist Tools\Selection Manipulation\Move selection to\After playing now track: fixed wrong index position handling when selection was below the now playing track.
+- Multiple foobar v2.25 file-relative fixes.
 
 
 [Unreleased]: ../../compare/v1.0.0...HEAD
