@@ -2,9 +2,17 @@
 
 ## [Table of Contents]
 - [Unreleased](#unreleased)
+- [1.0.0](#100---2025-11-19)
 
 ## [Unreleased][]
 ### Added
+### Changed
+### Removed
+### Fixed
+
+## [1.0.0] - 2025-11-19
+### Added
+- First release.
 - Merged [Playlist-Tools-SMP](https://github.com/regorxxx/Playlist-Tools-SMP) script.
 - Merged [Search-by-Distance-SMP](https://github.com/regorxxx/Search-by-Distance-SMP) script.
 - Merged [ListenBrainz-SMP](https://github.com/regorxxx/ListenBrainz-SMP) script.
@@ -56,7 +64,7 @@
 - Display TF button: special variables for dynamic queries (like '#VOLUMEDB#') were replaced on button click with evaluated value, instead of displaying the original expression.
 - Display TF button: display errors with expressions containing '|' char, which is now replaced by $char(124) automatically.
 - Playlist Tools\Selection Manipulation\Move selection to\After playing now track: avoids processing when selection contains the now playing track too.
-- Playlist Tools\Selection Manipulation\Move selection to\After playing now track: fixed wrong index position handling when selection was below the now playing track.
-- Multiple foobar v2.25 file-relative fixes.
+- Playlist Tools\Selection Manipulation\Move selection to\Af
+
 
 [Unreleased]: ../../compare/f039e12...HEAD
