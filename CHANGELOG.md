@@ -67,4 +67,5 @@
 - Playlist Tools\Selection Manipulation\Move selection to\Af
 
 
-[Unreleased]: ../../compare/f039e12...HEAD
+[Unreleased]: ../../compare/v1.0.0...HEAD
+[1.0.0]: ../../compare/5ae07355...v1.0.0
