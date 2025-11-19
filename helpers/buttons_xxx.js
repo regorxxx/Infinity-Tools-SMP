@@ -1,5 +1,5 @@
 ﻿'use strict';
-//03/11/25
+//19/11/25
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme */
 
@@ -39,7 +39,7 @@ buttonsBar.config = {
 	toolbarColor: utils.GetSysColour(15),
 	toolbarTransparency: 0,
 	bToolbar: false, // Change this on buttons bars files to set the background color
-	textColor: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')](ColourTypeCUI.text),
+	textColor: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text),
 	buttonColor: -1,
 	activeColor: RGB(0, 163, 240),
 	animationColors: [RGBA(10, 120, 204, 50), RGBA(199, 231, 255, 30)],
@@ -336,7 +336,7 @@ function ThemedButton({
 		const bDrawBackground = buttonsBar.config.partAndStateID === 1;
 		if (buttonsBar.config.textColor === -1 && (!buttonsBar.useThemeManager() || !bDrawBackground) && [buttonStates.down, buttonStates.hover].includes(state)) {
 			const hover = this.getHoverColor(state);
-			const text = window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')](ColourTypeCUI.text);
+			const text = window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text);
 			return invert(hover, true) === invert(text, true)
 				? invert(text, true)
 				: text;
@@ -345,7 +345,7 @@ function ThemedButton({
 				? buttonsBar.config.textColor
 				: buttonsBar.useThemeManager() && bDrawBackground
 					? RGB(0, 0, 0)
-					: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')](ColourTypeCUI.text);
+					: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text);
 		}
 	};
 
@@ -895,6 +895,8 @@ addEventListener('on_paint', (gr) => {
 	// Toolbar
 	if (buttonsBar.config.bToolbar) {
 		gr.FillSolidRect(0, 0, window.Width, window.Height, buttonsBar.config.toolbarColor);
+	} else if (!window.IsTransparent) {
+		gr.FillSolidRect(0, 0, window.Width, window.Height, window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).background));
 	}
 	// Buttons
 	for (let key in buttonsBar.oldButtonCoordinates) {
