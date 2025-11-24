@@ -7,6 +7,7 @@
 ## [Unreleased][]
 ### Added
 - Playlist Tools\Pools: modified some of the default presets and added new ones.
+- Display TF button: actions support for [Library-Tree-SMP](https://github.com/regorxxx/Library-Tree-SMP).
 ### Changed
 - Playlist Tools: cut max entry length at 40 chars (previously 30).
 ### Removed

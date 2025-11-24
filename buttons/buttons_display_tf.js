@@ -443,7 +443,7 @@ addButton({
 					{
 						text: 'Show on Library Tree', func: () => {
 							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
-							window.NotifyOthers('Library Tree: Show handle', { handle: this.handle(), window: panels });
+							['Library Tree', 'Library-Tree-SMP'].forEach((n) => window.NotifyOthers(n + ': Show handle', { handle: this.handle(), window: panels }));
 						},
 						input: () => {
 							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], 'Specify Library Tree panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-v2.4.0.mod.11 or later and only works for panels within same JS host component.', 'Library Tree panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
@@ -454,7 +454,7 @@ addButton({
 					{
 						text: 'Quicksearch on Library Tree', func: () => {
 							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
-							window.NotifyOthers('Library Tree: Quicksearch', { search: this.displayFunc(), window: panels });
+							['Library Tree', 'Library-Tree-SMP'].forEach((n) => window.NotifyOthers(n + ': Quicksearch', { search: this.displayFunc(), window: panels }));
 						},
 						input: () => {
 							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], 'Specify Library Tree panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-v2.4.0.mod.11 or later and only works for panels within same JS host component.', 'Library Tree panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
@@ -465,7 +465,7 @@ addButton({
 					{
 						text: 'Search on Library Tree', func: () => {
 							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
-							window.NotifyOthers('Library Tree: Search', { search: this.displayFunc(), window: panels });
+							['Library Tree', 'Library-Tree-SMP'].forEach((n) => window.NotifyOthers(n + ': Search', { search: this.displayFunc(), window: panels }));
 						},
 						input: () => {
 							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], 'Specify Library Tree panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-v2.4.0.mod.11 or later and only works for panels within same JS host component.', 'Library Tree panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
