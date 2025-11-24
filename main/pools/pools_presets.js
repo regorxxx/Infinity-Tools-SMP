@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/11/25
+//19/11/25
 
 /* exported createPoolPresets */
 
@@ -1016,7 +1016,7 @@ function createPoolPresets({ size = 50 } = {}) {
 				}
 			},
 			{	// 60s & 70s Rock Classics
-				name: '60s & 70s Rock Classics',
+				name: 'Rock Classics (60s & 70s)',
 				folder: 'Genre mixes',
 				pool: {
 					fromPls: {
@@ -1041,12 +1041,12 @@ function createPoolPresets({ size = 50 } = {}) {
 						_LIBRARY_7: '(' + globTags.style + ' IS beat music OR ' + globTags.style + ' IS soft rock OR ' + globTags.genre + ' IS rock & roll) AND DATE GREATER 1959 AND DATE LESS 1979 AND ' + globQuery.fav,
 						_LIBRARY_8: globTags.genre + ' IS rock & roll AND DATE GREATER 1959 AND DATE LESS 1979 AND ' + globQuery.fav,
 					},
-					toPls: '60s & 70s Rock Classics',
+					toPls: 'Rock Classics (60s & 70s)',
 					smartShuffle: 'ARTIST'
 				}
 			},
 			{	// 60s Psychedelic Pills
-				name: '60s Psychedelic Pills',
+				name: 'Psychedelic Pills (60s)',
 				folder: 'Genre mixes',
 				pool: {
 					fromPls: {
@@ -1071,7 +1071,7 @@ function createPoolPresets({ size = 50 } = {}) {
 						_LIBRARY_7: '(' + globTags.style + ' IS psychedelic pop OR ' + globTags.style + ' IS sunshine pop) AND DATE GREATER 1960 AND DATE LESS 1971 AND ' + globQuery.ratingGr3,
 						_LIBRARY_8: '(' + globTags.style + ' IS psychedelic soul OR ' + globTags.style + ' IS psychedelic funk OR ' + globTags.style + ' IS psychedelic blues) AND DATE GREATER 1960 AND DATE LESS 1971 AND ' + globQuery.fav,
 					},
-					toPls: '60s Psychedelic Pills',
+					toPls: 'Psychedelic Pills (60s)',
 					smartShuffle: 'ARTIST'
 				}
 			},
@@ -1102,6 +1102,34 @@ function createPoolPresets({ size = 50 } = {}) {
 						_LIBRARY_8: '(' + globTags.style + ' IS euro-pop OR ' + globTags.style + ' IS sophisti-pop OR ' + globTags.style + ' IS disco OR ' + globTags.style + ' IS smooth soul) AND DATE GREATER 1979 AND DATE LESS 1990 AND ' + globQuery.ratingGr3,
 					},
 					toPls: '80s Hits',
+					smartShuffle: 'ARTIST'
+				}
+			},
+			{	// Rock Classics (90s)
+				name: 'Rock Classics (90s)',
+				folder: 'Genre mixes',
+				pool: {
+					fromPls: {
+						_LIBRARY_0: Math.floor(tenth * 1.4),
+						_LIBRARY_1: Math.floor(tenth * 1.4),
+						_LIBRARY_2: Math.floor(tenth * 1.4),
+						_LIBRARY_3: Math.floor(tenth * 0.8) || 1,
+						_LIBRARY_4: Math.floor(tenth * 1.3) ,
+						_LIBRARY_5: Math.floor(tenth * 1.4),
+						_LIBRARY_6: tenth,
+						_LIBRARY_7: Math.floor(tenth * 1.2),
+					},
+					query: {
+						_LIBRARY_0: globTags.style + ' IS 90s rock AND ' + globTags.genre + ' IS rock AND DATE LESS 2001 AND ' + globQuery.fav,
+						_LIBRARY_1: globTags.style + ' IS 90s rock AND (' + globTags.genre + ' IS rock OR ' + globTags.genre + ' IS pop) AND DATE LESS 2001 AND ' + globTags.rating + ' IS 4',
+						_LIBRARY_2: globTags.style + ' IS 90s rock AND (' + globTags.genre + ' IS rock OR ' + globTags.genre + ' IS pop) AND DATE LESS 2001 AND ' + globTags.rating + ' IS 3',
+						_LIBRARY_3: globTags.style + ' IS 90s rock AND (' + globTags.genre + ' IS folk-rock OR ' + globTags.genre + ' IS blues OR ' + globTags.genre + ' IS alt. rock) AND DATE LESS 2001 AND ' + globQuery.ratingGr3,
+						_LIBRARY_4: globTags.style + ' IS 90s rock OR (' + globTags.genre + ' IS rock AND DATE GREATER 1989 AND DATE LESS 2001) AND ' + globTags.style + ' IS female vocal AND ' + globQuery.ratingGr2,
+						_LIBRARY_5: globTags.style + ' IS alt. rock AND DATE GREATER 1989 AND DATE LESS 2001 AND ' + globQuery.ratingGr3,
+						_LIBRARY_6: globTags.style + ' IS hard rock AND DATE GREATER 1989 AND DATE LESS 2001 AND ' + globQuery.ratingGr3,
+						_LIBRARY_7: '(' + globTags.style + ' IS post-punk OR ' + globTags.style + ' IS grunge OR ' + globTags.genre + ' IS folk-rock) AND DATE GREATER 1989 AND DATE LESS 2001 AND ' + globQuery.ratingGr3
+					},
+					toPls: 'Rock Classics (90s)',
 					smartShuffle: 'ARTIST'
 				}
 			},

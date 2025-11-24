@@ -6,6 +6,7 @@
 
 ## [Unreleased][]
 ### Added
+- Playlist Tools\Pools: modified some of the default presets and added new ones.
 ### Changed
 ### Removed
 ### Fixed
