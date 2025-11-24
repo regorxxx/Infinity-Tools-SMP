@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/11/25
+//21/11/25
 
 /*
 	Playlist Tools Menu
@@ -25,7 +25,7 @@
 	});
 */
 
-/* exported menu_propertiesBack, menu_prefix_panel, menu_panelPropertiesBack, defaultArgs, readmes, configMenu, forcedQueryMenusEnabled, presets, shortcutsPath, menuTooltip, defaultArgsClean */
+/* exported menu_propertiesBack, menu_prefix_panel, menu_panelPropertiesBack, defaultArgs, readmes, configMenu, forcedQueryMenusEnabled, presets, shortcutsPath, menuTooltip, defaultArgsClean, entryMaxLength */
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global checkCompatible:readable, folders:readable, globQuery:readable, globTags:readable, MF_GRAYED:readable, MF_STRING:readable, MF_MENUBARBREAK:readable, VK_SHIFT:readable, VK_CONTROL:readable, */
@@ -34,7 +34,7 @@ include('..\\..\\helpers\\helpers_xxx_file.js');
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global isJSON:readable, isBoolean:readable, isStringWeak:readable, isInt:readable, isString:readable, range:readable, _b:readable, _t:readable, isFunction:readable, isArrayStrings:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
-/* global getPropertiesPairs:readable */
+/* global getPropertyByKey:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global checkQuery:readable*/
 include('..\\..\\helpers\\helpers_xxx_UI.js');
@@ -85,7 +85,8 @@ const menu_panelProperties = {
 	bProfile: ['Profiler logging', false],
 	playlistPath: ['Playlist manager tracked folders', '[]'],
 	bDebug: ['Enable global debug to console', false],
-	bDynamicMenus: ['Show dynamic menus', true]
+	bDynamicMenus: ['Show dynamic menus', true],
+	entryMaxLength: ['Menu entry max length allowed', 40],
 };
 let menu_propertiesBack = JSON.parse(JSON.stringify(menu_properties));
 let menu_panelPropertiesBack = JSON.parse(JSON.stringify(menu_panelProperties));
@@ -94,11 +95,22 @@ let menu_panelPropertiesBack = JSON.parse(JSON.stringify(menu_panelProperties));
 menu_properties.playlistLength.push({ greater: 0, func: isInt }, menu_properties.playlistLength[1]);
 menu_properties.forcedQuery.push({ func: (query) => { return checkQuery(query, true); } }, menu_properties.forcedQuery[1]);
 menu_properties.forcedQueryMenusEnabled.push({ func: isJSON }, menu_properties.forcedQueryMenusEnabled[1]);
+menu_properties.ratingLimits.push({ func: (str) => { return (isString(str) && str.length === 3 && str.indexOf(',') === 1); } }, menu_properties.ratingLimits[1]);
+menu_properties.bShortcuts.push({ func: isBoolean }, menu_properties.bShortcuts[1]);
+menu_properties.bPlaylistNameCommands.push({ func: isBoolean }, menu_properties.bPlaylistNameCommands[1]);
 menu_properties.presets.push({ func: isJSON }, menu_properties.presets[1]);
 menu_properties.styleGenreTag.push({ func: isJSON }, menu_properties.styleGenreTag[1]);
 menu_properties.async.push({ func: isJSON }, menu_properties.async[1]);
 menu_properties.dynQueryEvalSel.push({ func: isJSON }, menu_properties.dynQueryEvalSel[1]);
-menu_properties.ratingLimits.push({ func: (str) => { return (isString(str) && str.length === 3 && str.indexOf(',') === 1); } }, menu_properties.ratingLimits[1]);
+
+menu_panelProperties.firstPopup.push({ func: isBoolean }, menu_panelProperties.firstPopup[1]);
+menu_panelProperties.menusEnabled.push({ func: isJSON }, menu_panelProperties.menusEnabled[1]);
+menu_panelProperties.bProfile.push({ func: isBoolean }, menu_panelProperties.bProfile[1]);
+menu_panelProperties.playlistPath.push({ func: isJSON }, menu_panelProperties.playlistPath[1]);
+menu_panelProperties.bDebug.push({ func: isBoolean }, menu_panelProperties.bDebug[1]);
+menu_panelProperties.bDynamicMenus.push({ func: isBoolean }, menu_panelProperties.bDynamicMenus[1]);
+menu_panelProperties.entryMaxLength.push({ func: isInt, range: [[20, Infinity]] }, menu_panelProperties.entryMaxLength[1]);
+
 
 /*
 	Load properties and set default global Parameters
@@ -145,6 +157,7 @@ const specialMenu = 'Special Playlists';
 const configMenu = 'Settings';
 const scriptName = 'Playlist Tools Menu';
 const libSearchMenu = 'Library search';
+const entryMaxLength = getPropertyByKey(typeof buttonsBar === 'undefined' ? menu_properties : menu_panelProperties, 'entryMaxLength', menu_prefix, 0);
 const menu = new _menu({
 	onBtnUp: () => {
 		flagsCache.focus = null;
@@ -159,7 +172,7 @@ const menuAlt = new _menu();
 const menuAltAllowed = new Set([menu.getMainMenuName(), 'Statistics search', 'Library search', 'Playlist manipulation', 'Selection manipulation', 'Tagging', 'Pools', 'Script integration', 'Last action']);
 
 // For enable/disable menus
-const menusEnabled = JSON.parse(getPropertiesPairs(typeof buttonsBar === 'undefined' ? menu_properties : menu_panelProperties, menu_prefix, 0)['menusEnabled'][1]);
+const menusEnabled = JSON.parse(getPropertyByKey(typeof buttonsBar === 'undefined' ? menu_properties : menu_panelProperties, 'menusEnabled', menu_prefix, 0));
 const menuDisabled = [];
 var disabledCount = 1; // NOSONAR [global]
 

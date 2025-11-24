@@ -1,9 +1,9 @@
 ﻿'use strict';
-//08/10/25
+//21/11/25
 
 /* exported overwritePanelProperties, loadProperties, createSubMenuEditEntries, lastActionEntry, focusFlags, playlistCountFlags, playlistCountFlagsRem, playlistCountFlagsAddRem, multipleSelectedFlags, multipleSelectedFlagsReorder, selectedFlags, selectedFlagsReorder, selectedFlagsRem, selectedFlagsAddRem, closeLock, createTagMenu, createSmartShuffleMenu */
 
-/* global configMenu:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, defaultArgs:readable, menu_panelProperties:readable,  shortcutsPath:readable, presets:writable, menu_prefix_panel:readable, shortcuts:writable, menu_propertiesBack:writable, menu_panelPropertiesBack:writable, menu_prefix:readable, deferFunc:readable, isPlayCount:readable, sbd:readable */ // eslint-disable-line no-unused-vars
+/* global configMenu:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, defaultArgs:readable, menu_panelProperties:readable,  shortcutsPath:readable, presets:writable, menu_prefix_panel:readable, shortcuts:writable, menu_propertiesBack:writable, menu_panelPropertiesBack:writable, menu_prefix:readable, deferFunc:readable, isPlayCount:readable, sbd:readable, entryMaxLength:readable */ // eslint-disable-line no-unused-vars
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, utf8:readable, _save:readable, _explorer:readable, _jsonParseFileCheck:readable, WshShell:readable, popup:readable, MF_STRING:readable, _recycleFile:readable, _open:readable, setProperties:readable, doOnce:readable, getPropertiesPairs:readable, overwriteProperties:readable, isFunction:readable, clone:readable, _q:readable, compareObjects:readable , debounce:readable, _b:readable, tagsCache:readable, Input:readable */
 
@@ -180,7 +180,7 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 			: optionsNames.add(entry.name) && ''; // Allow duplicates and mark them
 		const entryName = (menu.isSeparator(entry)
 			? '------(separator)------'
-			: entry.name.cut(30)) + id;
+			: entry.name.cut(entryMaxLength)) + id;
 		const subMenuThirdName = menu.newMenu(entryName, parentMenu);
 		menu.newEntry({
 			menuName: subMenuThirdName, entryText: 'Edit entry...', func: () => {

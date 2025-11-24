@@ -1,7 +1,7 @@
 ﻿'use strict';
-//17/09/25
+//21/11/25
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, createSubMenuEditEntries:readable, newReadmeSep:readable , presets:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, createSubMenuEditEntries:readable, newReadmeSep:readable, presets:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, MF_STRING:readable */
 
@@ -12,6 +12,7 @@
 		const scriptPath = folders.xxx + 'helpers\\menu_xxx_macros.js';
 		/* global _Macros:readable */
 		if (_isFile(scriptPath)) {
+			if (!menu.isLastEntrySep) { menu.newSeparator(); }
 			const menuName = menu.newMenu(name);
 			include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
 			const Macros = menu.Macros = new _Macros(menu, { prefixMenu: name });
@@ -128,7 +129,7 @@
 						if (menu.isSeparator(macro)) { // Create separators
 							menu.newSeparator(menuName);
 						} else {
-							const macroName = (macro.name || '').cut(30);
+							const macroName = (macro.name || '').cut(entryMaxLength);
 							if (entryNames.has(macroName)) {
 								fb.ShowPopupMessage('There is an entry with duplicated name:\t' + macroName + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(macro, null, '\t'), scriptName + ': ' + name);
 								return;

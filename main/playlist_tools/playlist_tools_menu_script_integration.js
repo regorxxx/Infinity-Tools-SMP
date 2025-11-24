@@ -1,9 +1,9 @@
 ﻿'use strict';
-//08/10/25
+//21/11/25
 
 /* exported mainMenuSMP, executeByName */
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, presets:readable, menu_panelProperties:readable, deferFunc:readable, isFunction:readable, overwritePanelProperties:readable, createMainMenuDynamic:readable, deleteMainMenuDynamic:readable, allEntries:readable, exportMainMenuDynamic:readable, configMenu:readable, sbd:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, presets:readable, menu_panelProperties:readable, deferFunc:readable, isFunction:readable, overwritePanelProperties:readable, createMainMenuDynamic:readable, deleteMainMenuDynamic:readable, allEntries:readable, exportMainMenuDynamic:readable, configMenu:readable, sbd:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, WshShell:readable, popup:readable, clone:readable, _save:readable, isCompatible:readable, MF_STRING:readable, callbacksListener:readable, callbacksListener:readable, _jsonParseFileCheck:readable, utf8:readable, _ps:readable */
 
@@ -125,7 +125,7 @@
 									menu.newSeparator(subMenuName);
 								} else {
 									// Create names for all entries
-									let scriptName = entry.name.cut(30);
+									let scriptName = entry.name.cut(entryMaxLength);
 									if (entryNames.has(scriptName)) {
 										fb.ShowPopupMessage('There is an entry with duplicated name:\t' + scriptName + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(entry, null, '\t'), scriptName + ': ' + name);
 										return;
@@ -214,7 +214,7 @@
 										menu.newSeparator(subMenuNameTwo);
 									} else {
 										// Create names for all entries
-										const scriptName = entry.name.cut(30);
+										const scriptName = entry.name.cut(entryMaxLength);
 										// Entries
 										menu.newEntry({
 											menuName: subMenuNameTwo, entryText: scriptName, func: () => {
@@ -243,7 +243,7 @@
 								const subMenuSecondName = menu.newMenu('Remove entry from list', subMenuName);
 								mainMenuSMP.forEach((entry, index) => {
 									if (!entry) { return; }
-									const entryText = (menu.isSeparator(entry) ? '------(separator)------' : entry.name.cut(30));
+									const entryText = (menu.isSeparator(entry) ? '------(separator)------' : entry.name.cut(entryMaxLength));
 									menu.newEntry({
 										menuName: subMenuSecondName, entryText: entryText + '\t (' + (index + 1) + ')', func: () => {
 											mainMenuSMP.splice(index, 1);
@@ -368,7 +368,7 @@
 								menu.newSeparator(subMenuName);
 							} else {
 								// Create names for all entries
-								const scriptName = scrObj.name.cut(30);
+								const scriptName = scrObj.name.cut(entryMaxLength);
 								// Entries
 								menu.newEntry({ menuName: subMenuName, entryText: scriptName, func: null, flags: MF_GRAYED });
 							}
@@ -407,7 +407,7 @@
 							{
 								const subMenuSecondName = menu.newMenu('Remove entry from list', subMenuName);
 								scriptIncluded.forEach((queryObj, index) => {
-									const entryText = (menu.isSeparator(queryObj) ? '------(separator)------' : queryObj.name.cut(30));
+									const entryText = (menu.isSeparator(queryObj) ? '------(separator)------' : queryObj.name.cut(entryMaxLength));
 									menu.newEntry({
 										menuName: subMenuSecondName, entryText, func: () => {
 											scriptIncluded.splice(index, 1);

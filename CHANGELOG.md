@@ -8,6 +8,7 @@
 ### Added
 - Playlist Tools\Pools: modified some of the default presets and added new ones.
 ### Changed
+- Playlist Tools: cut max entry length at 40 chars (previously 30).
 ### Removed
 ### Fixed
 

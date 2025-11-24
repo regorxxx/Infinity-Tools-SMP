@@ -1,7 +1,7 @@
 ﻿'use strict';
-//29/10/25
+//21/11/25
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, menu_panelProperties:readable, configMenu:readable, createSubMenuEditEntries:readable, stripSort:readable, globTags:readable, createSmartShuffleMenu:readable, sbd:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, menu_panelProperties:readable, configMenu:readable, createSubMenuEditEntries:readable, stripSort:readable, globTags:readable, createSmartShuffleMenu:readable, sbd:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, MF_MENUBARBREAK:readable, folders:readable, _isFile:readable, clone:readable, MF_STRING:readable, isJSON:readable, isBoolean:readable, isStringWeak:readable */
 
@@ -86,7 +86,7 @@
 								menu.newSeparator(subMenu);
 							} else {
 								// Create names for all entries
-								const poolName = (poolObj.name || '').cut(30);
+								const poolName = (poolObj.name || '').cut(entryMaxLength);
 								if (entryNames.has(poolName)) {
 									fb.ShowPopupMessage('There is an entry with duplicated name:\t' + poolName + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(poolObj, null, '\t'), scriptName + ': ' + name);
 									return;
@@ -239,7 +239,7 @@
 								menu.newSeparator(subMenu);
 							} else {
 								// Create names for all entries
-								const poolName = (poolObj.name || '').cut(30);
+								const poolName = (poolObj.name || '').cut(entryMaxLength);
 								if (entryNames.has(poolName)) {
 									fb.ShowPopupMessage('There is an entry with duplicated name:\t' + poolName + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(poolObj, null, '\t'), scriptName + ': ' + name);
 									return;

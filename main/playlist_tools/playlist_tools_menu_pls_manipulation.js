@@ -1,7 +1,7 @@
 ﻿'use strict';
-//29/10/25
+//21/11/25
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable */
 
@@ -201,7 +201,7 @@
 									menu.newSeparator(subMenuName);
 								} else {
 									// Create names for all entries
-									const queryName = (queryObj.name || '').cut(30);
+									const queryName = (queryObj.name || '').cut(entryMaxLength);
 									if (entryNames.has(queryName)) {
 										fb.ShowPopupMessage('There is an entry with duplicated name:\t' + queryName + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(queryObj, null, '\t'), scriptName + ': ' + name);
 										return;
@@ -539,7 +539,7 @@
 									const subMenu_i_diff = bDiff ? menu.newMenu(idxDiff, subMenuNameDiff) : null;
 									for (let j = bottomIdx; j <= topIdx + skipped && j < playlistsNum; j++) {
 										const playlist = { name: plman.GetPlaylistName(j), index: j };
-										const entryText = playlist.name.cut(30) +
+										const entryText = playlist.name.cut(entryMaxLength) +
 											(plman.PlayingPlaylist === playlist.index && ap === playlist.index
 												? ' (current | playing)'
 												: ap === playlist.index
@@ -616,7 +616,7 @@
 							} else { // Or just show all
 								for (let i = 0; i < playlistsNum; i++) {
 									const playlist = { name: plman.GetPlaylistName(i), index: i };
-									const entryText = playlist.name.cut(30) +
+									const entryText = playlist.name.cut(entryMaxLength) +
 										(plman.PlayingPlaylist === playlist.index && ap === playlist.index
 											? ' (current | playing)'
 											: ap === playlist.index
@@ -751,7 +751,7 @@
 							let ss = menu_properties['playlistSplitSize'][1];
 							const sendGoCloseMenu = (index, menuName, obj) => {
 								const playlist = { name: plman.GetPlaylistName(index), index };
-								const entryText = playlist.name.cut(30) +
+								const entryText = playlist.name.cut(entryMaxLength) +
 									(plman.PlayingPlaylist === playlist.index && ap === playlist.index
 										? ' (current | playing)'
 										: ap === playlist.index
@@ -895,7 +895,7 @@
 								const bSMPLock = lockName === window.Parent || !lockName;
 								const bLocked = !bSMPLock || playlistLockTypes.isSuperset(new Set(lockTypes));
 								const flags = bSMPLock ? MF_STRING : MF_GRAYED;
-								const entryText = playlist.name.cut(30) + (!bSMPLock
+								const entryText = playlist.name.cut(entryMaxLength) + (!bSMPLock
 									? ' ' + _p(lockName)
 									: playlistLockTypes.size !== 0
 										? ' (partially locked)'

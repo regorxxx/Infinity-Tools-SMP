@@ -1,7 +1,7 @@
 ﻿'use strict';
-//15/11/25
+//21/11/25
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, multipleSelectedFlagsReorder:readable, isStringWeak:readable, isBoolean:readable, MF_STRING:readable, Input:readable, playlistCountFlags:readable, selectedFlagsAddRem:readable, _p:readable, _qCond:readable, range:readable, focusInPlaylist:readable, isInt:readable, addLock:readable, selectedFlagsReorder:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, selectedFlags:readable, playlistCountFlagsRem:readable, isFunction:readable, selectedFlagsRem:readable, _t:readable, getHandleListTagsTyped:readable */
 
@@ -80,7 +80,7 @@
 									menu.newSeparator(subMenuName);
 								} else {
 									// Create names for all entries
-									const sortName = sortObj.name.cut(30);
+									const sortName = sortObj.name.cut(entryMaxLength);
 									if (entryNames.has(sortName)) {
 										fb.ShowPopupMessage('There is an entry with duplicated name:\t' + sortName + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(sortObj, null, '\t'), scriptName + ': ' + name);
 										return;
@@ -343,7 +343,7 @@
 									menu.newSeparator(subMenuName);
 								} else {
 									// Create names for all entries
-									const entryText = obj.name.cut(30);
+									const entryText = obj.name.cut(entryMaxLength);
 									if (entryNames.has(entryText)) {
 										fb.ShowPopupMessage('There is an entry with duplicated name:\t' + entryText + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(obj, null, '\t'), scriptName + ': ' + name);
 										return;
@@ -452,7 +452,7 @@
 									menu.newSeparator(subMenuName);
 								} else {
 									// Create names for all entries
-									const entryText = obj.name.cut(30);
+									const entryText = obj.name.cut(entryMaxLength);
 									if (entryNames.has(entryText)) {
 										fb.ShowPopupMessage('There is an entry with duplicated name:\t' + entryText + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(obj, null, '\t'), scriptName + ': ' + name);
 										return;
@@ -573,7 +573,7 @@
 									menu.newSeparator(subMenuName);
 								} else {
 									// Create names for all entries
-									const shuffleName = shuffleObj.name.cut(30);
+									const shuffleName = shuffleObj.name.cut(entryMaxLength);
 									if (entryNames.has(shuffleName)) {
 										fb.ShowPopupMessage('There is an entry with duplicated name:\t' + shuffleName + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(shuffleObj, null, '\t'), scriptName + ': ' + name);
 										return;
@@ -687,7 +687,7 @@
 									menu.newSeparator(subMenuName);
 								} else {
 									// Create names for all entries
-									const groupName = groupObj.name.cut(30);
+									const groupName = groupObj.name.cut(entryMaxLength);
 									if (entryNames.has(groupName)) {
 										fb.ShowPopupMessage('There is an entry with duplicated name:\t' + groupName + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(groupObj, null, '\t'), scriptName + ': ' + name);
 										return;
@@ -797,7 +797,7 @@
 													const flag = [];
 													if (ap === playlist.index) { flag.push('current'); }
 													if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
-													const entryText = playlist.name.cut(30) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
+													const entryText = playlist.name.cut(entryMaxLength) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
 													menu.newEntry({ menuName: subMenu_i, entryText, func: () => { focusInPlaylist(sel, playlist.index); }, flags: (ap === playlist.index ? MF_GRAYED : MF_STRING) });
 													// Add radio check on current playlist
 													if (playlist.index === ap) { menu.newCheckMenu(subMenu_i, entryText, entryText, () => 0); }
@@ -808,7 +808,7 @@
 												const flag = [];
 												if (ap === playlist.index) { flag.push('current'); }
 												if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
-												const entryText = playlist.name.cut(30) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
+												const entryText = playlist.name.cut(entryMaxLength) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
 												menu.newEntry({ menuName: subMenuName, entryText, func: () => { focusInPlaylist(sel, playlist.index); }, flags: (ap === playlist.index ? MF_GRAYED : MF_STRING) });
 												// Add radio check on current playlist
 												if (playlist.index === ap) { menu.newCheckMenu(subMenuName, entryText, entryText, () => 0); }
@@ -854,7 +854,7 @@
 													if (ap === playlist.index) { flag.push('current'); }
 													if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
 													if (prevPlay.plsName === playlist.name || (prevPlay.plsGUID && prevPlay.plsGUID === playlist.GUID)) { flag.push('prev playing'); }
-													const entryText = playlist.name.cut(30) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
+													const entryText = playlist.name.cut(entryMaxLength) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
 													menu.newEntry({ menuName: subMenu_i, entryText, func: () => { focusInPlaylist(sel, playlist.index); } });
 													// Add radio check on current playlist
 													if (playlist.index === ap) { menu.newCheckMenu(subMenu_i, entryText, entryText, () => 0); }
@@ -866,7 +866,7 @@
 												if (ap === playlist.index) { flag.push('current'); }
 												if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
 												if (prevPlay.plsName === playlist.name || (prevPlay.plsGUID && prevPlay.plsGUID === playlist.GUID)) { flag.push('prev playing'); }
-												const entryText = playlist.name.cut(30) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
+												const entryText = playlist.name.cut(entryMaxLength) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
 												menu.newEntry({ menuName: subMenuName, entryText, func: () => { focusInPlaylist(sel, playlist.index); } });
 												// Add radio check on current playlist
 												if (playlist.index === ap) { menu.newCheckMenu(subMenuName, entryText, entryText, () => 0); }
@@ -909,7 +909,7 @@
 												const subMenu_i = menu.newMenu(idx, subMenuName);
 												for (let j = bottomIdx; j <= topIdx && j < playlistsNum; j++) {
 													const playlist = inPlaylist[j];
-													const entryText = playlist.name.cut(30) +
+													const entryText = playlist.name.cut(entryMaxLength) +
 														(plman.PlayingPlaylist === playlist.index && ap === playlist.index
 															? ' (current | playing)'
 															: ap === playlist.index
@@ -924,7 +924,7 @@
 											}
 										} else { // Or just show all
 											for (const playlist of inPlaylist) {
-												const entryText = playlist.name.cut(30) +
+												const entryText = playlist.name.cut(entryMaxLength) +
 													(plman.PlayingPlaylist === playlist.index && ap === playlist.index
 														? ' (current | playing)'
 														: ap === playlist.index
@@ -974,7 +974,7 @@
 												const subMenu_i = menu.newMenu(idx, subMenuName);
 												for (let j = bottomIdx; j <= topIdx && j < playlistsNum; j++) {
 													const playlist = inPlaylist[j];
-													const entryText = playlist.name.cut(30) +
+													const entryText = playlist.name.cut(entryMaxLength) +
 														(playlist.bLocked && ap === playlist.index
 															? ' (current | locked)'
 															: ap === playlist.index
@@ -989,7 +989,7 @@
 											}
 										} else { // Or just show all
 											for (const playlist of inPlaylist) {
-												const entryText = playlist.name.cut(30) +
+												const entryText = playlist.name.cut(entryMaxLength) +
 													(playlist.bLocked && ap === playlist.index
 														? ' (current | locked)'
 														: ap === playlist.index
@@ -1174,7 +1174,7 @@
 									for (let j = bottomIdx + skipped; j <= topIdx + skipped && j < playlistsNum; j++) {
 										if (!addLock(j)) {
 											const playlist = { name: plman.GetPlaylistName(j), index: j };
-											const entryText = playlist.name.cut(30) +
+											const entryText = playlist.name.cut(entryMaxLength) +
 												(plman.PlayingPlaylist === playlist.index && ap === playlist.index
 													? ' (current | playing)'
 													: ap === playlist.index
@@ -1199,7 +1199,7 @@
 								for (let i = 0; i < playlistsNum; i++) {
 									if (!addLock(i)) {
 										const playlist = { name: plman.GetPlaylistName(i), index: i };
-										const entryText = playlist.name.cut(30) +
+										const entryText = playlist.name.cut(entryMaxLength) +
 											(plman.PlayingPlaylist === playlist.index && ap === playlist.index
 												? ' (current | playing)'
 												: ap === playlist.index
@@ -1407,7 +1407,7 @@
 									menu.newSeparator(subMenuName);
 								} else {
 									// Create names for all entries
-									const queryName = (queryObj.name || '').cut(30);
+									const queryName = (queryObj.name || '').cut(40);
 									if (entryNames.has(queryName)) {
 										fb.ShowPopupMessage('There is an entry with duplicated name:\t' + queryName + '\nEdit the custom entries and either remove or rename it.\n\nEntry:\n' + JSON.stringify(queryObj, null, '\t'), scriptName + ': ' + name);
 										return;
