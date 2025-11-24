@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/11/25
+//24/11/25
 
 if (typeof addEventListener !== 'undefined' && typeof removeEventListenerSelf !== 'undefined') {
 	const playbackHistory = [];
@@ -7,10 +7,10 @@ if (typeof addEventListener !== 'undefined' && typeof removeEventListenerSelf !=
 		const pl = plman.GetPlayingItemLocation();
 		const item = {
 			handle,
-			idx: pl.PlaylistItemIndex,
-			plsIdx: pl.PlaylistIndex,
-			plsName: pl.PlaylistIndex !== -1 ? plman.GetPlaylistName(pl.PlaylistIndex) : null,
-			plsGUID: pl.PlaylistIndex !== -1 ? plman.GetGUID(pl.PlaylistIndex) : null
+			idx: pl.IsValid ? pl.PlaylistItemIndex : -1,
+			plsIdx: pl.IsValid ? pl.PlaylistIndex : -1,
+			plsName: pl.IsValid && pl.PlaylistIndex !== -1 ? plman.GetPlaylistName(pl.PlaylistIndex) : null,
+			plsGUID: pl.IsValid && pl.PlaylistIndex !== -1 ? plman.GetGUID(pl.PlaylistIndex) : null
 		};
 		if (playbackHistory.unshift(item) > 10) { playbackHistory.pop(); }
 	};
