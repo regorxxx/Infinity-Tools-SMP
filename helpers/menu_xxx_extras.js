@@ -1,10 +1,10 @@
 ﻿'use strict';
-//25/09/25
+//25/11/25
 
 /* exported _createSubMenuEditEntries */
 
 include('menu_xxx.js');
-/* global _menu:readable, MF_GRAYED:readable, MF_STRING:readable, clone:readable, _ps:readable */
+/* global _menu:readable, MF_GRAYED:readable, MF_STRING:readable, clone:readable */ /* window.FullPanelName:readable */
 
 /**
  * Description
@@ -79,7 +79,7 @@ function _createSubMenuEditEntries(parent, menuName, options /*{name, subMenuNam
 				try { newEntry = JSON.parse(newEntry); } catch (e) { fb.ShowPopupMessage('Input: ' + newEntry.toString() + '\n\n' + e, 'JSON error'); return; }
 				if (!newEntry) { return; }
 				if (!options.bDuplicate && options.list.filter((otherEntry) => otherEntry !== entry).findIndex((otherEntry) => otherEntry.name === newEntry.name) !== -1) {
-					fb.ShowPopupMessage('There is another entry with same name.\nRetry with another name.', window.Name + _ps(window.ScriptInfo.Name));
+					fb.ShowPopupMessage('There is another entry with same name.\nRetry with another name.', window.FullPanelName);
 					return;
 				}
 				options.list[index] = newEntry;

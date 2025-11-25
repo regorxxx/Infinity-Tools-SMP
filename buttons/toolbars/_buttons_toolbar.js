@@ -1,5 +1,5 @@
 ﻿'use strict';
-//17/10/25
+//25/11/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -22,7 +22,7 @@ if (!window.ScriptInfo.Name) { window.DefineScript('Infinity-Tools-SMP', { autho
 		'helpers\\helpers_xxx_properties.js',
 		/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable */
 		'helpers\\helpers_xxx_prototypes.js',
-		/* global randomString:readable, isString:readable, isInt:readable, isBoolean:readable, isFloat:readable, isJSON:readable, _b:readable, isJSON:readable, clone:readable, _ps:readable */
+		/* global randomString:readable, isString:readable, isInt:readable, isBoolean:readable, isFloat:readable, isJSON:readable, _b:readable, isJSON:readable, clone:readable */
 		'helpers\\helpers_xxx_UI.js',
 		/* global _scale:readable, _gdiFont:readable */
 		'helpers\\helpers_xxx_file.js',
@@ -334,7 +334,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 		case window.ScriptInfo.Name + ': share settings': {
 			if (info) {
 				forEachButton((button) => { button.switchHighlight(true); });
-				const answer = WshShell.Popup('Apply current settings to highlighted toolbar?\nCheck UI.', 0, window.Name + _ps(window.ScriptInfo.Name), popup.question + popup.yes_no);
+				const answer = WshShell.Popup('Apply current settings to highlighted toolbar?\nCheck UI.', 0, window.FullPanelName, popup.question + popup.yes_no);
 				if (answer === popup.yes) {
 					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'transparency', 'scale', 'iconScale', 'textScale'].forEach((key) => {
 						buttonsBar.config[key] = barProperties[key][1] = Number(info[key][1]);
