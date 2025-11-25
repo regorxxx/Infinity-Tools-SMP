@@ -1,13 +1,13 @@
 ﻿Button for all Fingerprint Tools, fingerprint search and tagging. The
 different options are explained below:
 
-	-Compare: Compares the fingerprint of the currently selected tracks
-	and reports the similarity between them (in pairs).
+	• Compare: Compares the fingerprint of the currently selected
+	tracks and reports the similarity between them (in pairs).
 
-	-Search: Searches the entire Foobar2000 library for tracks with
+	• Search: Searches the entire Foobar2000 library for tracks with
 	similar fingerprint to the currently selected tracks.
 
-	-Tag: Tags the currently selected tracks with fingerprints. There
+	• Tag: Tags the currently selected tracks with fingerprints. There
 	are 2 different algorithms:
 
 		+ Chromaprint: the raw fingerprint is saved, not the

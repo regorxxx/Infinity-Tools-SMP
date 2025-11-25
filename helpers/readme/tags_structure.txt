@@ -65,7 +65,7 @@ I also have my own genre tag named as "MY GENRE".
 Finally I have retrieved keys for my tracks using Traktor and the tag is
 written as "INITIAL KEY".
 
-- GENRE:
+• GENRE:
 (1) Is not possible for genres, since I intend to use all of them (3 tags).
 
 (2) Would be possible, Masstagger for ex. allows to merge different tags
@@ -84,7 +84,7 @@ and they should be merged or properly named. Same comment applies for other
 tools. BIO may be configured too, for ex. "ALBUM THEME ALLMUSIC"
 could be saved as just "THEME" if that's the only tag source used.
 
-- KEY:
+• KEY:
 (1) "INITIALL KEY" may be renamed to "KEY" for all my files.
 
 (2) Idem. Trivial to clone single tag as "Key".

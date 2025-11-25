@@ -3,16 +3,16 @@ according to the current selected track and tags. Conditions are
 calculated using combinations of tag values instead of simple queries.
 
 Playlist Tools button usage:
-	- The number of output tracks may be set at global config.
-	- Forced query to pre-filter tracks may be set at global config.
-	- Tags and number of matches may be set at the appropriate submenu.
-	- Duplicates are filtered by title, artist & date.
+	• The number of output tracks may be set at global config.
+	• Forced query to pre-filter tracks may be set at global config.
+	• Tags and number of matches may be set at the appropriate submenu.
+	• Duplicates are filtered by title, artist & date.
 
 Other Buttons usage:
-	- The number of output tracks may be set at properties panel.
-	- Forced query to pre-filter tracks may be set at properties panel.
-	- Tags and number of matches may be set at properties panel.
-	- Duplicates may also be filtered using the appropriate setting at
+	• The number of output tracks may be set at properties panel.
+	• Forced query to pre-filter tracks may be set at properties panel.
+	• Tags and number of matches may be set at properties panel.
+	• Duplicates may also be filtered using the appropriate setting at
 	properties panel.
 
 Note this ONLY USES already existing tags and queries, it will not
@@ -59,7 +59,8 @@ After query search, duplicates are removed according to the tags set
 (checkDuplicatesBy). You can change sorting, playlist name and/or
 force a final query (added to the other requisites).
 
-- Tags logic -
+Tags logic:
+-----------
 Title-format only tags, like "rating" or "$year(%date%)" are acquired
 via TF, but must be written without "%", like the rest. See dynamicTags
 at 'helpers_xxx_tags.js'. ONLY expressions defined there can be used.
@@ -76,7 +77,8 @@ A special subset of numeric tags may be cyclic, so the values can only
 be within a predefined range. See cyclicTags and cyclicTagsDescriptor
 at 'helpers_xxx_tags.js'.
 
-- Examples of functionality -
+Examples of functionality:
+--------------------------
 	old buttons_search_style_moods <->
 		sameBy = {'STYLE': 2, 'MOOD': 6}
 	buttons_search_by_tags_queries [['STYLE']] <->

@@ -18,22 +18,22 @@ the menus.
 
 Sorting methods:
 ----------------
-	- Mix: creates a pattern which is applied to the entire source.
+	• Mix: creates a pattern which is applied to the entire source.
 	It's heavily dependant on track count, so expect big clusters
 	when applied to too many tracks. For ex. if one movement is
 	"matching same key", for small playlists it will be applied
 	on a small subset, but on huge playlists it	may well put
 	together groups of 8 tracks.
 
-	- Cycle: creates a pattern which is applied on small cycles
+	• Cycle: creates a pattern which is applied on small cycles
 	across the entire source. It's much less dependant on total
 	track 	count, so expect it to work better on big playlists.
 	For ex.	"matching same key" would be repeated every 20 tracks,
 	so instead of creating big clusters on huge playlists, it
 	just repeats the pattern multiple times across all tracks.
 
-	- Incremental: standard sorting, ensures all tracks go from
+	• Incremental: standard sorting, ensures all tracks go from
 	1A to 12B in a sequential way.
 
-	- Decremental: standard sorting, ensures all tracks go from
+	• Decremental: standard sorting, ensures all tracks go from
 	12B to 1A in a sequential way.

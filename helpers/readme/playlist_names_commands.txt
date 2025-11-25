@@ -18,7 +18,7 @@ When a playlist name starts with 'PT:', the callback fires and anything
 after those 3 chars is treated as a special command which will be compared
 to a list of known commands or executed as a menu name. Some examples:
 
-	- Wanna create automatic playlists via pools using android or an
+	• Wanna create automatic playlists via pools using android or an
 	internet browser? Create an empty playlist named 'PT:Pools\Top
 	tracks mix'
 
@@ -27,7 +27,7 @@ to a list of known commands or executed as a menu name. Some examples:
 	the online controller to change focus to the currently active
 	playlist (otherwise switch to it manually).
 
-	- What about searching similar tracks to current one? Send any song
+	• What about searching similar tracks to current one? Send any song
 	in your online controller to a new playlist and then rename it as
 	'PT:Search same by tags...\By Styles (=2) and Moods (=6)'.
 
@@ -44,18 +44,18 @@ playlist. As a workaround, and also as a way to alleviate all the writing
 (some menu names may be really long), some special commands are pre-defined
 as shortcuts (**):
 
-	- 'PT:Duplicates': equivalent to 'Duplicates and tag
+	• 'PT:Duplicates': equivalent to 'Duplicates and tag
 	filtering\Remove duplicates by...' (using tags set), applied to
 	active playlist without deletion.
-	- 'PT:Harmonic': equivalent to 'PT:Harmonic mix\Harmonic mix from
+	• 'PT:Harmonic': equivalent to 'PT:Harmonic mix\Harmonic mix from
 	playlist'. Creates new playlist using the entire dummy playlist.
-	- 'PT:Graph': equivalent to 'PT:'Search similar by Graph...\Similar
+	• 'PT:Graph': equivalent to 'PT:'Search similar by Graph...\Similar
 	Genre mix, within a decade'. Creates new playlist using focused
 	track of dummy playlist.
-	- 'PT:Filter': equivalent to 'PT:' Duplicates and tag
+	• 'PT:Filter': equivalent to 'PT:' Duplicates and tag
 	filtering\Filter playlist by...'. Creates new playlist using
 	focused track of dummy playlist.
-	- 'PT:Similar': equivalent to 'PT:Search same by tags...\By Styles
+	• 'PT:Similar': equivalent to 'PT:Search same by tags...\By Styles
 	(=2) and Moods (=6)'. Creates new playlist using focused track of
 	dummy playlist.
 

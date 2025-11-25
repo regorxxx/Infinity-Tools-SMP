@@ -1,8 +1,8 @@
 ﻿All tools use a default set of tags, pretty standard, remapped like:
-	- Date -> $year(%DATE%)			- Artist -> ARTIST
-	- Genre: -> GENRE			- Style: -> STYLE
-	- Mood: -> MOOD				- Bpm -> BPM
-	- Key -> KEY				- Rating -> %RATING%
+	• Date -> $year(%DATE%)			• Artist -> ARTIST
+	• Genre: -> GENRE			• Style: -> STYLE
+	• Mood: -> MOOD				• Bpm -> BPM
+	• Key -> KEY				• Rating -> %RATING%
 
 There are many more! For a comprehensive list check:
 [FOOBAR_PROFILE]\js_data\presets\global\globTags.json

@@ -1,48 +1,48 @@
 ﻿Automatic tagging for selected tracks using multiple plugins:
-	- foo_biometric (FooID Fingerprinting).
-	- Chromaprint (ChromaPrint Fingerprinting).
-	- foo_masstag (copy native MD5 to tag).
-	- foo_audiomd5 (calculate audio MD5 from file).
-	- foo_bpm (BPM).
-	- foo_truepeak (Replay Gain, EBUR 128, DR, etc.).
-	- foo_rgscan (Replay Gain).
-	- foo_dynamic_range (DR).
-	- foo_dr_meter (DR).
-	- ffmpeg (EBUR 128).
-	- Essentia (EBUR 128, Key, BPM & Danceness tags).
+	• foo_biometric (FooID Fingerprinting).
+	• Chromaprint (ChromaPrint Fingerprinting).
+	• foo_masstag (copy native MD5 to tag).
+	• foo_audiomd5 (calculate audio MD5 from file).
+	• foo_bpm (BPM).
+	• foo_truepeak (Replay Gain, EBUR 128, DR, etc.).
+	• foo_rgscan (Replay Gain).
+	• foo_dynamic_range (DR).
+	• foo_dr_meter (DR).
+	• ffmpeg (EBUR 128).
+	• Essentia (EBUR 128, Key, BPM & Danceness tags).
 
 Dependencies:
-	- Fooid plugin (foo_biometric) and binary file can be found at:
+	• Fooid plugin (foo_biometric) and binary file can be found at:
 	https://github.com/regorxxx/foobar2000-assets/tree/main/FooID
 
-	- Chromaprint, ffmpeg and Essentia binaries can be found at:
+	• Chromaprint, ffmpeg and Essentia binaries can be found at:
 	https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 
-	- For any other component related feature (foo_***), the plugin
+	• For any other component related feature (foo_***), the plugin
 	needs to be installed first by the user. Some may be available
 	by default.
 
-	- After (un)installing a dependency, a panel reload will be
+	• After (un)installing a dependency, a panel reload will be
 	required.
 
 Setting notes:
-	- The settings submenu includes several settings which are
+	• The settings submenu includes several settings which are
 	guaranteed to work with all tools by default. If you changed
 	anything at other component settings, you must ensure those
 	changes	are reflected here too (tags, menu names or quiet mode).
 
-	- Changing a setting at the menu only notifies the script about
+	• Changing a setting at the menu only notifies the script about
 	the setting but WILL NOT apply such setting to the external
 	component. It must be changed at both places. i.e. setting a tool
 	in quiet mode only ensures it will work within the script, but will
 	not change the quiet mode setting at the components preferences
 	window. You must do it by yourself.
 
-	- The tags must be properly set at settings to ensure they are
+	• The tags must be properly set at settings to ensure they are
 	checked for deletion and verified after writing them. Not properly
 	setting them will make the script to fail.
 
-	- Every tool used must write different tags. This is somewhat
+	• Every tool used must write different tags. This is somewhat
 	ensured by the script when trying to enable multiple tools which
 	write the same tag (for ex. DR meters), but it's the user
 	responsibility to ensure it doesn't happen on purpose by changing
@@ -54,40 +54,40 @@ Processing order:
 	-> AudioMD5 -> ReplayGain - True Peak Scanner -> BPM
 
 Component Sources:
-	- foo_biometric:
+	• foo_biometric:
 	https://github.com/regorxxx/foobar2000-assets/tree/main/FooID
 
-	- Chromaprint:
+	• Chromaprint:
 	https://acoustid.org/chromaprint
 	https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 
-	- foo_masstag:
+	• foo_masstag:
 	https://www.foobar2000.org/components/view/foo_masstag
 	.\presets\Masstagger\MD5.mts
 	.\presets\Masstagger\AUDIOMD5.mts
 
-	- foo_audiomd5:
+	• foo_audiomd5:
 	https://foobar.hyv.fi/?view=foo_audiomd5
 
-	- foo_bpm:
+	• foo_bpm:
 	https://foobar.hyv.fi/?view=foo_bpm
 
-	- foo_truepeak:
+	• foo_truepeak:
 	https://foobar.hyv.fi/?view=foo_truepeak
 
-	- foo_rgscan: bundled with foobar2000 (pre-installed).
+	• foo_rgscan: bundled with foobar2000 (pre-installed).
 
-	- foo_dynamic_range:
+	• foo_dynamic_range:
 	https://dr.loudness-war.info/downloads/foo_dynamic_range_1.1.1.zip
 
-	- foo_dr_meter.
+	• foo_dr_meter.
 	https://foobar.hyv.fi/?view=foo_dr_meter
 
-	- ffmpeg.
+	• ffmpeg.
 	https://ffmpeg.org/download.html
 	https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 
-	- Essentia:
+	• Essentia:
 	https://github.com/regorxxx/foobar2000-assets/tree/main/essentia-2.1b6
 	https://github.com/regorxxx/foobar2000-assets/tree/main/binaries
 

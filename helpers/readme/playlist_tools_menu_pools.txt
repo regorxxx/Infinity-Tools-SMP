@@ -5,29 +5,29 @@ query filtering, picking method (random, from start, from end) and
 final sorting of destination playlist.
 
 Usage:
-  - Set sources:
-    - Playlists matching the source names must exist to be used (*)
-    - As source name, _LIBRARY_#, where # is a number, may be used.
-    - As source name, _SEARCHBY$_#, where $ is GRAPH\WEIGHT\DYNGENRE,
+  • Set sources:
+    ◦ Playlists matching the source names must exist to be used (*)
+    ◦ As source name, _LIBRARY_#, where # is a number, may be used.
+    ◦ As source name, _SEARCHBY$_#, where $ is GRAPH\WEIGHT\DYNGENRE,
     may be used. (**)
-    - As source name, _GROUP_#, where # is a number, may be used. (***)
-	- If any source is specified without the # Id, it will be
-	automatically numbered. It also applies to playlist names.
-  - Set other parameters:
-    - The query will be applied to the current source to get eligible
+    ◦ As source name, _GROUP_#, where # is a number, may be used. (***)
+  • If any source is specified without the # Id, it will be
+  automatically numbered. It also applies to playlist names.
+  • Set other parameters:
+    ◦ The query will be applied to the current source to get eligible
     tracks.
-      - Empty query will try to apply global forced query if
+      ‣ Empty query will try to apply global forced query if
       enabled, otherwise is 'ALL'.
-      - 'ALL' will never apply forced query, even if enabled.
-      - Dynamic queries may be used. i.e. 'GENRE IS #GENRE#'. (****)
-			- 'SORT BY'|'SORT DESCENDING BY'|'SORT ASCENDING BY'
-			expressions may also be used to sort the source.
-    - Duplicates are removed after query (by artist|title|date).
-    - Any track already selected for final playlist in previous steps
+      ‣ 'ALL' will never apply forced query, even if enabled.
+      ‣ Dynamic queries may be used. i.e. 'GENRE IS #GENRE#'. (****)
+      ‣ 'SORT BY'|'SORT DESCENDING BY'|'SORT ASCENDING BY'
+      expressions may also be used to sort the source.
+    ◦ Duplicates are removed after query (by artist|title|date).
+    ◦ Any track already selected for final playlist in previous steps
     is removed.
-    - Finally tracks are chosen using the picking method set.
-    - Source(s) with less tracks than pool(s) size will use all tracks.
-  - Final playlist is created with tracks from all pools.
+    ◦ Finally tracks are chosen using the picking method set.
+    ◦ Source(s) with less tracks than pool(s) size will use all tracks.
+  • Final playlist is created with tracks from all pools.
 
 See 'allowedKeys.txt' at '.\presets\Playlist Tools\pools\' for an
 extensive list of variables and structure allowed. There are multiple

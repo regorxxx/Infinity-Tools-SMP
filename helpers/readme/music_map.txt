@@ -2,11 +2,11 @@
 tracks similar to the currently selected one according to genre, style,
 key, etc. For ex, given a reference track:
 
-- Explore similar music from the same era
-- Follow the evolution of a genre during some period
-- Create a playlist transitioning from one genre to another seamlessly
-- Create an harmonic mix which sounds great no matter the genres mixed
-- Just a random playlist with some coherence in its order and tracks
+• Explore similar music from the same era
+• Follow the evolution of a genre during some period
+• Create a playlist transitioning from one genre to another seamlessly
+• Create an harmonic mix which sounds great no matter the genres mixed
+• Just a random playlist with some coherence in its order and tracks
 
 When their score is over the desired 'Tag similarity score', then they
 are included in the final pool.
@@ -248,25 +248,25 @@ work, the data (your tags) need relevant info. Since every user fills their
 tags without following an universal convention (most times leaving some
 tags unfilled), the only requirement for these scripts to work is tag coherence:
 
-	- Tags must point to high-level data, so analysis (whether
+	• Tags must point to high-level data, so analysis (whether
 	computational or human) must be done previously. 'Acoustic' or
 	'Happy' moods are high level data, 'barkbands' with a list of
 	values is low-level data (meant to be used to calculate
 	high-level ones). For more info: https://acousticbrainz.org/data
-	- Tags not present are simply skipped. The script doesn't expect
+	• Tags not present are simply skipped. The script doesn't expect
 	any specific tag to work, except the obvious ones (can not use
 	GRAPH method without genre/style tags). This is done to not
 	enforce an specific set of tags, only the ones you need / use.
-	- Tags are not hard-linked to an specific tag-name convention.
+	• Tags are not hard-linked to an specific tag-name convention.
 	Genre may have as tag name 'genre', 'my_genre' or 'hjk'.
-	- Basic filtering features to solve some corner cases (for
+	• Basic filtering features to solve some corner cases (for
 	genre/styles).
-	- Casing must be the same along all tags. i.e. 'Rock' always
+	• Casing must be the same along all tags. i.e. 'Rock' always
 	spelled as 'Rock'. Yes, it could be omitted using .toLowerCase(),
 	but is a design decision, since it forces users to check the casing
 	of their entire set of tags (ensuring a bit more consistency in
 	other fields).
-	- Reproducibility all along the library set. And this is the main
+	• Reproducibility all along the library set. And this is the main
 	point of tag coherence.
 
 About Reproducibility: If two users tag a track with different genres or

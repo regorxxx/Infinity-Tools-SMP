@@ -15,11 +15,11 @@ instructions on the popups.
 Menu entries may be grayed (disabled) if some conditions are not met (i.e.
 sorting would be disabled when selecting only 1 track), these are related
 to some obvious requisites:
-	-Scripts requiring multiple selected items (>3): those applied to
+	• Scripts requiring multiple selected items (>3): those applied to
 	a list of tracks.
-	-Scripts requiring at least 1 item on the active playlist: those
+	• Scripts requiring at least 1 item on the active playlist: those
 	applied on the entire playlist.
-	-Scripts requiring a selected/focused item: those applied on
+	• Scripts requiring a selected/focused item: those applied on
 	focused item.
 
 Most menus have a small description at the top (further descriptions may

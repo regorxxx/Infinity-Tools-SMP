@@ -10,17 +10,17 @@ Note recipes may also contain a forced theme, either the entire object or
 a link to a theme file (using its path or filename).
 
 Both may be used in buttons, tools or with Playlist Tools:
-	- Playlist Tools's Pools can link to these files on some sources.
-	- Custom buttons may use recipes and themes to tweak their behavior.
-	- Basic buttons also show them at 'Other recipes' submenu.
+	• Playlist Tools's Pools can link to these files on some sources.
+	• Custom buttons may use recipes and themes to tweak their behavior.
+	• Basic buttons also show them at 'Other recipes' submenu.
 
 Recipe files may be created via files or custom button:
-	- On custom buttons, use the recipe menu (Ctrl + Left Click).
-	- Otherwise, directly edit the JSON files at the recipes folder.
+	• On custom buttons, use the recipe menu (Ctrl + Left Click).
+	• Otherwise, directly edit the JSON files at the recipes folder.
 
 Theme files may be created via files or Music Map custom button:
-	- On custom buttons, use the theme menu	(Shift + Left Click).
-	- Otherwise, directly edit the JSON files at the themes folder.
+	• On custom buttons, use the theme menu	(Shift + Left Click).
+	• Otherwise, directly edit the JSON files at the themes folder.
 
 Both type of files may be set to 'Hidden' (file attribute) to not show them
 on the menus, instead of deleting them. Some files, meant for internal use
