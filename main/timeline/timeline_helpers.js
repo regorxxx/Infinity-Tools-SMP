@@ -1,11 +1,11 @@
 ﻿'use strict';
-//07/10/25
+//25/11/25
 
 /* exported getData, getDataAsync */
 
 /* global globQuery:readable, globTags:readable, doOnce:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global _t:readable, _bt:readable, range:readable, _ps:readable */
+/* global _t:readable, _bt:readable, range:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global queryReplaceWithCurrent:readable, checkQuery:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
@@ -172,7 +172,7 @@ function getData({
 		}
 		case 'playcount worldmap':
 		case 'playcount worldmap region': {
-			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.Name + _ps(window.ScriptInfo.Name), utf8)
+			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8)
 				.map((point) => { return { id: point.artist, country: (point.val.slice(-1) || [''])[0] }; });
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => [val])
@@ -185,7 +185,7 @@ function getData({
 			break;
 		}
 		case 'playcount worldmap city': {
-			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.Name + _ps(window.ScriptInfo.Name), utf8)
+			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8)
 				.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val.slice(-1) || [''])[0] }; });
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => [val])
@@ -347,7 +347,7 @@ async function getDataAsync({
 		}
 		case 'playcount worldmap':
 		case 'playcount worldmap region': {
-			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.Name + _ps(window.ScriptInfo.Name), utf8)
+			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8)
 				.map((point) => { return { id: point.artist, country: (point.val.slice(-1) || [''])[0] }; });
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
@@ -360,7 +360,7 @@ async function getDataAsync({
 			break;
 		}
 		case 'playcount worldmap city': {
-			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.Name + _ps(window.ScriptInfo.Name), utf8)
+			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8)
 				.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val.slice(-1) || [''])[0] }; });
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
