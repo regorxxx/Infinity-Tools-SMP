@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/25
+//25/11/25
 
 /* exported createFpMenuLeft */
 
@@ -10,7 +10,7 @@ include('..\\..\\helpers\\buttons_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global _isFile:readable, WshShell:readable, popup:readable, _deleteFile:readable, _save:readable, _saveSplitJson:readable, utf8:readable, _jsonParseFile:readable , _jsonParseFileSplit:readable, _copyDependencies:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global round:readable, roughSizeOfObject:readable, SetReplacer:readable, _b:readable, _p:readable, _ps:readable */
+/* global round:readable, roughSizeOfObject:readable, SetReplacer:readable, _b:readable, _p:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global overwriteProperties:readable */
 include('..\\..\\helpers\\menu_xxx.js');
@@ -298,7 +298,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 					ppt.bReadFiles[1] = !ppt.bReadFiles[1];
 					overwriteProperties(ppt);
 					if (ppt.bReadFiles[1]) {
-						fb.ShowPopupMessage('Instead of caching the fingerprint tag within foobar, tweaking the \'LargeFieldsConfig.txt\' file, fingerprint tag may be directly read from the files (not for files containing subsongs, like .iso or .cue files).\n\nCreating the database will be slower, since it will have to process the entire library reading from files, but it will offer similar performance afterwards bypassing some RAM limitations when caching the tag.', window.Name + _ps(window.ScriptInfo.Name));
+						fb.ShowPopupMessage('Instead of caching the fingerprint tag within foobar, tweaking the \'LargeFieldsConfig.txt\' file, fingerprint tag may be directly read from the files (not for files containing subsongs, like .iso or .cue files).\n\nCreating the database will be slower, since it will have to process the entire library reading from files, but it will offer similar performance afterwards bypassing some RAM limitations when caching the tag.', window.FullPanelName);
 					}
 				}, flags: flagsChroma
 			});
@@ -355,7 +355,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 					// And create / delete menus
 					const parentName = 'Fingerprint Tools';
 					if (ppt.bDynamicMenus[1]) {
-						fb.ShowPopupMessage('Remember to set different panel names to every buttons toolbar, otherwise menus will not be properly associated to a single panel.\n\nShift + Win + R. Click -> Configure panel... (\'edit\' at top)', window.Name + _ps(window.ScriptInfo.Name));
+						fb.ShowPopupMessage('Remember to set different panel names to every buttons toolbar, otherwise menus will not be properly associated to a single panel.\n\nShift + Win + R. Click -> Configure panel... (\'edit\' at top)', window.FullPanelName);
 						bindDynamicMenus({ menu: createFpMenuLeft.bind(this), parentName });
 					} else {
 						deleteMainMenuDynamic(parentName);

@@ -1,5 +1,5 @@
 'use strict';
-//13/10/25
+//25/11/25
 
 /* exported listenBrainzMenu */
 
@@ -10,7 +10,7 @@ include('..\\..\\helpers\\helpers_xxx_input.js');
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global WshShell:readable, _isFile:readable, _jsonParseFileCheck:readable, utf8:readable, _jsonParseFileCheck:readable, _jsonParseFileCheck:readable, _runCmd:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global _b:readable, _t:readable, _q:readable, _p:readable, _asciify:readable, isArrayEqual:readable, isUUID:readable, range:readable, isString:readable, _ps:readable, capitalizeAll:readable */
+/* global _b:readable, _t:readable, _q:readable, _p:readable, _asciify:readable, isArrayEqual:readable, isUUID:readable, range:readable, isString:readable, capitalizeAll:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global overwriteProperties:readable */
 include('..\\..\\helpers\\buttons_xxx_menu.js');
@@ -50,15 +50,15 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 		if (!isString(lBrainzToken)) {
 			const encryptToken = '********-****-****-****-************';
 			const currToken = properties.lBrainzEncrypt[1] ? encryptToken : properties.lBrainzToken[1];
-			try { lBrainzToken = utils.InputBox(window.ID, 'Enter ListenBrainz user token:', window.Name + _ps(window.ScriptInfo.Name), currToken, true); }
+			try { lBrainzToken = utils.InputBox(window.ID, 'Enter ListenBrainz user token:', window.FullPanelName, currToken, true); }
 			catch (e) { return false; } // eslint-disable-line no-unused-vars
 			if (lBrainzToken === currToken || lBrainzToken === encryptToken) { return false; }
 			if (isString(lBrainzToken)) {
 				if (!(await lb.validateToken(lBrainzToken))) { fb.ShowPopupMessage('ListenBrainz Token not valid.', 'ListenBrainz'); return false; }
-				const answer = WshShell.Popup('Do you want to encrypt the token?', 0, window.Name + _ps(window.ScriptInfo.Name), popup.question + popup.yes_no);
+				const answer = WshShell.Popup('Do you want to encrypt the token?', 0, window.FullPanelName, popup.question + popup.yes_no);
 				if (answer === popup.yes) {
 					let pass = '';
-					try { pass = utils.InputBox(window.ID, 'Enter a password:\n(will be required on every use)', window.Name + _ps(window.ScriptInfo.Name), pass, true); }
+					try { pass = utils.InputBox(window.ID, 'Enter a password:\n(will be required on every use)', window.FullPanelName, pass, true); }
 					catch (e) { return false; } // eslint-disable-line no-unused-vars
 					if (!isString(pass)) { return false; }
 					lBrainzToken = new SimpleCrypto(pass).encrypt(lBrainzToken);
@@ -170,7 +170,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 			const dataId = 'artist';
 			const selIds = [...(tags.find((tag) => tag.tf.some((tf) => tf.toLowerCase() === dataId)) || { valSet: [] }).valSet];
 			if (selIds.length) {
-				const data = _jsonParseFileCheck(filePaths.worldMapArtists, 'Tags json', window.Name + _ps(window.ScriptInfo.Name), utf8);
+				const data = _jsonParseFileCheck(filePaths.worldMapArtists, 'Tags json', window.FullPanelName, utf8);
 				const worldMapData = new Set();
 				if (data) {
 					data.forEach((item) => {
