@@ -10,7 +10,7 @@
 // eslint-disable-next-line no-unused-vars
 var bLoadTags = true; // NOSONAR
 
-if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '1.0.0', features: { drag_n_drop: false } }); }
+if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '1.1.0', features: { drag_n_drop: false } }); }
 
 {
 	const dependencies = [

@@ -12,6 +12,7 @@
 - Playlist Tools: cut max entry length at 40 chars (previously 30).
 ### Removed
 ### Fixed
+- Wrapped: crashes or invalid handling if world map library data file is not present or corrupted.
 
 ## [1.0.0] - 2025-11-19
 ### Added

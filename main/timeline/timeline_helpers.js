@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//27/11/25
 
 /* exported getData, getDataAsync */
 
@@ -172,8 +172,8 @@ function getData({
 		}
 		case 'playcount worldmap':
 		case 'playcount worldmap region': {
-			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8)
-				.map((point) => { return { id: point.artist, country: (point.val.slice(-1) || [''])[0] }; });
+			const worldMapData = (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
+				.map((point) => { return { id: point.artist, country: (point.val || ['']).slice(-1)[0] }; });
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => [val])
 				: fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => val.split(splitter));
@@ -185,8 +185,9 @@ function getData({
 			break;
 		}
 		case 'playcount worldmap city': {
-			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8)
-				.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val.slice(-1) || [''])[0] }; });
+			const worldMapData = (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
+				.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val || ['']).slice(-1)[0] }; })
+				.filter((point) => point.city !== point.country );
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => [val])
 				: fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => val.split(splitter));
@@ -347,8 +348,8 @@ async function getDataAsync({
 		}
 		case 'playcount worldmap':
 		case 'playcount worldmap region': {
-			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8)
-				.map((point) => { return { id: point.artist, country: (point.val.slice(-1) || [''])[0] }; });
+			const worldMapData = (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
+				.map((point) => { return { id: point.artist, country: (point.val || ['']).slice(-1)[0] }; });
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
 				: (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => val.split(splitter));
@@ -360,8 +361,9 @@ async function getDataAsync({
 			break;
 		}
 		case 'playcount worldmap city': {
-			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8)
-				.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val.slice(-1) || [''])[0] }; });
+			const worldMapData = (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
+				.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val || ['']).slice(-1)[0] }; })
+				.filter((point) => point.city !== point.country );
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
 				: (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => val.split(splitter));
