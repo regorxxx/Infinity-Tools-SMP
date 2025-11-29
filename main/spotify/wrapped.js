@@ -56,6 +56,7 @@ const wrapped = {
 		genreGroupSlice: 4, // Top X genre groups
 		genreSuggestSlice: 16, // Genre recommendations
 		cityArtistSlice: 3, // Top X artists from city (display of artist imgs hardcoded to max 3  on current latex report)
+		imgWait: 50, // Timeout after saving/modifying artwork, to ensure it finishes before compiling
 		bOffline: false,
 		bFilterGenres: true,
 		bSuggestions: true,
@@ -1955,7 +1956,7 @@ const wrapped = {
 						artPromise.image.SaveAs(imgPath, 'image/jpeg');
 						track.albumImg = bRelative ? imgPath.replace(root, '') : imgPath;
 					} else { track.albumImg = (bRelative ? '' : root) + 'img\\fallback\\nocover.png'; }
-					return Promise.wait(500).then(() => track);
+					return Promise.wait(this.settings.imgWait).then(() => track);
 				})
 		)
 			.then(() => {
@@ -1975,7 +1976,7 @@ const wrapped = {
 						}
 					});
 				}
-				return Promise.wait(500).then(() => tracksData); // Give some time to nconvert to end
+				return Promise.wait(this.settings.imgWait).then(() => tracksData); // Give some time to nconvert to end
 			});
 	},
 	/**

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//13/10/25
+//29/11/25
 
 /*
 	Wrapped
@@ -44,6 +44,7 @@ var newButtonsProperties = { // NOSONAR[global]
 	bOffline: ['Offline mode', false, { func: isBoolean }, false],
 	bServicesListens: ['Use external listens', false, { func: isBoolean }, false],
 	highBpmHalveFactor: ['% of high BPM tracks to halve', 30, { func: isInt, range: [[0, 100]] }, 30],
+	imgWait: ['Timeout for tracks img processing', 50, { func: isInt, range: [[0, Infinity]] }, 50],
 	lBrainzToken: ['ListenBrainz user token', '', { func: isStringWeak }, ''],
 	lBrainzUser: ['ListenBrainz user', '', { func: isStringWeak }, ''],
 	lBrainzEncrypt: ['Encrypt ListenBrainz user token', false, { func: isBoolean }, false],
@@ -100,7 +101,7 @@ addButton({
 								} else { deleteMainMenuDynamic('Wrapped'); }
 							},
 						'*': (value, key) => {
-							const settingsKeys = ['bFilterGenres', 'bOffline', 'bServicesListens', 'highBpmHalveFactor', 'imageStubPath'];
+							const settingsKeys = ['bFilterGenres', 'bOffline', 'bServicesListens', 'highBpmHalveFactor', 'imgWait', 'imageStubPath'];
 							if (settingsKeys.includes(key)) {
 								wrapped.settings[key] = value;
 							} else if (['tags'].includes(key)) {
@@ -253,7 +254,7 @@ addButton({
 				overwriteProperties(this.buttonsProperties);
 			}
 			// Init wrapped settings
-			['bFilterGenres', 'bOffline', 'bServicesListens', 'highBpmHalveFactor', 'imageStubPath']
+			['bFilterGenres', 'bOffline', 'bServicesListens', 'highBpmHalveFactor', 'imgWait', 'imageStubPath']
 				.forEach((key) => wrapped.settings[key] = this.buttonsProperties[key][1]);
 			const filePaths = JSON.parse(this.buttonsProperties.filePaths[1]);
 			for (let key in filePaths) {
