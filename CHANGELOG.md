@@ -14,6 +14,7 @@
 ### Removed
 ### Fixed
 - Wrapped: crashes or invalid handling if world map library data file is not present or corrupted.
+- Wrapped: unnecessary double processing with nconvert and exiftool in some cases.
 
 ## [1.0.0] - 2025-11-19
 ### Added

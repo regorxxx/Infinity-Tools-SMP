@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//25/11/25
+//29/11/25
 
 /* exported wrapped */
 
@@ -1971,6 +1971,7 @@ const wrapped = {
 							const command = ' -out jpeg -dpi 300 -resize 600 600 -overwrite -keepfiledate -ignore_errors "' + path + '*.jpg"';
 							console.log('Wrapped: processing track images (' + tracksData.length + ') with nconvert\n\tnconvert.exe' + command);
 							_runCmd('CMD /C ' + nc + command, false);
+							return true;
 						}
 					});
 				}
@@ -3391,6 +3392,7 @@ const wrapped = {
 				const command = ' -overwrite_original -r -ext jpg -ext gif -ext png -EXIF= ' + _q(root + 'img');
 				console.log('Wrapped: processing images with exiftool\n\texiftool.exe ' + command);
 				_runCmd('CMD /C ' + _q(et) + command, false);
+				return true;
 			}
 		});
 	},
