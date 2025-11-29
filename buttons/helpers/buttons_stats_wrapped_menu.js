@@ -1,5 +1,5 @@
 'use strict';
-//29/09/25
+//29/11/25
 
 /* exported wrappedMenu */
 
@@ -91,7 +91,7 @@ function wrappedMenu({ bSimulate = false } = {}) {
 		const years = range(currentYear - 4, currentYear, 1).reverse();
 		const reportTypes = [
 			{ menu: 'PDF (LaTeX)', method: 'createPdfReport' },
-			{ menu: 'HTML (IE)', method: 'createHtmlIeReport' },
+			// { menu: 'HTML (IE)', method: 'createHtmlIeReport' },
 			{ menu: 'JSON', method: 'createJsonReport' }
 		];
 		[
