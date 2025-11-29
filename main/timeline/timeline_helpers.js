@@ -381,7 +381,7 @@ async function getDataAsync({
 					.filter((point) => point.artist && point.country)
 				: [];
 			// Json data is then concat to this, since it doesn't matter if some artists are duplicated, only first entry will be used
-			const worldMapTags = await fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|$meta(' + globTags.locale + ',$sub($meta_num(' + globTags.locale + '),1))').EvalWithMetadbsAsync(handleList)
+			const worldMapTags = (await fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|$meta(' + globTags.locale + ',$sub($meta_num(' + globTags.locale + '),1))').EvalWithMetadbsAsync(handleList))
 				.map((val) => {
 					const valArr = val.split('|‎|');
 					const country = (valArr[1] || '').split('|')[0]; // Countries are split with | and tag by ', '
@@ -407,7 +407,7 @@ async function getDataAsync({
 					.filter((point) => point.artist && point.city && point.country && point.city !== point.country)
 				: [];
 			// Json data is then concat to this, since it doesn't matter if some artists are duplicated, only first entry will be used. Furthermore, if tag is incomplete then will be filtered and JSON data used instead
-			const worldMapTags = await fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|' + _bt(globTags.locale)).EvalWithMetadbsAsync(handleList)
+			const worldMapTags = (await fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|' + _bt(globTags.locale)).EvalWithMetadbsAsync(handleList))
 				.map((val) => {
 					const valArr = val.split('|‎|');
 					const localeArr = (valArr[1] || '').split(splitter); // Countries are split with | but tag by ', '
