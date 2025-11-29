@@ -2299,7 +2299,7 @@ const wrapped = {
 				!!this.stats.artists.top[0] && this.stats.artists.top[0].topTrack,
 				this.stats.time.most.track,
 				!!this.stats.albums.top[0] && this.stats.albums.top[0].topTrack
-			].filter(Boolean)))
+			].filter((track) => track && track.handle)))
 			.then(() => !!wrappedData.cities[0] && this.getCityImg(wrappedData.cities[0]))
 			.then(() => this.downloadCityImgs(wrappedData.cities))
 			.then(() => wrappedData);

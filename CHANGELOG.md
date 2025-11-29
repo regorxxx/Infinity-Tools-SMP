@@ -16,6 +16,7 @@
 ### Removed
 ### Fixed
 - Wrapped: crashes or invalid handling if world map library data file is not present or corrupted.
+- Wrapped: rare crashes if some track data was missing. See [Issue 2](https://github.com/regorxxx/Infinity-Tools-SMP/issues/2).
 - Wrapped: unnecessary double processing with nconvert and exiftool in some cases.
 
 ## [1.0.0] - 2025-11-19
