@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/11/25
+//29/11/25
 
 /* exported getData, getDataAsync */
 
@@ -9,7 +9,7 @@ include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global queryReplaceWithCurrent:readable, checkQuery:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global folders:readable, _jsonParseFileCheck:readable, utf8:readable, _foldPath:readable */
+/* global folders:readable, _jsonParseFileCheck:readable, utf8:readable, _foldPath:readable, _isFile:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global getSource:readable */
 include('..\\filter_and_query\\remove_duplicates.js');
@@ -172,8 +172,20 @@ function getData({
 		}
 		case 'playcount worldmap':
 		case 'playcount worldmap region': {
-			const worldMapData = (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
-				.map((point) => { return { id: point.artist, country: (point.val || ['']).slice(-1)[0] }; });
+			const worldMapData = _isFile(filePaths.worldMapArtists)
+				? (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
+					.map((point) => { return { id: point.artist, country: (point.val || ['']).slice(-1)[0] }; })
+				: [];
+			// Json data is then concat to this, since it doesn't matter if some artists are duplicated, only first entry will be used
+			const worldMapTags = fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|$meta(' + globTags.locale + ',$sub($meta_num(' + globTags.locale + '),1))').EvalWithMetadbs(handleList)
+				.map((val) => {
+					const valArr = val.split('|‎|');
+					const country = (valArr[1] || '').split('|')[0]; // Countries are split with | and tag by ', '
+					return valArr[0] && country
+						? { id: valArr[0], country }
+						: null;
+				})
+				.filter(Boolean);
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => [val])
 				: fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => val.split(splitter));
@@ -181,20 +193,34 @@ function getData({
 				? getPlayCount(handleList, optionArg.timePeriod, optionArg.timeKey, optionArg.fromDate).map((V) => V.playCount)
 				: fb.TitleFormat(globTags.playCount).EvalWithMetadbs(handleList);
 			const method = option === 'playcount worldmap region' ? 'playcountWorldMapRegion' : 'playcountWorldMap';
-			data = getDataHelpers[method](xTags, playCount, handleList, worldMapData, bIncludeHandles);
+			data = getDataHelpers[method](xTags, playCount, handleList, worldMapTags.concat(worldMapData), bIncludeHandles);
 			break;
 		}
 		case 'playcount worldmap city': {
-			const worldMapData = (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
-				.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val || ['']).slice(-1)[0] }; })
-				.filter((point) => point.city !== point.country );
+			const worldMapData = _isFile(filePaths.worldMapArtists)
+				? (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
+					.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val || ['']).slice(-1)[0] }; })
+					.filter((point) => point.city !== point.country)
+				: [];
+			// Json data is then concat to this, since it doesn't matter if some artists are duplicated, only first entry will be used. Furthermore, if tag is incomplete then will be filtered and JSON data used instead
+			const worldMapTags = fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|' + _bt(globTags.locale)).EvalWithMetadbs(handleList)
+				.map((val) => {
+					const valArr = val.split('|‎|');
+					const localeArr = (valArr[1] || '').split(splitter); // Countries are split with | but tag by ', '
+					const city = localeArr[0].split('|')[0];
+					const country = (localeArr.slice(-1)[0] || '').split('|')[0];
+					return valArr[0] && city && country && city !== country
+						? { id: valArr[0], city, country }
+						: null;
+				})
+				.filter(Boolean);
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => [val])
 				: fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => val.split(splitter));
 			const playCount = optionArg && optionArg.timePeriod
 				? getPlayCount(handleList, optionArg.timePeriod, optionArg.timeKey, optionArg.fromDate).map((v) => v.playCount)
 				: fb.TitleFormat(globTags.playCount).EvalWithMetadbs(handleList);
-			data = getDataHelpers.playcountWorldMapCity(xTags, playCount, handleList, worldMapData, bIncludeHandles);
+			data = getDataHelpers.playcountWorldMapCity(xTags, playCount, handleList, worldMapTags.concat(worldMapData), bIncludeHandles);
 			break;
 		}
 		case 'playcount period': {
@@ -348,8 +374,20 @@ async function getDataAsync({
 		}
 		case 'playcount worldmap':
 		case 'playcount worldmap region': {
-			const worldMapData = (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
-				.map((point) => { return { id: point.artist, country: (point.val || ['']).slice(-1)[0] }; });
+			const worldMapData = _isFile(filePaths.worldMapArtists)
+				? (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
+					.map((point) => { return { id: point.artist, country: (point.val || ['']).slice(-1)[0] }; })
+				: [];
+			// Json data is then concat to this, since it doesn't matter if some artists are duplicated, only first entry will be used
+			const worldMapTags = await fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|$meta(' + globTags.locale + ',$sub($meta_num(' + globTags.locale + '),1))').EvalWithMetadbsAsync(handleList)
+				.map((val) => {
+					const valArr = val.split('|‎|');
+					const country = (valArr[1] || '').split('|')[0]; // Countries are split with | and tag by ', '
+					return valArr[0] && country
+						? { id: valArr[0], country }
+						: null;
+				})
+				.filter(Boolean);
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
 				: (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => val.split(splitter));
@@ -357,20 +395,34 @@ async function getDataAsync({
 				? (await getPlayCountV2(handleList, optionArg.timePeriod, optionArg.timeKey, optionArg.fromDate, true, listenBrainz)).map((v) => v.playCount)
 				: await fb.TitleFormat(globTags.playCount).EvalWithMetadbsAsync(handleList);
 			const method = option === 'playcount worldmap region' ? 'playcountWorldMapRegion' : 'playcountWorldMap';
-			data = getDataHelpers[method](xTags, playCount, handleList, worldMapData, bIncludeHandles);
+			data = getDataHelpers[method](xTags, playCount, handleList, worldMapTags.concat(worldMapData), bIncludeHandles);
 			break;
 		}
 		case 'playcount worldmap city': {
-			const worldMapData = (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
-				.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val || ['']).slice(-1)[0] }; })
-				.filter((point) => point.city !== point.country );
+			const worldMapData = _isFile(filePaths.worldMapArtists)
+				? (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
+					.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val || ['']).slice(-1)[0] }; })
+					.filter((point) => point.city !== point.country)
+				: [];
+			// Json data is then concat to this, since it doesn't matter if some artists are duplicated, only first entry will be used. Furthermore, if tag is incomplete then will be filtered and JSON data used instead
+			const worldMapTags = await fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|' + _bt(globTags.locale)).EvalWithMetadbsAsync(handleList)
+				.map((val) => {
+					const valArr = val.split('|‎|');
+					const localeArr = (valArr[1] || '').split(splitter); // Countries are split with | but tag by ', '
+					const city = localeArr[0].split('|')[0];
+					const country = (localeArr.slice(-1)[0] || '').split('|')[0];
+					return valArr[0] && city && country && city !== country
+						? { id: valArr[0], city, country }
+						: null;
+				})
+				.filter(Boolean);
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
 				: (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => val.split(splitter));
 			const playCount = optionArg && optionArg.timePeriod
 				? (await getPlayCountV2(handleList, optionArg.timePeriod, optionArg.timeKey, optionArg.fromDate, true, listenBrainz)).map((v) => v.playCount)
 				: await fb.TitleFormat(globTags.playCount).EvalWithMetadbsAsync(handleList);
-			data = getDataHelpers.playcountWorldMapCity(xTags, playCount, handleList, worldMapData, bIncludeHandles);
+			data = getDataHelpers.playcountWorldMapCity(xTags, playCount, handleList, worldMapTags.concat(worldMapData), bIncludeHandles);
 			break;
 		}
 		case 'playcount period': {
