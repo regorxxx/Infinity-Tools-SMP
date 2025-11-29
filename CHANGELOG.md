@@ -15,7 +15,7 @@
 - Wrapped: now supports locale file tags for playcount by region and city, if available; this data is merged to the one provided by [World-Map-SMP](github.com/regorxxx/World-Map-SMP). Uses the locale tag found at '[FOOBAR PROFILE FOLDER]\js_data\presets\global\globTags.json', by default 'LOCALE LAST.FM' (same than [Biography](https://hydrogenaudio.org/index.php/topic,112914.msg1071222.html#msg1071222) and [World-Map-SMP](github.com/regorxxx/World-Map-SMP)).
 ### Removed
 ### Fixed
-- Wrapped: crashes or invalid handling if world map library data file is not present or corrupted.
+- Wrapped: crashes or invalid handling if world map library data file is not present or corrupted. See [Issue 1](https://github.com/regorxxx/Infinity-Tools-SMP/issues/1).
 - Wrapped: rare crashes if some track data was missing. See [Issue 2](https://github.com/regorxxx/Infinity-Tools-SMP/issues/2).
 - Wrapped: unnecessary double processing with nconvert and exiftool in some cases.
 
