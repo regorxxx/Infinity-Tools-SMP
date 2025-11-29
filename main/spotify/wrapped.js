@@ -60,14 +60,18 @@ const wrapped = {
 		bOffline: false,
 		bFilterGenres: true,
 		bSuggestions: true,
-		bDebug: false,
-		bDebugQuery: false,
 		highBpmHalveFactor: 30, // [0, 100]
 		bServicesListens: false,
 		tokens: { listenBrainz: '', listenBrainzUser: '' },
 		imageStubPath: '.\\yttm\\art_img\\$lower($cut(%1,1))\\%1\\',
 		filePaths: {
 			worldMapArtists: _foldPath(folders.data + 'worldMap.json')
+		},
+		logOpt: {
+			bBasic: true,
+			bError: true,
+			bDebug: false,
+			bDebugQuery: false,
 		}
 	},
 	isWorking: [],
@@ -751,7 +755,7 @@ const wrapped = {
 	*/
 	computeArtistsStats: function (artistsData) {
 		this.stats.artists.total = artistsData.length;
-		if (this.settings.bDebug) { console.log('computeArtistsStats:\n\t ', this.stats.artists); }
+		if (this.settings.logOpt.bDebug) { console.log('computeArtistsStats:\n\t ', this.stats.artists); }
 		return this.stats;
 	},
 	/**
@@ -807,7 +811,7 @@ const wrapped = {
 			node.score = round(node.score / listensTotal * 100);
 			this.stats.genres.groups.list.push(node);
 		});
-		if (this.settings.bDebug) { console.log('computeGenresStats:\n\t ', this.stats.genres); }
+		if (this.settings.logOpt.bDebug) { console.log('computeGenresStats:\n\t ', this.stats.genres); }
 		return this.stats;
 	},
 	/**
@@ -824,7 +828,7 @@ const wrapped = {
 	*/
 	computeTracksStats: function (tracksData) {
 		this.stats.tracks.total = tracksData.length;
-		if (this.settings.bDebug) { console.log('computeTracksStats:\n\t ', this.stats.tracks); }
+		if (this.settings.logOpt.bDebug) { console.log('computeTracksStats:\n\t ', this.stats.tracks); }
 		return this.stats;
 	},
 	/**
@@ -841,7 +845,7 @@ const wrapped = {
 	*/
 	computeAlbumsStats: function (albumsData) {
 		this.stats.albums.total = albumsData.length;
-		if (this.settings.bDebug) { console.log('computeAlbumsStats:\n\t ', this.stats.albums); }
+		if (this.settings.logOpt.bDebug) { console.log('computeAlbumsStats:\n\t ', this.stats.albums); }
 		return this.stats;
 	},
 	/**
@@ -861,7 +865,7 @@ const wrapped = {
 		countriesData.slice(0, this.settings.topSlice).forEach((country) => {
 			this.stats.countries.byISO.push({ ...country, iso: getCountryISO(country.name) });
 		});
-		if (this.settings.bDebug) { console.log('computeCountriesStats:\n\t ', this.stats.countries); }
+		if (this.settings.logOpt.bDebug) { console.log('computeCountriesStats:\n\t ', this.stats.countries); }
 		return this.stats;
 	},
 	/**
@@ -877,7 +881,7 @@ const wrapped = {
 	*/
 	computeCitiesStats: function (citiesData) {
 		this.stats.cities.total = citiesData.length;
-		if (this.settings.bDebug) { console.log('computeCitiesStats:\n\t ', this.stats.cities); }
+		if (this.settings.logOpt.bDebug) { console.log('computeCitiesStats:\n\t ', this.stats.cities); }
 		return this.stats;
 	},
 	/**
@@ -975,8 +979,10 @@ const wrapped = {
 			this.stats.time.last.handle = last;
 			['first', 'last'].some((k) => {
 				if (this.stats.time[k].date.toString() === 'Invalid Date') {
-					console.log('computeListensStats: ' + k + ' track played reports an invalid date.');
-					console.log(this.stats.time[k].handle);
+					if (this.settings.logOpt.bError) {
+						console.log('computeListensStats: ' + k + ' track played reports an invalid date.');
+						console.log(this.stats.time[k].handle);
+					}
 					return true;
 				}
 			});
@@ -985,7 +991,7 @@ const wrapped = {
 		this.stats.time.mean.listensPerDay = this.stats.time.mean.listensPerDay > 1
 			? Math.round(this.stats.time.mean.listensPerDay)
 			: round(this.stats.time.mean.listensPerDay, 1);
-		if (this.settings.bDebug) {
+		if (this.settings.logOpt.bDebug) {
 			console.log('computeListensStats:\n\t ', this.stats.listens);
 			console.log('computeListensStats:\n\t ', this.stats.time);
 		}
@@ -1004,7 +1010,7 @@ const wrapped = {
 	*/
 	computeSkipsStats: function (tracksData) {
 		this.stats.skips.total = tracksData.reduce((prev, track) => prev + track.skipCount, 0);
-		if (this.settings.bDebug) { console.log('computeSkipsStats:\n\t ', this.stats.skips); }
+		if (this.settings.logOpt.bDebug) { console.log('computeSkipsStats:\n\t ', this.stats.skips); }
 		return this.stats;
 	},
 	/**
@@ -1062,7 +1068,7 @@ const wrapped = {
 		const min = this.stats.bpms.min.val;
 		this.stats.bpms.histogram = calcHistogram(histogram, binSize, max, min)
 			.map((y, i) => { return { x: min + binSize * i, y }; });
-		if (this.settings.bDebug) { console.log('computeBpmStats:\n\t ', this.stats.bpms); }
+		if (this.settings.logOpt.bDebug) { console.log('computeBpmStats:\n\t ', this.stats.bpms); }
 		return this.stats;
 	},
 	/**
@@ -1114,7 +1120,7 @@ const wrapped = {
 		}
 		this.stats.keys.histogram = calcHistogram(histogram, 1, 12, 1)
 			.map((y, i) => { return { x: 1 + i, y }; });
-		if (this.settings.bDebug) { console.log('computeKeyStats:\n\t ', this.stats.keys); }
+		if (this.settings.logOpt.bDebug) { console.log('computeKeyStats:\n\t ', this.stats.keys); }
 		return this.stats;
 	},
 	/**
@@ -1141,7 +1147,7 @@ const wrapped = {
 			if (happyMoods.has(p.mood)) { this.stats.moods.happy.listens += p.listens; }
 			if (energeticMoods.has(p.mood)) { this.stats.moods.energetic.listens += p.listens; }
 		});
-		if (this.settings.bDebug) { console.log('computeMoodStats:\n\t ', this.stats.moods); }
+		if (this.settings.logOpt.bDebug) { console.log('computeMoodStats:\n\t ', this.stats.moods); }
 		return this.stats;
 	},
 	/**
@@ -1300,7 +1306,7 @@ const wrapped = {
 			}
 		}
 		this.stats.character.list.forEach((character) => character.score = round(character.score, 2));
-		if (this.settings.bDebug) { console.log('computeCharacterStats:\n\t ', this.stats.character.scores); }
+		if (this.settings.logOpt.bDebug) { console.log('computeCharacterStats:\n\t ', this.stats.character.scores); }
 		return this.stats;
 	},
 	/**
@@ -1332,7 +1338,7 @@ const wrapped = {
 				this.stats.artists.top.push(topArtist);
 			});
 			// Top artists
-			if (this.settings.bDebug) { console.log('computeGlobalStats:\n\t ', this.stats.artists.top[0]); }
+			if (this.settings.logOpt.bDebug) { console.log('computeGlobalStats:\n\t ', this.stats.artists.top[0]); }
 			// By Month
 			if (timePeriod) {
 				for (const data of this.stats.artists.top) {
@@ -1361,7 +1367,7 @@ const wrapped = {
 						monthName: this.monthNames[max[0]]
 					});
 				}
-				if (this.settings.bDebug) { console.log('computeGlobalStats:\n\t ', this.stats.artists.byMonth); }
+				if (this.settings.logOpt.bDebug) { console.log('computeGlobalStats:\n\t ', this.stats.artists.byMonth); }
 			}
 		}
 		// Top artist by Country
@@ -1380,7 +1386,7 @@ const wrapped = {
 					}
 				});
 			}
-			if (this.settings.bDebug) { console.log('computeGlobalStats:\n\t ', this.stats.countries.byArtist); }
+			if (this.settings.logOpt.bDebug) { console.log('computeGlobalStats:\n\t ', this.stats.countries.byArtist); }
 		}
 		// Top albums
 		if (wrappedData.artists.length && wrappedData.tracks.length && wrappedData.albums.length) {
@@ -1398,7 +1404,7 @@ const wrapped = {
 				this.stats.albums.top.push(topAlbum);
 
 			});
-			if (this.settings.bDebug) { console.log('computeGlobalStats:\n\t ', this.stats.artists.top[0]); }
+			if (this.settings.logOpt.bDebug) { console.log('computeGlobalStats:\n\t ', this.stats.artists.top[0]); }
 		}
 		return this.stats;
 	},
@@ -1415,7 +1421,7 @@ const wrapped = {
 	 * @returns {FbMetadbHandleList}
 	*/
 	computeTopTracksPlaylist: function (tracksData, size = 100) {
-		console.log('Wrapped: creating top songs playlist...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating top songs playlist...'); }
 		let handleList = new FbMetadbHandleList(tracksData.slice(0, size).map((track) => track.handle[0]));
 		({ handleList } = shuffleByTags({ selItems: handleList, bSendToActivePls: false, bAdvancedShuffle: true, sortBias: 'rating', bMultiple: true }) || { handleList: new FbMetadbHandleList() });
 		this.playlists.top = handleList;
@@ -1436,10 +1442,10 @@ const wrapped = {
 	*/
 	computeDiscoverPlaylist: function (tracksData, timePeriod, size = 100) {
 		if (timePeriod) {
-			console.log('Wrapped: creating discovered songs playlist...');
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating discovered songs playlist...'); }
 			let handleList = new FbMetadbHandleList(tracksData.map((track) => track.handle[0]));
 			const query = '%ADDED% ' + timePeriod.replace('SINCE', 'DURING');
-			if (this.settings.bDebugQuery) { console.log('computeDiscoverPlaylist:\n\t ' + query); }
+			if (this.settings.logOpt.bDebugQuery) { console.log('computeDiscoverPlaylist:\n\t ' + query); }
 			handleList = fb.GetQueryItemsCheck(handleList, query);
 			if (handleList) {
 				handleList = new FbMetadbHandleList(handleList.Convert().slice(0, size).shuffle());
@@ -1464,12 +1470,12 @@ const wrapped = {
 	computeTopArtistsPlaylist: function (artistsData, size = 100) {
 		const artists = artistsData.slice(0, 100).map((artist) => artist.artist).filter(Boolean);
 		if (artists.length) {
-			console.log('Wrapped: creating top artists playlist...');
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating top artists playlist...'); }
 			const query = queryJoin([
 				globTags.rating + ' MISSING OR ' + globTags.rating + ' GREATER 2',
 				queryCombinations(artists, _t(this.tags.artist), 'OR')
 			], 'AND');
-			if (this.settings.bDebugQuery) { console.log('computeTopArtistsPlaylist:\n\t ' + query); }
+			if (this.settings.logOpt.bDebugQuery) { console.log('computeTopArtistsPlaylist:\n\t ' + query); }
 			/** @type {FbMetadbHandleList} */
 			let handleList = fb.GetQueryItemsCheck(fb.GetLibraryItems(), query);
 			if (handleList) {
@@ -1495,12 +1501,12 @@ const wrapped = {
 	computeTopGenresPlaylist: function (genresData, size = 100) {
 		const genres = genresData.slice(0, this.settings.topSlice).map((genre) => genre.genre).filter(Boolean);
 		if (genres.length) {
-			console.log('Wrapped: creating top genres playlist...');
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating top genres playlist...'); }
 			const query = queryJoin([
 				globTags.rating + ' MISSING OR ' + globTags.rating + ' GREATER 2',
 				queryJoin(queryCombinations(genres, [globTags.genre, globTags.style], 'OR'), 'OR')
 			], 'AND');
-			if (this.settings.bDebugQuery) { console.log('computeTopGenresPlaylist:\n\t ' + query); }
+			if (this.settings.logOpt.bDebugQuery) { console.log('computeTopGenresPlaylist:\n\t ' + query); }
 			/** @type {FbMetadbHandleList} */
 			let handleList = fb.GetQueryItemsCheck(fb.GetLibraryItems(), query);
 			if (handleList) {
@@ -1526,7 +1532,7 @@ const wrapped = {
 	computeTopCountriesPlaylist: function (countriesData, size = 100) {
 		const ISO = this.stats.countries.byISO.map((country) => country.iso).filter(Boolean);
 		if (ISO.length) {
-			console.log('Wrapped: creating top countries playlist...');
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating top countries playlist...'); }
 			const worldMapData = _jsonParseFileCheck(this.settings.filePaths.worldMapArtists, 'Tags json', window.FullPanelName, utf8);
 			if (worldMapData) {
 				const filters = ISO.map((iso) => getZoneArtistFilter(iso, 'country', worldMapData)).filter(Boolean)
@@ -1537,7 +1543,7 @@ const wrapped = {
 					let handleList = new FbMetadbHandleList();
 					filters.forEach((query) => {
 						let handleListCountry = fb.GetQueryItemsCheck(fb.GetLibraryItems(), query);
-						if (this.settings.bDebugQuery) { console.log('computeTopCountriesPlaylist:\n\t ' + _p(handleListCountry.Count) + ' <- ' + query); }
+						if (this.settings.logOpt.bDebugQuery) { console.log('computeTopCountriesPlaylist:\n\t ' + _p(handleListCountry.Count) + ' <- ' + query); }
 						if (handleListCountry) {
 							handleListCountry = new FbMetadbHandleList(handleListCountry.Convert().shuffle().slice(0, size / count));
 							handleList.AddRange(handleListCountry);
@@ -1566,7 +1572,7 @@ const wrapped = {
 	 * @returns {(FbMetadbHandle|String)[]}
 	*/
 	computeSuggestedGenresPlaylist: function (genres, queryParam, size = 100) {
-		console.log('Wrapped: creating similar genres playlist...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating similar genres playlist...'); }
 		const mbids = [];
 		const mbidsAlt = [];
 		const tags = { TITLE: [], ARTIST: [] };
@@ -1579,7 +1585,7 @@ const wrapped = {
 				], 'AND NOT');
 				/** @type FbMetadbHandleList */
 				let handleList = fb.GetQueryItemsCheck(fb.GetLibraryItems(), query);
-				if (this.settings.bDebugQuery) { console.log('computeSuggestedGenresPlaylist:\n\t ' + _p(handleList.Count) + ' <- ' + query); }
+				if (this.settings.logOpt.bDebugQuery) { console.log('computeSuggestedGenresPlaylist:\n\t ' + _p(handleList.Count) + ' <- ' + query); }
 				if (handleList && handleList.Count) {
 					handleList = removeDuplicates({ handleList, checkKeys: globTags.remDupl, sortBias: globQuery.remDuplBias, bPreserveSort: false });
 					({ handleList } = shuffleByTags({ selItems: handleList, bSendToActivePls: false, bAdvancedShuffle: true, sortBias: 'rating', bMultiple: true }) || { handleList: new FbMetadbHandleList() });
@@ -1656,7 +1662,7 @@ const wrapped = {
 							results.forEach((result) => {
 								for (void (0); j <= itemsLen; j++) {
 									if (result.status !== 'fulfilled') { // Only code errors are output
-										console.log('YouTube:', result.status, result.reason.message);
+										if (this.settings.logOpt.bError) { console.log('YouTube:', result.status, result.reason.message); }
 										break;
 									}
 									const link = result.value;
@@ -1697,7 +1703,7 @@ const wrapped = {
 		 * @returns {(FbMetadbHandle|String)[]}
 		*/
 	computeSuggestedArtistsPlaylist: function (artistsData, queryParam, size = 100) {
-		console.log('Wrapped: creating similar artists playlist...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating similar artists playlist...'); }
 		const artists = artistsData.slice(0, this.settings.topSlice).map((artist) => artist.artist);
 		const lb = ListenBrainz;
 		if (this.settings.bOffline) {
@@ -1708,7 +1714,7 @@ const wrapped = {
 				], 'AND NOT');
 				/** @type FbMetadbHandleList */
 				let handleList = fb.GetQueryItemsCheck(fb.GetLibraryItems(), query);
-				if (this.settings.bDebugQuery) { console.log('computeSuggestedArtistsPlaylist:\n\t ' + _p(handleList.Count) + ' <- ' + query); }
+				if (this.settings.logOpt.bDebugQuery) { console.log('computeSuggestedArtistsPlaylist:\n\t ' + _p(handleList.Count) + ' <- ' + query); }
 				if (handleList && handleList.Count) {
 					handleList = removeDuplicates({ handleList, checkKeys: globTags.remDupl, sortBias: globQuery.remDuplBias, bPreserveSort: false });
 					({ handleList } = shuffleByTags({ selItems: handleList, bSendToActivePls: false, bAdvancedShuffle: true, sortBias: 'rating', bMultiple: true }) || { handleList: new FbMetadbHandleList() });
@@ -1846,7 +1852,7 @@ const wrapped = {
 							results.forEach((result) => {
 								for (void (0); j <= itemsLen; j++) {
 									if (result.status !== 'fulfilled') { // Only code errors are output
-										console.log('YouTube:', result.status, result.reason.message);
+										if (this.settings.logOpt.bError) { console.log('YouTube:', result.status, result.reason.message); }
 										break;
 									}
 									const link = result.value;
@@ -1970,7 +1976,7 @@ const wrapped = {
 					nconvert.some((nc) => {
 						if (_isFile(nc)) {
 							const command = ' -out jpeg -dpi 300 -resize 600 600 -overwrite -keepfiledate -ignore_errors "' + path + '*.jpg"';
-							console.log('Wrapped: processing track images (' + tracksData.length + ') with nconvert\n\tnconvert.exe' + command);
+							if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing track images (' + tracksData.length + ') with nconvert\n\tnconvert.exe' + command); }
 							_runCmd('CMD /C ' + nc + command, false);
 							return true;
 						}
@@ -2219,7 +2225,7 @@ const wrapped = {
 	 * @returns {Promise.<{ genres: {genre:string, listens:number}[]; tracks: {title:string, listens:number, handle:FbMetadbHandle[]}[]; artists: {artist:string, listens:number}[]; bpms: {bpm:number, listens:number}[]; keys: {key:{hour:number, letter:string}, openKey:string, stdKey: string, listens:number}[]; moods: {mood:string, listens:number}[]; cities: {city:string, listens:number, artists:{artist:string, listens:number}[]}[]; countries: {name:string, listens:number}[]; albums: {album:string, listens:number}[] }>}
 	*/
 	getData: async function (timePeriod, query, timeKey = null, fromDate = null) {
-		console.log('Wrapped: retrieving listening stats...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: retrieving listening stats...'); }
 		this.resetStats();
 		this.resetPlaylists();
 		if (this.isServicesListens() && !this.settings.bOffline) {
@@ -2252,7 +2258,7 @@ const wrapped = {
 				await this.computeGlobalStats(data, timePeriod, timeKey, fromDate);
 				Object.keys(data).forEach((key) => {
 					if (this.stats[key].total > 5) { data[key].length = 5; }
-					if (this.settings.bDebug) {
+					if (this.settings.logOpt.bDebug) {
 						if (['tracks', 'albums'].includes(key)) {
 							console.log('getData[' + key + ']:\n\t ', data[key].map((d) => { return { ...d, handle: null }; }));
 						} else {
@@ -2275,7 +2281,7 @@ const wrapped = {
 	 * @returns {Promise.<{ genres: {genre:string, listens:number}[]; tracks: {title:string, listens:number, handle:FbMetadbHandle[]}[]; artists: {artist:string, listens:number}[]; bpms: {bpm:number, listens:number}[]; keys: {key:{hour:number, letter:string}, openKey:string, stdKey: string, listens:number}[]; moods: {mood:string, listens:number}[]; cities: {city:string, listens:number, artists:{artist:string, listens:number}[]}[]; countries: {name:string, listens:number}[]; albums: {album:string, listens:number}[] }>}
 	*/
 	getDataImages: function (wrappedData) {
-		console.log('Wrapped: retrieving images...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: retrieving images...'); }
 		// All arrays have been cut in length at this.getData
 		return this.getArtistsImgs(wrappedData.artists)
 			.then(() => this.getArtistsImgs(wrappedData.tracks))
@@ -2364,7 +2370,7 @@ const wrapped = {
 	 * @returns {string}
 	*/
 	formatLatexReport: function (wrappedData, year, root = this.basePath) {
-		console.log('Wrapped: creating LaTeX report...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating LaTeX report...'); }
 		const latex = /[&#%$_^{}]/gi;
 		const illegalChars = /[\\&#%$_^{}!]/gi;
 		const sanitizeCut = new RegExp('\\s?\\\\\u2026$', 'gi'); // NOSONAR [\...]
@@ -3120,7 +3126,7 @@ const wrapped = {
 	 * @returns {boolean}
 	 */
 	compileLatexReport: function compileLatexReport(report, timePeriod, latexCmd, extraCmd, root = this.basePath) {
-		console.log('Wrapped: compiling LaTeX report...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: compiling LaTeX report...'); }
 		const period = !timePeriod
 			? this.stats.time.first.date.getFullYear().toString() + '_' + this.stats.time.last.date.getFullYear().toString()
 			: null;
@@ -3132,7 +3138,7 @@ const wrapped = {
 			.replace(/%2/gi, _q(output))
 			.replace(/%3/gi, _q(root.replace(/\\$/, '')))
 			.replace(/%4/gi, (timePeriod || period));
-		console.log('Wrapped: saving .tex file to\n\t ' + input);
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: saving .tex file to\n\t ' + input); }
 		_recycleFile(input, true);
 		_save(input, report, false);
 		// Parse cmd
@@ -3140,7 +3146,7 @@ const wrapped = {
 			latexCmd = 'lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1';
 		}
 		latexCmd = parseCmd(latexCmd);
-		console.log('Wrapped: processing latex\n\t ' + latexCmd);
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing latex\n\t ' + latexCmd); }
 		if (latexCmd.includes('lualatex')) {
 			console.log('Wrapped: double compilation required');
 			_runCmd(latexCmd, true);
@@ -3151,7 +3157,7 @@ const wrapped = {
 			if (extraCmd && extraCmd.length) { extraCmd.filter(Boolean).forEach((cmd) => _runCmd(parseCmd(cmd), true)); }
 			_recycleFile(root + fileName + '.aux', true);
 			_recycleFile(root + fileName + '.log', true);
-			console.log('Wrapped: opening .pdf file at\n\t ' + output);
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .pdf file at\n\t ' + output); }
 			_run(output);
 			return true;
 		}
@@ -3169,7 +3175,7 @@ const wrapped = {
 	 * @returns {any}
 	*/
 	createHtmlIeReport: function ({ timePeriod, timeKey = null, fromDate = null, query = '', extraCmd = [], root = this.basePath }) {
-		if (this.settings.bOffline) { console.log('Wrapped: offline mode'); }
+		if (this.settings.bOffline && this.settings.logOpt.bBasic) { console.log('Wrapped: offline mode'); }
 		this.cleanRoot(root);
 		this.copyAssets(root);
 		this.copyDependencies();
@@ -3196,10 +3202,9 @@ const wrapped = {
 	 * @returns {string}
 	*/
 	formatHtmlIeReport: function (wrappedData, year, root = this.basePath) {
-		console.log('Wrapped: creating HTML IE-compatible report...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating HTML IE-compatible report...'); }
 		// Report
 		console.log(this.stats);
-		console.log(wrappedData);
 		console.log(wrappedData);
 		return { data: wrappedData, stats: this.stats };
 	},
@@ -3218,7 +3223,7 @@ const wrapped = {
 		 * @returns {boolean}
 		 */
 	compileHtmlIeReport: function compileLatexReport(report, timePeriod, extraCmd, root = this.basePath) {
-		console.log('Wrapped: compiling HTML IE-compatible report...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: compiling HTML IE-compatible report...'); }
 		const period = !timePeriod
 			? this.stats.time.first.date.getFullYear().toString() + '_' + this.stats.time.last.date.getFullYear().toString()
 			: null;
@@ -3234,7 +3239,7 @@ const wrapped = {
 		// Parse cmd
 		if (_isFile(output)) {
 			if (extraCmd && extraCmd.length) { extraCmd.filter(Boolean).forEach((cmd) => _runCmd(parseCmd(cmd), true)); }
-			console.log('Wrapped: opening .html file at\n\t ' + output);
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .html file at\n\t ' + output); }
 			utils.ShowHtmlDialog(0, 'file://' + output);
 			return true;
 		}
@@ -3276,7 +3281,7 @@ const wrapped = {
 	 * @returns {object}
 	*/
 	formatJsonReport: function (wrappedData) {
-		console.log('Wrapped: creating HTML IE-compatible report...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating HTML IE-compatible report...'); }
 		return { data: wrappedData, stats: this.stats };
 	},
 	/**
@@ -3294,7 +3299,7 @@ const wrapped = {
 		 * @returns {boolean}
 		 */
 	compileJsonReport: function compileLatexReport(report, timePeriod, extraCmd, root = this.basePath) {
-		console.log('Wrapped: compiling JSON report...');
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: compiling JSON report...'); }
 		const period = !timePeriod
 			? this.stats.time.first.date.getFullYear().toString() + '_' + this.stats.time.last.date.getFullYear().toString()
 			: null;
@@ -3309,7 +3314,7 @@ const wrapped = {
 		// Parse cmd
 		if (_isFile(output)) {
 			if (extraCmd && extraCmd.length) { extraCmd.filter(Boolean).forEach((cmd) => _runCmd(parseCmd(cmd), true)); }
-			console.log('Wrapped: opening .json file at\n\t ' + output);
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .json file at\n\t ' + output); }
 			_run(output);
 			return true;
 		}
@@ -3391,7 +3396,7 @@ const wrapped = {
 		exifTool.some((et) => {
 			if (_isFile(et)) {
 				const command = ' -overwrite_original -r -ext jpg -ext gif -ext png -EXIF= ' + _q(root + 'img');
-				console.log('Wrapped: processing images with exiftool\n\texiftool.exe ' + command);
+				if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing images with exiftool\n\texiftool.exe ' + command); }
 				_runCmd('CMD /C ' + _q(et) + command, false);
 				return true;
 			}
@@ -3416,7 +3421,7 @@ const wrapped = {
 		];
 		pingo.some((pg) => {
 			if (_isFile(pg)) {
-				console.log('Wrapped: processing images with pingo\n\tpingo.exe -quiet ' + _q(root + 'img\\'));
+				if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing images with pingo\n\tpingo.exe -quiet ' + _q(root + 'img\\')); }
 				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\albums'), false);
 				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\artists'), false);
 				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\bg'), false);
@@ -3446,7 +3451,7 @@ const wrapped = {
 		ghostscript.some((gs) => {
 			if (_isFile(gs)) {
 				const command = ' -dCompatibilityLevel=1.5 -dAutoRotatePages=/None -dQUIET -sDEVICE=pdfwrite -o ' + _q(input + '_') + ' ' + _q(input);
-				console.log('Wrapped: processing pdf with ghostscript\n\t ' + gs.split('\\').pop() + command);
+				if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing pdf with ghostscript\n\t ' + gs.split('\\').pop() + command); }
 				_runCmd('CMD /C ' + _q(gs) + command, true);
 				if (_isFile(input + '_')) {
 					_copyFile(input + '_', input);

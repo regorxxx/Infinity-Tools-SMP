@@ -58,7 +58,13 @@ var newButtonsProperties = { // NOSONAR[global]
 		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
 		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
 		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
-	})]
+	})],
+	logOpt: ['Logging options', JSON.stringify({
+		bBasic: true,
+		bError: true,
+		bDebug: false,
+		bDebugQuery: false
+	}), { func: isJSON }],
 };
 newButtonsProperties.filePaths.push({ func: isJSON, forceDefaults: true }, newButtonsProperties.filePaths[1]);
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
@@ -85,6 +91,7 @@ addButton({
 							{ input: 'Artists images stub path (.jpg or .png). If it starts with .\\, will be relative to foobar profile folder.\n\nEnter TF expression:\n(\'%1\' will be replaced internally with the artist name)' },
 						tags: { bHide: true },
 						extraCmd: { bHide: true },
+						logOpt: { bHide: true }
 					},
 					{
 						bDynamicMenus:
@@ -128,6 +135,13 @@ addButton({
 								for (let key in filePaths) {
 									if (Object.hasOwn(wrapped.settings.filePaths, key)) {
 										wrapped.settings.filePaths[key] = filePaths[key];
+									}
+								}
+							} else if ('logOpt' === key) {
+								const logOpt = JSON.parse(this.buttonsProperties.logOpt[1]);
+								for (let key in logOpt) {
+									if (Object.hasOwn(wrapped.settings, key)) {
+										wrapped.settings[key] = logOpt[key];
 									}
 								}
 							}
@@ -177,6 +191,26 @@ addButton({
 										}
 									});
 								}
+							});
+						}
+						menu.newSeparator(menuName);
+						{
+							const subMenuName = menu.newMenu('Logging', menuName);
+							const logOpt = JSON.parse(this.buttonsProperties.logOpt[1]);
+							[
+								{ key: 'bBasic', entryText: 'Enable basic console logs' },
+								{ key: 'bError', entryText: 'Enable errors console logs' },
+								{ key: 'bDebug', entryText: 'Enable data output to console' },
+								{ key: 'bDebugQuery', entryText: 'Enable playlist queries to console' }
+							].forEach((opt) => {
+								menu.newEntry({
+									menuName: subMenuName, entryText: opt.entryText, func: () => {
+										wrapped.settings.logOpt[opt.key] = logOpt[opt.key] = !logOpt[opt.key];
+										this.buttonsProperties.logOpt[1] = JSON.stringify(logOpt);
+										overwriteProperties(this.buttonsProperties);
+									}
+								});
+								menu.newCheckMenuLast(() => logOpt[opt.key]);
 							});
 						}
 					}
@@ -256,6 +290,8 @@ addButton({
 			// Init wrapped settings
 			['bFilterGenres', 'bOffline', 'bServicesListens', 'highBpmHalveFactor', 'imgWait', 'imageStubPath']
 				.forEach((key) => wrapped.settings[key] = this.buttonsProperties[key][1]);
+			const logOpt = JSON.parse(this.buttonsProperties.logOpt[1]);
+			for (let key in logOpt) { wrapped.settings.logOpt[key] = logOpt[key]; }
 			const filePaths = JSON.parse(this.buttonsProperties.filePaths[1]);
 			for (let key in filePaths) {
 				if (Object.hasOwn(wrapped.settings.filePaths, key)) {
