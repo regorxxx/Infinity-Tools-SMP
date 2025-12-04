@@ -198,7 +198,7 @@ function loadButtonsFile(bStartup = false) {
 			},
 			{
 				name: 'Volume display', files:
-					['buttons_display_volume.js', 'separator', 'buttons_display_tf.js'],
+					['buttons_playback_volume.js', 'separator', 'buttons_display_tf.js'],
 			},
 			{
 				name: 'Status bar', files:
@@ -244,6 +244,7 @@ function loadButtonsFile(bStartup = false) {
 		['buttons_search_by_distance_customizable.js', 'buttons_music_map_customizable.js.'],
 		['buttons_search_by_distance_info.js', 'buttons_music_map_genre_explorer.js.'],
 		['buttons_search_by_distance_genre_explorer.js', 'buttons_music_map_genre_explorer.js.'],
+		['buttons_display_volume.js', 'buttons_playback_volume.js.'],
 	]);
 	buttonsPath = names
 		.map((name) => remap.has(name) ? remap.get(name) : name)
