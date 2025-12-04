@@ -1955,7 +1955,7 @@ const wrapped = {
 		if (!_isFolder(path)) { _createFolder(path); }
 		return Promise.parallel(
 			tracksData,
-			(track) => this.getTrackImg(toType(track.handle) === 'FbMetadbHandle' ? track.handle : track.handle[0])
+			(track) => this.getTrackImg(isArray(track.handle) ? track.handle[0] : track.handle)
 				.then((artPromise) => {
 					if (artPromise.image) {
 						const imgPath = path + _asciify(sanitize(track.title)).replace(/ /g, '').slice(0, 10).toLowerCase() + '.jpg';
