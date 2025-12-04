@@ -207,6 +207,16 @@ function loadButtonsFile(bStartup = false) {
 					['buttons_display_tf.js', 'separator', 'buttons_display_tf.js', 'separator', 'buttons_display_tf.js', 'separator', 'buttons_display_tf.js'],
 				properties: folders.xxx + 'presets\\Playlist Tools\\toolbars\\statusbar.json'
 			},
+			{
+				name: 'Playback controls', files:
+					['buttons_playback_random.js', 'separator', 'buttons_playback_prev.js', 'buttons_playback_play.js', 'buttons_playback_next.js', 'separator', 'buttons_playback_love.js'],
+				properties: folders.xxx + 'presets\\Playlist Tools\\toolbars\\playbackcontrol.json'
+			},
+			{
+				name: 'Track info', files:
+					['buttons_display_tf.js'],
+				properties: folders.xxx + 'presets\\Playlist Tools\\toolbars\\trackinfo.json'
+			},
 			{ name: 'Blank', files: [] }
 		].map((preset) =>
 			preset.files.every((file) => _isFile(folders.xxx + 'buttons\\' + file) || file.toLowerCase() === 'separator') ? preset : void (0)

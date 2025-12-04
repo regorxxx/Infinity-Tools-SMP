@@ -3,7 +3,7 @@
   "values": {
     "02.Toolbar color": -1,
     "03.Buttons' text color": -1,
-    "06.Buttons with background": true,
+    "06.Buttons' theme enabled": false,
     "15.Buttons' color": -1,
     "16.Buttons' transparency": 0,
     "19.Buttons' hover color": 4294967295.0,

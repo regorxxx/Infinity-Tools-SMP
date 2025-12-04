@@ -1,0 +1,29 @@
+{
+  "id": "properties",
+  "values": {
+    "02.Toolbar color": -1,
+    "03.Buttons' text color": -1,
+    "06.Buttons' theme enabled": false,
+    "15.Buttons' color": -1,
+    "18.Full size buttons": true,
+    "19.Buttons' hover color": 4294967295.0,
+    "20.Buttons' hover dynamic color": false,
+    "21.Buttons' hover gradient": false,
+    "22.Buttons' borders": false,
+    "19.Buttons' hover color": -1,
+    "25.UI icon scale": 1.2,
+    "26.UI text scale": 1.2,
+    "31.UI button position": "center",
+    "dtf0.Display area size": 100,
+    "dtf0.Fallback text": "%TITLE% - $if2([%ALBUM ARTIST%],[%ARTIST%])",
+    "dtf0.Follow now playing": true,
+    "dtf0.Font size scale": 1.2,
+    "dtf0.Font style": "Regular",
+    "dtf0.On click action": 1,
+    "dtf0.On click action argument": "",
+    "dtf0.Relative size (window)": true,
+    "dtf0.Text flags": 36101,
+    "dtf0.Title Format expression": "%TITLE% - $if2([%ALBUM ARTIST%],[%ARTIST%])"
+  },
+  "version": "1"
+}
