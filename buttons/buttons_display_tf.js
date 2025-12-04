@@ -1,5 +1,5 @@
 ﻿'use strict';
-//18/11/25
+//04/12/25
 
 /*
 	Volume controls and display
@@ -52,6 +52,7 @@ var newButtonsProperties = { // NOSONAR[global]
 		{ name: 'Playback time', settings: { tf: '[%playback_time% / ][%length%]', fallback: '- / -', onClick: 6 } },
 		{ name: 'Volume', settings: { tf: '#VOLUMEDB#', fallback: '#VOLUMEDB#', onClick: 5 } },
 		{ name: 'Playback stats', settings: { tf: '$if(%is_status_pane%,%artist% - %title%$crlf(),$if(%ispaused%,Paused,$if(%ISPLAYING%,Playing,Stopped)) | )%codec% $if($meta(pre_emphasis),\'(Pre-Emphasis) \')$if($info(hdcd),\'(HDCD) \')[| %trackdsp% ]| %bitrate% kbps | %samplerate% Hz | %channels% | %playback_time%[ / %length%]', fallback: sanitizeTagTfo(chars.loveEmojiV2), onClick: 1 } },
+		{ name: 'Track - Artist', settings: { tf: '%TITLE% - $if2([%ALBUM ARTIST%],[%ARTIST%])', fallback: '%TITLE% - $if2([%ALBUM ARTIST%],[%ARTIST%])', onClick: 1 } },
 		{ name: 'Selection stats (1)', settings: { tf: '#SELDURATION# / #SELSIZE#', fallback: '#SELDURATION# / #SELSIZE#', onClick: 1 } },
 		{ name: 'Selection stats (2)', settings: { tf: '#SELTRACKS# tracks', fallback: '#SELTRACKS# tracks', onClick: 1 } },
 		{ name: 'Playlist stats', settings: { tf: '#PLSTRACKS# tracks / #PLSDURATION#', fallback: '#PLSTRACKS# / #PLSDURATION#', onClick: 1 } }
