@@ -1,5 +1,5 @@
 ﻿'use strict';
-//13/10/25
+//01/12/25
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -53,7 +53,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_crc.js');
 /* global crc32:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global isInt:readable, isJSON:readable, isBoolean:readable, regExBool:readable, isString:readable, isStringWeak:readable, _t:readable, _p:readable, isArrayStrings:readable, round:readable, _q:readable, _b:readable, _bt:readable, _qCond:readable, range:readable, checkJsonProperties:readable */
+/* global isInt:readable, isJSON:readable, isBoolean:readable, regExBool:readable, isString:readable, isStringWeak:readable, _t:readable, _p:readable, isArrayStrings:readable, round:readable, _q:readable, _b:readable, _bt:readable, _qCond:readable, range:readable, checkJsonProperties:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
@@ -2168,7 +2168,7 @@ async function searchByDistance({
 							if (tempPlaylistLength >= playlistLength) { break; }
 						}
 						// Add items in reverse order to not recalculate new idx
-						const indexes = Object.keys(toAdd).sort((a, b) => a.localeCompare(b)).reverse();
+						const indexes = Object.keys(toAdd).sort(strNumCollator.compare).reverse();
 						if (indexes.length) {
 							let count = 0;
 							for (let idx of indexes) {
@@ -2747,9 +2747,9 @@ function calcDistance({ calcTags, handleTag }) {
 				const toGenreStyle = fromDiff.size < toDiff.size ? handleTag.genreStyle.set : calcTags.genreStyle.referenceSet;
 				const mapKey = [
 					...[
-						[...difference].sort((a, b) => a.localeCompare(b)).join(','),
-						[...toGenreStyle].sort((a, b) => a.localeCompare(b)).join(','),
-					].sort((a, b) => a.localeCompare(b))
+						[...difference].sort(strNumCollator.compare).join(','),
+						[...toGenreStyle].sort(strNumCollator.compare).join(','),
+					].sort(strNumCollator.compare)
 				].join(' -> ');
 				const mapValue = cacheLinkSet.get(mapKey); // Mean distance from entire set (A,B,C) to (X,Y,Z)
 				if (typeof mapValue !== 'undefined') {

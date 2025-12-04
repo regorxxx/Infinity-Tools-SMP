@@ -1,5 +1,5 @@
 ﻿'use strict';
-//13/10/25
+//01/12/25
 
 /* exported aggregateTagger */
 
@@ -8,7 +8,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global WshShell:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global _p:readable, round:readable */
+/* global _p:readable, round:readable, strNumCollator:readable */
 
 
 /**
@@ -51,7 +51,7 @@ function aggregateTagger(handleList, source = '[%RATING%]', destination = 'ALBUM
 	const dic = new Map();
 	const calculateStats = () => {
 		avg = sum / (countTotal || 1);
-		const dicEntries = [...dic.entries()].sort((a, b) => a[0].localeCompare(b[0], void(0), {numeric: true}));
+		const dicEntries = [...dic.entries()].sort((a, b) => strNumCollator.compare(a[0], b[0]));
 		median = void(0);
 		const half = Math.floor(countTotal / 2) + 1;
 		let acc = 0;

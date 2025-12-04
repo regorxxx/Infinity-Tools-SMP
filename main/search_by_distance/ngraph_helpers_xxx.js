@@ -1,5 +1,5 @@
 ﻿'use strict';
-//13/08/24
+//01/12/25
 
 /* exported calcMeanDistanceV2, calcCacheLinkSG, calcCacheLinkSGV2 , getAntiInfluences, getInfluences, getNodesFromPath */
 
@@ -13,7 +13,7 @@ try { // On foobar2000
 	include('..\\..\\helpers-external\\ngraph\\NBA.js');
 	/* global nba:readable */
 	include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-	/* global round:readable */
+	/* global round:readable, strNumCollator:readable */
 	/* global music_graph_descriptors:readable */
 } catch (e) { // eslint-disable-line no-unused-vars
 	// On browsers
@@ -227,7 +227,7 @@ function calcMeanDistance(myGraph, style_genre_reference, style_genre_new, influ
 				for (let style_genreNew of toStyleGenre) { // But we need the entire set of new genre/styles to check lowest distance
 					let jh_distance = Infinity; // We consider points are not linked by default
 					let jh_influenceDistance = 0;
-					const id = [style_genre, style_genreNew].sort((a, b) => a.localeCompare(b)).join('-'); // A-B and B-A are the same link
+					const id = [style_genre, style_genreNew].sort(strNumCollator.compare).join('-'); // A-B and B-A are the same link
 					const jh_link = cacheLink.get(id);
 					if (jh_link) { //toStyleGenre changes more, so first one...
 						jh_distance = jh_link[0];
@@ -325,7 +325,7 @@ function calcCacheLinkSGV2(myGraph, styleGenres /*new Set (['Rock', 'Folk', ...]
 						let { distance: ij_distance, influence: ij_antinfluenceDistance } = calcGraphDistance(myGraph, nodeList[i], nodeList[j], influenceMethod);
 						if (limit === -1 || ij_distance <= limit) {
 							// Sorting removes the need to check A-B and B-A later...
-							cache.set([nodeList[i], nodeList[j]].sort((a, b) => a.localeCompare(b)).join('-'), [ij_distance, ij_antinfluenceDistance]);
+							cache.set([nodeList[i], nodeList[j]].sort(strNumCollator.compare).join('-'), [ij_distance, ij_antinfluenceDistance]);
 						}
 						k++;
 						const progress = Math.floor(k / total * 4) * 25;

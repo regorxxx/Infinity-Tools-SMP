@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//01/12/25
 
 /*
 	Check Library Tags
@@ -58,7 +58,7 @@ include('..\\..\\helpers\\helpers_xxx_file.js');
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertyByKey:readable, getPropertiesPairs:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global isString:readable, isStringWeak:readable, isBoolean:readable, _asciify:readable */
+/* global isString:readable, isStringWeak:readable, isBoolean:readable, _asciify:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
@@ -656,7 +656,7 @@ function objectToPairs(inputObj) { // {A:[x,y],B:[z], ...} -> A,x;A,y;B,z;...
 		const arr = (Array.isArray(inputObj[key])
 			? inputObj[key]
 			: [...inputObj[key]]
-		).sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base', numeric: true }));
+		).sort(strNumCollator.compare);
 		for (let value of arr) {
 			if (value) { outputSet.add(key.toLowerCase() + ',' + value); }
 		}
@@ -675,7 +675,7 @@ function pairsToObj(inputStr, bSet = false) { // A,x;A,y;B,z;... -> {A:[x,y],B:[
 		if (!bSet) { outputObj[key].push(value); }
 		else { outputObj[key].add(value); }
 	});
-	if (!bSet) { for (const key in outputObj) { outputObj[key].sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base', numeric: true })); } }
+	if (!bSet) { for (const key in outputObj) { outputObj[key].sort(strNumCollator.compare); } }
 	return outputObj;
 }
 
@@ -689,7 +689,7 @@ function loadTagsExcluded(path) { // filter holes and remove duplicates
 	for (const key in obj) {
 		if (key !== key.toLowerCase()) {
 			obj[key.toLowerCase()] = [...new Set([...obj[key], ...(obj[key.toLowerCase()] || [])])]
-				.sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base', numeric: true }));
+				.sort(strNumCollator.compare);
 			delete obj[key];
 			bSave = true;
 		}

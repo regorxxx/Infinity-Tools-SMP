@@ -1,5 +1,5 @@
 ﻿'use strict';
-//11/08/25
+//01/12/25
 
 /* exported findStyleGenresMissingGraph , getNearestGenreStyles, getNearestGenreStylesV2 */
 
@@ -8,7 +8,7 @@
 include('..\\music_graph\\music_graph_xxx.js');
 /* global music_graph_descriptors_user:readable, musicGraph:readable, music_graph_descriptors:readable */
 include('..\\search_by_distance\\ngraph_helpers_xxx.js');
-/* global calcMeanDistanceV2:readable */
+/* global calcMeanDistanceV2:readable, strNumCollator:readable */
 
 // Similar genre/styles
 function getNearestNodes(fromNode, maxDistance, graph = musicGraph()) {
@@ -72,7 +72,7 @@ function findStyleGenresMissingGraph({ genreStyleFilter = [], genreStyleTag = ['
 	// Get node list (+ weak substitutions + substitutions + style cluster)
 	const nodeList = new Set(music_graph_descriptors.style_supergenre.flat(Infinity)).union(new Set(music_graph_descriptors.style_weak_substitutions.flat(Infinity))).union(new Set(music_graph_descriptors.style_substitutions.flat(Infinity))).union(new Set(music_graph_descriptors.style_cluster.flat(Infinity)));
 	// Compare (- user exclusions - graph exclusions)
-	const missing = [...tags.difference(nodeList).difference(tagValuesExcluded).difference(music_graph_descriptors.map_distance_exclusions)].sort((a, b) => a.localeCompare(b));
+	const missing = [...tags.difference(nodeList).difference(tagValuesExcluded).difference(music_graph_descriptors.map_distance_exclusions)].sort(strNumCollator.compare);
 	// Report
 	const userFile = folders.userHelpers + 'music_graph_descriptors_xxx_user.js';
 	const userFileNotFound = _isFile(userFile) ? '' : ' (not found)';

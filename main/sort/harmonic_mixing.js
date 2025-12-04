@@ -1,5 +1,5 @@
 ﻿'use strict';
-//30/09/25
+//02/12/25
 
 /* exported harmonicMixing, queryReplaceKeys, harmonicMixingCycle, harmonicMixingSort */
 /* global globTags:readable */
@@ -19,7 +19,7 @@ include('..\\..\\helpers\\camelot_wheel_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global _bt:readable, _p:readable */
+/* global _bt:readable, _p:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global getHandleListTags:readable */
 
@@ -30,7 +30,7 @@ function harmonicMixing({
 	keyTag = typeof globTags !== 'undefined' ? globTags.key : 'KEY',
 	patternOptions = {},
 	bShuffleInput = true,
-	bSendToPls = true,
+	bSendToActivePls = true,
 	bDoublePass = false,
 	bDebug = false,
 } = {}) {
@@ -48,7 +48,7 @@ function harmonicMixing({
 	const { selectedHandlesArray, error } = findTracksWithPattern({ selItems, pattern, keyTag, playlistLength, bShuffleInput, bDoublePass, bDebug });
 	if (!error) {
 		const handleList = new FbMetadbHandleList(selectedHandlesArray);
-		if (bSendToPls) { return sendToPlaylist(handleList, playlistName); }
+		if (bSendToActivePls) { return sendToPlaylist(handleList, playlistName); }
 		else { return handleList; }
 
 	} else {
@@ -65,7 +65,7 @@ function harmonicMixingCycle({
 	keyTag = typeof globTags !== 'undefined' ? globTags.key : 'KEY',
 	patternOptions = {},
 	bShuffleInput = true,
-	bSendToPls = true,
+	bSendToActivePls = true,
 	bDebug = false,
 } = {}) {
 	// Safety checks
@@ -77,12 +77,12 @@ function harmonicMixingCycle({
 	let pool = selItems.Clone();
 	let handleList = new FbMetadbHandleList();
 	while (pool.Count > 0) {
-		const newCycle = harmonicMixing({ keyTag, patternOptions, bShuffleInput, bDoublePass: false, bDebug, bSendToPls: false, playlistLength: cycleLength, selItems: pool });
+		const newCycle = harmonicMixing({ keyTag, patternOptions, bShuffleInput, bDoublePass: false, bDebug, bSendToActivePls: false, playlistLength: cycleLength, selItems: pool });
 		if (!newCycle) { break; }
 		newCycle.Convert().forEach((handle) => pool.Remove(handle));
 		handleList.InsertRange(handleList.Count, newCycle);
 	}
-	if (bSendToPls) { return sendToPlaylist(handleList, playlistName); }
+	if (bSendToActivePls) { return sendToPlaylist(handleList, playlistName); }
 	else { return handleList; }
 }
 
@@ -91,7 +91,7 @@ function harmonicMixingSort({
 	playlistName = 'Harmonic sort from ' + plman.GetPlaylistName(plman.ActivePlaylist),
 	keyTag = typeof globTags !== 'undefined' ? globTags.key : 'KEY',
 	bShuffleInput = true,
-	bSendToPls = true,
+	bSendToActivePls = true,
 	sortOrder = 1,
 	bDebug = false,
 } = {}) {
@@ -119,7 +119,7 @@ function harmonicMixingSort({
 	tfo += ')'.repeat(i); // Add closures!
 	if (bDebug) { console.log(tfo); }
 	handleList.OrderByFormat(fb.TitleFormat(tfo), sortOrder);
-	if (bSendToPls) { return sendToPlaylist(handleList, playlistName); }
+	if (bSendToActivePls) { return sendToPlaylist(handleList, playlistName); }
 	else { return handleList; }
 }
 
@@ -209,7 +209,7 @@ function findTracksWithPattern({ selItems, pattern, keyTag, playlistLength, bShu
 			}
 		}
 		// Add items in reverse order to not recalculate new idx
-		const indexes = Object.keys(toAdd).sort((a, b) => a.localeCompare(b)).reverse();
+		const indexes = Object.keys(toAdd).sort(strNumCollator.compare).reverse();
 		if (indexes.length) {
 			let count = 0;
 			for (let idx of indexes) {

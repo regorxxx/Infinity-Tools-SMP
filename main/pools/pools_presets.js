@@ -1,12 +1,12 @@
 ﻿'use strict';
-//19/11/25
+//01/12/25
 
 /* exported createPoolPresets */
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global globTags:readable, globQuery:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global _qCond:readable */
+/* global _qCond:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global queryJoin:readable, queryCombinations:readable */
 
@@ -1474,6 +1474,6 @@ function createPoolPresets({ size = 50 } = {}) {
 					smartShuffle: 'ARTIST'
 				}
 			}
-		].sort((a, b) => a.name.localeCompare(b.name, void(0), { sensitivity: 'base', numeric: true }))
+		].sort((a, b) => strNumCollator.compare(a.name, b.name))
 	];
 }

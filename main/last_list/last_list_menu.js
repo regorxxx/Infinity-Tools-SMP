@@ -1,5 +1,5 @@
 'use strict';
-//25/11/25
+//01/12/25
 
 /* exported _lastListMenu */
 
@@ -12,7 +12,7 @@ include('..\\..\\helpers\\helpers_xxx_file.js');
 include('..\\..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global isString:readable, isFunction:readable, capitalizeAll:readable */
+/* global isString:readable, isFunction:readable, capitalizeAll:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_tags_extra.js');
 /* global getSimilarDataFromFile:readable */
 
@@ -230,7 +230,7 @@ function _lastListMenu({ bSimulate = false, bDynamicMenu = false /* on SMP main 
 				const bSingle = tag.valSet.size <= 1;
 				const subMenu = bSingle ? menu.getMainMenuName() : menu.newMenu(tag.name);
 				if (tag.valSet.size === 0) { tag.valSet.add(''); }
-				[...tag.valSet].sort((a, b) => a.localeCompare(b, void(0), { sensitivity: 'base' })).forEach((val, i) => {
+				[...tag.valSet].sort(strNumCollator.compare).forEach((val, i) => {
 					menu.newEntry({
 						menuName: subMenu, entryText: bSingle ? tag.name + '\t[' + (capitalizeAll(val).cut(25) || (sel ? 'no tag' : 'no sel')) + ']' : capitalizeAll(val).cut(25), func: () => {
 							const url = buildUrl(tag, val);

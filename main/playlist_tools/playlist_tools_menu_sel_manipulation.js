@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/11/25
+//02/12/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable, entryMaxLength:readable */
 
@@ -217,7 +217,7 @@
 						if (selArgs.length) { selArgs.push({ name: 'sep' }); }
 						selArgs.push({
 							name: 'Harmonic mix (Camelot Wheel)', func: applyHarmonicMix, args: {
-								bSendToPls: false,
+								bSendToActivePls: false,
 								patternOptions: {
 									bRandomize: true,
 									bFillPerfectMatch: true
@@ -226,7 +226,7 @@
 						});
 						selArgs.push({
 							name: 'Harmonic cycle (Camelot Wheel)', func: applyHarmonicMix, args: {
-								bSendToPls: false,
+								bSendToActivePls: false,
 								isCycle: true,
 								patternOptions: {
 									movements: { // Values are percentages of the total sum
