@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/08/25
+//04/12/25
 
 /* exported camelotWheel */
 
@@ -267,6 +267,7 @@ const camelotWheel = function () {
 			return bMap ? new Map(entries) : entries;
 		},
 		hasKey(xy) {
+			if (!xy) { return false; }
 			return (typeof xy === 'object'
 				? (Object.hasOwn(xy, 'hour') && Object.hasOwn(xy, 'letter')
 					? keyNotation.has(xy.hour + xy.letter)
@@ -275,10 +276,12 @@ const camelotWheel = function () {
 			);
 		},
 		getKeyNotationObjectCamelot(xy) { // Retrieves camelot object
+			if (!xy) { return null; }
 			if (typeof xy === 'object') { return this.getKeyNotationObjectCamelot(xy.hour + xy.letter); }
 			return (this.hasKey(xy) ? { ...keyNotationObject.get(xy) } : null);
 		},
 		getKeyNotationObjectOpen(xy) { // Retrieves open key object
+			if (!xy) { return null; }
 			if (typeof xy === 'object') { return this.getKeyNotationObjectOpen(xy.hour + xy.letter); }
 			const x = this.getKeyNotationObjectCamelot(xy);
 			if (x) { this.translateObjectCamelotToOpen(x); }

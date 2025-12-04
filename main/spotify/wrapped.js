@@ -410,7 +410,7 @@ const wrapped = {
 							...fb.TitleFormat(_bt(globTags.rating))
 								.EvalWithMetadbs(new FbMetadbHandleList(track.handle)),
 							0
-						),
+						) || 0,
 						1
 					);
 					track.loved = fb.TitleFormat(globTags.isLoved)
@@ -473,6 +473,7 @@ const wrapped = {
 					delete bpm.x;
 					delete bpm.y;
 				});
+				data = data.filter((bpm) => !Number.isNaN(bpm.x));
 				data.sort((a, b) => b.listens - a.listens);
 				// Stats
 				this.computeBpmsStats(data);
@@ -519,6 +520,7 @@ const wrapped = {
 					delete key.x;
 					delete key.y;
 				});
+				data = data.filter((key) => key.key !== null);
 				data.sort((a, b) => b.listens - a.listens);
 				// Stats
 				this.computeKeyStats(data);
