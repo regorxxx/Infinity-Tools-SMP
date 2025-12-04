@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//03/12/25
 
 /* exported createButtonsMenu, importSettingsMenu */
 
@@ -12,7 +12,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable, deleteProperties:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global require:readable, capitalizeAll:readable, round:readable, _p:readable, capitalize:readable, _b:readable */
+/* global require:readable, capitalizeAll:readable, round:readable, _p:readable, capitalize:readable, _b:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global findRecursiveFile:readable, _open:readable, _isFile:readable, utf8:readable, _save:readable, _isFolder:readable, _createFolder:readable, WshShell:readable, _explorer:readable, getFiles:readable, _moveFile:readable, popup:readable */
 include('..\\..\\helpers\\helpers_xxx_UI.js');
@@ -33,9 +33,9 @@ function createButtonsMenu(name) {
 	menu.newEntry({ entryText: 'Toolbar configuration:', func: null, flags: MF_GRAYED });
 	menu.newSeparator();
 	if (!_isFolder(folders.data)) { _createFolder(folders.data); }
-	const notAllowedDup = new Set(['buttons_playlist_tools.js', 'buttons_playlist_history.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_device_priority.js', 'buttons_tags_save_tags.js', 'buttons_tags_fingerprint_chromaprint.js', 'buttons_tags_fingerprint_fooid.js', 'buttons_search_fingerprint_chromaprint.js', 'buttons_search_fingerprint_chromaprint_fast.js', 'buttons_search_fingerprint_fooid.js', 'buttons_fingerprint_tools.js', 'buttons_listenbrainz_tools.js', 'buttons_device_switcher.js', 'buttons_playlist_history.js', 'buttons_lastfm_tools.js', 'buttons_utils_autobackup.js', 'buttons_utils_volume.js']);
+	const notAllowedDup = new Set(['buttons_device_priority.js', 'buttons_device_switcher.js', 'buttons_fingerprint_tools.js', 'buttons_lastfm_tools.js', 'buttons_listenbrainz_tools.js', 'buttons_music_map_basic.js', 'buttons_playback_love.js', 'buttons_playback_next.js', 'buttons_playback_order.js', 'buttons_playback_pause.js', 'buttons_playback_play.js', 'buttons_playback_prev.js', 'buttons_playback_random.js', 'buttons_playback_stop.js', 'buttons_playback_volume.js', 'buttons_playlist_history.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_tools.js', 'buttons_stats_wrapped.js', 'buttons_tags_save_tags.js', 'buttons_utils_autobackup.js']);
 	const requirePlaylistTools = new Set(['buttons_playlist_tools_macros.js', 'buttons_playlist_tools_macro_custom.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_tools_submenu_custom.js']);
-	const subCategories = ['_fingerprint_', '_listenbrainz_', '_music_map', '_search_', '_tags_', '_playlist_tools', '_playlist_', '_stats_', '_device_', '_display_', '_lastfm_', '_utils_', '_others_']; // By order of priority if it matches multiple strings
+	const subCategories = ['_fingerprint_', '_listenbrainz_', '_music_map', '_search_', '_tags_', '_playlist_tools', '_playlist_', '_stats_', '_device_', '_display_', '_lastfm_', '_utils_', '_playback_', '_others_']; // By order of priority if it matches multiple strings
 	const buttonsPathNames = new Set(buttonsPath.map((path) => { return path.split('\\').pop(); }));
 	function isAllowed(fileName) { return !notAllowedDup.has(fileName) || !buttonsPathNames.has(fileName); }
 	function isAllowedV2(fileName) { return !requirePlaylistTools.has(fileName) || buttonsPathNames.has('buttons_playlist_tools.js'); }
@@ -46,6 +46,7 @@ function createButtonsMenu(name) {
 			case '_fingerprint_': return 'Fingerprint Tools';
 			case '_lastfm_':
 			case '_listenbrainz_': return 'ListenBrainz && Last.fm';
+			case '_playback_': return 'Playback control';
 			case '_playlist_': return 'Playlist handling';
 			case '_playlist_tools': return 'Playlist Tools';
 			case '_others_': return 'Other tools';
@@ -67,7 +68,7 @@ function createButtonsMenu(name) {
 		}))]
 			.filter(Boolean)
 			.map(parseSubMenuFolder)
-			.sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base' }))
+			.sort(strNumCollator.compare)
 			.forEach((subMenuFolder) => menu.findOrNewMenu(subMenuFolder, subMenu));
 		files.forEach((path) => {
 			const fileName = path.split('\\').pop();
@@ -225,7 +226,7 @@ function createButtonsMenu(name) {
 					console.log('Toolbar (' + window.Name + '): Selected color ->\n\t Android: ' + barProperties.textColor[1] + ' - RGB: ' + Chroma(barProperties.textColor[1]).rgb());
 					buttonsBar.config.textColor = barProperties.textColor[1]; // buttons_xxx.js
 				}
-				forEachButton((button) => {	button.clearIconCache(); });
+				forEachButton((button) => { button.clearIconCache(); });
 				overwriteProperties(barProperties);
 				window.Repaint();
 			}
@@ -251,7 +252,7 @@ function createButtonsMenu(name) {
 				buttonsBar.config.bDynHoverColor = barProperties.bDynHoverColor[1] = !barProperties.bDynHoverColor[1]; // buttons_xxx.js
 				overwriteProperties(barProperties);
 				window.Repaint();
-			}, flags: !barProperties.bBgButtons[1] && (!barProperties.bOnNotifyColors[1] || buttonsBar.config.hoverColor === -1)  ? MF_STRING : MF_GRAYED
+			}, flags: !barProperties.bBgButtons[1] && (!barProperties.bOnNotifyColors[1] || buttonsBar.config.hoverColor === -1) ? MF_STRING : MF_GRAYED
 		});
 		menu.newCheckMenuLast(() => barProperties.bDynHoverColor[1] && (!barProperties.bOnNotifyColors[1] || buttonsBar.config.hoverColor === -1));
 		menu.newEntry({
@@ -476,10 +477,12 @@ function createButtonsMenu(name) {
 				: buttonsBar.config.textPosition;
 			const subMenuName = menu.newMenu(
 				buttonsBar.config.bIconMode
-					? 'Icon position...' + '\t' + _b(capitalize(currPos))
-					: 'Text position...' + '\t' + _b(capitalize(currPos))
+					? 'Icon position' + '\t' + _b(capitalize(currPos))
+					: 'Text position' + '\t' + _b(capitalize(currPos))
 				, menuName);
 			const options = buttonsBar.config.bIconMode ? ['top', 'bottom', 'center'] : ['top', 'bottom', 'left', 'right'];
+			menu.newEntry({ menuName: subMenuName, entryText: 'Relative to button\'s size:', flags: MF_GRAYED });
+			menu.newSeparator(subMenuName);
 			options.forEach((o) => {
 				const pos = buttonsBar.config.bIconMode
 					? o === 'top' ? 'bottom' : o.replace('bottom', 'top')
@@ -498,6 +501,25 @@ function createButtonsMenu(name) {
 						? buttonsBar.config.textPosition.replace(/left|right/, 'center')
 						: buttonsBar.config.textPosition
 				);
+			}, options.length);
+		}
+		{
+			const currPos = buttonsBar.config.buttonPosition;
+			const subMenuName = menu.newMenu('Button position' + '\t' + _b(capitalize(currPos)), menuName);
+			menu.newEntry({ menuName: subMenuName, entryText: 'Relative to panel\'s size:', flags: MF_GRAYED });
+			menu.newSeparator(subMenuName);
+			const options = ['left', 'center'];
+			options.forEach((o) => {
+				menu.newEntry({
+					menuName: subMenuName, entryText: capitalize(o), func: () => {
+						buttonsBar.config.buttonPosition = barProperties.buttonPosition[1] = o;
+						overwriteProperties(barProperties);
+						window.Reload();
+					}
+				});
+			});
+			menu.newCheckMenuLast(() => {
+				return options.indexOf(currPos);
 			}, options.length);
 		}
 		menu.newSeparator(menuName);
