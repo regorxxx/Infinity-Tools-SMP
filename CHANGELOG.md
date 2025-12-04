@@ -8,6 +8,7 @@
 ### Added
 - Playlist Tools\Pools: modified some of the default presets and added new ones.
 - Display TF button: actions support for [Library-Tree-SMP](https://github.com/regorxxx/Library-Tree-SMP).
+- Display TF button: new default presets.
 - Wrapped: exposed track album imgs processing timeout as setting.
 - Wrapped: exposed logging settings.
 ### Changed
