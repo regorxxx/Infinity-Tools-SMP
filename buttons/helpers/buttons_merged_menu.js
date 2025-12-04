@@ -3,7 +3,7 @@
 
 /* exported createButtonsMenu, importSettingsMenu */
 
-/* global buttonsPath:readable, buttonsBar:readable, barProperties:readable, buttonStates:readable, buttonSizeCheck:readable,moveButton:readable, addButtonSeparator:readable, showButtonReadme:readable, forEachButton:readable */
+/* global buttonsPath:readable, buttonsBar:readable, barProperties:readable, buttonStates:readable, buttonSizeCheck:readable,moveButton:readable, addButtonSeparator:readable, showButtonReadme:readable, forEachButton:readable, addButtonSpacer:readable */
 
 include('..\\..\\helpers\\menu_xxx.js');
 /* global _menu:readable */
@@ -102,6 +102,15 @@ function createButtonsMenu(name) {
 				const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
 				_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
 				const newKeys = Object.keys(addButtonSeparator());
+				buttonsBar.listKeys.push(newKeys);
+			}
+		});
+		menu.newEntry({
+			menuName: subMenu, entryText: 'Toolbar spacer', func: () => {
+				buttonsPath.push('spacer');
+				const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
+				_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
+				const newKeys = Object.keys(addButtonSpacer());
 				buttonsBar.listKeys.push(newKeys);
 			}
 		});

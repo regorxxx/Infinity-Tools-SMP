@@ -6,7 +6,8 @@
 
 ## [Unreleased][]
 ### Added
-- UI: experimental buttons alignment settings at toolbar contextual menu (R. Click). By default it uses 'Left' (previous behaviour). See [Issue 3](https://github.com/regorxxx/Infinity-Tools-SMP/issues/3)
+- UI: experimental buttons alignment settings at toolbar contextual menu (R. Click). By default it uses 'Left' (previous behaviour). See [Issue 3](https://github.com/regorxxx/Infinity-Tools-SMP/issues/3).
+- UI: added button spacers, with a size of 20 px scaled with DPI. They can be added the same than separators, at 'Add button' submenu. Multiple spacers can also be stacked to achieve desired width. See [Issue 3](https://github.com/regorxxx/Infinity-Tools-SMP/issues/3).
 - Playlist Tools\Pools: modified some of the default presets and added new ones.
 - Display TF button: actions support for [Library-Tree-SMP](https://github.com/regorxxx/Library-Tree-SMP).
 - Display TF button: new default presets.

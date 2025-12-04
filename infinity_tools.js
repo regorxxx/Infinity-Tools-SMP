@@ -15,7 +15,7 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 {
 	const dependencies = [
 		'helpers\\buttons_xxx.js',
-		/* global buttonsBar:readable, addButtonSeparator:readable, VK_CONTROL:readable, VK_LWIN:readable, forEachButton:readable, ColourTypeDUI:readable, ColourTypeCUI:readable */
+		/* global buttonsBar:readable, addButtonSeparator:readable, VK_CONTROL:readable, VK_LWIN:readable, forEachButton:readable, ColourTypeDUI:readable, ColourTypeCUI:readable, addButtonSpacer:readable */
 		'helpers\\helpers_xxx.js',
 		/* global globSettings:readable, folders:readable, globFonts:readable, DT_VCENTER:readable, DT_CENTER:readable, DT_END_ELLIPSIS:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, checkUpdate:readable , globProfiler:readable */
 		'helpers\\helpers_xxx_foobar.js',
@@ -280,6 +280,10 @@ const includeButton = (() => {
 			globProfiler.Print('button - ' + buttonPath.split('\\').pop());
 		} else if (buttonPath.toLowerCase().endsWith('separator')) {
 			const newKeys = Object.keys(addButtonSeparator());
+			buttonsBar.listKeys.push(newKeys);
+			globProfiler.Print('button - ' + buttonPath.split('\\').pop());
+		} else if (buttonPath.toLowerCase().endsWith('spacer')) {
+			const newKeys = Object.keys(addButtonSpacer());
 			buttonsBar.listKeys.push(newKeys);
 			globProfiler.Print('button - ' + buttonPath.split('\\').pop());
 		} else {

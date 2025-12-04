@@ -1,7 +1,7 @@
 ﻿'use strict';
 //04/12/25
 
-/* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme */
+/* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer */
 
 /* global buttonsPath:readable, barProperties:readable */
 include('helpers_xxx.js');
@@ -64,7 +64,8 @@ buttonsBar.config = {
 	bDynHoverColor: true,
 	bBorders: true,
 	hiddenTimeout: 2000,
-	darkMode: 0
+	darkMode: 0,
+	spacerSize: 20
 };
 buttonsBar.config.default = Object.fromEntries(Object.entries(buttonsBar.config));
 // Drag n drop (internal use)
@@ -420,7 +421,7 @@ function ThemedButton({
 		const textCalculated = bIconMode
 			? ''
 			: isFunction(this.text) ? this.text(this) : this.text;
-		if (bIconMode && !this.isSeparator) {
+		if (bIconMode && !this.isSeparator && !this.isSpacer) {
 			w = 30;
 			w *= buttonsBar.config.scale;
 		}
@@ -463,6 +464,8 @@ function ThemedButton({
 			} else {
 				gr.DrawLine(this.currX + _scale(1), this.currY + this.currH / 2, (bAlign ? Math.min(this.currW, window.Width) : window.Width) - 2 * _scale(1), this.currY + this.currH / 2, _scale(1), opaqueColor(textColor, 50));
 			}
+			return;
+		} else if (this.isSpacer) {
 			return;
 		}
 		if (buttonsBar.useThemeManager()) { this.g_theme.DrawThemeBackground(gr, this.currX, this.currY, this.currW, this.currH); }
@@ -1354,6 +1357,16 @@ function addButtonSeparator() {
 		'separator': new ThemedButton({
 			coordinates: { x: 0, y: 0, w: _scale(4), h: 22 },
 			func: null, description: null, variables: { isSeparator: true }
+		}),
+	});
+}
+
+function addButtonSpacer(w = buttonsBar.config.spacerSize) {
+	buttonsBar.list.push({});
+	return addButton({
+		'spacer': new ThemedButton({
+			coordinates: { x: 0, y: 0, w: _scale(w), h: 22 },
+			func: null, description: null, variables: { isSpacer: true }
 		}),
 	});
 }
