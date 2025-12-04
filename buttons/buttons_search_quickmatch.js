@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//01/12/25
 
 /*
 	Quickmatch same....
@@ -19,7 +19,7 @@ include('..\\helpers\\buttons_xxx_menu.js');
 include('..\\helpers\\menu_xxx_extras.js');
 /* global _createSubMenuEditEntries:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, _t:readable, _b:readable, _p:readable, capitalizeAll:readable */
+/* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, _t:readable, _b:readable, _p:readable, capitalizeAll:readable, strNumCollator:readable */
 include('..\\helpers\\helpers_xxx_file.js');
 /* global _isFile:readable, utf8:readable, _jsonParseFileCheck:readable, _foldPath:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
@@ -316,7 +316,7 @@ function quickmatchMenu() {
 				const bSingle = queryObj.valSet.size <= 1;
 				const menuName = bSingle ? menu.getMainMenuName() : menu.newMenu(queryObj.name);
 				if (queryObj.valSet.size === 0) { queryObj.valSet.add(''); }
-				[...queryObj.valSet].sort((a, b) => a.localeCompare(b, void(0), { sensitivity: 'base' })).forEach((tagVal, i) => {
+				[...queryObj.valSet].sort(strNumCollator.compare).forEach((tagVal, i) => {
 					menu.newEntry({
 						menuName, entryText: bSingle ? queryObj.name + '\t[' + (capitalizeAll(tagVal).cut(25) || (sel ? 'no tag' : 'no sel')) + ']' : capitalizeAll(tagVal).cut(25), func: () => {
 							let query = queryJoin(queryObj.tf.map((key) => key + ' IS ' + tagVal.toLowerCase()), 'OR');

@@ -1,5 +1,5 @@
 'use strict';
-//25/11/25
+//01/12/25
 
 /* exported listenBrainzMenu */
 
@@ -10,7 +10,7 @@ include('..\\..\\helpers\\helpers_xxx_input.js');
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global WshShell:readable, _isFile:readable, _jsonParseFileCheck:readable, utf8:readable, _jsonParseFileCheck:readable, _jsonParseFileCheck:readable, _runCmd:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global _b:readable, _t:readable, _q:readable, _p:readable, _asciify:readable, isArrayEqual:readable, isUUID:readable, range:readable, isString:readable, capitalizeAll:readable */
+/* global _b:readable, _t:readable, _q:readable, _p:readable, _asciify:readable, isArrayEqual:readable, isUUID:readable, range:readable, isString:readable, capitalizeAll:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global overwriteProperties:readable */
 include('..\\..\\helpers\\buttons_xxx_menu.js');
@@ -614,7 +614,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 						menu.newSeparator(subMenu);
 					}
 					if (tag.valSet.size === 0) { tag.valSet.add(''); }
-					[...tag.valSet].sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base' })).forEach((val, i) => {
+					[...tag.valSet].sort(strNumCollator.compare).forEach((val, i) => {
 						menu.newEntry({
 							menuName: subMenu, entryText: bSingle ? tag.name + '\t[' + (capitalizeAll(val).cut(20) || (sel ? 'no tag' : 'no sel')) + ']' : capitalizeAll(val).cut(20), func: () => {
 								switch (tag.type) {
@@ -1046,7 +1046,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 						break;
 					case 'name':
 					default:
-						sortFunc = (a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase(), void (0), { sensitivity: 'base' });
+						sortFunc = (a, b) => strNumCollator.compare(a.title, b.title);
 				}
 				playlists.sort(sortFunc);
 				const plsMenus = range(0, Math.ceil(count / 10) - 1).map((idx) => {

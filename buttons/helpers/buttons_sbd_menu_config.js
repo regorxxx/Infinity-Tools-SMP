@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//01/12/25
 
 /* exported createConfigMenu */
 
@@ -13,7 +13,7 @@ include('..\\..\\helpers\\helpers_xxx_file.js');
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global overwriteProperties:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global capitalize:readable, capitalizeAll:readable, isString:readable, _p:readable , isArrayEqual:readable, range:readable, _qCond:readable, forEachNested:readable */
+/* global capitalize:readable, capitalizeAll:readable, isString:readable, _p:readable , isArrayEqual:readable, range:readable, _qCond:readable, forEachNested:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_time.js');
 include('..\\..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
@@ -1615,7 +1615,7 @@ function createConfigMenu(parent) {
 							}).then(() => {
 								console.log('Times executed:\t' + times);
 								console.log('Average runtime:\t' + stats.total / times + ' ms');
-								stats.steps.sort((a, b) => a.name.localeCompare(b.name, void (0), { sensitivity: 'base' })).forEach((s) => console.log('\t' + s.name + ':\t' + s.acc / times + ' ms')); // NOSONAR
+								stats.steps.sort((a, b) => strNumCollator.compare(a.name, b.name)).forEach((s) => console.log('\t' + s.name + ':\t' + s.acc / times + ' ms')); // NOSONAR
 							});
 
 						}

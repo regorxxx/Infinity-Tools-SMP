@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/10/25
+//01/12/25
 
 /* exported graphInfoMenu */
 
@@ -9,7 +9,7 @@ include('..\\..\\helpers\\buttons_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global _p:readable, capitalize:readable, capitalizeAll:readable, isStringWeak: readable, round:readable  */
+/* global _p:readable, capitalize:readable, capitalizeAll:readable, isStringWeak: readable, round:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist: readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
@@ -89,7 +89,7 @@ function graphInfoMenu() {
 				const bSingle = entry.valSet.size <= 1;
 				const subMenuName = bSingle ? menuName : menu.newMenu(entry.name, menuName);
 				if (entry.valSet.size === 0) { entry.valSet.add(''); }
-				[...entry.valSet].sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base' })).forEach((tagVal, i) => {
+				[...entry.valSet].sort(strNumCollator.compare).forEach((tagVal, i) => {
 					menu.newEntry({
 						menuName: subMenuName,
 						entryText: bSingle
@@ -252,7 +252,7 @@ function graphInfoMenu() {
 					menu.newSeparator(subMenuName);
 				}
 				if (entry.valSet.size === 0) { entry.valSet.add(''); }
-				[...entry.valSet].sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base' })).forEach((tagVal, i) => {
+				[...entry.valSet].sort(strNumCollator.compare).forEach((tagVal, i) => {
 					menu.newEntry({
 						menuName: subMenuName,
 						entryText: bSingle
@@ -307,7 +307,7 @@ function graphInfoMenu() {
 					menu.newSeparator(subMenuName);
 				}
 				if (entry.valSet.size === 0) { entry.valSet.add(''); }
-				[...entry.valSet].sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base' })).forEach((tagVal, i) => {
+				[...entry.valSet].sort(strNumCollator.compare).forEach((tagVal, i) => {
 					menu.newEntry({
 						menuName: subMenuName,
 						entryText: bSingle
@@ -364,7 +364,7 @@ function graphInfoMenu() {
 					menu.newSeparator(subMenuName);
 				}
 				if (entry.valSet.size === 0) { entry.valSet.add(''); }
-				[...entry.valSet].sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base' })).forEach((tagVal, i) => {
+				[...entry.valSet].sort(strNumCollator.compare).forEach((tagVal, i) => {
 					menu.newEntry({
 						menuName: subMenuName,
 						entryText: bSingle
@@ -420,7 +420,7 @@ function graphInfoMenu() {
 					menu.newSeparator(subMenuName);
 				}
 				if (entry.valSet.size === 0) { entry.valSet.add(''); }
-				[...entry.valSet].sort((a, b) => a.localeCompare(b, void (0), { sensitivity: 'base' })).forEach((tagVal, i) => {
+				[...entry.valSet].sort(strNumCollator.compare).forEach((tagVal, i) => {
 					menu.newEntry({
 						menuName: subMenuName,
 						entryText: bSingle
