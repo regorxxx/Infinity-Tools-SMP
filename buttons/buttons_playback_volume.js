@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/09/25
+//03/12/25
 
 /*
 	Volume controls and display
@@ -107,7 +107,7 @@ addButton({
 				}, 100);
 			},
 			on_mouse_lbtn_dblclk: function () {
-				if ([buttonStates.down, buttonStates.hover].includes(this.state)) { fb.Volume = 0;}
+				if ([buttonStates.down, buttonStates.hover].includes(this.state)) { fb.Volume = 0; }
 			}
 		}
 	}),
@@ -117,12 +117,11 @@ addButton({
 		func: function (mask) {
 			if (mask === MK_SHIFT) {
 				settingsMenu(
-					this, true, ['buttons_display_volume.js'], void (0),
+					this, true, ['buttons_playback_volume.js'], void (0),
 					{
-						voldB:
-							(value) => {
-								this.adjustButtonWidth(value ? ' -100 dB ' : ' 100 ', 8 * _scale(1, false) / _scale(buttonsBar.config.scale));
-							}
+						voldB: (value) => {
+							this.adjustButtonWidth(value ? ' -100 dB ' : ' 100 ', 8 * _scale(1, false) / _scale(buttonsBar.config.scale));
+						}
 					}
 				).btn_up(this.currX, this.currY + this.currH);
 			} else if (!this.isInput) { this.startInput(); }
@@ -219,7 +218,7 @@ addButton({
 							this.setTimeout();
 							this.inputInterval = setInterval(() => {
 								this.text = this.text.includes('|')
-									? this.text.replace(/\|/gi,'')
+									? this.text.replace(/\|/gi, '')
 									: this.text.replace(/(\d+)/, '$1|');
 								this.repaint();
 							}, 400);
