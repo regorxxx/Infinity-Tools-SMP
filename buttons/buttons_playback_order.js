@@ -48,7 +48,7 @@ addButton({
 		icon: function () {
 			switch (plman.PlaybackOrder) {
 				case PlaybackOrder.Default: return '\uf064';
-				case PlaybackOrder.RepeatPlaylist: return '\uf079' + 'ᵖˡᵃʸˡᶦˢᵗ';
+				case PlaybackOrder.RepeatPlaylist: return '\uf079' + 'ᵖˡˢᵗ';
 				case PlaybackOrder.RepeatTrack: return '\uf079' + 'ᵗʳᵃᶜᵏ';
 				case PlaybackOrder.Random: return chars.shuffle;
 				case PlaybackOrder.ShuffleTracks: return chars.shuffle + 'ᵗʳᵃᶜᵏˢ';
