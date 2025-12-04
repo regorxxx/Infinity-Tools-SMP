@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//04/12/25
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme */
 
@@ -298,7 +298,21 @@ function ThemedButton({
 		return this.bHeadlessMode && !this.headlessModeTempShow;
 	};
 
+	this.extractColor = function (type, state) {
+		if (Object.hasOwn(this, 'colors') && Object.hasOwn(this.colors, type)) {
+			const textColor = isFunction(this.colors[type])
+				? this.colors[type](this, state)
+				: this.colors[type];
+			return typeof textColor !== 'undefined'
+				? textColor
+				: null;
+		}
+		return null;
+	};
+
 	this.getHoverColor = function (state) {
+		const buttonColor = this.extractColor('hover', state);
+		if (buttonColor !== null) { return buttonColor; }
 		const darkTheme = buttonsBar.config.darkMode === 0
 			? Object.hasOwn(window, 'IsDark') ? window.IsDark : false
 			: buttonsBar.config.darkMode === 1;
@@ -320,6 +334,8 @@ function ThemedButton({
 	};
 
 	this.getBorderColor = function () {
+		const buttonColor = this.extractColor('border');
+		if (buttonColor !== null) { return buttonColor; }
 		const darkTheme = buttonsBar.config.darkMode === 0
 			? Object.hasOwn(window, 'IsDark') ? window.IsDark : false
 			: buttonsBar.config.darkMode === 1;
@@ -333,6 +349,8 @@ function ThemedButton({
 	};
 
 	this.getTextColor = function (state) {
+		const buttonColor = this.extractColor('text', state);
+		if (buttonColor !== null) { return buttonColor; }
 		const bDrawBackground = buttonsBar.config.partAndStateID === 1;
 		if (buttonsBar.config.textColor === -1 && (!buttonsBar.useThemeManager() || !bDrawBackground) && [buttonStates.down, buttonStates.hover].includes(state)) {
 			const hover = this.getHoverColor(state);
@@ -1058,7 +1076,7 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 				if (button !== buttonsBar.move.btn) { button.moveX = null; button.moveY = null; }
 			});
 		} else {
-			forEachButton((button) => {	button.moveX = null; button.moveY = null; });
+			forEachButton((button) => { button.moveX = null; button.moveY = null; });
 			for (let key in buttonsBar.move.rec) { if (Object.hasOwn(buttonsBar.move.rec, key)) { buttonsBar.move.rec[key] = null; } }
 			if (mask !== MK_RBUTTON) {
 				buttonsBar.move.bIsMoving = false;
@@ -1114,7 +1132,7 @@ addEventListener('on_mouse_leave', () => {
 		});
 		if (bDone) {
 			setTimeout(() => {
-				forEachButton((button) => {	button.bIconModeExpand = false; });
+				forEachButton((button) => { button.bIconModeExpand = false; });
 				window.Repaint();
 			}, 200);
 		}
@@ -1224,7 +1242,7 @@ addEventListener('on_focus', (is_focused) => {
 
 addEventListener('on_colours_changed', () => {
 	forEachButton((button) => {
-		if (button.iconImage) {	button.clearIconCache(); }
+		if (button.iconImage) { button.clearIconCache(); }
 	});
 	window.Repaint();
 });
