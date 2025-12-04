@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//04/12/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -15,7 +15,7 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 {
 	const dependencies = [
 		'helpers\\buttons_xxx.js',
-		/* global buttonsBar:readable, addButtonSeparator:readable, VK_CONTROL:readable, VK_LWIN:readable, forEachButton:readable */
+		/* global buttonsBar:readable, addButtonSeparator:readable, VK_CONTROL:readable, VK_LWIN:readable, forEachButton:readable, ColourTypeDUI:readable, ColourTypeCUI:readable */
 		'helpers\\helpers_xxx.js',
 		/* global globSettings:readable, folders:readable, globFonts:readable, DT_VCENTER:readable, DT_CENTER:readable, DT_END_ELLIPSIS:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, checkUpdate:readable , globProfiler:readable */
 		'helpers\\helpers_xxx_foobar.js',
@@ -314,7 +314,8 @@ if (barProperties.bLoadAsync[1]) {
 
 addEventListener('on_paint', (gr) => {
 	if (!buttonsPath.length) {
-		gr.GdiDrawText('L. Click to load a preset / R. Click to add buttons manually', _gdiFont(globFonts.standard.name, _scale(globFonts.standard.size)), 0xFF000000, 0, 0, window.Width, window.Height, DT_VCENTER | DT_CENTER | DT_END_ELLIPSIS | DT_CALCRECT | DT_NOPREFIX); // Font is being cached, no problems here...
+		const textColor = window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text);
+		gr.GdiDrawText('L. Click to load a preset / R. Click to add buttons manually', _gdiFont(globFonts.standard.name, _scale(globFonts.standard.size)), textColor, 0, 0, window.Width, window.Height, DT_VCENTER | DT_CENTER | DT_END_ELLIPSIS | DT_CALCRECT | DT_NOPREFIX); // Font is being cached, no problems here...
 	}
 });
 
@@ -391,7 +392,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 				if (bar.bToolbar) { bar.toolbarColor = main; }
 				if (bar.textColor !== -1 && bar.bToolbar) {
 					bar.textColor = mostContrastColor(bar.toolbarColor).color;
-					forEachButton((button) => {	button.clearIconCache(); });
+					forEachButton((button) => { button.clearIconCache(); });
 				}
 				if (bar.buttonColor !== -1) { bar.buttonColor = note; }
 				if (bar.hoverColor !== -1) { bar.hoverColor = mainAlt; }

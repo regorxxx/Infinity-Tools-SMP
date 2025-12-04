@@ -11,6 +11,7 @@
 - Wrapped: exposed track album imgs processing timeout as setting.
 - Wrapped: exposed logging settings.
 ### Changed
+- UI: adjusted default colors to foobar2000's color settings and dark/light mode of toolbar when there is not button added yet.
 - Playlist Tools: cut max entry length at 40 chars (previously 30).
 - Wrapped: now supports locale file tags for playcount by region and city, if available; this data is merged to the one provided by [World-Map-SMP](github.com/regorxxx/World-Map-SMP). Uses the locale tag found at '[FOOBAR PROFILE FOLDER]\js_data\presets\global\globTags.json', by default 'LOCALE LAST.FM' (same than [Biography](https://hydrogenaudio.org/index.php/topic,112914.msg1071222.html#msg1071222) and [World-Map-SMP](github.com/regorxxx/World-Map-SMP)).
 ### Removed
