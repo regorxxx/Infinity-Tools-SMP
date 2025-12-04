@@ -80,7 +80,8 @@ let barProperties = {
 	textPosition: ['UI text position', 'right', { func: isString }],
 	bTooltipInfo: ['Show shortcuts on tooltip', true, { func: isBoolean }],
 	bOnNotifyColors: ['Adjust colors on panel notify', true, { func: isBoolean }],
-	darkMode: ['Dark mode: auto (0), enabled (1), disabled (2)', 0, { func: isInt, range: [[0, 2]] }]
+	darkMode: ['Dark mode: auto (0), enabled (1), disabled (2)', 0, { func: isInt, range: [[0, 2]] }],
+	buttonPosition: ['UI button position', 'left', { func: isString }]
 };
 Object.keys(barProperties).forEach(p => barProperties[p].push(barProperties[p][1]));
 setProperties(barProperties);
@@ -123,6 +124,7 @@ buttonsBar.config.toolbarTooltip = 'R. Click for toolbar menu' +
 buttonsBar.config.scale = barProperties.scale[1];
 buttonsBar.config.textScale = barProperties.textScale[1];
 buttonsBar.config.iconScale = barProperties.iconScale[1];
+buttonsBar.config.buttonPosition = barProperties.buttonPosition[1];
 buttonsBar.config.textPosition = barProperties.textPosition[1];
 buttonsBar.config.offset = JSON.parse(barProperties.offset[1]);
 buttonsBar.config.bFullSize = barProperties.bFullSize[1];

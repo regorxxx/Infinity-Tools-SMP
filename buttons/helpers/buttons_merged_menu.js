@@ -509,18 +509,16 @@ function createButtonsMenu(name) {
 			menu.newEntry({ menuName: subMenuName, entryText: 'Relative to panel\'s size:', flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
 			const options = ['left', 'center'];
-			options.forEach((o) => {
+			options.forEach((o, i) => {
 				menu.newEntry({
-					menuName: subMenuName, entryText: capitalize(o), func: () => {
+					menuName: subMenuName, entryText: capitalize(o) + (i !== 0 ? '\t (experimental)' : ''), func: () => {
 						buttonsBar.config.buttonPosition = barProperties.buttonPosition[1] = o;
 						overwriteProperties(barProperties);
 						window.Reload();
 					}
 				});
 			});
-			menu.newCheckMenuLast(() => {
-				return options.indexOf(currPos);
-			}, options.length);
+			menu.newCheckMenuLast(() => { return options.indexOf(currPos); }, options.length);
 		}
 		menu.newSeparator(menuName);
 		menu.newEntry({

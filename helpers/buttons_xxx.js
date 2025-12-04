@@ -45,6 +45,7 @@ buttonsBar.config = {
 	animationColors: [RGBA(10, 120, 204, 50), RGBA(199, 231, 255, 30)],
 	orientation: 'x',
 	textPosition: 'right',
+	buttonPosition: 'left',
 	bReflow: false,
 	bAlignSize: true,
 	bUseThemeManager: true,
@@ -877,21 +878,42 @@ function drawAllButtons(gr) {
 	const maxSizeNoReflow = getButtonsMaxSize(false);
 	// Size check
 	doOnce('Buttons Size Check', buttonSizeCheck)();
-	// Then draw
-	forEachButton((button) => {
-		if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
-		else if (button.state === buttonStates.hide && Object.hasOwn(button.buttonsProperties, 'bHeadlessMode')) { button.state = buttonStates.normal; }
-		// Don't normalize size in certain axis if not needed
-		if (bAlignSize && orientation === 'x') {
-			const bNormalize = maxSize.totalW > window.Width && maxSizeNoReflow.totalW > window.Width;
-			button.draw(gr, void (0), void (0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
-		} else if (bAlignSize && orientation === 'y') {
-			const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
-			button.draw(gr, void (0), void (0), maxSize.w, bReflow && bNormalize ? maxSize.h : void (0), true);
-		} else {
-			button.draw(gr);
-		}
-	});
+	if (buttonsBar.config.buttonPosition === 'center') {
+		let i = 0;
+		forEachButton((button) => {
+			if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
+			else if (button.state === buttonStates.hide && Object.hasOwn(button.buttonsProperties, 'bHeadlessMode')) { button.state = buttonStates.normal; }
+			// Don't normalize size in certain axis if not needed
+			if (bAlignSize && orientation === 'x') {
+				const bNormalize = maxSize.totalW > window.Width && maxSizeNoReflow.totalW > window.Width;
+				const currX = i === 0 ? Math.max(window.Width - maxSize.totalW, 0) / 2 : void (0);
+				button.draw(gr, currX, void (0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
+			} else if (bAlignSize && orientation === 'y') {
+				const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
+				button.draw(gr, void (0), void (0), maxSize.w, bReflow && bNormalize ? maxSize.h : void (0), true);
+			} else {
+				const currX = i === 0 ? Math.max(window.Width - maxSize.totalW, 0) / 2 : void (0);
+				button.draw(gr, currX);
+			}
+			i++;
+		});
+	} else {
+		// Then draw
+		forEachButton((button) => {
+			if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
+			else if (button.state === buttonStates.hide && Object.hasOwn(button.buttonsProperties, 'bHeadlessMode')) { button.state = buttonStates.normal; }
+			// Don't normalize size in certain axis if not needed
+			if (bAlignSize && orientation === 'x') {
+				const bNormalize = maxSize.totalW > window.Width && maxSizeNoReflow.totalW > window.Width;
+				button.draw(gr, void (0), void (0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
+			} else if (bAlignSize && orientation === 'y') {
+				const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
+				button.draw(gr, void (0), void (0), maxSize.w, bReflow && bNormalize ? maxSize.h : void (0), true);
+			} else {
+				button.draw(gr);
+			}
+		});
+	}
 }
 
 function chooseButton(x, y) {
