@@ -462,7 +462,7 @@ const wrapped = {
 			filePaths: this.settings.filePaths
 		})
 			.then((/** @type [{x: number, y: number}[]] */ data) => {
-				data = data[0].filter((bpm) => bpm.x);
+				data = data[0].filter((bpm) => bpm.x && !isNaN(bpm.x));
 				if (this.isServicesListens()) {
 					data = data.filter((bpm) => bpm.y !== 0);
 				}
