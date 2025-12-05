@@ -1,5 +1,5 @@
 ﻿'use strict';
-//04/12/25
+//05/12/25
 
 /*
 	Playback controls
@@ -55,13 +55,18 @@ addButton({
 			const bShift = utils.IsKeyPressed(VK_SHIFT);
 			const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 			const bInfo = typeof barProperties === 'undefined' || barProperties.bTooltipInfo[1];
+			const sel = this.getSelection();
+			const tags = this.getTags(sel);
+			const loved = this.countLoved(sel);
+			const hated = this.countHated(sel);
 			let info = bCtrl
-				? this.isHatedAll()
+				? this.isHatedAll(void(0), tags)
 					? 'Unhate track(s)'
 					: 'Hate track(s)'
-				: this.isLovedAll()
+				: this.isLovedAll(void(0), tags)
 					? 'Unlove track(s)'
 					: 'Love track(s)';
+			info += '\n' + loved + ' loved / ' + hated + ' hated (' + (sel ? sel.Count : 0) + ' tracks)';
 			if (bShift || bCtrl || bInfo) {
 				info += '\n-----------------------------------------------------';
 				info += '\n(Ctrl + L. Click to hate track(s))';
@@ -71,19 +76,20 @@ addButton({
 		},
 		prefix, buttonsProperties: newButtonsProperties,
 		icon: function () {
-			const sel = this.getSelection();
-			return this.isLovedSome(sel)
-				? this.isLovedAll(sel) ? chars.heartOn : chars.heartHalf
-				: this.isHatedSome() ? chars.close : chars.heartOff;
+			const tags = this.getTags();
+			return this.isLovedSome(void(0), tags)
+				? this.isLovedAll(void(0), tags) ? chars.heartOn : chars.heartHalf
+				: this.isHatedSome(void(0), tags) ? chars.close : chars.heartOff;
 		},
 		variables: {
 			colors: {
 				text: (parent, state) => {
-					return parent.isLovedAll()
+					const tags = parent.getTags();
+					return parent.isLovedAll(void(0), tags)
 						? [buttonStates.down, buttonStates.hover].includes(state) ? void(0) : RGB(255, 0, 0)
-						: parent.isLovedSome()
+						: parent.isLovedSome(void(0), tags)
 							? [buttonStates.down, buttonStates.hover].includes(state) ? void(0) : RGB(255, 100, 50)
-							: parent.isHatedSome()
+							: parent.isHatedSome(void(0), tags)
 								? [buttonStates.down, buttonStates.hover].includes(state) ? void(0) : RGB(255, 100, 50)
 								: void(0);
 				}
@@ -99,6 +105,8 @@ addButton({
 						if (sel.Count) { this.repaint(); }
 					}));
 					this.eventListeners.push(addEventListener('on_selection_changed', () => {
+						this.clearSelectionCache();
+						this.getSelection();
 						this.repaint();
 					}));
 				} else {
@@ -106,34 +114,57 @@ addButton({
 				}
 			},
 			tf: null,
-			getSelection: function () {
+			selCache: {bSorted: false , handleList: null},
+			getSelection: function (parent, bSorted = true) {
+				// Cache is needed since icon is refreshed on every mouse move...
+				if (this.selCache.handleList && this.selCache.bSorted === bSorted) { return this.selCache.handleList; }
 				const handleList = this.buttonsProperties.bPlaying[1] && fb.IsPlaying
 					? new FbMetadbHandleList(fb.GetNowPlaying() || fb.GetFocusItem(true))
 					: fb.GetSelections(1);
 				if (!handleList || !handleList.Count) { return null; }
+				if (bSorted) { handleList.Sort(); } // Speeds up calcs if there are duplicates
+				this.setSelectionCache(handleList, bSorted);
 				return handleList;
+			},
+			clearSelectionCache: function (parent) { // eslint-disable-line no-unused-vars
+				this.selCache.handleList = null;
+				this.selCache.bSorted = false;
+			},
+			setSelectionCache: function (parent, handleList, bSorted) {
+				this.selCache.handleList = handleList;
+				this.selCache.bSorted = bSorted;
 			},
 			getTags: function (parent, handleList = this.getSelection()) {
 				if (!handleList) { return []; }
 				return this.tf.EvalWithMetadbs(handleList).map(Number);
 			},
-			isLovedSome: function (parent, handleList) {
-				return this.getTags(void (0), handleList).some((val) => val === 1);
+			isLovedSome: function (parent, handleList, tags) {
+				return (tags || this.getTags(handleList)).some((val) => val === 1);
 			},
-			isLovedAll: function (parent, handleList) {
-				return this.getTags(void (0), handleList).every((val) => val === 1);
+			isLovedAll: function (parent, handleList, tags) {
+				return (tags || this.getTags(handleList)).every((val) => val === 1);
 			},
-			isHatedSome: function (parent, handleList) {
-				return this.getTags(void (0), handleList).some((val) => val === -1);
+			isHatedSome: function (parent, handleList, tags) {
+				return (tags || this.getTags(handleList)).some((val) => val === -1);
 			},
-			isHatedAll: function (parent, handleList) {
-				return this.getTags(void (0), handleList).every((val) => val === -1);
+			isHatedAll: function (parent, handleList, tags) {
+				return (tags || this.getTags(handleList)).every((val) => val === -1);
+			},
+			countLoved: function (parent, handleList) {
+				return handleList
+					? fb.GetQueryItems(handleList, this.buttonsProperties.tag[1] + ' IS ' + 1).Count
+					: 0;
+			},
+			countHated: function (parent, handleList) {
+				return handleList
+					? fb.GetQueryItems(handleList, this.buttonsProperties.tag[1] + ' IS ' + -1).Count
+					: 0;
 			},
 			setFeedback: function (parent, newVal = 1, handleList = this.getSelection()) {
 				if (!handleList || !handleList.Count) { return false; }
 				const toTag = handleList.Clone();
 				const count = handleList.Count - 1;
-				this.getTags(void (0), handleList).reverse().forEach((val, i) => {
+				this.getTags(handleList).reverse().forEach((val, i) => {
 					if (val === newVal) { toTag.RemoveById(count - i); }
 				});
 				if (!toTag.Count) {
