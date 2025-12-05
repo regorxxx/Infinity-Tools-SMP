@@ -1086,7 +1086,7 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 			const bValidMove = !!buttonsBar.move.toKey;
 			if (mask !== MK_RBUTTON || !bValidMove) {
 				if (buttonsBar.move.bIsMoving && bValidMove) { moveButton(buttonsBar.move.fromKey, buttonsBar.move.toKey); } // Forces window reload on successful move
-				else { bInvalidMove = true; }
+				else if (buttonsBar.move.bIsMoving) { bInvalidMove = true; }
 				buttonsBar.move.bIsMoving = false;
 				if (buttonsBar.move.btn) {
 					buttonsBar.move.btn.moveX = null;
@@ -1113,7 +1113,6 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 				buttonsBar.move.fromKey = null;
 			}
 			buttonsBar.move.toKey = null;
-			bInvalidMove = true;
 		}
 		if (buttonsBar.move.bIsMoving || old || buttonsBar.curBtn || bInvalidMove) { window.Repaint(); }
 		if (buttonsBar.move.bIsMoving) { // Force drag n drop redraw even if mouse doesn't move
