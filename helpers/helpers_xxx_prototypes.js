@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/12/25
+//05/12/25
 
 /* exported compareObjects, compareKeys, isJSON, roughSizeOfObject, deepAssign, BiMap, isFunction, $args, isPromise, matchCase, capitalizePartial, capitalizeAll, _p, _bt, _qCond, _ascii, _asciify, isArrayStrings, isArrayNumbers, isArrayEqual, zeroOrVal, emptyOrVal, isInt, isFloat, cyclicOffset, range, round, isUUID, isBoolean, regExBool, cartesian, isArray, _ps, isGetter, isSetter */
 
@@ -164,7 +164,7 @@ function roughSizeOfObject(object) {
 		} else if (type === 'object' && value instanceof FbTitleFormat) {
 			bytes += 8;
 			bytes += value.Expression.length * 2;
-		} else if (type === 'object' && toType(value) === 'FbMetadbHandle') {
+		} else if (type === 'object' && isFbMetadbHandle(value)) {
 			bytes += 24;
 			bytes += value.Path.length * 2;
 			bytes += value.RawPath.length * 2;
@@ -259,6 +259,29 @@ function deepAssign(options = { nonEnum: false, symbols: false, descriptors: fal
 function toType(a) {
 	// Get fine type (object, array, function, null, error, date ...)
 	return ({}).toString.call(a).match(/([a-z]+)(:?\])/i)[1];
+}
+
+function isFbMetadbHandle(a) {
+	if (typeof a === 'object') {
+		if (toType(a) === 'FbMetadbHandle') { return true; }
+		else {
+			// Jsplitter doesn't report proper type: https://hydrogenaudio.org/index.php/topic,126743.msg1073615.html#msg1073615
+			// Fallback to prototype comparison if it returns 'Object'
+			if (!isFbMetadbHandle.cache) { isFbMetadbHandle.cache = fb.GetFocusItem(true) || fb.GetNowPlaying(); }
+			return isFbMetadbHandle.cache
+				? Object.getPrototypeOf(isFbMetadbHandle.cache) === Object.getPrototypeOf(a)
+				: Object.hasOwn(a, 'FileSize') && Object.hasOwn(a, 'Length') && Object.hasOwn(a, 'Path') && Object.hasOwn(a, 'RawPath') && Object.hasOwn(a, 'SubSong');
+		}
+	}
+	return false;
+}
+isFbMetadbHandle.cache = fb.GetFocusItem(true) || fb.GetNowPlaying();
+if (!isFbMetadbHandle.cache) {
+	if (plman.PlaylistCount) {
+		let i = plman.PlaylistCount;
+		while (i--) { if (plman.PlaylistItemCount(i)) { isFbMetadbHandle.cache = plman.GetPlaylistItems(i)[0]; break; } }
+	}
+	if (!isFbMetadbHandle.cache && fb.IsLibraryEnabled()) { isFbMetadbHandle.cache = fb.GetLibraryItems()[0]; }
 }
 
 function isDeepObject(obj) {

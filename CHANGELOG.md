@@ -27,6 +27,7 @@
 - Wrapped: rare crashes if some track data was missing. See [Issue 2](https://github.com/regorxxx/Infinity-Tools-SMP/issues/2).
 - Wrapped: unnecessary double processing with nconvert and exiftool in some cases.
 - Wrapped: multiple type checks against bad input, like invalid BPM or key tags. See [Pull Request 5](https://github.com/regorxxx/Infinity-Tools-SMP/pull/5).
+- JSplitter: fixed compatibility bug with JSplitter (any version) due to improper constructor used on JS Host as reported [here](https://github.com/regorxxx/Infinity-Tools-SMP/pull/6) and [here](https://hydrogenaudio.org/index.php/topic,126743.msg1073615.html#msg1073615).
 
 ## [1.0.0] - 2025-11-19
 ### Added

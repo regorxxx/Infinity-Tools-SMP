@@ -1,13 +1,13 @@
 ﻿
 'use strict';
-//04/12/25
+//05/12/25
 
 /* exported wrapped */
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, globQuery:readable, globTags:readable, isSkipCount:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global forEachNested:readable, _bt:readable, _q:readable, round:readable, _asciify:readable, _p:readable, _t:readable, toType:readable, range:readable */
+/* global forEachNested:readable, _bt:readable, _q:readable, round:readable, _asciify:readable, _p:readable, _t:readable, isFbMetadbHandle:readable, range:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global sanitize:readable, _isFolder:readable,, _isFile:readable, _createFolder:readable, getFiles:readable, _runCmd:readable, _copyFile:readable, _save:readable, _run:readable, _recycleFile:readable, _deleteFolder:readable, _deleteFile:readable, _jsonParseFileCheck:readable, utf8:readable, _copyDependencies:readable, _foldPath:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
@@ -1957,7 +1957,7 @@ const wrapped = {
 		if (!_isFolder(path)) { _createFolder(path); }
 		return Promise.parallel(
 			tracksData,
-			(track) => this.getTrackImg(toType(track.handle) === 'FbMetadbHandle' ? track.handle : track.handle[0])
+			(track) => this.getTrackImg(isFbMetadbHandle(track.handle) ? track.handle : track.handle[0])
 				.then((artPromise) => {
 					if (artPromise.image) {
 						const imgPath = path + _asciify(sanitize(track.title)).replace(/ /g, '').slice(0, 10).toLowerCase() + '.jpg';
