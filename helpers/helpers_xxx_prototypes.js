@@ -266,22 +266,10 @@ function isFbMetadbHandle(a) {
 		if (toType(a) === 'FbMetadbHandle') { return true; }
 		else {
 			// Jsplitter doesn't report proper type: https://hydrogenaudio.org/index.php/topic,126743.msg1073615.html#msg1073615
-			// Fallback to prototype comparison if it returns 'Object'
-			if (!isFbMetadbHandle.cache) { isFbMetadbHandle.cache = fb.GetFocusItem(true) || fb.GetNowPlaying(); }
-			return isFbMetadbHandle.cache
-				? Object.getPrototypeOf(isFbMetadbHandle.cache) === Object.getPrototypeOf(a)
-				: Object.hasOwn(a, 'FileSize') && Object.hasOwn(a, 'Length') && Object.hasOwn(a, 'Path') && Object.hasOwn(a, 'RawPath') && Object.hasOwn(a, 'SubSong');
+			return 'FileSize' in a && 'Length' in a && 'Path' in a && 'RawPath' in a && 'SubSong' in a;
 		}
 	}
 	return false;
-}
-isFbMetadbHandle.cache = fb.GetFocusItem(true) || fb.GetNowPlaying();
-if (!isFbMetadbHandle.cache) {
-	if (plman.PlaylistCount) {
-		let i = plman.PlaylistCount;
-		while (i--) { if (plman.PlaylistItemCount(i)) { isFbMetadbHandle.cache = plman.GetPlaylistItems(i)[0]; break; } }
-	}
-	if (!isFbMetadbHandle.cache && fb.IsLibraryEnabled()) { isFbMetadbHandle.cache = fb.GetLibraryItems()[0]; }
 }
 
 function isDeepObject(obj) {

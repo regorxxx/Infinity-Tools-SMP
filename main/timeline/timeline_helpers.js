@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/11/25
+//09/12/25
 
 /* exported getData, getDataAsync */
 
@@ -80,6 +80,7 @@ function getData({
 	zGroups = { filter: false, sort: null /* (a, b) => b.count - a.count */ },
 	filePaths = { worldMapArtists: _foldPath(folders.data + 'worldMap.json') }
 } = {}) {
+	if (sourceType === 'handleList' && !sourceArg) { return null; }
 	const noSplitTags = new Set(['ALBUM', 'TITLE']); noSplitTags.forEach((tag) => noSplitTags.add(_t(tag)));
 	const dedupByIdTags = new Set(['TITLE']); dedupByIdTags.forEach((tag) => dedupByIdTags.add(_t(tag)));
 	const source = getDataHelpers.filterSource(query, getSource(sourceType, sourceArg), queryHandle);
@@ -97,7 +98,8 @@ function getData({
 	if (bProportional) { groupBy = { x: null, y: null, z: null }; }
 	let data;
 	switch (option) {
-		case 'timeline': { // 3D {x, y, z}, x and z can be exchanged
+		case 'timeline': // 3D {x, y, z}, x and z can be exchanged
+		case 'timeline playcount': {
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => [val])
 				: fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => val.split(splitter)); // X
@@ -105,10 +107,14 @@ function getData({
 				? fb.TitleFormat(_bt(z)).EvalWithMetadbs(handleList).map((val) => [val])
 				: fb.TitleFormat(_bt(z)).EvalWithMetadbs(handleList).map((val) => val.split(splitter)); // Z
 			const bSingleY = !isNaN(y);
-			const seriesCounters = bSingleY
-				? Number(y)
-				: fb.TitleFormat(_bt(queryReplaceWithCurrent(y))).EvalWithMetadbs(handleList)
-					.map((val) => val ? Number(val) : 0); // Y
+			const seriesCounters = option === 'timeline playcount'
+				? optionArg && optionArg.timePeriod
+					? getPlayCount(handleList, optionArg.timePeriod, optionArg.timeKey, optionArg.fromDate).map((v) => v.playCount)
+					: fb.TitleFormat(globTags.playCount).EvalWithMetadbs(handleList).map(Number)
+				: bSingleY
+					? Number(y)
+					: fb.TitleFormat(_bt(queryReplaceWithCurrent(y))).EvalWithMetadbs(handleList)
+						.map((val) => val ? Number(val) : 0); // Y
 			const groupTags = groupBy.y
 				? noSplitTags.has(groupBy.y.toUpperCase().replace(/\|.*/, ''))
 					? fb.TitleFormat(_bt(groupBy.y)).EvalWithMetadbs(handleList).map((val) => [val])
@@ -283,6 +289,7 @@ async function getDataAsync({
 	listenBrainz = { token: '', user: '', bOffline: true },
 	filePaths = { worldMapArtists: _foldPath(folders.data + 'worldMap.json') }
 } = {}) {
+	if (sourceType === 'handleList' && !sourceArg) { return null; }
 	const noSplitTags = new Set(['ALBUM', 'TITLE']); noSplitTags.forEach((tag) => noSplitTags.add(_t(tag)));
 	const dedupByIdTags = new Set(['TITLE']); dedupByIdTags.forEach((tag) => dedupByIdTags.add(_t(tag)));
 	const source = getDataHelpers.filterSource(query, getSource(sourceType, sourceArg), queryHandle);
@@ -300,7 +307,8 @@ async function getDataAsync({
 	if (bProportional) { groupBy = { x: null, y: null, z: null }; }
 	let data;
 	switch (option) {
-		case 'timeline': { // 3D {x, y, z}, x and z can be exchanged
+		case 'timeline': // 3D {x, y, z}, x and z can be exchanged
+		case 'timeline playcount': {
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
 				: (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => val.split(splitter)); // X
@@ -308,10 +316,14 @@ async function getDataAsync({
 				? (await fb.TitleFormat(_bt(z)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
 				: (await fb.TitleFormat(_bt(z)).EvalWithMetadbsAsync(handleList)).map((val) => val.split(splitter)); //Z
 			const bSingleY = !isNaN(y);
-			const seriesCounters = bSingleY
-				? Number(y)
-				: (await fb.TitleFormat(_bt(queryReplaceWithCurrent(y))).EvalWithMetadbsAsync(handleList))
-					.map((val) => val ? Number(val) : 0); // Y
+			const seriesCounters = option === 'timeline playcount'
+				? optionArg && optionArg.timePeriod
+					? (await getPlayCountV2(handleList, optionArg.timePeriod, optionArg.timeKey, optionArg.fromDate, true, listenBrainz)).map((v) => v.playCount)
+					: (await fb.TitleFormat(globTags.playCount).EvalWithMetadbsAsync(handleList)).map(Number)
+				: bSingleY
+					? Number(y)
+					: (await fb.TitleFormat(_bt(queryReplaceWithCurrent(y))).EvalWithMetadbsAsync(handleList))
+						.map((val) => val ? Number(val) : 0); // Y
 			const groupTags = groupBy.y
 				? noSplitTags.has(groupBy.y.toUpperCase().replace(/\|.*/, ''))
 					? (await fb.TitleFormat(_bt(groupBy.y)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
