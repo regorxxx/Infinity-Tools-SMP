@@ -1,5 +1,5 @@
 ﻿'use strict';
-//05/12/25
+//09/12/25
 
 /*
 	Playback controls
@@ -30,6 +30,7 @@ prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 var newButtonsProperties = { // NOSONAR[global]
 	tag: ['Feedback tag', globTags.feedback, { func: isString }, globTags.feedback],
 	bPlaying: ['Follow now playing', true, { func: isBoolean }, true],
+	bEvalSel: ['Evaluate multiple tracks', false, { func: isBoolean }, false],
 };
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 newButtonsProperties = getPropertiesPairs(newButtonsProperties, prefix, 0);
@@ -45,6 +46,9 @@ addButton({
 					{
 						tag: (value) => {
 							this.tf = fb.TitleFormat(_bt(value));
+						},
+						bEvalSel: () => {
+							this.clearSelectionCache();
 						}
 					}
 				).btn_up(this.currX, this.currY + this.currH);
@@ -119,10 +123,12 @@ addButton({
 				// Cache is needed since icon is refreshed on every mouse move...
 				if (this.selCache.handleList && this.selCache.bSorted === bSorted) { return this.selCache.handleList; }
 				const handleList = this.buttonsProperties.bPlaying[1] && fb.IsPlaying
-					? new FbMetadbHandleList(fb.GetNowPlaying() || fb.GetFocusItem(true))
-					: fb.GetSelections(1);
+					? new FbMetadbHandleList(fb.GetNowPlaying() || fb.GetSelection() || fb.GetFocusItem(true))
+					: this.buttonsProperties.bEvalSel[1]
+						? fb.GetSelections(1)
+						: new FbMetadbHandleList(fb.GetSelection() || fb.GetFocusItem(true));
 				if (!handleList || !handleList.Count) { return null; }
-				if (bSorted) { handleList.Sort(); } // Speeds up calcs if there are duplicates
+				if (handleList.Count > 1 && bSorted) { handleList.Sort(); } // Speeds up calcs if there are duplicates
 				this.setSelectionCache(handleList, bSorted);
 				return handleList;
 			},
