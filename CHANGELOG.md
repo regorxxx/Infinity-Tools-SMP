@@ -18,6 +18,7 @@
 ### Changed
 - UI: adjusted default colors to foobar2000's color settings and dark/light mode of toolbar when there is not button added yet.
 - Playlist Tools: cut max entry length at 40 chars (previously 30).
+- Playlist Tools: cleanup of first popup readme. Macros readme is no longer shown on first init.
 - Wrapped: now supports locale file tags for playcount by region and city, if available; this data is merged to the one provided by [World-Map-SMP](github.com/regorxxx/World-Map-SMP). Uses the locale tag found at '[FOOBAR PROFILE FOLDER]\js_data\presets\global\globTags.json', by default 'LOCALE LAST.FM' (same than [Biography](https://hydrogenaudio.org/index.php/topic,112914.msg1071222.html#msg1071222) and [World-Map-SMP](github.com/regorxxx/World-Map-SMP)).
 - Buttons: rename 'buttons_display_volume.js' to 'buttons_playback_volume.js'.
 - Configuration: changed the global tags for duplicates removal to Title and Album Artist, i.e. Date was removed.
@@ -27,6 +28,7 @@
 - Wrapped: rare crashes if some track data was missing. See [Issue 2](https://github.com/regorxxx/Infinity-Tools-SMP/issues/2).
 - Wrapped: unnecessary double processing with nconvert and exiftool in some cases.
 - Wrapped: multiple type checks against bad input, like invalid BPM or key tags. See [Pull Request 5](https://github.com/regorxxx/Infinity-Tools-SMP/pull/5).
+- Playlist Tools: fixed readme shown 2 times at first init.
 - JSplitter: fixed compatibility bug with JSplitter (any version) due to improper constructor used on JS Host as reported [here](https://github.com/regorxxx/Infinity-Tools-SMP/pull/6) and [here](https://hydrogenaudio.org/index.php/topic,126743.msg1073615.html#msg1073615).
 
 ## [1.0.0] - 2025-11-19

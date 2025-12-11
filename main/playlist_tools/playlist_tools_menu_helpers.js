@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/11/25
+//10/12/25
 
 /* exported overwritePanelProperties, loadProperties, createSubMenuEditEntries, lastActionEntry, focusFlags, playlistCountFlags, playlistCountFlagsRem, playlistCountFlagsAddRem, multipleSelectedFlags, multipleSelectedFlagsReorder, selectedFlags, selectedFlagsReorder, selectedFlagsRem, selectedFlagsAddRem, closeLock, createTagMenu, createSmartShuffleMenu */
 
@@ -50,7 +50,7 @@ function updateMenuProperties(propObject, menuFunc = deferFunc) {
 	if (!panelPropObject['firstPopup'][1]) {
 		panelPropObject['firstPopup'][1] = true;
 		overwriteProperties(panelPropObject); // Updates panel
-		const readmeKeys = ['Playlist Tools Menu', 'Macros', 'Tagging requisites']; // Must read files on first execution
+		const readmeKeys = ['Tagging requisites']; // Must read files on first execution
 		readmeKeys.forEach((key) => {
 			const readmePath = readmes[key];
 			const readme = _open(readmePath, utf8);
