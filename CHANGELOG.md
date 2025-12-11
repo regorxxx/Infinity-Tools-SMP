@@ -8,6 +8,9 @@
 ### Added
 - UI: experimental buttons alignment settings at toolbar contextual menu (R. Click). By default it uses 'Left' (previous behaviour). See [Issue 3](https://github.com/regorxxx/Infinity-Tools-SMP/issues/3).
 - UI: added button spacers, with a size of 20 px scaled with DPI. They can be added the same than separators, at 'Add button' submenu. Multiple spacers can also be stacked to achieve desired width. See [Issue 3](https://github.com/regorxxx/Infinity-Tools-SMP/issues/3).
+- UI: added icon outline setting, by default set to 0 px (disabled). Can be changed at 'Toolbar menu\Size and placement'.
+- UI: added toolbar transparency setting, which controls the panel background (independently of the Buttons setting). Can be changed at 'Toolbar menu\Colors'. Note it only applies when a bar color has been set or if the parent window is not transparent (which uses the default CUI/DUI color).
+- UI: added buttons' border transparency setting. Can be changed at 'Toolbar menu\Colors'.
 - Playlist Tools\Pools: modified some of the default presets and added new ones.
 - Display TF button: actions support for [Library-Tree-SMP](https://github.com/regorxxx/Library-Tree-SMP).
 - Display TF button: new default presets.
@@ -29,6 +32,7 @@
 - Wrapped: unnecessary double processing with nconvert and exiftool in some cases.
 - Wrapped: multiple type checks against bad input, like invalid BPM or key tags. See [Pull Request 5](https://github.com/regorxxx/Infinity-Tools-SMP/pull/5).
 - Playlist Tools: fixed readme shown 2 times at first init.
+- UI: fixed minor artifacts at border drawing for full size buttons.
 - JSplitter: fixed compatibility bug with JSplitter (any version) due to improper constructor used on JS Host as reported [here](https://github.com/regorxxx/Infinity-Tools-SMP/pull/6) and [here](https://hydrogenaudio.org/index.php/topic,126743.msg1073615.html#msg1073615).
 
 ## [1.0.0] - 2025-11-19

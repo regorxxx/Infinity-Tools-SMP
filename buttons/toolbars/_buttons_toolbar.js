@@ -1,5 +1,5 @@
 ﻿'use strict';
-//04/12/25
+//10/12/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -95,7 +95,7 @@ buttonsBar.config.buttonColor = barProperties.buttonColor[1];
 buttonsBar.config.hoverColor = barProperties.hoverColor[1];
 buttonsBar.config.bDynHoverColor = barProperties.bDynHoverColor[1];
 buttonsBar.config.bHoverGrad = barProperties.bHoverGrad[1];
-buttonsBar.config.toolbarTransparency = barProperties.transparency[1];
+buttonsBar.config.buttonTransparency = barProperties.transparency[1];
 buttonsBar.config.activeColor = barProperties.activeColor[1];
 buttonsBar.config.animationColors = JSON.parse(barProperties.animationColors[1]);
 buttonsBar.config.bBorders = barProperties.bBorders[1];

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//04/12/25
+//10/12/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -66,7 +66,7 @@ let barProperties = {
 	bIconMode: ['Show only button\'s icons', false, { func: isBoolean }],
 	bIconModeExpand: ['Expand to full button on hover', false, { func: isBoolean }],
 	buttonColor: ['Buttons\' color', -1, { func: isInt }],
-	transparency: ['Buttons\' transparency', 80, { func: isInt, range: [[0, 100]] }],
+	buttonTransparency: ['Buttons\' transparency', 80, { func: isInt, range: [[0, 100]] }],
 	offset: ['Buttons\' offset', JSON.stringify({ button: { x: 0, y: 0 }, text: { x: 0, y: 0 }, icon: { x: 0, y: 0 } }), { func: isJSON }],
 	bFullSize: ['Full size buttons', false, { func: isBoolean }],
 	hoverColor: ['Buttons\' hover color', -1, { func: isInt }],
@@ -81,7 +81,10 @@ let barProperties = {
 	bTooltipInfo: ['Show shortcuts on tooltip', true, { func: isBoolean }],
 	bOnNotifyColors: ['Adjust colors on panel notify', true, { func: isBoolean }],
 	darkMode: ['Dark mode: auto (0), enabled (1), disabled (2)', 0, { func: isInt, range: [[0, 2]] }],
-	buttonPosition: ['UI button position', 'left', { func: isString }]
+	buttonPosition: ['UI button position', 'left', { func: isString }],
+	toolbarTransparency: ['Toolbar transparency', 80, { func: isInt, range: [[0, 100]] }],
+	buttonBorderTransparency: ['Button border transparency', 100, { func: isInt, range: [[0, 100]] }],
+	outlineIcon: ['Icon outline', 0, { func: isInt, range: [[0, Infinity]] }],
 };
 Object.keys(barProperties).forEach(p => barProperties[p].push(barProperties[p][1]));
 setProperties(barProperties);
@@ -97,7 +100,9 @@ buttonsBar.config.buttonColor = barProperties.buttonColor[1];
 buttonsBar.config.hoverColor = barProperties.hoverColor[1];
 buttonsBar.config.bDynHoverColor = barProperties.bDynHoverColor[1];
 buttonsBar.config.bHoverGrad = barProperties.bHoverGrad[1];
-buttonsBar.config.toolbarTransparency = barProperties.transparency[1];
+buttonsBar.config.buttonTransparency = barProperties.buttonTransparency[1];
+buttonsBar.config.toolbarTransparency = barProperties.toolbarTransparency[1];
+buttonsBar.config.buttonBorderTransparency = barProperties.buttonBorderTransparency[1];
 buttonsBar.config.activeColor = barProperties.activeColor[1];
 buttonsBar.config.animationColors = JSON.parse(barProperties.animationColors[1]);
 buttonsBar.config.bBorders = barProperties.bBorders[1];
@@ -309,26 +314,6 @@ function includeButtonsAsync(timeout = 100) {
 	return Promise.resolve(false);
 }
 
-let buttonsPath = [];
-if (barProperties.bLoadAsync[1]) {
-	loadButtonsFile(true) && includeButtonsAsync().finally(() => {
-		if (barProperties.bOnNotifyColors[1]) { // Ask color-servers at init
-			setTimeout(() => {
-				window.NotifyOthers('Colors: ask color scheme', window.ScriptInfo.Name + ': set color scheme');
-				window.NotifyOthers('Colors: ask color', window.ScriptInfo.Name + ': set colors');
-			}, 1000);
-		}
-	});
-} else {
-	loadButtonsFile(true) && includeButtons();
-	if (barProperties.bOnNotifyColors[1]) { // Ask color-servers at init
-		setTimeout(() => {
-			window.NotifyOthers('Colors: ask color scheme', window.ScriptInfo.Name + ': set color scheme');
-			window.NotifyOthers('Colors: ask color', window.ScriptInfo.Name + ': set colors');
-		}, 1000);
-	}
-}
-
 addEventListener('on_paint', (gr) => {
 	if (!buttonsPath.length) {
 		const textColor = window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text);
@@ -356,7 +341,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 				forEachButton((button) => { button.switchHighlight(true); });
 				const answer = WshShell.Popup('Apply current settings to highlighted toolbar?\nCheck UI.', 0, window.FullPanelName, popup.question + popup.yes_no);
 				if (answer === popup.yes) {
-					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'transparency', 'scale', 'iconScale', 'textScale'].forEach((key) => {
+					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'buttonTransparency', 'toolbarTransparency', 'buttonBorderTransparency', 'scale', 'iconScale', 'textScale'].forEach((key) => {
 						buttonsBar.config[key] = barProperties[key][1] = Number(info[key][1]);
 					});
 					buttonsBar.config.bToolbar = buttonsBar.config.toolbarColor !== -1;
@@ -420,6 +405,23 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 		}
 	}
 });
+
+if (barProperties.bOnNotifyColors[1]) { // Ask color-servers at init
+	setTimeout(() => {
+		window.NotifyOthers('Colors: ask color scheme', window.ScriptInfo.Name + ': set color scheme');
+		window.NotifyOthers('Colors: ask color', window.ScriptInfo.Name + ': set colors');
+	}, 1000);
+}
+
+let buttonsPath = [];
+if (barProperties.bLoadAsync[1]) {
+	loadButtonsFile(true) && includeButtonsAsync().finally(() => {
+		if (buttonsBar.config.buttonPosition === 'center') { setTimeout(() => window.Repaint(true), 100); }
+	});
+} else {
+	loadButtonsFile(true) && includeButtons();
+	if (buttonsBar.config.buttonPosition === 'center') { setTimeout(() => window.Repaint(true), 100); }
+}
 
 // Update check
 if (barProperties.bAutoUpdateCheck[1]) {

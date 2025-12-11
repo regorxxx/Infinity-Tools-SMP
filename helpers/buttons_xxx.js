@@ -1,5 +1,5 @@
 ﻿'use strict';
-//04/12/25
+//10/12/25
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer */
 
@@ -37,7 +37,9 @@ buttonsBar.config = {
 	bShowID: true, // Show Prefixes + ID on tooltips
 	toolbarTooltip: '', // Shown on toolbar
 	toolbarColor: utils.GetSysColour(15),
-	toolbarTransparency: 0,
+	toolbarTransparency: 80,
+	buttonTransparency: 80,
+	buttonBorderTransparency: 100,
 	bToolbar: false, // Change this on buttons bars files to set the background color
 	textColor: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text),
 	buttonColor: -1,
@@ -65,7 +67,8 @@ buttonsBar.config = {
 	bBorders: true,
 	hiddenTimeout: 2000,
 	darkMode: 0,
-	spacerSize: 20
+	spacerSize: 20,
+	outlineIcon: 0
 };
 buttonsBar.config.default = Object.fromEntries(Object.entries(buttonsBar.config));
 // Drag n drop (internal use)
@@ -335,19 +338,21 @@ function ThemedButton({
 			: buttonsBar.config.hoverColor;
 	};
 
-	this.getBorderColor = function () {
+	this.getBorderColor = function (state) {
 		const buttonColor = this.extractColor('border');
 		if (buttonColor !== null) { return buttonColor; }
 		const darkTheme = buttonsBar.config.darkMode === 0
 			? Object.hasOwn(window, 'IsDark') ? window.IsDark : false
 			: buttonsBar.config.darkMode === 1;
-		return buttonsBar.config.bDynHoverColor
-			? buttonsBar.config.buttonColor !== -1
-				? invert(buttonsBar.config.buttonColor, true)
-				: window.InstanceType === 1
-					? darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
-					: darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
-			: RGB(243, 243, 243);
+		return state === buttonStates.normal
+			? buttonsBar.config.buttonColor
+			: buttonsBar.config.bDynHoverColor
+				? buttonsBar.config.buttonColor !== -1
+					? invert(buttonsBar.config.buttonColor, true)
+					: window.InstanceType === 1
+						? darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
+						: darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
+				: RGB(243, 243, 243);
 	};
 
 	this.getTextColor = function (state) {
@@ -366,6 +371,130 @@ function ThemedButton({
 				: buttonsBar.useThemeManager() && bDrawBackground
 					? RGB(0, 0, 0)
 					: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text);
+		}
+	};
+
+	this.drawButtonRect = function (gr, bDrawBackground) {
+		const arc = Math.min(3, (this.currW - 4) / 2, (this.currH - 2) / 4 - 2);
+		const x = this.currX + 1;
+		const y = this.currY + (buttonsBar.config.bFullSize && buttonsBar.config.orientation.toLowerCase() === 'x' ? -2 : 0);
+		const w = Math.max(this.currW - 4, arc * 2 + 2);
+		const h = this.currH + (buttonsBar.config.bFullSize && buttonsBar.config.orientation.toLowerCase() === 'x' ? +3 : -2);
+		gr.SetSmoothingMode(2); // Antialias for lines
+		const buttonTransparency = Math.max(0, Math.min(buttonsBar.config.buttonTransparency, 100));
+		const buttonBorderTransparency = Math.max(0, Math.min(buttonsBar.config.buttonBorderTransparency, 100));
+		switch (this.state) {
+			case buttonStates.normal:
+				if (bDrawBackground) {
+					gr.FillRoundRect(x, y, w, h, arc, arc, RGB(240, 240, 240));
+					gr.FillGradRect(x, y + 2, w, h / 2 - 2, 180, RGB(241, 241, 241), RGB(235, 235, 235));
+					gr.FillGradRect(x, y + h / 2, w, h - 10, 180, RGB(219, 219, 219), RGB(207, 207, 207));
+					gr.DrawRoundRect(x, y, w, h, arc, arc, 1, RGB(0, 0, 0));
+					gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 1, RGB(243, 243, 243));
+				} else if (buttonsBar.config.buttonColor !== -1) {
+					if (buttonTransparency) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(buttonsBar.config.buttonColor, buttonTransparency)); }
+					if (buttonBorderTransparency) {
+						gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 1, opaqueColor(this.getBorderColor(this.state), buttonBorderTransparency));
+					}
+				}
+				break;
+			case buttonStates.hover:
+				if (!buttonsBar.move.bIsMoving) {
+					if (this.description !== null) { buttonsBar.tooltipButton.SetValue(this.tooltipText(), true); }
+					else if (isString(buttonsBar.tooltipButton.text.length)) { buttonsBar.tooltipButton.SetValue('', false); }
+				}
+				if (bDrawBackground) {
+					gr.FillRoundRect(x, y, w, h, arc, arc, RGB(240, 240, 240));
+					gr.FillGradRect(x, y + 2, w, h / 2 - 2, 180, RGB(241, 241, 241), RGB(235, 235, 235));
+					gr.FillGradRect(x, y + h / 2, w, h - 10, 180, RGB(219, 219, 219), RGB(207, 207, 207));
+					gr.DrawRoundRect(x, y, w, h, arc, arc, 1, RGB(0, 0, 0));
+				} else if (buttonsBar.config.bBorders && buttonBorderTransparency) {
+					gr.DrawRoundRect(x, y, w, h, arc, arc, 1, opaqueColor(this.getBorderColor(this.state), buttonBorderTransparency));
+				}
+				if (bDrawBackground) {
+					gr.FillRoundRect(x, y + 1, w, h / 2 - 1, arc, arc, RGBA(225, 243, 252, 255));
+					gr.FillRoundRect(x, y + h / 2, w, h / 2, arc, arc, RGBA(17, 166, 248, 50));
+				} else if (buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) {
+					const hoverColor = this.getHoverColor(this.state);
+					if (buttonTransparency) { gr.FillRoundRect(x, y, w, h, arc, arc, hoverColor); }
+					if (buttonsBar.config.bHoverGrad) {
+						const alpha = buttonsBar.config.bToolbar
+							? (isDark(...toRGB(hoverColor)) ? 10 : 20)
+							: 20;
+						gr.FillRoundRect(x, y + 1, w, h / 2 - h / 10 - 1, arc, arc, opaqueColor(hoverColor, alpha));
+						gr.FillRoundRect(x, y + h / 2 - h / 10, w, h / 5, arc, arc, opaqueColor(invert(hoverColor), 2));
+						gr.FillRoundRect(x, y + h / 2 + h / 10, w, h / 2 - h / 10, arc, arc, opaqueColor(invert(hoverColor), 4));
+					}
+				}
+				break;
+			case buttonStates.down:
+				if (bDrawBackground) {
+					gr.FillRoundRect(x, y, w, h, arc, arc, RGB(240, 240, 240));
+					gr.FillGradRect(x, y + 2, w, h / 2 - 2, 180, RGB(241, 241, 241), RGB(235, 235, 235));
+					gr.FillGradRect(x, y + h / 2, w, h - 10, 180, RGB(219, 219, 219), RGB(207, 207, 207));
+				}
+				if (bDrawBackground) {
+					gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 1, RGB(243, 243, 243));
+					gr.FillRoundRect(x, y, w, h / 2, arc, arc, RGBA(225, 243, 252, 255));
+					gr.FillRoundRect(x, y + h / 2, w, h, arc, arc, RGBA(37, 196, 255, 80));
+					gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 3, RGBA(0, 0, 0, 50));
+				} else if (buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) {
+					const hoverColor = this.getHoverColor(this.state);
+					if (buttonsBar.config.buttonTransparency !== -1) {
+						if (buttonTransparency) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(buttonsBar.config.buttonTransparency, Math.max(25, buttonTransparency / 5))); }
+						gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(invert(hoverColor), 5));
+						gr.FillRoundRect(x, y, w, h / 8, arc / 4, arc / 4, opaqueColor(hoverColor, 25));
+						gr.FillRoundRect(x, y, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 25));
+						gr.FillRoundRect(x, y + h / 6, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 10));
+						gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, opaqueColor(hoverColor, 10));
+					} else if (buttonsBar.config.bToolbar) {
+						const rgbBase = toRGB(hoverColor);
+						if (buttonsBar.config.bHoverGrad) {
+							const alpha = isDark(...rgbBase) ? 20 : 80;
+							gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(hoverColor, 10));
+							gr.FillRoundRect(x, y, w, h / 8, arc / 4, arc / 4, RGBA(...rgbBase, alpha));
+							gr.FillRoundRect(x, y, w, h / 6, arc / 4, arc / 4, RGBA(...rgbBase, alpha));
+							gr.FillRoundRect(x, y + h / 6, w, h / 6, arc / 4, arc / 4, RGBA(...rgbBase, alpha / 2));
+							gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, RGBA(...rgbBase, alpha / 2));
+						} else {
+							gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(hoverColor, 10));
+						}
+					} else {
+						if (buttonsBar.config.bHoverGrad) {
+							gr.FillRoundRect(x, y, w, h / 8, arc / 4, arc / 4, opaqueColor(hoverColor, 20));
+							gr.FillRoundRect(x, y, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 30));
+							gr.FillRoundRect(x, y + h / 6, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 30));
+							gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, opaqueColor(hoverColor, 20));
+						} else {
+							gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, hoverColor);
+						}
+					}
+				}
+				if (buttonsBar.config.bBorders || bDrawBackground) {
+					if (buttonsBar.config.buttonColor !== -1) {
+						if (buttonsBar.config.bToolbar) {
+							gr.DrawRoundRect(x, y, w, h, arc, arc, 1, blendColors(invert(buttonsBar.config.toolbarColor, true), buttonsBar.config.buttonColor, 0.4));
+						} else {
+							gr.DrawRoundRect(x, y, w, h, arc, arc, 1, invert(invert(buttonsBar.config.buttonColor, true)));
+						}
+					} else if (buttonsBar.config.bToolbar) {
+						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, invert(buttonsBar.config.toolbarColor, true));
+					} else if (buttonBorderTransparency) {
+						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, opaqueColor(this.getBorderColor(this.state), buttonBorderTransparency));
+					}
+				}
+				break;
+			case buttonStates.hide:
+				return;
+		}
+		gr.SetSmoothingMode(0);
+	};
+
+	this.drawSeparator = function (gr, textColor, bAlign) {
+		if (round(this.currY, 2) < round(this.currH + buttonsBar.config.offset.button.y, 2)) {
+			gr.DrawLine(this.currX + this.currW / 2, this.currY + _scale(1), this.currX + this.currW / 2, this.currH - 2 * _scale(1), _scale(1), opaqueColor(textColor, 50));
+		} else {
+			gr.DrawLine(this.currX + _scale(1), this.currY + this.currH / 2, (bAlign ? Math.min(this.currW, window.Width) : window.Width) - 2 * _scale(1), this.currY + this.currH / 2, _scale(1), opaqueColor(textColor, 50));
 		}
 	};
 
@@ -440,6 +569,16 @@ function ThemedButton({
 		if (this.moveX) { xCalc = this.moveX; }
 		if (this.moveY) { yCalc = this.moveY; }
 		// Draw button
+		if (this.isSeparator) {
+			return this.drawSeparator(gr, textColor, bAlign);
+		} else if (this.isSpacer) {
+			return;
+		} else if (buttonsBar.useThemeManager()) {
+			this.g_theme.DrawThemeBackground(gr, this.currX, this.currY, this.currW, this.currH);
+		} else {
+			this.drawButtonRect(gr, bDrawBackground);
+		}
+		// The rest...
 		const textCoords = {
 			x: xCalc,
 			y: yCalc - extraH,
@@ -458,129 +597,6 @@ function ThemedButton({
 			w: 0,
 			h: 0
 		};
-		if (this.isSeparator) {
-			if (round(this.currY, 2) < round(this.currH + buttonsBar.config.offset.button.y, 2)) {
-				gr.DrawLine(this.currX + this.currW / 2, this.currY + _scale(1), this.currX + this.currW / 2, this.currH - 2 * _scale(1), _scale(1), opaqueColor(textColor, 50));
-			} else {
-				gr.DrawLine(this.currX + _scale(1), this.currY + this.currH / 2, (bAlign ? Math.min(this.currW, window.Width) : window.Width) - 2 * _scale(1), this.currY + this.currH / 2, _scale(1), opaqueColor(textColor, 50));
-			}
-			return;
-		} else if (this.isSpacer) {
-			return;
-		}
-		if (buttonsBar.useThemeManager()) { this.g_theme.DrawThemeBackground(gr, this.currX, this.currY, this.currW, this.currH); }
-		else {
-			const arc = Math.min(3, (this.currW - 4) / 2, (this.currH - 2) / 4 - 2);
-			const x = this.currX + 1;
-			const y = this.currY + (buttonsBar.config.bFullSize && buttonsBar.config.orientation.toLowerCase() === 'x' ? -2 : 0);
-			const w = Math.max(this.currW - 4, arc * 2 + 2);
-			const h = this.currH + (buttonsBar.config.bFullSize && buttonsBar.config.orientation.toLowerCase() === 'x' ? +2 : -2);
-			gr.SetSmoothingMode(2); // Antialias for lines
-			const toolbarAlpha = Math.max(0, Math.min(buttonsBar.config.toolbarTransparency, 100));
-			switch (this.state) {
-				case buttonStates.normal:
-					if (bDrawBackground) {
-						gr.FillRoundRect(x, y, w, h, arc, arc, RGB(240, 240, 240));
-						gr.FillGradRect(x, y + 2, w, h / 2 - 2, 180, RGB(241, 241, 241), RGB(235, 235, 235));
-						gr.FillGradRect(x, y + h / 2, w, h - 10, 180, RGB(219, 219, 219), RGB(207, 207, 207));
-						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, RGB(0, 0, 0));
-						gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 1, RGB(243, 243, 243));
-					} else if (buttonsBar.config.buttonColor !== -1) {
-						if (toolbarAlpha) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(buttonsBar.config.buttonColor, toolbarAlpha)); }
-						gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 1, opaqueColor(buttonsBar.config.buttonColor, 50));
-					}
-					break;
-				case buttonStates.hover:
-					if (!buttonsBar.move.bIsMoving) {
-						if (this.description !== null) { buttonsBar.tooltipButton.SetValue(this.tooltipText(), true); }
-						else if (isString(buttonsBar.tooltipButton.text.length)) { buttonsBar.tooltipButton.SetValue('', false); }
-					}
-					if (bDrawBackground) {
-						gr.FillRoundRect(x, y, w, h, arc, arc, RGB(240, 240, 240));
-						gr.FillGradRect(x, y + 2, w, h / 2 - 2, 180, RGB(241, 241, 241), RGB(235, 235, 235));
-						gr.FillGradRect(x, y + h / 2, w, h - 10, 180, RGB(219, 219, 219), RGB(207, 207, 207));
-						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, RGB(0, 0, 0));
-					} else if (buttonsBar.config.bBorders) {
-						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, this.getBorderColor(this.state));
-					}
-					if (bDrawBackground) {
-						gr.FillRoundRect(x, y + 1, w, h / 2 - 1, arc, arc, RGBA(225, 243, 252, 255));
-						gr.FillRoundRect(x, y + h / 2, w, h / 2, arc, arc, RGBA(17, 166, 248, 50));
-					} else if (buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) {
-						const hoverColor = this.getHoverColor(this.state);
-						if (toolbarAlpha) { gr.FillRoundRect(x, y, w, h, arc, arc, hoverColor); }
-						if (buttonsBar.config.bHoverGrad) {
-							const alpha = buttonsBar.config.bToolbar
-								? (isDark(...toRGB(hoverColor)) ? 10 : 20)
-								: 20;
-							gr.FillRoundRect(x, y + 1, w, h / 2 - 1, arc, arc, opaqueColor(hoverColor, alpha));
-							gr.FillRoundRect(x, y + h / 2, w, h / 2, arc, arc, opaqueColor(invert(hoverColor), 4));
-						}
-					}
-					break;
-				case buttonStates.down:
-					if (bDrawBackground) {
-						gr.FillRoundRect(x, y, w, h, arc, arc, RGB(240, 240, 240));
-						gr.FillGradRect(x, y + 2, w, h / 2 - 2, 180, RGB(241, 241, 241), RGB(235, 235, 235));
-						gr.FillGradRect(x, y + h / 2, w, h - 10, 180, RGB(219, 219, 219), RGB(207, 207, 207));
-					}
-					if (bDrawBackground) {
-						gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 1, RGB(243, 243, 243));
-						gr.FillRoundRect(x, y, w, h / 2, arc, arc, RGBA(225, 243, 252, 255));
-						gr.FillRoundRect(x, y + h / 2, w, h, arc, arc, RGBA(37, 196, 255, 80));
-						gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 3, RGBA(0, 0, 0, 50));
-					} else if (buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) {
-						const hoverColor = this.getHoverColor(this.state);
-						if (buttonsBar.config.buttonColor !== -1) {
-							if (toolbarAlpha) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(buttonsBar.config.buttonColor, Math.max(25, toolbarAlpha / 5))); }
-							gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(invert(hoverColor), 5));
-							gr.FillRoundRect(x, y, w, h / 8, arc / 4, arc / 4, opaqueColor(hoverColor, 25));
-							gr.FillRoundRect(x, y, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 25));
-							gr.FillRoundRect(x, y + h / 6, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 10));
-							gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, opaqueColor(hoverColor, 10));
-						} else if (buttonsBar.config.bToolbar) {
-							const rgbBase = toRGB(hoverColor);
-							if (buttonsBar.config.bHoverGrad) {
-								const alpha = isDark(...rgbBase) ? 20 : 80;
-								gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(hoverColor, 10));
-								gr.FillRoundRect(x, y, w, h / 8, arc / 4, arc / 4, RGBA(...rgbBase, alpha));
-								gr.FillRoundRect(x, y, w, h / 6, arc / 4, arc / 4, RGBA(...rgbBase, alpha));
-								gr.FillRoundRect(x, y + h / 6, w, h / 6, arc / 4, arc / 4, RGBA(...rgbBase, alpha / 2));
-								gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, RGBA(...rgbBase, alpha / 2));
-							} else {
-								gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(hoverColor, 10));
-							}
-						} else {
-							if (buttonsBar.config.bHoverGrad) {
-								gr.FillRoundRect(x, y, w, h / 8, arc / 4, arc / 4, opaqueColor(hoverColor, 20));
-								gr.FillRoundRect(x, y, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 30));
-								gr.FillRoundRect(x, y + h / 6, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 30));
-								gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, opaqueColor(hoverColor, 20));
-							} else {
-								gr.FillRoundRect(x, y, w, h, arc / 2, arc / 2, hoverColor);
-							}
-						}
-					}
-					if (buttonsBar.config.bBorders || bDrawBackground) {
-						if (buttonsBar.config.buttonColor !== -1) {
-							if (buttonsBar.config.bToolbar) {
-								gr.DrawRoundRect(x, y, w, h, arc, arc, 1, blendColors(invert(buttonsBar.config.toolbarColor, true), buttonsBar.config.buttonColor, 0.4));
-							} else {
-								gr.DrawRoundRect(x, y, w, h, arc, arc, 1, invert(invert(buttonsBar.config.buttonColor, true)));
-							}
-						} else if (buttonsBar.config.bToolbar) {
-							gr.DrawRoundRect(x, y, w, h, arc, arc, 1, invert(buttonsBar.config.toolbarColor, true));
-						} else {
-							gr.DrawRoundRect(x, y, w, h, arc, arc, 1, this.getBorderColor(this.state));
-						}
-					}
-					break;
-				case buttonStates.hide:
-					return;
-			}
-			gr.SetSmoothingMode(0);
-		}
-		// The rest...
 		const iconCalculated = this.icon !== null
 			? isFunction(this.icon) ? this.icon(this) : this.icon
 			: null;
@@ -706,7 +722,14 @@ function ThemedButton({
 				const iconColor = this.active
 					? buttonsBar.config.activeColor
 					: textColor;
-				gr.GdiDrawText(iconCalculated, this.gFontIcon, iconColor, iconCoords.x, iconCoords.y, iconCoords.w, iconCoords.h, DT_CENTER | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX);
+				[
+					buttonsBar.config.outlineIcon > 0 && this.state !== buttonStates.hover
+						? { color: invert(iconColor, true), font: _gdiFont(this.gFontIcon.Name, this.gFontIcon.Size + buttonsBar.config.outlineIcon, this.gFontIcon.Style) }
+						: null,
+					{ color: iconColor, font: this.gFontIcon }
+				].filter((l) => l !== null).forEach((l) => {
+					gr.GdiDrawText(iconCalculated, l.font, l.color, iconCoords.x, iconCoords.y, iconCoords.w, iconCoords.h, DT_CENTER | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX);
+				});
 			}
 		}
 		for (const key in buttonsBar.config.offset.text) { textCoords[key] += buttonsBar.config.offset.text[key]; }
@@ -937,9 +960,15 @@ addEventListener('on_paint', (gr) => {
 	else { extendGR(gr, { DrawRoundRect: true, FillRoundRect: true }); }
 	// Toolbar
 	if (buttonsBar.config.bToolbar) {
-		gr.FillSolidRect(0, 0, window.Width, window.Height, buttonsBar.config.toolbarColor);
+		gr.FillSolidRect(
+			0, 0, window.Width, window.Height,
+			opaqueColor(buttonsBar.config.toolbarColor, buttonsBar.config.toolbarTransparency)
+		);
 	} else if (!window.IsTransparent) {
-		gr.FillSolidRect(0, 0, window.Width, window.Height, window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).background));
+		gr.FillSolidRect(
+			0, 0, window.Width, window.Height,
+			opaqueColor(window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).background), buttonsBar.config.toolbarTransparency)
+		);
 	}
 	// Buttons
 	for (let key in buttonsBar.oldButtonCoordinates) {

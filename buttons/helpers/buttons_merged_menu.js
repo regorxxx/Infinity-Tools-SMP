@@ -1,5 +1,5 @@
 ﻿'use strict';
-//03/12/25
+//10/12/25
 
 /* exported createButtonsMenu, importSettingsMenu */
 
@@ -172,7 +172,7 @@ function createButtonsMenu(name) {
 		buttonsPath.forEach((path, idx) => {
 			menu.newEntry({
 				menuName: subMenu, entryText: path.split('\\').pop() + '\t(' + (idx + 1) + ')', func: () => {
-					const input = Input.number('int positive', idx + 1, 'Enter new position:\n(1 - ' + buttonsPath.length + ')', 'Buttons bar', buttonsPath.length, [n => n > 0 && n <= buttonsPath.length]);
+					const input = Input.number('int positive', idx + 1, 'Enter new position:\n(1 - ' + buttonsPath.length + ')', 'Buttons bar: button position', buttonsPath.length, [n => n > 0 && n <= buttonsPath.length]);
 					if (input === null) { return; }
 					moveButton(buttonsBar.listKeys[idx][0], buttonsBar.listKeys[input - 1][0]);
 				}, flags: buttonsPath.length > 1 ? MF_STRING : MF_GRAYED
@@ -312,13 +312,39 @@ function createButtonsMenu(name) {
 		});
 		menu.newSeparator(menuName);
 		menu.newEntry({
-			menuName, entryText: 'Set transparency...' + '\t[' + buttonsBar.config.toolbarTransparency + ']', func: () => {
+			menuName, entryText: 'Set toolbar transparency...' + '\t[' + buttonsBar.config.toolbarTransparency + ']', func: () => {
 				if (utils.IsKeyPressed(VK_CONTROL)) {
-					barProperties.transparency[1] = buttonsBar.config.toolbarTransparency = buttonsBar.config.default.toolbarTransparency;
+					barProperties.toolbarTransparency[1] = buttonsBar.config.toolbarTransparency = buttonsBar.config.default.toolbarTransparency;
 				} else {
-					const input = Input.number('int positive', buttonsBar.config.toolbarTransparency, 'Enter value:\n0 is transparent, 100 is opaque.\n(0 to 100)', 'Buttons bar', 50, [n => n <= 100]);
+					const input = Input.number('int positive', buttonsBar.config.toolbarTransparency, 'Enter value:\n0 is transparent, 100 is opaque.\n(0 to 100)', 'Buttons bar: toolbar transparency', 50, [n => n <= 100]);
 					if (input === null) { return; }
-					barProperties.transparency[1] = buttonsBar.config.toolbarTransparency = input;
+					barProperties.toolbarTransparency[1] = buttonsBar.config.toolbarTransparency = input;
+				}
+				overwriteProperties(barProperties);
+				window.Repaint();
+			}, flags: buttonsBar.config.toolbarColor || !window.IsTransparent ? MF_STRING : MF_GRAYED
+		});
+		menu.newEntry({
+			menuName, entryText: 'Set buttons transparency...' + '\t[' + buttonsBar.config.buttonTransparency + ']', func: () => {
+				if (utils.IsKeyPressed(VK_CONTROL)) {
+					barProperties.buttonTransparency[1] = buttonsBar.config.buttonTransparency = buttonsBar.config.default.buttonTransparency;
+				} else {
+					const input = Input.number('int positive', buttonsBar.config.buttonTransparency, 'Enter value:\n0 is transparent, 100 is opaque.\n(0 to 100)', 'Buttons bar: buttons transparency', 50, [n => n <= 100]);
+					if (input === null) { return; }
+					barProperties.buttonTransparency[1] = buttonsBar.config.buttonTransparency = input;
+				}
+				overwriteProperties(barProperties);
+				window.Repaint();
+			}, flags: !barProperties.bBgButtons[1] ? MF_STRING : MF_GRAYED
+		});
+		menu.newEntry({
+			menuName, entryText: 'Set border transparency...' + '\t[' + buttonsBar.config.buttonBorderTransparency + ']', func: () => {
+				if (utils.IsKeyPressed(VK_CONTROL)) {
+					barProperties.buttonBorderTransparency[1] = buttonsBar.config.buttonBorderTransparency = buttonsBar.config.default.buttonBorderTransparency;
+				} else {
+					const input = Input.number('int positive', buttonsBar.config.buttonBorderTransparency, 'Enter value:\n0 is transparent, 100 is opaque.\n(0 to 100)', 'Buttons bar: buttons\' border transparency', 50, [n => n <= 100]);
+					if (input === null) { return; }
+					barProperties.buttonBorderTransparency[1] = buttonsBar.config.buttonBorderTransparency = input;
 				}
 				overwriteProperties(barProperties);
 				window.Repaint();
@@ -364,7 +390,9 @@ function createButtonsMenu(name) {
 				barProperties.buttonColor[1] = -1;
 				buttonsBar.config.toolbarColor = buttonsBar.config.default.toolbarColor;
 				buttonsBar.config.buttonColor = buttonsBar.config.default.buttonColor;
-				barProperties.transparency[1] = buttonsBar.config.toolbarTransparency = buttonsBar.config.default.toolbarTransparency;
+				barProperties.buttonTransparency[1] = buttonsBar.config.buttonTransparency = buttonsBar.config.default.buttonTransparency;
+				barProperties.toolbarTransparency[1] = buttonsBar.config.toolbarTransparency = buttonsBar.config.default.toolbarTransparency;
+				barProperties.buttonBorderTransparency[1] = buttonsBar.config.buttonBorderTransparency = buttonsBar.config.default.buttonBorderTransparency;
 				barProperties.textColor[1] = buttonsBar.config.textColor = buttonsBar.config.default.textColor;
 				barProperties.activeColor[1] = buttonsBar.config.activeColor = buttonsBar.config.default.activeColor;
 				barProperties.animationColors[1] = JSON.stringify(buttonsBar.config.default.animationColors);
@@ -386,7 +414,7 @@ function createButtonsMenu(name) {
 				if (utils.IsKeyPressed(VK_CONTROL)) {
 					input = buttonsBar.config.default.scale;
 				} else {
-					input = Input.number('real positive', buttonsBar.config.scale, 'Enter value:\n(real number > 0)', 'Buttons bar', 0.8, [n => n > 0 && n < Infinity]);
+					input = Input.number('real positive', buttonsBar.config.scale, 'Enter value:\n(real number > 0)', 'Buttons bar: global scale', 0.8, [n => n > 0 && n < Infinity]);
 					if (input === null) { return; }
 				}
 				barProperties.scale[1] = buttonsBar.config.scale = input; // buttons_xxx.js
@@ -405,7 +433,7 @@ function createButtonsMenu(name) {
 				if (utils.IsKeyPressed(VK_CONTROL)) {
 					input = buttonsBar.config.default.textScale;
 				} else {
-					input = Input.number('real positive', buttonsBar.config.textScale, 'Enter value:\n(real number > 0)', 'Buttons bar', 0.8, [n => n > 0 && n < Infinity]);
+					input = Input.number('real positive', buttonsBar.config.textScale, 'Enter value:\n(real number > 0)', 'Buttons bar: text scale', 0.8, [n => n > 0 && n < Infinity]);
 					if (input === null) { return; }
 				}
 				forEachButton((button) => { button.changeTextScale(input); });
@@ -422,7 +450,7 @@ function createButtonsMenu(name) {
 				if (utils.IsKeyPressed(VK_CONTROL)) {
 					input = buttonsBar.config.default.iconScale;
 				} else {
-					input = Input.number('real positive', buttonsBar.config.iconScale, 'Enter value:\n(real number > 0)', 'Buttons bar', 0.8, [n => n > 0 && n < Infinity]);
+					input = Input.number('real positive', buttonsBar.config.iconScale, 'Enter value:\n(real number > 0)', 'Buttons bar: icon scale', 0.8, [n => n > 0 && n < Infinity]);
 					if (input === null) { return; }
 				}
 				barProperties.iconScale[1] = buttonsBar.config.iconScale = input;
@@ -437,7 +465,7 @@ function createButtonsMenu(name) {
 				if (utils.IsKeyPressed(VK_CONTROL)) {
 					input = buttonsBar.config.default.offset.button;
 				} else {
-					input = Input.json('object', buttonsBar.config.offset.button, 'Enter values:\n(integer finite numbers)', 'Buttons bar', '{"x": 4, "y" : 6}', [v => Number.isFinite(v) && Number.isInteger(v)]);
+					input = Input.json('object', buttonsBar.config.offset.button, 'Enter values:\n(integer finite numbers)', 'Buttons bar: button offset', '{"x": 4, "y" : 6}', [v => Number.isFinite(v) && Number.isInteger(v)]);
 					if (input === null) { return; }
 				}
 				buttonsBar.config.offset.button = input; // buttons_xxx.js
@@ -452,7 +480,7 @@ function createButtonsMenu(name) {
 				if (utils.IsKeyPressed(VK_CONTROL)) {
 					input = buttonsBar.config.default.offset.text;
 				} else {
-					input = Input.json('object', buttonsBar.config.offset.text, 'Enter values:\n(integer finite numbers)', 'Buttons bar', '{"x": 4, "y" : 6}', [v => Number.isFinite(v) && Number.isInteger(v)]);
+					input = Input.json('object', buttonsBar.config.offset.text, 'Enter values:\n(integer finite numbers)', 'Buttons bar: text offset', '{"x": 4, "y" : 6}', [v => Number.isFinite(v) && Number.isInteger(v)]);
 					if (input === null) { return; }
 				}
 				buttonsBar.config.offset.text = input; // buttons_xxx.js
@@ -468,11 +496,25 @@ function createButtonsMenu(name) {
 				if (utils.IsKeyPressed(VK_CONTROL)) {
 					input = buttonsBar.config.default.offset.icon;
 				} else {
-					input = Input.json('object', buttonsBar.config.offset.icon, 'Enter values:\n(integer finite numbers)', 'Buttons bar', '{"x": 4, "y" : 6}', [v => Number.isFinite(v) && Number.isInteger(v)]);
+					input = Input.json('object', buttonsBar.config.offset.icon, 'Enter values:\n(integer finite numbers)', 'Buttons bar: icon offset', '{"x": 4, "y" : 6}', [v => Number.isFinite(v) && Number.isInteger(v)]);
 					if (input === null) { return; }
 				}
 				buttonsBar.config.offset.icon = input; // buttons_xxx.js
 				barProperties.offset[1] = JSON.stringify(buttonsBar.config.offset);
+				overwriteProperties(barProperties);
+				window.Repaint();
+			}
+		});
+		menu.newSeparator(menuName);
+		menu.newEntry({
+			menuName, entryText: 'Set icon outline...' + '\t[' + buttonsBar.config.outlineIcon + ']', func: () => {
+				if (utils.IsKeyPressed(VK_CONTROL)) {
+					barProperties.outlineIcon[1] = buttonsBar.config.outlineIcon = buttonsBar.config.default.outlineIcon;
+				} else {
+					const input = Input.number('int positive', buttonsBar.config.outlineIcon, 'Enter value:\n(px)', 'Buttons bar: icon outline', 0, [n => n <= Infinity]);
+					if (input === null) { return; }
+					barProperties.outlineIcon[1] = buttonsBar.config.outlineIcon = input;
+				}
 				overwriteProperties(barProperties);
 				window.Repaint();
 			}
