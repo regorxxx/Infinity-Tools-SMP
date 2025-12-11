@@ -11,7 +11,7 @@
 - Playlist Tools\Pools: modified some of the default presets and added new ones.
 - Display TF button: actions support for [Library-Tree-SMP](https://github.com/regorxxx/Library-Tree-SMP).
 - Display TF button: new default presets.
-- Buttons: new 'Playback controls' buttons submenu, with several new buttons related to playback to replace UI buttons. See [Issue 3](https://github.com/regorxxx/Infinity-Tools-SMP/issues/3).
+- Buttons: new 'Playback controls' buttons submenu, with several new buttons related to playback to replace UI buttons: play, pause, shuffle, love tracks, etc. See [Issue 3](https://github.com/regorxxx/Infinity-Tools-SMP/issues/3).
 - Buttons: added new presets as examples on toolbars on first init, aimed for playback control. See [Issue 3](https://github.com/regorxxx/Infinity-Tools-SMP/issues/3).
 - Wrapped: exposed track album imgs processing timeout as setting.
 - Wrapped: exposed logging settings.
