@@ -1,5 +1,5 @@
 ﻿'use strict';
-//04/12/25
+//11/12/25
 
 /*
 	Volume controls and display
@@ -17,7 +17,7 @@ include('..\\helpers\\menu_xxx_extras.js');
 include('..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isFunction:readable, isBoolean:readable, isStringWeak:readable, isFloat:readable, isInt:readable, _t:readable, isJSON:readable, _bt:readable */
+/* global isFunction:readable, isBoolean:readable, isStringWeak:readable, isReal:readable, isInt:readable, _t:readable, isJSON:readable, _bt:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
 /* global queryReplaceWithStatic:readable, sanitizeTagTfo:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
@@ -41,9 +41,9 @@ var newButtonsProperties = { // NOSONAR[global]
 	fallback: ['Fallback text', sanitizeTagTfo(chars.loveEmojiV2), { func: isStringWeak }, sanitizeTagTfo(chars.loveEmojiV2)],
 	bPlaying: ['Follow now playing', true, { func: isBoolean }, true],
 	refreshRate: ['Max. refresh rate (ms)', 50, { func: isInt }, 50],
-	buttonSize: ['Display area size', 120, { func: (v) => isFloat(v) || isInt(v) }, 120],
+	buttonSize: ['Display area size', 120, { func: isReal }, 120],
 	bRelSize: ['Relative size (window)', false, { func: isBoolean }, false],
-	fontSize: ['Font size scale', 1.2, { range: [[0, Infinity]], func: (v) => isFloat(v) || isInt(v) }, 1.2],
+	fontSize: ['Font size scale', 1.2, { range: [[0, Infinity]], func: isReal }, 1.2],
 	fontStyle: ['Font style', 'Bold', { func: new Function('s', 'return ' + JSON.stringify(Object.keys(FontStyle)) + '.includes(s);') }, 'Bold'],
 	textFlags: ['Text flags', DT_LEFT | DT_VCENTER | DT_CENTER | DT_CALCRECT | DT_NOPREFIX | DT_NOCLIP | DT_END_ELLIPSIS, { func: isInt }, DT_LEFT | DT_VCENTER | DT_CENTER | DT_CALCRECT | DT_NOCLIP | DT_NOPREFIX | DT_END_ELLIPSIS],
 	presets: ['Presets', JSON.stringify([

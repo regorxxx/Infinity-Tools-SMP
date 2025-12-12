@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/12/25
+//11/12/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -22,7 +22,7 @@ if (!window.ScriptInfo.Name) { window.DefineScript('Infinity-Tools-SMP', { autho
 		'helpers\\helpers_xxx_properties.js',
 		/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable */
 		'helpers\\helpers_xxx_prototypes.js',
-		/* global randomString:readable, isString:readable, isInt:readable, isBoolean:readable, isFloat:readable, isJSON:readable, _b:readable, isJSON:readable, clone:readable */
+		/* global randomString:readable, isString:readable, isInt:readable, isBoolean:readable, isReal:readable, isJSON:readable, _b:readable, isJSON:readable, clone:readable */
 		'helpers\\helpers_xxx_UI.js',
 		/* global _scale:readable, _gdiFont:readable */
 		'helpers\\helpers_xxx_file.js',
@@ -60,7 +60,7 @@ let barProperties = {
 	orientation: ['Toolbar orientation', 'x', { func: isString }],
 	bReflow: ['Reflow according to width / height', false, { func: isBoolean }],
 	bAlignSize: ['Align buttons according to size', true, { func: isBoolean }],
-	scale: ['UI scale', _scale(0.7, false), { func: (v) => isFloat(v) || isInt(v) }],
+	scale: ['UI scale', _scale(0.7, false), { func: isReal }],
 	activeColor: ['Buttons\' active icon color', buttonsBar.config.activeColor, { func: isInt }],
 	animationColors: ['Buttons\' animation colors', JSON.stringify(buttonsBar.config.animationColors), { func: isJSON }],
 	bIconMode: ['Show only button\'s icons', false, { func: isBoolean }],
@@ -75,8 +75,8 @@ let barProperties = {
 	bBorders: ['Buttons\' borders', true, { func: isBoolean }],
 	bAutoUpdateCheck: ['Automatically check updates', globSettings.bAutoUpdateCheck, { func: isBoolean }, globSettings.bAutoUpdateCheck],
 	bLoadAsync: ['Asynchronous loading', true, { func: isBoolean }],
-	iconScale: ['UI icon scale', _scale(0.7, false), { func: (v) => isFloat(v) || isInt(v) }],
-	textScale: ['UI text scale', _scale(0.7, false), { func: (v) => isFloat(v) || isInt(v) }],
+	iconScale: ['UI icon scale', _scale(0.7, false), { func: isReal }],
+	textScale: ['UI text scale', _scale(0.7, false), { func: isReal }],
 	textPosition: ['UI text position', 'right', { func: isString }],
 	bTooltipInfo: ['Show shortcuts on tooltip', true, { func: isBoolean }],
 	bOnNotifyColors: ['Adjust colors on panel notify', true, { func: isBoolean }]
