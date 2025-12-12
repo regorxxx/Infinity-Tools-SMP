@@ -34,6 +34,7 @@
 - Wrapped: multiple type checks against bad input, like invalid BPM or key tags. See [Pull Request 5](https://github.com/regorxxx/Infinity-Tools-SMP/pull/5).
 - Playlist Tools: fixed readme shown 2 times at first init.
 - UI: fixed minor artifacts at border drawing for full size buttons.
+- Buttons: input popups at settings menu were not properly recognizing variable types (JSON, number, string, ...) in some cases, thus missing a lot of input checks and tips.
 - JSplitter: fixed compatibility bug with JSplitter (any version) due to improper constructor used on JS Host as reported [here](https://github.com/regorxxx/Infinity-Tools-SMP/pull/6) and [here](https://hydrogenaudio.org/index.php/topic,126743.msg1073615.html#msg1073615).
 
 ## [1.0.0] - 2025-11-19

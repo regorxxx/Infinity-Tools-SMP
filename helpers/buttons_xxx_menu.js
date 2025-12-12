@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/25
+//11/12/25
 
 /* exported settingsMenu */
 
@@ -8,7 +8,7 @@
 include('helpers_xxx.js');
 /* global MF_GRAYED:readable */
 include('helpers_xxx_prototypes.js');
-/* global isFunction:readable */
+/* global isFunction:readable, isJSON:readable, isBoolean:readable, isInt:readable, isReal:readable, isString:readable, isStringWeak:readable */
 include('helpers_xxx_properties.js');
 /* global overwriteProperties:readable, checkProperty:readable, */
 include('menu_xxx.js');
@@ -33,7 +33,7 @@ function settingsMenu(parent, bShowValues = false, readmeFiles = [], entrySettin
 	if (extraEntries && !isFunction(extraEntries)) { throw new Error('settingsMenu: extraEntries is not a function'); }
 	const menu = new _menu();
 	const properties = parent.buttonsProperties;
-	const parentName = options.parentName || (isFunction(parent.text) ? parent.text(parent) : parent.text);
+	const parentName = options.parentName || (isFunction(parent.text) ? parent.text(parent) : parent.text) || '';
 	// Menu
 	menu.newEntry({ entryText: 'Configure button:', func: null, flags: MF_GRAYED });
 	menu.newSeparator();
@@ -44,27 +44,42 @@ function settingsMenu(parent, bShowValues = false, readmeFiles = [], entrySettin
 			if (keySettings.bHide) { return; }
 			if (keySettings.bSep) { menu.newSeparator(); }
 			const value = properties[key][1];
-			const type = typeof value;
-			const entryText = properties[key][0].replace(/[A-z]*\d*_*\d*\./, '') + (bShowValues && type !== 'boolean' ? '\t[' + (type === 'string' && value.length > 10 ? value.slice(0, 10) + '...' : value) + ']' : '');
+			const check = properties[key][2];
+			const type = check
+				? check.func === isJSON
+					? 'object'
+					: check.func === isBoolean
+						? 'boolean'
+						: [isFinite, isInt, isReal].includes(check.func)
+							? 'number'
+							: [isString, isStringWeak].includes(check.func)
+								? 'string'
+								: typeof value
+				: typeof value;
+			const entryName = properties[key][0].replace(/[A-z]*\d*_*\d*\./, '');
+			const entryText = entryName + (bShowValues && type !== 'boolean' ? '\t[' + (type === 'string' || type === 'object' ? value.cut(10) : value) + ']' : '');
 			const desc = keySettings.input || '';
+			const popupName = parentName + entryName;
 			menu.newEntry({
 				entryText, func: () => {
 					let input;
 					switch (type) {
 						case 'object': {
-							try { input = JSON.parse(utils.InputBox(window.ID, desc || 'Enter JSON value:', parentName, JSON.stringify(value), true)); }
+							try { input = utils.InputBox(window.ID, desc || 'Enter JSON value:', popupName, value, true); }
 							catch (e) { return; } // eslint-disable-line no-unused-vars
-							if (!input) { fb.ShowPopupMessage('Value must be a JSON object.', parentName); return; }
+							try { JSON.parse(input); } catch (e) { input = null; } // eslint-disable-line no-unused-vars
+							if (!input) { fb.ShowPopupMessage('Value must be a JSON object. Check basic rules below:\n\n- Input allows arrays ([]) or objects ({}), the one to use must match the default input value.\n\n- Strings must always be quoted:\n	["value1", "value2"]\n	{ "key": "value" }\n\n- Empty arrays have no quotes: []\n\n- Numbers must always be unquoted:\n	[10, "value1", 30]\n	{ "key": 1, "key2": "value" }\n\n-Object keys must always be strings (quoted):\n{ "key": 1, "key2": "a", "3": "bcd"} ', popupName); return; }
 							break;
 						}
 						case 'number': {
-							try { input = Number(utils.InputBox(window.ID, desc || 'Enter number:', parentName, value, true)); }
-							catch (e) { return; } // eslint-disable-line no-unused-vars
-							if (isNaN(input)) { fb.ShowPopupMessage('Value must be a number.', parentName); return; }
+							try { input = utils.InputBox(window.ID, desc || 'Enter number:', popupName, value, true); }
+							catch (e) { return; } // eslint-disable-line no-unused-vars, no-empty
+							try { input = Number(input); } catch (e) { input = null; } // eslint-disable-line no-unused-vars
+							if (isNaN(input)) { fb.ShowPopupMessage('Value must be a number.', popupName); return; }
 							break;
 						}
 						case 'string': {
-							try { input = utils.InputBox(window.ID, desc || 'Enter value:', parentName, value, true); }
+							try { input = utils.InputBox(window.ID, desc || 'Enter value:', popupName, value, true); }
 							catch (e) { return; } // eslint-disable-line no-unused-vars
 							break;
 						}
@@ -75,11 +90,11 @@ function settingsMenu(parent, bShowValues = false, readmeFiles = [], entrySettin
 					}
 					if (value === input) { return; }
 					if (!checkProperty(properties[key], input)) { return; } // Apply properties check which should be personalized for input value
-					properties[key][1] = (type === 'object' ? JSON.stringify(input) : input);
+					properties[key][1] = input;
 					overwriteProperties(properties); // Updates panel
 					if (Object.hasOwn(keySettings, 'popup')) {
 						if (type !== 'boolean' || (type === 'boolean' && input)) {
-							fb.ShowPopupMessage(keySettings.popup, parentName);
+							fb.ShowPopupMessage(keySettings.popup, popupName);
 						}
 					}
 					if (key === 'bIconMode') {
