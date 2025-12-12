@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//11/12/25
 
 /*
 	Search same by v 1.0 24/08/22
@@ -258,7 +258,8 @@ addButton({
 								overwriteProperties(this.buttonsProperties);
 							}
 						});
-					}
+					},
+					{ parentName: 'Search same by tags (combinations): ' }
 				).btn_up(this.currX, this.currY + this.currH);
 				const newName = this.buttonsProperties.customName[1].toString();
 				if (oldName !== newName) { this.adjustNameWidth(newName); }

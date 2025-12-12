@@ -1,5 +1,5 @@
 ﻿'use strict';
-//13/10/25
+//11/12/25
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -83,7 +83,8 @@ addButton({
 								overwriteProperties(this.buttonsProperties);
 							}
 						});
-					}
+					},
+					{ parentName: sbd.name + ' - Genre explorer: ' }
 				);
 				menu.btn_up(this.currX, this.currY + this.currH);
 			} else {

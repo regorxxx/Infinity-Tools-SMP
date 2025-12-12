@@ -1,5 +1,5 @@
 'use strict';
-//13/10/25
+//11/12/25
 
 /*
 	Integrates Last.fm recommendations statistics within foobar2000 library.
@@ -167,7 +167,8 @@ addButton({
 								overwriteProperties(properties);
 							}
 						});
-					}
+					},
+					{ parentName: 'Last.fm Tools: ' }
 				).btn_up(this.currX, this.currY + this.currH);
 			} else {
 				// Call menu

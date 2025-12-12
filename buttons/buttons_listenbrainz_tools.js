@@ -1,5 +1,5 @@
 ﻿'use strict';
-//13/10/25
+//11/12/25
 
 /*
 	Integrates ListenBrainz feedback and recommendations statistics within foobar2000 library.
@@ -133,7 +133,8 @@ addButton({
 								}
 							});
 						});
-					}
+					},
+					{ parentName: 'ListenBrainz Tools: ' }
 				).btn_up(this.currX, this.currY + this.currH);
 			} else {
 				this.retrievePlaylists(false);

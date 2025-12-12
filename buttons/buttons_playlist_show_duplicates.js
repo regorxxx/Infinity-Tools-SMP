@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//11/12/25
 
 /*
 	Removes duplicates on active playlist without changing order. It's currently set to title-artist-date,
@@ -134,7 +134,8 @@ addButton({
 								overwriteProperties(this.buttonsProperties);
 							}
 						});
-					}
+					},
+					{ parentName: 'Show duplicates: '}
 				).btn_up(this.currX, this.currY + this.currH);
 			} else {
 				const checkKeys = Object.keys(this.buttonsProperties).filter((key) => { return key.startsWith('check'); })

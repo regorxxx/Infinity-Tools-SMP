@@ -1,5 +1,5 @@
 ﻿'use strict';
-//03/12/25
+//11/12/25
 
 /*
 	Volume controls and display
@@ -122,7 +122,8 @@ addButton({
 						voldB: (value) => {
 							this.adjustButtonWidth(value ? ' -100 dB ' : ' 100 ', 8 * _scale(1, false) / _scale(buttonsBar.config.scale));
 						}
-					}
+					},
+					void (0), { parentName: 'Volume display: ' }
 				).btn_up(this.currX, this.currY + this.currH);
 			} else if (!this.isInput) { this.startInput(); }
 			else { this.applyInput(); }

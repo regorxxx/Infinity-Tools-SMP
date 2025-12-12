@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/12/25
+//11/12/25
 
 /*
 	Quickmatch same....
@@ -121,7 +121,8 @@ addButton({
 								overwriteProperties(this.buttonsProperties);
 							}
 						});
-					}
+					},
+					{ parentName: 'Quickmatch: ' }
 				);
 				menu.btn_up(this.currX, this.currY + this.currH);
 			} else {

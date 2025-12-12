@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/10/25
+//11/12/25
 
 /*
 	Quicksearch for same....
@@ -166,7 +166,8 @@ addButton({
 								overwriteProperties(this.buttonsProperties);
 							}
 						});
-					}
+					},
+					{ parentName: 'Quicksearch: ' }
 				);
 				menu.btn_up(this.currX, this.currY + this.currH);
 			} else {

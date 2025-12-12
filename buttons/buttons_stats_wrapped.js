@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/11/25
+//11/12/25
 
 /*
 	Wrapped
@@ -213,7 +213,8 @@ addButton({
 								menu.newCheckMenuLast(() => logOpt[opt.key]);
 							});
 						}
-					}
+					},
+					{ parentName: 'Wrapped: ' }
 				);
 				menu.btn_up(this.currX, this.currY + this.currH);
 			} else {

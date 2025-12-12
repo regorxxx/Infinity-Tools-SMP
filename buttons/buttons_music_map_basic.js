@@ -1,5 +1,5 @@
 ﻿'use strict';
-//13/10/25
+//11/12/25
 
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
@@ -79,7 +79,7 @@ addButton({
 		text: 'Similar Tracks',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {
-				settingsMenu(this, true, ['buttons_music_map_basic.js'], { bAdvTitle: { popup: globRegExp.title.desc } }).btn_up(this.currX, this.currY + this.currH);
+				settingsMenu(this, true, ['buttons_music_map_basic.js'], { bAdvTitle: { popup: globRegExp.title.desc } }, void (0), void (0), { parentName: sbd.name + ': ' }).btn_up(this.currX, this.currY + this.currH);
 			} else {
 				choosePresetMenu(this).btn_up(this.currX, this.currY + this.currH);
 			}

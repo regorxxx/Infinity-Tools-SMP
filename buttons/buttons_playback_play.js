@@ -1,5 +1,5 @@
 ﻿'use strict';
-//03/12/25
+//11/12/25
 
 /*
 	Playback controls
@@ -45,7 +45,8 @@ addButton({
 						bPlayOrPause: (value) => {
 							this.setCallbacks(this, value);
 						}
-					}
+					}, void (0),
+					{ parentName: 'Play button: ' }
 				).btn_up(this.currX, this.currY + this.currH);
 			} else { this.buttonsProperties.bPlayOrPause[1] ? fb.PlayOrPause() : fb.Play(); }
 		},

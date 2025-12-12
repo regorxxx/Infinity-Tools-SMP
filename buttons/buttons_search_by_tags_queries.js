@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//11/12/25
 
 /*
 	Search n tracks (randomly) on library with the same tag(s) than the current selected track.
@@ -163,7 +163,8 @@ addButton({
 								overwriteProperties(this.buttonsProperties);
 							}
 						});
-					}
+					},
+					{ parentName: 'Search same by tags (queries): ' }
 				).btn_up(this.currX, this.currY + this.currH);
 				const newName = this.buttonsProperties.customName[1].toString();
 				if (oldName !== newName) { this.adjustNameWidth(newName); }
