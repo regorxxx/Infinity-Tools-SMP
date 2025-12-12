@@ -2,9 +2,16 @@
 
 ## [Table of Contents]
 - [Unreleased](#unreleased)
+- [1.1.0](#110---2025-12-12)
 - [1.0.0](#100---2025-11-19)
 
 ## [Unreleased][]
+### Added
+### Changed
+### Removed
+### Fixed
+
+## [1.0.0] - 2025-11-19
 ### Added
 - UI: experimental buttons alignment settings at toolbar contextual menu (R. Click). By default it uses 'Left' (previous behaviour). See [Issue 3](https://github.com/regorxxx/Infinity-Tools-SMP/issues/3).
 - UI: added button spacers, with a size of 20 px scaled with DPI. They can be added the same than separators, at 'Add button' submenu. Multiple spacers can also be stacked to achieve desired width. See [Issue 3](https://github.com/regorxxx/Infinity-Tools-SMP/issues/3).
@@ -32,7 +39,7 @@
 - Wrapped: rare crashes if some track data was missing. See [Issue 2](https://github.com/regorxxx/Infinity-Tools-SMP/issues/2).
 - Wrapped: unnecessary double processing with nconvert and exiftool in some cases.
 - Wrapped: multiple type checks against bad input, like invalid BPM or key tags. See [Pull Request 5](https://github.com/regorxxx/Infinity-Tools-SMP/pull/5).
-- Playlist Tools: fixed readme shown 2 times at first init.
+- Playlist Tools: fixed readme being shown 2 times at first init.
 - UI: fixed minor artifacts at border drawing for full size buttons.
 - Buttons: input popups at settings menu were not properly recognizing variable types (JSON, number, string, ...) in some cases, thus missing a lot of input checks and tips.
 - JSplitter: fixed compatibility bug with JSplitter (any version) due to improper constructor used on JS Host as reported [here](https://github.com/regorxxx/Infinity-Tools-SMP/pull/6) and [here](https://hydrogenaudio.org/index.php/topic,126743.msg1073615.html#msg1073615).
@@ -97,4 +104,5 @@
 
 
 [Unreleased]: ../../compare/v1.0.0...HEAD
+[1.1.0]: ../../compare/v.1.1.0...v1.1.0
 [1.0.0]: ../../compare/5ae07355...v1.0.0
