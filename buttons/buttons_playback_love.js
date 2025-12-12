@@ -13,7 +13,9 @@ include('..\\helpers\\buttons_xxx.js');
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isString:readable, isBoolean:readable, _bt:readable, isStringWeak:readable */
+/* global isString:readable, isBoolean:readable, _bt:readable, isStringWeak:readable, isJSON:readable */
+include('..\\helpers\\helpers_xxx_playlists.js');
+/* global getLocks:readable, setLocks:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global chars:readable, RGB:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -33,6 +35,7 @@ var newButtonsProperties = { // NOSONAR[global]
 	bEvalSel: ['Evaluate multiple tracks', false, { func: isBoolean }, false],
 	favPls: ['Send to Favourites playlist', '', { func: isStringWeak }, ''],
 	hatePls: ['Send to Hated playlist', '', { func: isStringWeak }, ''],
+	lockPls: ['Fav/hated playlist locks', JSON.stringify(['RemovePlaylist', 'RenamePlaylist']), { func: isJSON }, JSON.stringify(['RemovePlaylist', 'RenamePlaylist'])],
 };
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 newButtonsProperties = getPropertiesPairs(newButtonsProperties, prefix, 0);
@@ -44,7 +47,15 @@ addButton({
 		func: function (mask) {
 			if (mask === MK_SHIFT) {
 				settingsMenu(
-					this, true, ['buttons_playback_love.js'], void (0),
+					this, true, ['buttons_playback_love.js'],
+					{
+						favPls: {
+							input: 'Enter playlist name:'
+						},
+						lockPls: {
+							input: 'Enter locked actions:\n(JSON)\n\nAvailable: AddItems, RemoveItems, ReplaceItems, ReorderItems, RemovePlaylist.'
+						},
+					},
 					{
 						tag: (value) => {
 							this.tf = fb.TitleFormat(_bt(value));
@@ -202,10 +213,24 @@ addButton({
 				}
 				return true;
 			},
+			cleanLocks: function (parent, idx, locks) {
+				if (locks.isLocked) { setLocks(idx, []); }
+			},
+			setLocks: function (parent, idx, prevLock) {
+				const newLock = JSON.parse(this.buttonsProperties.lockPls[1]);
+				if (newLock.length) {
+					setLocks(idx, newLock);
+				} else if (prevLock.isLocked) {
+					setLocks(idx, prevLock.types);
+				}
+			},
 			sendToPls: function (parent, handleList = this.getSelection(), pls = '') {
 				if (!pls || !pls.length) { return false; }
 				const idx = plman.FindOrCreatePlaylist(pls, false);
 				if (idx !== -1) {
+					const locks = getLocks(idx);
+					if (locks.isLocked && !locks.isSMPLock) { console.log(window.PanelName + ': ' + pls + ' is locked. Can not add new tracks. '); return false; }
+					this.cleanLocks(idx, locks);
 					const plsItems = plman.GetPlaylistItems(idx);
 					const count = plsItems.Count || 0;
 					plsItems.Sort();
@@ -213,13 +238,22 @@ addButton({
 					new Set(handleList.Convert()).forEach((handle) => {
 						if (plsItems.BSearch(handle)) { toAdd.Add(handle); };
 					});
-					if (toAdd.Count) { plman.InsertPlaylistItems(idx, count, toAdd); }
+					if (toAdd.Count) {
+						plman.InsertPlaylistItems(idx, count, toAdd);
+						this.setLocks(idx, locks);
+						return true;
+					}
+					this.setLocks(idx, locks);
+					return false;
 				}
 			},
 			removeFromPls: function (parent, handleList = this.getSelection(), pls = '') {
 				if (!pls || !pls.length) { return false; }
 				const idx = plman.FindPlaylist(pls);
 				if (idx !== -1) {
+					const locks = getLocks(idx);
+					if (locks.isLocked && !locks.isSMPLock) { console.log(window.PanelName + ': ' + pls + ' is locked. Can not remove tracks. '); return false; }
+					this.cleanLocks(idx, locks);
 					const plsItems = plman.GetPlaylistItems(idx);
 					const toRemove = handleList.Clone();
 					toRemove.Sort();
@@ -231,7 +265,12 @@ addButton({
 						plman.UndoBackup(idx);
 						plman.SetPlaylistSelection(idx, selIdx, true);
 						plman.RemovePlaylistSelection(idx);
+						if (plman.PlaylistItemCount(idx) === 0) { plman.RemovePlaylist(idx); }
+						else { this.setLocks(idx, locks); }
+						return true;
 					}
+					this.setLocks(idx, locks);
+					return false;
 				}
 			}
 		},
