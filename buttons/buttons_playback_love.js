@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/12/25
+//11/12/25
 
 /*
 	Playback controls
@@ -52,7 +52,9 @@ addButton({
 						bEvalSel: () => {
 							this.clearSelectionCache();
 						}
-					}
+					},
+					void (0),
+					{ parentName: 'Love button: ' }
 				).btn_up(this.currX, this.currY + this.currH);
 			} else {
 				const sel = this.getSelection();
