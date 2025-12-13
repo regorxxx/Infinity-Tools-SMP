@@ -64,12 +64,13 @@ It's impossible to offer a complete list of the things that can be done with the
 ![infinity3](https://github.com/user-attachments/assets/ca6cf815-e0eb-4e74-a627-f05b55ecc42d)
 
 ## Requirements (only one host component required)
- 1. [Spider Monkey Panel](https://theqwertiest.github.io/foo_spider_monkey_panel): JavaScript host component required to install this. Only x32. **(host component)**
- 2. [JSplitter](https://foobar2000.ru/forum/viewtopic.php?t=6378): JavaScript host component required to install this. Both x32 and x64. **(host component)**
- 3. [Playback Statistics](https://www.foobar2000.org/components/view/foo_playcount): Optional component required to retrieve playback statistics.
- 4. [Enhanced Playback Statistics](https://www.foobar2000.org/components/view/foo_enhanced_playcount): Optional component required to retrieve playback statistics.
- 5. [Required fonts](https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts): FontAwesome, Segoe UI, Arial Unicode MS
- 6. [Optional binaries](https://github.com/regorxxx/foobar2000-assets/tree/main/binaries): ffmpeg, essentia. It depends on the tool (check their readme).
+ 1. [Spider Monkey Panel (foobar2000 v2.x)](hydrogenaudio.org/index.php/topic,116669.new.html#new): JavaScript host component required to install this. Both [x86](https://github.com/marc2k3/spider-monkey-panel-x86) and [x64](https://github.com/marc2k3/spider-monkey-panel-x64). **(host component)**
+ 2. [Spider Monkey Panel (foobar2000 v1.6.x)](https://theqwertiest.github.io/foo_spider_monkey_panel):  JavaScript host component required to install this. Only x86. **(host component)**
+ 3. [JSplitter (any foobar2000 version)](https://foobar2000.ru/forum/viewtopic.php?t=6378): JavaScript host component required to install this. Both x86 and x64. **(host component)**
+ 4. [Playback Statistics](https://www.foobar2000.org/components/view/foo_playcount): Optional component required to retrieve playback statistics.
+ 5. [Enhanced Playback Statistics](https://www.foobar2000.org/components/view/foo_enhanced_playcount): Optional component required to retrieve playback statistics.
+ 6. [Required fonts](https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts): FontAwesome, Segoe UI, Arial Unicode MS
+ 7. [Optional binaries](https://github.com/regorxxx/foobar2000-assets/tree/main/binaries): ffmpeg, essentia. It depends on the tool (check their readme).
 
 ## Installation
 See [Wiki](../../wiki/Installation) or the [_INSTALLATION (txt)](../main/_INSTALLATION.txt).
