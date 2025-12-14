@@ -1,11 +1,11 @@
 ﻿'use strict';
-//25/11/25
+//14/12/25
 
 /* exported calculateSimilarArtistsFromPls, addTracksRelation, calculateTrackSimilarity */
 
 include('search_by_distance.js');
 /* global sbd:readable, searchByDistance:readable, getNearestGenreStyles:readable */
-/* global getHandleListTags:readable, getHandleListTagsV2:readable, globTags:readable, _p:readable, removeDuplicates:readable, globQuery:readable, clone:readable, _q:readable, queryCombinations:readable, queryJoin:readable, round:readable, folders:readable, WshShell:readable, popup:readable, _b:readable, secondsToTime:readable, getHandleTags:readable */
+/* global getHandleListTags:readable, getHandleListTagsV2:readable, globTags:readable, _p:readable, removeDuplicates:readable, globQuery:readable, clone:readable, _q:readable, queryCombinations:readable, queryJoin:readable, round:readable, folders:readable, WshShell:readable, popup:readable, _b:readable, secondsToTime:readable, getHandleTags:readable, fallbackTagsQuery:readable, sanitizeQueryVal:readable */
 include('..\\music_graph\\music_graph_descriptors_xxx_node.js');
 // music_graph_descriptors.nodeList
 include('..\\..\\helpers\\helpers_xxx_tags_extra.js');
@@ -37,8 +37,9 @@ include('..\\..\\helpers\\helpers_xxx_tags_extra.js');
 async function calculateSimilarArtists({ selHandle = fb.GetFocusItem(), properties = null, theme = null, recipe = 'int_simil_artists_calc_graph.json', dateRange = 10, size = 50, method = 'weighted' } = {}) {
 	const test = sbd.panelProperties.bProfile[1] ? new FbProfiler('calculateSimilarArtists') : null;
 	// Retrieve all tracks for the selected artist and compare them against the library (any other track not by the artist)
-	const artist = getHandleListTags(new FbMetadbHandleList(selHandle), [globTags.artist], { bMerged: true }).flat().filter(Boolean);
-	const libQuery = artist.map((tag) => { return _p(globTags.artist + ' IS ' + tag.toLowerCase()); }).join(' AND ');
+	const artist = getHandleListTags(new FbMetadbHandleList(selHandle), [globTags.artist], { bMerged: true }).flat().filter(Boolean).slice(0, 1);
+	if (!artist.length) { return { artist: '', val: [] }; }
+	const libQuery = queryJoin(artist.map((a) => fallbackTagsQuery(globTags.artist, sanitizeQueryVal(a.toLowerCase()), 'IS')));
 	// Retrieve artist's tracks and remove duplicates
 	let selArtistTracks = fb.GetQueryItems(fb.GetLibraryItems(), libQuery);
 	selArtistTracks = removeDuplicates({ handleList: selArtistTracks, sortBias: globQuery.remDuplBias, bPreserveSort: false, bAdvTitle: true, bMultiple: true });
@@ -55,7 +56,7 @@ async function calculateSimilarArtists({ selHandle = fb.GetFocusItem(), properti
 		const genreStyle = getHandleListTags(new FbMetadbHandleList(selHandle), genreStyleTag, { bMerged: true }).flat().filter(Boolean);
 		const allowedGenres = getNearestGenreStyles(genreStyle, 50, sbd.allMusicGraph);
 		const allowedGenresQuery = queryCombinations(allowedGenres, genreStyleTagQuery, 'OR', 'AND');
-		forcedQuery = _p(artist.map((tag) => { return _p('NOT ' + globTags.artist + ' IS ' + tag.toLowerCase()); }).join(' AND ')) + (allowedGenresQuery.length ? ' AND ' + _p(allowedGenresQuery) : '');
+		forcedQuery = queryJoin(['NOT ' + _p(queryJoin(artist.map((a) => fallbackTagsQuery(globTags.artist, sanitizeQueryVal(a.toLowerCase()), 'IS')))), allowedGenresQuery].filter(Boolean));
 	}
 	// Weight with all artist's tracks
 	const genreStyleWeight = new Map();
@@ -78,7 +79,7 @@ async function calculateSimilarArtists({ selHandle = fb.GetFocusItem(), properti
 			const genreStyle = getHandleListTags(new FbMetadbHandleList(sel), genreStyleTag, { bMerged: true }).flat().filter(Boolean);
 			const allowedGenres = getNearestGenreStyles(genreStyle, 50, sbd.allMusicGraph);
 			const allowedGenresQuery = queryJoin(queryCombinations(allowedGenres, genreStyleTagQuery, 'OR'), 'OR');
-			forcedQuery = _p(artist.map((tag) => { return _p('NOT ' + globTags.artist + ' IS ' + tag.toLowerCase()); }).join(' AND ')) + (allowedGenresQuery.length ? ' AND ' + _p(allowedGenresQuery) : '');
+			forcedQuery = queryJoin(['NOT ' + _p(queryJoin(artist.map((a) => fallbackTagsQuery(globTags.artist, sanitizeQueryVal(a.toLowerCase()), 'IS')))), allowedGenresQuery].filter(Boolean));
 			if (method === 'weighted') { // Weight will be <= 1 according to how representative of the artist's works is
 				weight = [...new Set(genreStyle)].reduce((total, val) => { return total + (genreStyleWeight.has(val) ? genreStyleWeight.get(val) : 0); }, 0);
 			}
@@ -162,7 +163,7 @@ async function calculateSimilarArtistsFromPls({ items = plman.GetPlaylistSelecte
 	profiler.Print();
 	const report = newData.map((obj) => // List of artists with tabbed similar artists + score
 		obj.artist + ':\n\t' + (obj.val.map((sim) =>
-			_b(sim.score + '%') + '\t' + sim.artist
+			_b(sim.score.toFixed(1) + '%') + '\t' + sim.artist
 		).join('\n\t') || '-NONE-')
 	).join('\n\n');
 	fb.ShowPopupMessage(report, sbd.name);
