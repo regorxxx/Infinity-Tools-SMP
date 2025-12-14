@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/10/25
+//14/12/25
 
 /* global menusEnabled:readable, configMenu:readable, readmes:readable, menu:readable, newReadmeSep:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, menu_propertiesBack:readable, menu_panelProperties:readable, overwritePanelProperties:readable, shortcutsPath:readable, importPreset:readable, presets:writable, menu_panelPropertiesBack:readable, loadProperties:readable, overwriteDefaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, specialMenu:readable, sbd:readable */
 
@@ -293,11 +293,11 @@
 		menu.newSeparator(configMenu);
 		{	// Logging
 			const subMenuName = menu.newMenu('Logging', configMenu);
-			menu.newEntry({ menuName: subMenuName, entryText: 'Switch logging functionality:', func: null, flags: MF_GRAYED });
+			menu.newEntry({ menuName: subMenuName, entryText: 'Console logging:', func: null, flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
 			{	// bDebug
 				menu.newEntry({
-					menuName: subMenuName, entryText: 'Enabled extended console debug', func: () => {
+					menuName: subMenuName, entryText: 'Debug logging', func: () => {
 						menu_panelProperties.bDebug[1] = !menu_panelProperties.bDebug[1];
 						defaultArgs.bDebug = menu_panelProperties.bDebug[1];
 						overwritePanelProperties(); // Updates panel
@@ -306,7 +306,7 @@
 				menu.newCheckMenuLast(() => menu_panelProperties.bDebug[1]);
 				// bProfile
 				menu.newEntry({
-					menuName: subMenuName, entryText: 'Enabled profiler console log', func: () => {
+					menuName: subMenuName, entryText: 'Global profiling', func: () => {
 						menu_panelProperties.bProfile[1] = !menu_panelProperties.bProfile[1];
 						defaultArgs.bProfile = menu_panelProperties.bProfile[1];
 						overwritePanelProperties(); // Updates panel
