@@ -23,7 +23,7 @@ include('menu_xxx.js');
  * @param {object} parent - button context
  * @param {boolean} bShowValues? - show value along the menu entry
  * @param {any[]} readmeFiles? - list of files to show on readme submenu
- * @param {{[key:string]:{input:string, popup:string, bHide:boolean}}} entrySettings? - Where key matches the ones at parent.buttonsProperties. Every time such setting is changed, popup will appear.
+ * @param {{[key:string]:{name:string, input:string, popup:string, bHide:boolean, bSep:boolean}}} entrySettings? - Where key matches the ones at parent.buttonsProperties. Every time such setting is changed, popup will appear.
  * @param {{[key:string]:(value, key:string) => void}} callbacks? - Where key matches the ones at parent.buttonsProperties. Every time such setting is changed, callback will fire (after changing the setting).
  * @param {(menu:_menu, parent:parent) => void} extraEntries? - Function which could append additional menu entries between the list of properties and the 'Restore defaults...' entry.
  * @param {{parentName:string}} options? - Additional settings.
@@ -56,7 +56,7 @@ function settingsMenu(parent, bShowValues = false, readmeFiles = [], entrySettin
 								? 'string'
 								: typeof value
 				: typeof value;
-			const entryName = properties[key][0].replace(/[A-z]*\d*_*\d*\./, '');
+			const entryName = Object.hasOwn(keySettings, 'name') ? keySettings.name : properties[key][0].replace(/[A-z]*\d*_*\d*\./, '');
 			const entryText = entryName + (bShowValues && type !== 'boolean' ? '\t[' + (type === 'string' || type === 'object' ? value.cut(10) : value) + ']' : '');
 			const desc = keySettings.input || '';
 			const popupName = parentName + entryName;
