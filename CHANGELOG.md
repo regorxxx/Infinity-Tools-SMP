@@ -7,6 +7,7 @@
 
 ## [Unreleased][]
 ### Added
+- Buttons: new 'buttons_playback_rating' button, which supports any rating system (foo_playcount, foo_playcount_2003 or tags) and arbitrary number of stars. Clicking on the buttons directly rates the track(s). Has settings to follow playback or evaluate selection, like loved button.
 ### Changed
 - UI: improvements on dynamic colors handling in some extreme cases with main and secondary colors being almost equal.
 - Music Map: similar artist tagging now uses only the first Album Artist (or Artist), instead of joining them by commas, if the reference tack had multiple artists.
