@@ -1,9 +1,9 @@
 ﻿'use strict';
-//25/11/25
+//15/12/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, libSearchMenu:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, globTags:readable globQuery:readable, isString:readable, isJSON:readable, Input:readable, sanitizePath:readable, checkQuery:readable, _foldPath:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, globTags:readable globQuery:readable, isString:readable, isJSON:readable, Input:readable, sanitizePath:readable, checkQuery:readable, _foldPath:readable, _copyFile:readable */
 
 // Other tools
 {
@@ -42,7 +42,13 @@
 								let bPresetUsed = false;
 								let discardMask = '';
 								let path;
-								try { path = utils.InputBox(window.ID, 'Enter path to text file with list of tracks:', scriptName + ': ' + name, folders.xxx + 'examples\\track_list_to_import.txt', true); }
+								path = (_isFile(menu_properties.importPlaylistPath[1])
+									? menu_properties.importPlaylistPath[1]
+									: menu_properties.importPlaylistPath[1].endsWith('track_list_to_import.txt')
+										? _copyFile(folders.xxx + 'examples\\track_list_to_import.txt', menu_properties.importPlaylistPath[1]) && menu_properties.importPlaylistPath[1]
+										: ''
+								) || folders.xxx + 'examples\\track_list_to_import.txt';
+								try { path = utils.InputBox(window.ID, 'Enter path to text file with list of tracks:', scriptName + ': ' + name, path, true); }
 								catch (e) { return; } // eslint-disable-line no-unused-vars
 								if (!_isFile(path) && !path.includes('http://') && !path.includes('https://')) {
 									fb.ShowPopupMessage('File not found:\n\n' + path, window.FullPanelName + ': ' + name);
@@ -92,6 +98,9 @@
 						menu.newEntry({
 							menuName: subMenuName, entryText: 'Import from custom path', func: () => {
 								const path = menu_properties.importPlaylistPath[1];
+								if (!_isFile(path) && path.endsWith('track_list_to_import.txt')) {
+									_copyFile(folders.xxx + 'examples\\track_list_to_import.txt', menu_properties.importPlaylistPath[1]);
+								}
 								if (!_isFile(path) && !path.includes('http://') && !path.includes('https://')) {
 									fb.ShowPopupMessage('File not found:\n\n' + path, window.FullPanelName + ': ' + name);
 									return;

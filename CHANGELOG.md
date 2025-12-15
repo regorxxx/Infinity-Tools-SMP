@@ -11,6 +11,7 @@
 - UI: improvements on dynamic colors handling in some extreme cases with main and secondary colors being almost equal.
 - Music Map: similar artist tagging now uses only the first Album Artist (or Artist), instead of joining them by commas, if the reference tack had multiple artists.
 - Music Map: added fallback between %ARTIST% and %ALBUM ARTIST% tags similar artist tagging.
+- Playlist Tools\Import track list: example txt file is now copied on custom path if no file is present and setting has not been changed yet. Such path is used as the default path, so it works on first run without any user intervention.
 ### Removed
 ### Fixed
 - Music Map: similar artist tagging now works properly for selection with multi-value artist tags in all cases.
