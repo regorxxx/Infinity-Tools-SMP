@@ -14,6 +14,7 @@
 ### Removed
 ### Fixed
 - Music Map: similar artist tagging now works properly for selection with multi-value artist tags in all cases.
+- UI: avoid repaint artifacts (button hover) due to bugged SMP behaviour when opening modal popups.
 
 ## [1.1.0] - 2025-12-12
 ### Added

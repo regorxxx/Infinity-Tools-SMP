@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/12/25
+//15/12/25
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer */
 
@@ -1212,7 +1212,8 @@ addEventListener('on_mouse_lbtn_up', (x, y, mask) => {
 		buttonsBar.bOnClick = false;
 		// Solves error if a WshShell Popup is created (curBtn becomes null) after pressing the button and firing curBtn.onClick()
 		if (window.IsVisible) {
-			curr.changeState(buttonStates.hover);
+			if (window.IsFocused) {	curr.changeState(buttonStates.hover); }
+			else { curr.changeState(buttonStates.normal); }
 			curr.repaint();
 		}
 	} else if (mask === MK_SHIFT) {
@@ -1290,6 +1291,7 @@ addEventListener('on_key_up', (k) => {
 });
 
 addEventListener('on_focus', (is_focused) => {
+	window.IsFocused = is_focused;
 	if (!is_focused) { buttonsBar.keyDown.clear(); }
 });
 
