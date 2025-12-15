@@ -60,8 +60,13 @@ addButton({
 						tag: (value) => {
 							this.tf = fb.TitleFormat(_bt(value));
 						},
+						bPlaying: () => {
+							this.clearSelectionCache();
+							this.repaint();
+						},
 						bEvalSel: () => {
 							this.clearSelectionCache();
+							this.repaint();
 						}
 					},
 					void (0),
@@ -102,7 +107,7 @@ addButton({
 				: this.isLovedAll(void (0), tags)
 					? 'Unlove track(s)'
 					: 'Love track(s)';
-			info += '\n' + loved + ' loved / ' + hated + ' hated (' + (sel ? sel.Count : 0) + ' tracks)';
+			info += '\n' + loved + ' loved / ' + hated + ' hated (' + (sel ? sel.Count : 0) + 'selected tracks)';
 			if (bShift || bCtrl || bInfo) {
 				info += '\n-----------------------------------------------------';
 				info += '\n(Ctrl + L. Click to hate track(s))';
