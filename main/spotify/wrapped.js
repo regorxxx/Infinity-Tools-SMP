@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//05/12/25
+//16/12/25
 
 /* exported wrapped */
 
@@ -63,7 +63,7 @@ const wrapped = {
 		highBpmHalveFactor: 30, // [0, 100]
 		bServicesListens: false,
 		tokens: { listenBrainz: '', listenBrainzUser: '' },
-		imageStubPath: '.\\yttm\\art_img\\$lower($cut(%1,1))\\%1\\',
+		imageStubPath: '.\\yttm\\art_img\\$lower($cut(%1,1))\\$cut(%1,40)\\',
 		filePaths: {
 			worldMapArtists: _foldPath(folders.data + 'worldMap.json')
 		},

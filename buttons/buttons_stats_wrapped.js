@@ -1,5 +1,5 @@
 ﻿'use strict';
-//11/12/25
+//16/12/25
 
 /*
 	Wrapped
@@ -48,7 +48,7 @@ var newButtonsProperties = { // NOSONAR[global]
 	lBrainzToken: ['ListenBrainz user token', '', { func: isStringWeak }, ''],
 	lBrainzUser: ['ListenBrainz user', '', { func: isStringWeak }, ''],
 	lBrainzEncrypt: ['Encrypt ListenBrainz user token', false, { func: isBoolean }, false],
-	imageStubPath: ['Artists images stub path', '.\\yttm\\art_img\\$lower($cut(%1,1))\\%1\\', { func: isStringWeak }, false],
+	imageStubPath: ['Artists images stub path', '.\\yttm\\art_img\\$lower($cut(%1,1))\\$cut(%1,40)\\', { func: isStringWeak }, false],
 	latexCmd: ['LaTeX cmd for compiling into PDF', 'lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1', { func: isStringWeak }, 'lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1'],
 	extraCmd: ['Extra cmd applied to output', JSON.stringify([]), { func: isJSON }, JSON.stringify([])],
 	bDynamicMenus: ['Menus at  \'File\\Spider Monkey Panel\\...\'', false, { func: isBoolean }, false],
