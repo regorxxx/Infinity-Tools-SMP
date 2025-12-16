@@ -672,7 +672,6 @@ function createConfigMenu(parent) {
 				menu.newCheckMenuLast(() => isEnabled);
 			}
 			{
-
 				menu.newEntry({
 					menuName: subMenuName, entryText: getEntryText('sortBias', 'Duplicates selection bias...'), func: () => {
 						const input = Input.string('string', properties['sortBias'][1], 'Enter TF expression for track selection when finding duplicates:\n\nOutput must be numbers separated by \'|\'.\nHigher valued tracks will be preferred.\n\n\'DEFAULT\' restores default setting.', sbd.name + ': Duplicates selection bias', globQuery.remDuplBias, void (0), false);
