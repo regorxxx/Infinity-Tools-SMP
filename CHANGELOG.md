@@ -7,6 +7,7 @@
 
 ## [Unreleased][]
 ### Added
+- Playlist Tools\Tagging\Group Tagger: added preset -By Album (duration)- to calculate any tag aggregation weighted by track duration. i.e. '[$mul(%TAG%,%LENGTH_SECONDS%)]' as source tag and '%LENGTH_SECONDS%' as tag count.
 - Buttons: new 'buttons_playback_rating' button, which supports any rating system (foo_playcount, foo_playcount_2003 or tags) and arbitrary number of stars. Clicking on the buttons directly rates the track(s). Has settings to follow playback or evaluate selection, like loved button. When using multiple tracks selection, half stars will be used to indicate that not all tracks have the max. rating found.
 ### Changed
 - UI: improvements on dynamic colors handling in some extreme cases with main and secondary colors being almost equal.

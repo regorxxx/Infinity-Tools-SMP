@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/12/25
+//16/12/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, multipleSelectedFlags:readable, selectedFlags:readable, selectedFlags:readable, configMenu:readable, menu_panelProperties */
 
@@ -404,17 +404,19 @@
 					['average', 'sum', 'count', 'median', 'mode'].forEach((mode) => {
 						const subMenuNameTwo = menu.newMenu(capitalize(mode), subMenuName);
 						[
-							{ entryText: 'By Album', group: '%ALBUM%|%DATE%|%COMMENT%', destEx: 'ALBUMRATING', destModeEx: 'ALBUMGENRE' },
+							{ entryText: 'By Album', source: '[%RATING%]', group: '%ALBUM%|%DATE%|%COMMENT%', destEx: 'ALBUMRATING', destModeEx: 'ALBUMGENRE' },
+							{ entryText: 'By Album (duration)', source: '[$mul(%RATING%,%LENGTH_SECONDS%)]', group: '%ALBUM%|%DATE%|%COMMENT%', destEx: 'ALBUMRATING', destModeEx: 'ALBUMGENRE', count: '%LENGTH_SECONDS%', bSkipMode: true },
 							{ entryText: 'sep' },
-							{ entryText: 'By Artist', group: '%ARTIST%', destEx: 'ARTISTRATING', destModeEx: 'ARTISTGENRE' },
-							{ entryText: 'By Album Artist', group: '%ALBUM ARTIST%', destEx: 'ALBUMARTISTRATING', destModeEx: 'ALBUMARTISTGENRE' },
-							{ entryText: 'By 1st Artist', group: '$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))', destEx: 'ARTISTRATING', destModeEx: 'ARTISTGENRE' },
+							{ entryText: 'By Artist', source: '[%RATING%]', group: '%ARTIST%', destEx: 'ARTISTRATING', destModeEx: 'ARTISTGENRE' },
+							{ entryText: 'By Album Artist', source: '[%RATING%]', group: '%ALBUM ARTIST%', destEx: 'ALBUMARTISTRATING', destModeEx: 'ALBUMARTISTGENRE' },
+							{ entryText: 'By 1st Artist', source: '[%RATING%]', group: '$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))', destEx: 'ARTISTRATING', destModeEx: 'ARTISTGENRE' },
 							{ entryText: 'sep' },
-							{ entryText: 'By Date', group: globTags.date, destEx: 'DATERATING', destModeEx: 'DATEGENRE' },
-							{ entryText: 'By Decade', group: '$div(' + _t(globTags.date) + ',10)0s', destEx: 'DECADERATING', destModeEx: 'DECADEGENRE' },
+							{ entryText: 'By Date', source: '[%RATING%]', group: globTags.date, destEx: 'DATERATING', destModeEx: 'DATEGENRE' },
+							{ entryText: 'By Decade', source: '[%RATING%]', group: '$div(' + _t(globTags.date) + ',10)0s', destEx: 'DECADERATING', destModeEx: 'DECADEGENRE' },
 							{ entryText: 'sep' },
 							{ entryText: 'By... (expression)' },
 						].forEach((entry) => {
+							if (entry.bSkipMode && mode === 'mode') { return; }
 							if (menu.isSeparator(entry)) { menu.newSeparator(subMenuNameTwo); }
 							else {
 								menu.newEntry({
@@ -423,7 +425,7 @@
 										if (handleList && handleList.Count) {
 											const source = mode === 'mode'
 												? Input.string('string', 'GENRE|STYLE', 'Tag(s) to check:\n\nMultiple tags are allowed, separated by \'|\'.\nDon\'t enclose them with \'%\', i.e. TAG not %TAG%.', 'Group tagging: source', 'GENRE|STYLE') || (Input.isLastEqual ? Input.lastInput : null)
-												: Input.string('string', '[%RATING%]', 'Tag to aggregate:\n\nTF expressions are also allowed as long as the output is a single number. Beware of missing tags not enclosed on \'[]\' since they will output \'?\' instead of nothing.', 'Group tagging: source', '[%RATING%]') || (Input.isLastEqual ? Input.lastInput : null);
+												: Input.string('string', entry.source || '[%RATING%]', 'Tag to aggregate:\n\nTF expressions are also allowed as long as the output is a single number. Beware of missing tags not enclosed on \'[]\' since they will output \'?\' instead of nothing.\n\nTo get values weighted by duration, use something like: [$mul(%TAG%,%LENGTH_SECONDS%)]', 'Group tagging: source', '[%RATING%]') || (Input.isLastEqual ? Input.lastInput : null);
 											if (source === null) { return null; }
 											const destination = mode === 'mode'
 												? Input.string('string', entry.destModeEx || 'ALBUMGENRE', 'Destination tag:\n\nDon\'t enclose it with \'%\', i.e. TAG not %TAG%.', 'Group tagging: destination', entry.destModeEx || 'ALBUMGENRE') || (Input.isLastEqual ? Input.lastInput : null)
@@ -432,7 +434,7 @@
 											const group = entry.group || Input.string('string', '%ALBUM ARTIST%|%ALBUM%|%DATE%|%COMMENT%', 'TF expression for track groups:', 'Group tagging: group TF', '%ALBUM ARTIST%|%ALBUM%|%DATE%|%COMMENT%') || (Input.isLastEqual ? Input.lastInput : null);
 											if (group === null) { return null; }
 											const count = mode === 'average' || mode === 'count'
-												? entry.count || Input.string('string', '1', 'TF expression for track count:\n\nNote in most cases it should be 1, unless you want to weight averages by duration, etc.', 'Group tagging: count TF', '1') || (Input.isLastEqual ? Input.lastInput : null)
+												? entry.count || Input.string('string', '1', 'TF expression for track count:\n\nNote in most cases it should be 1, unless you want to weight by duration (%LENGTH_SECONDS%), etc.', 'Group tagging: count TF', '1') || (Input.isLastEqual ? Input.lastInput : null)
 												: 1;
 											if (count === null) { return null; }
 											const defaultVal = mode === 'mode'
