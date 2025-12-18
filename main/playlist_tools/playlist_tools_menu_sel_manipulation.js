@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/12/25
+//18/12/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable, entryMaxLength:readable */
 
@@ -779,7 +779,8 @@
 									let inPlaylist = findInPlaylists(sel);
 									const bShowCurrent = menu_properties['bFindShowCurrent'][1];
 									const ap = plman.ActivePlaylist;
-									if (!bShowCurrent) { inPlaylist = inPlaylist.filter((playlist) => { return ap !== playlist.index; }); }
+									const pp = plman.PlayingPlaylist;
+									if (!bShowCurrent) { inPlaylist = inPlaylist.filter((playlist) => { return pp !== playlist.index; }); }
 									const playlistsNum = inPlaylist.length;
 									if (playlistsNum) {
 										// Split entries in sub-menus if there are too many playlists...
@@ -796,9 +797,9 @@
 													const playlist = inPlaylist[j];
 													const flag = [];
 													if (ap === playlist.index) { flag.push('current'); }
-													if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
+													if (pp === playlist.index) { flag.push('playing'); }
 													const entryText = playlist.name.cut(entryMaxLength) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
-													menu.newEntry({ menuName: subMenu_i, entryText, func: () => { focusInPlaylist(sel, playlist.index); }, flags: (ap === playlist.index ? MF_GRAYED : MF_STRING) });
+													menu.newEntry({ menuName: subMenu_i, entryText, func: () => { focusInPlaylist(sel, playlist.index); } });
 													// Add radio check on current playlist
 													if (playlist.index === ap) { menu.newCheckMenu(subMenu_i, entryText, entryText, () => 0); }
 												}
@@ -807,9 +808,9 @@
 											for (const playlist of inPlaylist) {
 												const flag = [];
 												if (ap === playlist.index) { flag.push('current'); }
-												if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
+												if (pp === playlist.index) { flag.push('playing'); }
 												const entryText = playlist.name.cut(entryMaxLength) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
-												menu.newEntry({ menuName: subMenuName, entryText, func: () => { focusInPlaylist(sel, playlist.index); }, flags: (ap === playlist.index ? MF_GRAYED : MF_STRING) });
+												menu.newEntry({ menuName: subMenuName, entryText, func: () => { focusInPlaylist(sel, playlist.index); } });
 												// Add radio check on current playlist
 												if (playlist.index === ap) { menu.newCheckMenu(subMenuName, entryText, entryText, () => 0); }
 											}
@@ -822,7 +823,7 @@
 							});
 						} else { menuDisabled.push({ menuName: nameNowFind, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 					}
-					{	// Find now playing in
+					{	// Find prev playing in
 						if (!Object.hasOwn(menusEnabled, namePrevFind) || menusEnabled[namePrevFind] === true) {
 							include('..\\..\\helpers\\helpers_xxx_prototypes_smp_post.js');
 							const subMenuName = menu.newMenu(namePrevFind, menuName);
@@ -836,6 +837,7 @@
 									const sel = new FbMetadbHandleList(prevPlay.handle);
 									let inPlaylist = findInPlaylists(sel);
 									const ap = plman.ActivePlaylist;
+									const pp = plman.PlayingPlaylist;
 									const playlistsNum = inPlaylist.length;
 									if (playlistsNum) {
 										// Split entries in sub-menus if there are too many playlists...
@@ -852,7 +854,7 @@
 													const playlist = inPlaylist[j];
 													const flag = [];
 													if (ap === playlist.index) { flag.push('current'); }
-													if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
+													if (pp === playlist.index) { flag.push('playing'); }
 													if (prevPlay.plsName === playlist.name || (prevPlay.plsGUID && prevPlay.plsGUID === playlist.GUID)) { flag.push('prev playing'); }
 													const entryText = playlist.name.cut(entryMaxLength) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
 													menu.newEntry({ menuName: subMenu_i, entryText, func: () => { focusInPlaylist(sel, playlist.index); } });
@@ -864,7 +866,7 @@
 											for (const playlist of inPlaylist) {
 												const flag = [];
 												if (ap === playlist.index) { flag.push('current'); }
-												if (plman.PlayingPlaylist === playlist.index) { flag.push('playing'); }
+												if (pp === playlist.index) { flag.push('playing'); }
 												if (prevPlay.plsName === playlist.name || (prevPlay.plsGUID && prevPlay.plsGUID === playlist.GUID)) { flag.push('prev playing'); }
 												const entryText = playlist.name.cut(entryMaxLength) + (flag.length ? ' ' + _p(flag.join(' | ')) : '');
 												menu.newEntry({ menuName: subMenuName, entryText, func: () => { focusInPlaylist(sel, playlist.index); } });
@@ -889,6 +891,7 @@
 									menu.newEntry({ menuName: subMenuName, entryText: 'Set focus on playlist with same track(s):', func: null, flags: MF_GRAYED });
 									menu.newSeparator(subMenuName);
 									const ap = plman.ActivePlaylist;
+									const pp = plman.PlayingPlaylist;
 									const sel = plman.GetPlaylistSelectedItems(ap);
 									const maxSelCount = menu_properties['maxSelCount'][1]; // Don't create these menus when selecting more than these # tracks! Avoids lagging when creating the menu
 									if (sel.Count > maxSelCount) { menu.newEntry({ menuName: subMenuName, entryText: 'Too many tracks selected: > ' + maxSelCount, func: null, flags: MF_GRAYED }); return; }
@@ -910,11 +913,11 @@
 												for (let j = bottomIdx; j <= topIdx && j < playlistsNum; j++) {
 													const playlist = inPlaylist[j];
 													const entryText = playlist.name.cut(entryMaxLength) +
-														(plman.PlayingPlaylist === playlist.index && ap === playlist.index
+														(pp === playlist.index && ap === playlist.index
 															? ' (current | playing)'
 															: ap === playlist.index
 																? ' (current)'
-																: plman.PlayingPlaylist === playlist.index
+																: pp === playlist.index
 																	? ' (playing)'
 																	: '');
 													menu.newEntry({ menuName: subMenu_i, entryText, func: () => { focusInPlaylist(sel, playlist.index); }, flags: (ap === playlist.index ? MF_GRAYED : MF_STRING) });
@@ -925,11 +928,11 @@
 										} else { // Or just show all
 											for (const playlist of inPlaylist) {
 												const entryText = playlist.name.cut(entryMaxLength) +
-													(plman.PlayingPlaylist === playlist.index && ap === playlist.index
+													(pp === playlist.index && ap === playlist.index
 														? ' (current | playing)'
 														: ap === playlist.index
 															? ' (current)'
-															: plman.PlayingPlaylist === playlist.index
+															: pp === playlist.index
 																? ' (playing)'
 																: '');
 												menu.newEntry({ menuName: subMenuName, entryText, func: () => { focusInPlaylist(sel, playlist.index); }, flags: (ap === playlist.index ? MF_GRAYED : MF_STRING) });
@@ -1157,6 +1160,7 @@
 						const playlistsNum = plman.PlaylistCount;
 						const playlistsNumNotLocked = playlistsNum - playlistCountLocked(['AddItems']);
 						const ap = plman.ActivePlaylist;
+						const pp = plman.PlayingPlaylist;
 						const handleList = plman.GetPlaylistSelectedItems(ap);
 						if (playlistsNum && playlistsNumNotLocked && handleList.Count) {
 							// Split entries in sub-menus if there are too many playlists...
@@ -1175,11 +1179,11 @@
 										if (!addLock(j)) {
 											const playlist = { name: plman.GetPlaylistName(j), index: j };
 											const entryText = playlist.name.cut(entryMaxLength) +
-												(plman.PlayingPlaylist === playlist.index && ap === playlist.index
+												(pp === playlist.index && ap === playlist.index
 													? ' (current | playing)'
 													: ap === playlist.index
 														? ' (current)'
-														: plman.PlayingPlaylist === playlist.index
+														: pp === playlist.index
 															? ' (playing)'
 															: '');
 											menu.newEntry({
@@ -1200,11 +1204,11 @@
 									if (!addLock(i)) {
 										const playlist = { name: plman.GetPlaylistName(i), index: i };
 										const entryText = playlist.name.cut(entryMaxLength) +
-											(plman.PlayingPlaylist === playlist.index && ap === playlist.index
+											(pp === playlist.index && ap === playlist.index
 												? ' (current | playing)'
 												: ap === playlist.index
 													? ' (current)'
-													: plman.PlayingPlaylist === playlist.index
+													: pp === playlist.index
 														? ' (playing)'
 														: '');
 										menu.newEntry({
