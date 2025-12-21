@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/12/25
+//21/12/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, libSearchMenu:readable */
 
@@ -41,8 +41,7 @@
 							menuName: subMenuName, entryText: 'Import from file \\ url...', func: () => {
 								let bPresetUsed = false;
 								let discardMask = '';
-								let path;
-								path = (_isFile(menu_properties.importPlaylistPath[1])
+								let path = (_isFile(menu_properties.importPlaylistPath[1])
 									? menu_properties.importPlaylistPath[1]
 									: menu_properties.importPlaylistPath[1].endsWith('track_list_to_import.txt')
 										? _copyFile(folders.xxx + 'examples\\track_list_to_import.txt', menu_properties.importPlaylistPath[1]) && menu_properties.importPlaylistPath[1]
