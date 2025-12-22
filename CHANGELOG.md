@@ -22,6 +22,7 @@
 - UI: avoid repaint artifacts (button hover) due to bugged SMP behaviour when opening modal popups.
 - Buttons: loved button not being refreshed on playback stop while using 'Follow now playing' setting.
 - Buttons: loved button not being refreshed when changing 'Evaluate multiple tracks' setting.
+- Playlist Tools\Library Search\Import track list: fixed errors with remapped fields by foobar2000 (artist, track, filename, ...).
 
 ## [1.1.0] - 2025-12-12
 ### Added
