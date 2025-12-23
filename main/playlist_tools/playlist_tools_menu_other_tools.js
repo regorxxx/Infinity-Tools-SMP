@@ -1,9 +1,9 @@
 ﻿'use strict';
-//21/12/25
+//23/12/25
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, libSearchMenu:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, globTags:readable globQuery:readable, isString:readable, isJSON:readable, Input:readable, sanitizePath:readable, checkQuery:readable, _foldPath:readable, _copyFile:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, globTags:readable globQuery:readable, isString:readable, isJSON:readable, Input:readable, sanitizePath:readable, checkQuery:readable, _foldPath:readable, _copyFile:readable, utf8:readable, convertCharsetToCodepage:readable */
 
 // Other tools
 {
@@ -53,6 +53,10 @@
 									fb.ShowPopupMessage('File not found:\n\n' + path, window.FullPanelName + ': ' + name);
 									return;
 								}
+								let codePage = utils.DetectCharset(path);
+								if (codePage !== utf8) {
+									codePage = convertCharsetToCodepage(Input.string('string', 'UTF-8', 'Automatic codepage detection has identified a non UTF-8 file.\n\nYou can force a codepage below or use the one detected by clicking cancel (' + codePage + '):\n', window.FullPanelName, 'UTF-8', void (0), true) || Input.lastInput ) || codePage || utf8;
+								}
 								let formatMask = Input.string(
 									'string',
 									menu_properties.importPlaylistMask[1].replace(/"/g, '\''),
@@ -86,7 +90,7 @@
 									if (discardMask === null) { return; }
 								}
 								const queryFilters = JSON.parse(menu_properties.importPlaylistFilters[1]);
-								ImportTextPlaylist.getPlaylist({ path, formatMask, discardMask, queryFilters })
+								ImportTextPlaylist.getPlaylist({ path, formatMask, discardMask, queryFilters, codePage })
 									.then((data) => {
 										if (data.idx !== -1) { plman.ActivePlaylist = data.idx; }
 										menu_properties.importPlaylistMask[1] = JSON.stringify(formatMask); // Save last mask used
