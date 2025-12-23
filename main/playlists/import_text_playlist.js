@@ -352,5 +352,5 @@ const ImportTextPlaylist = Object.seal(Object.freeze({
 		queryCache.clear(); // TODO: fb.GetQueryItemsCheck
 		return { handleList: new FbMetadbHandleList(handleArr.filter((n) => n)), handleArr, notFound };
 	},
-	bDebug: true,
+	bDebug: false,
 }));
