@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/12/25
+//23/12/25
 
 /* exported harmonicMixing, queryReplaceKeys, harmonicMixingCycle, harmonicMixingSort */
 /* global globTags:readable */
@@ -51,7 +51,7 @@ function harmonicMixing({
 		if (bSendToActivePls) { return sendToPlaylist(handleList, playlistName); }
 		else { return handleList; }
 
-	} else {
+	} else if (bDebug) {
 		console.log('harmonicMixing: ' + error); // DEBUG
 		console.log(pattern); // DEBUG
 		return null;
