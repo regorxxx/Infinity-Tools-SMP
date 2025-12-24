@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//24/12/25
 
 /* exported createFpMenuLeft */
 
@@ -307,7 +307,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 			// Scoring
 			menu.newEntry({
 				menuName, entryText: 'Score threshold' + '\t' + _b(ppt.thresholdC[1]), func: () => {
-					const input = Input.number('int positive', ppt.thresholdC[1], 'Enter number: (>= 0 and <= 100)', 'Fingerprint Tools', ppt.thresholdC[3], [(input) => input >= 0 && input <= 100]);
+					const input = Input.number('int positive', ppt.thresholdC[1], 'Enter number: (≥0 and ≤100)', 'Fingerprint Tools', ppt.thresholdC[3], [(input) => input >= 0 && input <= 100]);
 					if (input === null) { return; }
 					ppt.thresholdC[1] = input;
 					overwriteProperties(ppt);
@@ -328,7 +328,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 			// Scoring
 			menu.newEntry({
 				menuName, entryText: 'Score threshold' + '\t' + _b(ppt.thresholdF[1]), func: () => {
-					const input = Input.number('int positive', ppt.thresholdF[1], 'Enter number: (>= 0 and <= 100)', 'Fingerprint Tools', ppt.thresholdF[3], [(input) => input >= 0 && input <= 100]);
+					const input = Input.number('int positive', ppt.thresholdF[1], 'Enter number: (≥0 and ≤100)', 'Fingerprint Tools', ppt.thresholdF[3], [(input) => input >= 0 && input <= 100]);
 					if (input === null) { return; }
 					ppt.thresholdF[1] = input;
 					overwriteProperties(ppt);
@@ -339,7 +339,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 		{	// Config max Selection
 			menu.newEntry({
 				menuName: config, entryText: 'Max selection allowed' + '\t' + _b(maxSel), func: () => {
-					const input = Input.number('int positive', maxSel, 'Enter number: (greater than 0)', 'Fingerprint Tools', ppt.iMaxSelection[3], [(input) => input >= 0]);
+					const input = Input.number('int positive', maxSel, 'Enter number: (≥0)', 'Fingerprint Tools', ppt.iMaxSelection[3], [(input) => input >= 0]);
 					if (input === null) { return; }
 					ppt.iMaxSelection[1] = input;
 					overwriteProperties(ppt);

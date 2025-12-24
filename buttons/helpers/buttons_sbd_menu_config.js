@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/12/25
+//24/12/25
 
 /* exported createConfigMenu */
 
@@ -407,7 +407,7 @@ function createConfigMenu(parent) {
 				const entryText = 'Base score' + '\t[' + tag.baseScore + ']' + (bRecipe ? ' (forced by recipe)' : '');
 				menu.newEntry({
 					menuName: subMenuName, entryText, func: () => {
-						const input = Input.number('int positive', tag.baseScore, 'Base score sets the minimum score (in %) given to this tag in case the compared track is missing it (when it\'s present on the reference). In most cases this should be set to zero, but it may be changed for some tags in case the library is not fully tagged, and thus missing values for some tracks.\n\nNote this value is further transformed by the scoring distribution method. i.e. 50% equals a final score of 50% for linear method.\n\nEnter number: (from 0 to 100)', sbd.name + ': ' + entryText.replace(/\t.*/, ''), 15, [(n) => n >= 0 && n <= 100]);
+						const input = Input.number('int positive', tag.baseScore, 'Base score sets the minimum score (in %) given to this tag in case the compared track is missing it (when it\'s present on the reference). In most cases this should be set to zero, but it may be changed for some tags in case the library is not fully tagged, and thus missing values for some tracks.\n\nNote this value is further transformed by the scoring distribution method. i.e. 50% equals a final score of 50% for linear method.\n\nEnter number: (integer number ≥0 and ≤100)', sbd.name + ': ' + entryText.replace(/\t.*/, ''), 15, [(n) => n >= 0 && n <= 100]);
 						if (input === null) { return; }
 						baseTag.baseScore = input;
 						properties.tags[1] = JSON.stringify(tags);
@@ -990,7 +990,7 @@ function createConfigMenu(parent) {
 				menu.newSeparator(subMenuName);
 				menu.newEntry({
 					menuName: subMenuName, entryText, func: () => {
-						const input = Input.number('int', val, 'Enter number: (between 0 and 10)\n\nBy default is set to 5; higher values filter in a more aggressive way, and lower values, the opposite.', sbd.name + ': ' + entryText.replace(/\t.*/, ''), 5, [(input) => input >= 0 && input <= 10]);
+						const input = Input.number('int', val, 'Enter number: (integer number ≥0 and ≤10)\n\nBy default is set to 5; higher values filter in a more aggressive way, and lower values, the opposite.', sbd.name + ': ' + entryText.replace(/\t.*/, ''), 5, [(input) => input >= 0 && input <= 10]);
 						if (input === null) { return; }
 						properties[key][1] = input;
 						overwriteProperties(properties); // Updates panel
@@ -1132,7 +1132,7 @@ function createConfigMenu(parent) {
 				const entryText = properties[key][0].substring(properties[key][0].indexOf('.') + 1, idxEnd !== -1 ? idxEnd - 1 : Infinity) + '...' + val;
 				menu.newEntry({
 					menuName, entryText, func: () => {
-						const input = Input.number('int', properties[key][1], 'Enter number: (greater or equal to 0)\n(-1 to disable)', sbd.name + ': ' + entryText.replace(/\t.*/, ''), properties[key][3], [(input) => input >= -1]);
+						const input = Input.number('int', properties[key][1], 'Enter number: (integer number ≥0)\n(-1 to disable)', sbd.name + ': ' + entryText.replace(/\t.*/, ''), properties[key][3], [(input) => input >= -1]);
 						if (input === null) { return; }
 						properties[key][1] = input;
 						overwriteProperties(properties); // Updates panel
@@ -1337,7 +1337,7 @@ function createConfigMenu(parent) {
 			const entryText = 'Steps on recursive search...' + (Object.hasOwn(recipe, key) ? '\t[' + recipe[key] + '] (forced by recipe)' : '\t[' + properties[key][1] + ']');
 			menu.newEntry({
 				menuName, entryText, func: () => {
-					const input = Input.number('int positive', properties[key][1], 'Enter number: (between 2 and 100)', sbd.name + ': ' + entryText.replace(/\t.*/, ''), properties[key][3], [(input) => input >= 2 && input <= 100]);
+					const input = Input.number('int positive', properties[key][1], 'Enter number: (integer number ≥2 and ≤100)', sbd.name + ': ' + entryText.replace(/\t.*/, ''), properties[key][3], [(input) => input >= 2 && input <= 100]);
 					if (input === null) { return; }
 					properties[key][1] = input;
 					overwriteProperties(properties); // Updates panel
@@ -1388,7 +1388,7 @@ function createConfigMenu(parent) {
 				const entryText = 'Playlist size...' + (Object.hasOwn(recipe, key) ? '\t[' + Number.isFinite(recipe[key]) ? recipe[key] : '\u221E' + '] (forced by recipe)' : '\t[' + properties[key][1] + ']');
 				menu.newEntry({
 					menuName, entryText, func: () => {
-						const input = Input.number('int', properties[key][1], 'Enter number: (greater than 0)\n(Infinity is allowed)\n\nUse -1 to input the desired size on every call.', sbd.name + ': ' + entryText.replace(/\t.*/, ''), properties[key][3], [(input) => input >= -1]);
+						const input = Input.number('int', properties[key][1], 'Enter number: (integer number ≥0)\n(Infinity is allowed)\n\nUse -1 to input the desired size on every call.', sbd.name + ': ' + entryText.replace(/\t.*/, ''), properties[key][3], [(input) => input >= -1]);
 						if (input === null) { return; }
 						properties[key][1] = input;
 						overwriteProperties(properties); // Updates panel
