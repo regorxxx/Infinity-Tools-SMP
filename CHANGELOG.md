@@ -11,6 +11,7 @@
 ### Changed
 ### Removed
 ### Fixed
+- UI: 'buttons_playback_rating' and 'buttons_playback_love' using highlight color in some cases when no selection was available.
 
 ## [1.2.0] - 2025-12-23
 ### Added

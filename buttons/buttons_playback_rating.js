@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/12/25
+//24/12/25
 
 /*
 	Playback controls
@@ -115,13 +115,15 @@ buttonsBar.list.push(newButtonsProperties);
 			}
 		},
 		isRatedSome: function (handleList, tags, i) {
-			return (tags || this.getTags(handleList)).some((val) => val >= (i + 1));
+			if (!tags) { tags = this.getTags(handleList); }
+			return tags.length ? tags.some((val) => val >= (i + 1)) : false;
 		},
 		isRatedAll: function (handleList, tags, i) {
-			return (tags || this.getTags(handleList)).every((val) => val >= (i + 1));
+			if (!tags) { tags = this.getTags(handleList); }
+			return tags.length ? tags.every((val) => val >= (i + 1)) : false;
 		},
 		getMaxRating: function (handleList, tags) {
-			tags = tags || this.getTags(handleList);
+			if (!tags) { tags = this.getTags(handleList); }
 			let max = 0;
 			for (let val of tags) {
 				if (val === 5) { return 5; }

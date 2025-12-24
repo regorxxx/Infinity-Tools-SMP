@@ -1,5 +1,5 @@
 ﻿'use strict';
-//11/12/25
+//24/12/25
 
 /*
 	Playback controls
@@ -107,7 +107,7 @@ addButton({
 				: this.isLovedAll(void (0), tags)
 					? 'Unlove track(s)'
 					: 'Love track(s)';
-			info += '\n' + loved + ' loved / ' + hated + ' hated (' + (sel ? sel.Count : 0) + 'selected tracks)';
+			info += '\n' + loved + ' loved / ' + hated + ' hated (' + (sel ? sel.Count : 0) + ' selected tracks)';
 			if (bShift || bCtrl || bInfo) {
 				info += '\n-----------------------------------------------------';
 				info += '\n(Ctrl + L. Click to hate track(s))';
@@ -183,16 +183,20 @@ addButton({
 				return this.tf.EvalWithMetadbs(handleList).map(Number);
 			},
 			isLovedSome: function (parent, handleList, tags) {
-				return (tags || this.getTags(handleList)).some((val) => val === 1);
+				if (!tags) { tags = this.getTags(handleList); }
+				return tags.length ? tags.some((val) => val === 1) : false;
 			},
 			isLovedAll: function (parent, handleList, tags) {
-				return (tags || this.getTags(handleList)).every((val) => val === 1);
+				if (!tags) { tags = this.getTags(handleList); }
+				return tags.length ? tags.every((val) => val === 1) : false;
 			},
 			isHatedSome: function (parent, handleList, tags) {
-				return (tags || this.getTags(handleList)).some((val) => val === -1);
+				if (!tags) { tags = this.getTags(handleList); }
+				return tags.length ? tags.some((val) => val === -1) : false;
 			},
 			isHatedAll: function (parent, handleList, tags) {
-				return (tags || this.getTags(handleList)).every((val) => val === -1);
+				if (!tags) { tags = this.getTags(handleList); }
+				return tags.length ? tags.every((val) => val === -1) : false;
 			},
 			countLoved: function (parent, handleList) {
 				return handleList
