@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/12/25
+//25/12/25
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer */
 
@@ -1212,7 +1212,7 @@ addEventListener('on_mouse_lbtn_up', (x, y, mask) => {
 		buttonsBar.bOnClick = false;
 		// Solves error if a WshShell Popup is created (curBtn becomes null) after pressing the button and firing curBtn.onClick()
 		if (window.IsVisible) {
-			if (window.IsFocused) {	curr.changeState(buttonStates.hover); }
+			if (window.IsFocused) { curr.changeState(buttonStates.hover); }
 			else { curr.changeState(buttonStates.normal); }
 			curr.repaint();
 		}
@@ -1444,6 +1444,15 @@ function showButtonReadme(fileName) {
 	return readme;
 }
 
+/**
+ * Iterates a function over every available button
+ *
+ * @function
+ * @name forEachButton
+ * @kind function
+ * @param {(callback:ThemedButton) => void} callback
+ * @returns {void}
+ */
 function forEachButton(callback) {
 	for (let key in buttonsBar.buttons) {
 		if (Object.hasOwn(buttonsBar.buttons, key)) {
