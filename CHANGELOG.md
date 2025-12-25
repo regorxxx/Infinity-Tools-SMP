@@ -8,6 +8,7 @@
 
 ## [Unreleased][]
 ### Added
+- UI: added button new lines, wich force a new row for the next button. They can be added the same than separators and spacers, at 'Add button' submenu. They should work fine in left and center button positions, along reflow and normalized width... but beware of possible "conflicts" with the latter when the panel width is too small. In general it would be better to either use multiple rows manually or let the toolbar handle with reflow setting, but not both. Y-axis orientation is currently not supported for this feature.
 ### Changed
 - UI: repainting performance improvements.
 ### Removed

@@ -3,7 +3,7 @@
 
 /* exported createButtonsMenu, importSettingsMenu */
 
-/* global buttonsPath:readable, buttonsBar:readable, barProperties:readable, buttonStates:readable, buttonSizeCheck:readable,moveButton:readable, addButtonSeparator:readable, showButtonReadme:readable, forEachButton:readable, addButtonSpacer:readable */
+/* global buttonsPath:readable, buttonsBar:readable, barProperties:readable, buttonStates:readable, buttonSizeCheck:readable,moveButton:readable, addButtonSeparator:readable, showButtonReadme:readable, forEachButton:readable, addButtonSpacer:readable, addButtonNewLine:readable */
 
 include('..\\..\\helpers\\menu_xxx.js');
 /* global _menu:readable */
@@ -111,6 +111,15 @@ function createButtonsMenu(name) {
 				const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
 				_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
 				const newKeys = Object.keys(addButtonSpacer());
+				buttonsBar.listKeys.push(newKeys);
+			}
+		});
+		menu.newEntry({
+			menuName: subMenu, entryText: 'Toolbar new line', func: () => {
+				buttonsPath.push('newline');
+				const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
+				_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
+				const newKeys = Object.keys(addButtonNewLine());
 				buttonsBar.listKeys.push(newKeys);
 			}
 		});
@@ -592,7 +601,10 @@ function createButtonsMenu(name) {
 			menuName, entryText: 'Full size buttons', func: () => {
 				buttonsBar.config.bFullSize = barProperties.bFullSize[1] = !barProperties.bFullSize[1];
 				overwriteProperties(barProperties);
-				if (!buttonsBar.config.bFullSize) {
+
+				if (buttonsBar.config.bFullSize) {
+					if (forEachButton((button) => button.isNewLine)) { fb.ShowPopupMessage('Full size buttons don\'t support multiple lines within a toolbar.\n\nNew lines will be silently ignored.', 'Buttons bar: full size buttons'); }
+				} else {
 					forEachButton((button) => { button.currH = button.h; });
 				}
 				window.Repaint();

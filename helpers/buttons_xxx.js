@@ -1,7 +1,7 @@
 ﻿'use strict';
 //25/12/25
 
-/* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer */
+/* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
 /* global buttonsPath:readable, barProperties:readable */
 include('helpers_xxx.js');
@@ -557,7 +557,7 @@ function ThemedButton({
 		const textCalculated = bIconMode
 			? ''
 			: isFunction(this.text) ? this.text(this) : this.text;
-		if (bIconMode && !this.isSeparator && !this.isSpacer) {
+		if (bIconMode && !this.isSeparator && !this.isSpacer && !this.isNewLine) {
 			w = 30;
 			w *= buttonsBar.config.scale;
 		}
@@ -578,7 +578,7 @@ function ThemedButton({
 		// Draw button
 		if (this.isSeparator) {
 			return this.drawSeparator(gr, textColor, bAlign);
-		} else if (this.isSpacer) {
+		} else if (this.isSpacer || this.isNewLine) {
 			return;
 		} else if (buttonsBar.useThemeManager()) {
 			this.g_theme.DrawThemeBackground(gr, this.currX, this.currY, this.currW, this.currH);
@@ -907,30 +907,48 @@ function drawAllButtons(gr) {
 	const bAlignSize = buttonsBar.config.bAlignSize;
 	const bReflow = buttonsBar.config.bReflow;
 	// First calculate the max width or height so all buttons get aligned
-	const maxSize = bAlignSize ? getButtonsMaxSize() : { w: -1, h: -1, totalW: 0, totalH: 0 };
+	const maxSizes = getButtonsMaxSizePerLine();
+	const maxSize = getButtonsMaxSize(void (0), maxSizes);
 	const maxSizeNoReflow = getButtonsMaxSize(false);
 	// Size check
 	doOnce('Buttons Size Check', buttonSizeCheck)();
 	if (buttonsBar.config.buttonPosition === 'center') {
 		let i = 0;
+		let line = 0;
 		forEachButton((button) => {
 			if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
 			else if (button.state === buttonStates.hide && Object.hasOwn(button.buttonsProperties, 'bHeadlessMode')) { button.state = buttonStates.normal; }
 			// Don't normalize size in certain axis if not needed
 			if (bAlignSize && orientation === 'x') {
-				const bNormalize = maxSize.totalW > window.Width && maxSizeNoReflow.totalW > window.Width;
-				const currX = i === 0 ? Math.max(window.Width - maxSize.totalW, 0) / 2 : void (0);
-				button.draw(gr, currX, void (0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
+				const bNormalize = maxSizes[line].totalW > window.Width && maxSizeNoReflow.totalW > window.Width;
+				if (button.isNewLine) {
+					line++;
+					buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
+					buttonsBar.oldButtonCoordinates.x -= Math.max(window.Width - maxSizes[line - 1].totalW, 0) / 2 + maxSizes[line - 1].totalW - Math.max(window.Width - maxSizes[line].totalW, 0) / 2;
+				} else if (i === 0) { buttonsBar.oldButtonCoordinates.x += Math.max(window.Width - maxSizes[line].totalW, 0) / 2; }
+				button.draw(gr, void(0), void(0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
 			} else if (bAlignSize && orientation === 'y') {
 				const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
+				// TODO new lines
 				button.draw(gr, void (0), void (0), maxSize.w, bReflow && bNormalize ? maxSize.h : void (0), true);
 			} else {
-				const currX = i === 0 ? Math.max(window.Width - maxSize.totalW, 0) / 2 : void (0);
-				button.draw(gr, currX);
+				if (button.isNewLine) { line++; }
+				if (orientation === 'x') {
+					if (i === 0) {
+						buttonsBar.oldButtonCoordinates.x += Math.max(window.Width - maxSizes[line].totalW, 0) / 2;
+					} else if (button.isNewLine) {
+						buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
+						buttonsBar.oldButtonCoordinates.x -= Math.max(window.Width - maxSizes[line - 1].totalW, 0) / 2 + maxSizes[line - 1].totalW - Math.max(window.Width - maxSizes[line].totalW, 0) / 2;
+					}
+				} else if (orientation === 'y') {
+					// TODO new lines
+				}
+				button.draw(gr, void(0), void(0));
 			}
 			i++;
 		});
 	} else {
+		let line = 0;
 		// Then draw
 		forEachButton((button) => {
 			if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
@@ -938,12 +956,27 @@ function drawAllButtons(gr) {
 			// Don't normalize size in certain axis if not needed
 			if (bAlignSize && orientation === 'x') {
 				const bNormalize = maxSize.totalW > window.Width && maxSizeNoReflow.totalW > window.Width;
-				button.draw(gr, void (0), void (0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
+				if (button.isNewLine) {
+					line++;
+					buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
+					buttonsBar.oldButtonCoordinates.x -= maxSizes[line - 1].totalW;
+				}
+				button.draw(gr, void(0), void(0), bReflow && bNormalize ? maxSizes[line].w : void (0), maxSizes[line].h, bReflow && bNormalize);
 			} else if (bAlignSize && orientation === 'y') {
 				const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
+				// TODO new lines
 				button.draw(gr, void (0), void (0), maxSize.w, bReflow && bNormalize ? maxSize.h : void (0), true);
 			} else {
-				button.draw(gr);
+				if (button.isNewLine) { line++; }
+				if (button.isNewLine) {
+					if (orientation === 'x') {
+						buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
+						buttonsBar.oldButtonCoordinates.x -= maxSizes[line - 1].totalW;
+					} else if (orientation === 'y') {
+						// TODO new lines
+					}
+				}
+				button.draw(gr, void(0), void(0));
 			}
 		});
 	}
@@ -1410,6 +1443,16 @@ function addButtonSpacer(w = buttonsBar.config.spacerSize) {
 	});
 }
 
+function addButtonNewLine() {
+	buttonsBar.list.push({});
+	return addButton({
+		'newline': new ThemedButton({
+			coordinates: { x: 0, y: 0, w: 0, h: 22 },
+			func: null, description: null, variables: { isNewLine: true }
+		}),
+	});
+}
+
 function buttonSizeCheck() {
 	const orientation = buttonsBar.config.orientation.toLowerCase();
 	const maxSize = getButtonsMaxSize();
@@ -1420,10 +1463,14 @@ function buttonSizeCheck() {
 	}
 }
 
-function getButtonsMaxSize(bCurrent = true) {
+function getButtonsMaxSizePerLine(bCurrent = true) {
 	const orientation = buttonsBar.config.orientation.toLowerCase();
-	let maxSize = { w: -1, h: -1, totalW: 0, totalH: 0 };
+	let maxSizes = [{ w: -1, h: -1, totalW: 0, totalH: 0 }];
+	let line = 0;
+	let maxSize;
 	forEachButton((button) => {
+		if (button.isNewLine) { line++; maxSizes.push({ w: -1, h: -1, totalW: 0, totalH: 0 }); }
+		maxSize = maxSizes[line];
 		maxSize.h = Math.max(bCurrent ? button.currH : button.h, maxSize.h);
 		if (button.isIconMode()) {
 			maxSize.w = Math.max(30, maxSize.w);
@@ -1433,9 +1480,18 @@ function getButtonsMaxSize(bCurrent = true) {
 		if (orientation === 'x') { maxSize.totalW += (bCurrent ? button.currW : button.w); }
 		if (orientation === 'y') { maxSize.totalH += (bCurrent ? button.currH : button.h); }
 	});
-	if (orientation === 'x') { maxSize.totalH = maxSize.h; }
-	if (orientation === 'y') { maxSize.totalW = maxSize.w; }
-	return maxSize;
+	maxSizes.forEach((maxSize) => {
+		if (orientation === 'x') { maxSize.totalH = maxSize.h; }
+		if (orientation === 'y') { maxSize.totalW = maxSize.w; }
+	});
+	return maxSizes;
+}
+
+function getButtonsMaxSize(bCurrent = true, maxSizesPerLine = getButtonsMaxSizePerLine(bCurrent)) {
+	const orientation = buttonsBar.config.orientation.toLowerCase();
+	return orientation === 'x'
+		? [...maxSizesPerLine].sort((a, b) => b.totalW - a.totalW)[0]
+		: [...maxSizesPerLine].sort((a, b) => b.totalH - a.totalH)[0];
 }
 
 function showButtonReadme(fileName) {
