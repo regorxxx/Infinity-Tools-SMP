@@ -12,7 +12,7 @@
 ### Removed
 ### Fixed
 - UI: 'buttons_playback_rating' and 'buttons_playback_love' using highlight color in some cases when no selection was available.
-- UI: bar menu showing up when moving a button at R. CLick up.
+- UI: bar menu showing up when moving a button at R. Click up.
 
 ## [1.2.0] - 2025-12-23
 ### Added
