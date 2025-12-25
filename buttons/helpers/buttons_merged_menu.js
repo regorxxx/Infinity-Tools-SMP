@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/12/25
+//25/12/25
 
 /* exported createButtonsMenu, importSettingsMenu */
 
@@ -33,7 +33,7 @@ function createButtonsMenu(name) {
 	menu.newEntry({ entryText: 'Toolbar configuration:', func: null, flags: MF_GRAYED });
 	menu.newSeparator();
 	if (!_isFolder(folders.data)) { _createFolder(folders.data); }
-	const notAllowedDup = new Set(['buttons_device_priority.js', 'buttons_device_switcher.js', 'buttons_fingerprint_tools.js', 'buttons_lastfm_tools.js', 'buttons_listenbrainz_tools.js', 'buttons_music_map_basic.js', 'buttons_playback_love.js', 'buttons_playback_next.js', 'buttons_playback_order.js', 'buttons_playback_pause.js', 'buttons_playback_play.js', 'buttons_playback_prev.js', 'buttons_playback_random.js', 'buttons_playback_stop.js', 'buttons_playback_volume.js', 'buttons_playlist_history.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_tools.js', 'buttons_stats_wrapped.js', 'buttons_tags_save_tags.js', 'buttons_utils_autobackup.js']);
+	const notAllowedDup = new Set(['buttons_device_priority.js', 'buttons_device_switcher.js', 'buttons_fingerprint_tools.js', 'buttons_lastfm_tools.js', 'buttons_listenbrainz_tools.js', 'buttons_music_map_basic.js', 'buttons_playback_love.js', 'buttons_playback_next.js', 'buttons_playback_order.js', 'buttons_playback_pause.js', 'buttons_playback_play.js', 'buttons_playback_prev.js', 'buttons_playback_random.js', 'buttons_playback_rating.js', 'buttons_playback_stop.js', 'buttons_playback_volume.js', 'buttons_playlist_history.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_tools.js', 'buttons_stats_wrapped.js', 'buttons_tags_save_tags.js', 'buttons_utils_autobackup.js']);
 	const requirePlaylistTools = new Set(['buttons_playlist_tools_macros.js', 'buttons_playlist_tools_macro_custom.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_tools_submenu_custom.js']);
 	const subCategories = ['_fingerprint_', '_listenbrainz_', '_music_map', '_search_', '_tags_', '_playlist_tools', '_playlist_', '_stats_', '_device_', '_display_', '_lastfm_', '_utils_', '_playback_', '_others_']; // By order of priority if it matches multiple strings
 	const buttonsPathNames = new Set(buttonsPath.map((path) => { return path.split('\\').pop(); }));
@@ -849,8 +849,8 @@ function createButtonsMenu(name) {
 	});
 	menu.newSeparator();
 	menu.newEntry({
-		entryText: 'Open buttons folder...', func: () => {
-			_explorer(folders.xxx + 'buttons');
+		entryText: 'Open buttons file...', func: () => {
+			_explorer(folders.data + barProperties.name[1] + '.json');
 		}
 	});
 	return menu;
