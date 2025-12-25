@@ -1454,21 +1454,22 @@ function showButtonReadme(fileName) {
 }
 
 /**
- * Iterates a function over every available button
+ * Iterates a function over every available button.
  *
  * @function
  * @name forEachButton
  * @kind function
- * @param {(button:ThemedButton, prevButton:ThemedButton) => void} callback
- * @returns {void}
+ * @param {(button:ThemedButton, prevButton:ThemedButton) => boolean} callback - Return void(0) or false to continue until the end. True to break asap.
+ * @returns {boolean} True when it was iteration was broken by callback.
  */
 function forEachButton(callback) {
 	let button, prevButton;
 	for (let key in buttonsBar.buttons) {
 		if (Object.hasOwn(buttonsBar.buttons, key)) {
 			button = buttonsBar.buttons[key];
-			if (callback(button, prevButton)) { break; };
+			if (callback(button, prevButton)) { return true; };
 			prevButton = button;
 		}
 	}
+	return false;
 }
