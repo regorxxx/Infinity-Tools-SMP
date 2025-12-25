@@ -9,6 +9,7 @@
 ## [Unreleased][]
 ### Added
 ### Changed
+- UI: repainting performance improvements.
 ### Removed
 ### Fixed
 - UI: 'buttons_playback_rating' and 'buttons_playback_love' using highlight color in some cases when no selection was available.

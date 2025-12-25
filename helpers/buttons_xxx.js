@@ -229,8 +229,15 @@ function ThemedButton({
 	};
 
 	this.switchActive = function (bActive = null) {
-		this.active = bActive !== null ? bActive : !this.active;
-		this.repaint();
+		if (bActive !== null) {
+			if (this.active !== bActive) {
+				this.active = bActive;
+				this.repaint();
+			}
+		} else {
+			this.active = !this.active;
+			this.repaint();
+		}
 	};
 
 	this.switchAnimation = function (name, bActive, condition = null, animationColors = buttonsBar.config.animationColors) {
@@ -1452,13 +1459,16 @@ function showButtonReadme(fileName) {
  * @function
  * @name forEachButton
  * @kind function
- * @param {(callback:ThemedButton) => void} callback
+ * @param {(button:ThemedButton, prevButton:ThemedButton) => void} callback
  * @returns {void}
  */
 function forEachButton(callback) {
+	let button, prevButton;
 	for (let key in buttonsBar.buttons) {
 		if (Object.hasOwn(buttonsBar.buttons, key)) {
-			if (callback(buttonsBar.buttons[key])) { break; };
+			button = buttonsBar.buttons[key];
+			if (callback(button, prevButton)) { break; };
+			prevButton = button;
 		}
 	}
 }
