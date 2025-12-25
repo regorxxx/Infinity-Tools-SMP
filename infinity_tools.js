@@ -1,5 +1,5 @@
 ﻿'use strict';
-//24/12/25
+//25/12/25
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -133,6 +133,7 @@ buttonsBar.config.buttonPosition = barProperties.buttonPosition[1];
 buttonsBar.config.textPosition = barProperties.textPosition[1];
 buttonsBar.config.offset = JSON.parse(barProperties.offset[1]);
 buttonsBar.config.bFullSize = barProperties.bFullSize[1];
+buttonsBar.menu = () => createButtonsMenu(barProperties.name[1]);
 
 // First popup
 if (!barProperties.firstPopup[1]) {
@@ -330,7 +331,7 @@ addEventListener('on_mouse_rbtn_up', (x, y, mask) => { // eslint-disable-line no
 	if (utils.IsKeyPressed(VK_CONTROL) && utils.IsKeyPressed(VK_LWIN)) {
 		return importSettingsMenu().btn_up(x, y);
 	}
-	return createButtonsMenu(barProperties.name[1]).btn_up(x, y);
+	return true;
 });
 
 addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-unused-vars
