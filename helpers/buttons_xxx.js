@@ -999,7 +999,7 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 	[buttonsBar.curBtn, curBtnKey,] = chooseButton(x, y);
 
 	if (old === buttonsBar.curBtn) {
-		if (buttonsBar.gDown) {
+		if (buttonsBar.gDown || !old || old.state === buttonStates.hover) {
 			return;
 		}
 	} else if (buttonsBar.gDown && buttonsBar.curBtn && buttonsBar.curBtn.state !== buttonStates.down) {
