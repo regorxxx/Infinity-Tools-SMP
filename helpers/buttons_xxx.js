@@ -1087,8 +1087,8 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 					: -1;
 				const bMoved = buttonsBar.move.bIsMoving
 					? true
-					: buttonsBar.curBtn.w < _scale(5)
-						? coordDiff >= buttonsBar.curBtn.w / 5
+					: buttonsBar.curBtn.currW < _scale(5)
+						? coordDiff >= buttonsBar.curBtn.currW / 5
 						: coordDiff >= _scale(5);
 				if (bMoved && ((axis === 'y' && x < last.currX) || (axis === 'x' && y < last.currY) || x <= maxX && y <= maxY)) {
 					if (buttonsBar.move.bIsMoving) {
@@ -1236,6 +1236,8 @@ addEventListener('on_mouse_rbtn_up', (x, y, mask) => { // eslint-disable-line no
 		buttonsBar.move.mY = -1;
 		return true;
 	} else {
+		buttonsBar.move.mX = -1;
+		buttonsBar.move.mY = -1;
 		return Object.hasOwn(buttonsBar, 'menu') ? buttonsBar.menu().btn_up(x, y) : false;
 	}
 });
