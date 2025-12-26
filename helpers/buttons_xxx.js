@@ -996,6 +996,8 @@ function chooseButton(x, y) {
 }
 
 addEventListener('on_paint', (gr) => {
+	if (!window.ID) { return; }
+	if (!window.Width || !window.Height) { return; }
 	if (globSettings.bDebugPaint) { extendGR(gr, { Repaint: true, ImgBox: true }); }
 	else { extendGR(gr, { DrawRoundRect: true, FillRoundRect: true }); }
 	// Toolbar

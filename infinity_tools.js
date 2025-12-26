@@ -320,6 +320,8 @@ function includeButtonsAsync(timeout = 100) {
 }
 
 addEventListener('on_paint', (gr) => {
+	if (!window.ID) { return; }
+	if (!window.Width || !window.Height) { return; }
 	if (!buttonsPath.length) {
 		const textColor = window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text);
 		gr.GdiDrawText('L. Click to load a preset / R. Click to add buttons manually', _gdiFont(globFonts.standard.name, _scale(globFonts.standard.size)), textColor, 0, 0, window.Width, window.Height, DT_VCENTER | DT_CENTER | DT_END_ELLIPSIS | DT_CALCRECT | DT_NOPREFIX); // Font is being cached, no problems here...
