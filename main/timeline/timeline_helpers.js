@@ -1,5 +1,5 @@
 ﻿'use strict';
-//09/12/25
+//28/12/25
 
 /* exported getData, getDataAsync */
 
@@ -74,7 +74,7 @@ function getData({
 	query = 'ALL', sourceType = 'library', sourceArg = null,
 	queryHandle = null,
 	bProportional = false,
-	bRemoveDuplicates = true,
+	bRemoveDuplicates = true, removeDuplicatesOptions = { checkKeys: globTags.remDupl, sortBias: globQuery.remDuplBias },
 	bIncludeHandles = false,
 	groupBy = { x: null, y: null, z: null },
 	zGroups = { filter: false, sort: null /* (a, b) => b.count - a.count */ },
@@ -84,7 +84,7 @@ function getData({
 	const noSplitTags = new Set(['ALBUM', 'TITLE']); noSplitTags.forEach((tag) => noSplitTags.add(_t(tag)));
 	const dedupByIdTags = new Set(['TITLE']); dedupByIdTags.forEach((tag) => dedupByIdTags.add(_t(tag)));
 	const source = getDataHelpers.filterSource(query, getSource(sourceType, sourceArg), queryHandle);
-	const handleList = bRemoveDuplicates ? getDataHelpers.deduplicateSource(source) : source;
+	const handleList = bRemoveDuplicates ? getDataHelpers.deduplicateSource(source, removeDuplicatesOptions) : source;
 	let splitter;
 	try { splitter = new RegExp('(?<!\\d), ?(?!\\d)'); } // NOSONAR
 	catch (e) { // eslint-disable-line no-unused-vars
@@ -282,7 +282,7 @@ async function getDataAsync({
 	query = 'ALL', sourceType = 'library', sourceArg = null,
 	queryHandle = null,
 	bProportional = false,
-	bRemoveDuplicates = true,
+	bRemoveDuplicates = true, removeDuplicatesOptions = { checkKeys: globTags.remDupl, sortBias: globQuery.remDuplBias },
 	bIncludeHandles = false,
 	groupBy = { x: null, y: null, z: null },
 	zGroups = { filter: false, sort: null /* (a, b) => b.count - a.count */ },
@@ -293,7 +293,7 @@ async function getDataAsync({
 	const noSplitTags = new Set(['ALBUM', 'TITLE']); noSplitTags.forEach((tag) => noSplitTags.add(_t(tag)));
 	const dedupByIdTags = new Set(['TITLE']); dedupByIdTags.forEach((tag) => dedupByIdTags.add(_t(tag)));
 	const source = getDataHelpers.filterSource(query, getSource(sourceType, sourceArg), queryHandle);
-	const handleList = bRemoveDuplicates ? getDataHelpers.deduplicateSource(source) : source;
+	const handleList = bRemoveDuplicates ? getDataHelpers.deduplicateSource(source, removeDuplicatesOptions) : source;
 	let splitter;
 	try { splitter = new RegExp('(?<!\\d), ?(?!\\d)'); } // NOSONAR
 	catch (e) { // eslint-disable-line no-unused-vars
@@ -875,8 +875,8 @@ const getDataHelpers = {
 		if (!checkQuery(query)) { return new FbMetadbHandleList(); }
 		return (query.length && query !== 'ALL' ? fb.GetQueryItems(source, query) : source);
 	},
-	deduplicateSource: function (source) {
-		return removeDuplicates({ handleList: source, checkKeys: globTags.remDupl, sortBias: globQuery.remDuplBias, bPreserveSort: true, bAdvTitle: true });
+	deduplicateSource: function (source, options = { checkKeys: globTags.remDupl, sortBias: globQuery.remDuplBias }) {
+		return removeDuplicates({ handleList: source, checkKeys: globTags.remDupl, sortBias: globQuery.remDuplBias, bPreserveSort: true, bAdvTitle: true, ...options });
 	},
 	timeRange: function (tag, fromDate, toDate) {
 		switch (tag.toUpperCase()) {
