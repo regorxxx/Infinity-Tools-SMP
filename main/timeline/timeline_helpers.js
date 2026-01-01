@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/12/25
+//01/01/26
 
 /* exported getData, getDataAsync */
 
@@ -181,7 +181,7 @@ function getData({
 			const worldMapData = _isFile(filePaths.worldMapArtists)
 				? (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
 					.map((point) => { return { id: point.artist || '', country: (point.val || ['']).slice(-1)[0] }; })
-					.filter((point) => point.artist && point.country)
+					.filter((point) => point.id && point.country)
 				: [];
 			// Json data is then concat to this, since it doesn't matter if some artists are duplicated, only first entry will be used
 			const worldMapTags = fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|$meta(' + globTags.locale + ',$sub($meta_num(' + globTags.locale + '),1))').EvalWithMetadbs(handleList)
@@ -207,7 +207,7 @@ function getData({
 			const worldMapData = _isFile(filePaths.worldMapArtists)
 				? (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
 					.map((point) => { return { id: point.artist || '', city: point.val[0] || '', country: (point.val || ['']).slice(-1)[0] }; })
-					.filter((point) => point.artist && point.city && point.country && point.city !== point.country)
+					.filter((point) => point.id && point.city && point.country && point.city !== point.country)
 				: [];
 			// Json data is then concat to this, since it doesn't matter if some artists are duplicated, only first entry will be used. Furthermore, if tag is incomplete then will be filtered and JSON data used instead
 			const worldMapTags = fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|' + _bt(globTags.locale)).EvalWithMetadbs(handleList)
@@ -390,7 +390,7 @@ async function getDataAsync({
 			const worldMapData = _isFile(filePaths.worldMapArtists)
 				? (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
 					.map((point) => { return { id: point.artist, country: (point.val || ['']).slice(-1)[0] }; })
-					.filter((point) => point.artist && point.country)
+					.filter((point) => point.id && point.country)
 				: [];
 			// Json data is then concat to this, since it doesn't matter if some artists are duplicated, only first entry will be used
 			const worldMapTags = (await fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|$meta(' + globTags.locale + ',$sub($meta_num(' + globTags.locale + '),1))').EvalWithMetadbsAsync(handleList))
@@ -416,7 +416,7 @@ async function getDataAsync({
 			const worldMapData = _isFile(filePaths.worldMapArtists)
 				? (_jsonParseFileCheck(filePaths.worldMapArtists, 'Library json', window.FullPanelName, utf8) || [])
 					.map((point) => { return { id: point.artist, city: point.val[0] || '', country: (point.val || ['']).slice(-1)[0] }; })
-					.filter((point) => point.artist && point.city && point.country && point.city !== point.country)
+					.filter((point) => point.id && point.city && point.country && point.city !== point.country)
 				: [];
 			// Json data is then concat to this, since it doesn't matter if some artists are duplicated, only first entry will be used. Furthermore, if tag is incomplete then will be filtered and JSON data used instead
 			const worldMapTags = (await fb.TitleFormat('[$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))]|‎|' + _bt(globTags.locale)).EvalWithMetadbsAsync(handleList))
