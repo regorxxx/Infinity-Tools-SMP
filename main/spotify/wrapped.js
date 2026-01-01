@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//16/12/25
+//01/01/26
 
 /* exported wrapped */
 
@@ -1361,7 +1361,7 @@ const wrapped = {
 							months.set(dateStr, (months.get(dateStr) || 0));
 						});
 					});
-					const max = [...months.entries()].sort((a, b) => b[1] - a[1])[0];
+					const max = [...months.entries()].sort((a, b) => b[1] - a[1])[0] || [];
 					this.stats.artists.byMonth.push({
 						artist: data.artist,
 						month: max[0],
