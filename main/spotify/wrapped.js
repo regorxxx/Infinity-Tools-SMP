@@ -473,7 +473,7 @@ const wrapped = {
 					delete bpm.x;
 					delete bpm.y;
 				});
-				data = data.filter((bpm) => !Number.isNaN(bpm.x));
+				data = data.filter((bpm) => !Number.isNaN(bpm.bpm));
 				data.sort((a, b) => b.listens - a.listens);
 				// Stats
 				this.computeBpmsStats(data);

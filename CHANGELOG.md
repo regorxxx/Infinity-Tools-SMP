@@ -12,6 +12,7 @@
 ### Changed
 ### Removed
 ### Fixed
+- Wrapped: fix handling of non-number BPM values.
 
 ## [1.3.0] - 2026-01-01
 ### Added
@@ -21,7 +22,7 @@
 - Code cleanup and performance improvements if panel is disabled or during startup.
 ### Removed
 ### Fixed
-- Wrapped: region statistics were not being created due to a typo on code since version [1.1.0](#110---2025-12-12.
+- Wrapped: region statistics were not being created due to a typo on code since version [1.1.0](#110---2025-12-12).
 - Wrapped: fix possible crash in case wrapped was run at the start of the year without enough data.
 - UI: 'buttons_playback_rating' and 'buttons_playback_love' using highlight color in some cases when no selection was available.
 - UI: bar menu showing up when moving a button at R. Click up.
