@@ -2,11 +2,18 @@
 
 ## [Table of Contents]
 - [Unreleased](#unreleased)
+- [1.3.0](#130---2026-01-01)
 - [1.2.0](#120---2025-12-23)
 - [1.1.0](#110---2025-12-12)
 - [1.0.0](#100---2025-11-19)
 
 ## [Unreleased][]
+### Added
+### Changed
+### Removed
+### Fixed
+
+## [1.3.0] - 2026-01-01
 ### Added
 - UI: added button new lines, which forces a new row for the next button. They can be added the same than separators and spacers, at 'Add button' submenu. They should work fine in left and center button positions, along reflow and normalized width... but beware of possible "conflicts" with the latter when the panel width is too small. In general it would be better to either use multiple rows manually or let the toolbar handle with reflow setting, but not both. Y-axis orientation is currently not supported for this feature.
 ### Changed
@@ -132,7 +139,8 @@
 - Multiple foobar v2.25 file-relative fixes.
 
 
-[Unreleased]: ../../compare/v1.2.0...HEAD
+[Unreleased]: ../../compare/v1.3.0...HEAD
+[1.3.0]: ../../compare/v.1.2.0...v1.3.0
 [1.2.0]: ../../compare/v.1.1.0...v1.2.0
 [1.1.0]: ../../compare/v.1.0.0...v1.1.0
 [1.0.0]: ../../compare/5ae07355...v1.0.0
