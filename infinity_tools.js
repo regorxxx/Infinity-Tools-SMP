@@ -330,7 +330,7 @@ addEventListener('on_paint', (gr) => {
 
 addEventListener('on_mouse_lbtn_up', (x, y, mask) => { // eslint-disable-line no-unused-vars
 	!buttonsPath.length && loadButtonsFile() && includeButtons();
-	window.Repaint();
+	if (window.IsVisible) { window.Repaint(); }
 });
 
 addEventListener('on_mouse_rbtn_up', (x, y, mask) => { // eslint-disable-line no-unused-vars
@@ -368,7 +368,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 					overwriteProperties(barProperties);
 				}
 				forEachButton((button) => { button.switchHighlight(false); });
-				window.Repaint();
+				if (window.IsVisible) { window.Repaint(); }
 			}
 			break;
 		}
@@ -383,7 +383,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 				if (bar.buttonColor !== -1 && hasColor('button')) { bar.buttonColor = getColor('button'); }
 				if (bar.hoverColor !== -1 && hasColor('hover')) { bar.hoverColor = getColor('hover'); }
 				if (bar.activeColor !== -1 && hasColor('active')) { bar.activeColor = getColor('active'); }
-				window.Repaint();
+				if (window.IsVisible) { window.Repaint(); }
 			}
 			break;
 		}
@@ -406,7 +406,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 				if (bar.buttonColor !== -1) { bar.buttonColor = note; }
 				if (bar.hoverColor !== -1) { bar.hoverColor = mainAlt; }
 				if (bar.activeColor !== -1) { bar.activeColor = sec; }
-				window.Repaint();
+				if (window.IsVisible) { window.Repaint(); }
 			}
 			break;
 		}
@@ -423,11 +423,11 @@ if (barProperties.bOnNotifyColors[1]) { // Ask color-servers at init
 let buttonsPath = [];
 if (barProperties.bLoadAsync[1]) {
 	loadButtonsFile(true) && includeButtonsAsync().finally(() => {
-		if (buttonsBar.config.buttonPosition === 'center') { setTimeout(() => window.Repaint(true), 100); }
+		if (buttonsBar.config.buttonPosition === 'center' && window.IsVisible) { setTimeout(() => window.Repaint(true), 100); }
 	});
 } else {
 	loadButtonsFile(true) && includeButtons();
-	if (buttonsBar.config.buttonPosition === 'center') { setTimeout(() => window.Repaint(true), 100); }
+	if (buttonsBar.config.buttonPosition === 'center' && window.IsVisible) { setTimeout(() => window.Repaint(true), 100); }
 }
 
 // Update check
