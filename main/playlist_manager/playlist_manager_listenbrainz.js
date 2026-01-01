@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//01/01/26
 
 /* exported ListenBrainz */
 
@@ -181,7 +181,9 @@ ListenBrainz.listensCache = {
 			// Try to reuse data without loading file, caching the string is faster than cloning entire object on every call
 			const data = this.volatileCache
 				? JSON.parse(this.volatileCache)
-				: _jsonParseFileCheck(this.getFile(user), 'ListenBrainz listens cache file', 'ListenBrainz', utf8);
+				: _isFile(this.getFile(user))
+					? _jsonParseFileCheck(this.getFile(user), 'ListenBrainz listens cache file', 'ListenBrainz', utf8)
+					: null;
 			if (data) {
 				console.log('ListenBrainz: retrieving listening history from ' + new Date(minDate * 1000).toDateString() + ' to ' + new Date(maxDate * 1000).toDateString());
 				if (!this.volatileCache) {
