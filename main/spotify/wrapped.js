@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//01/01/26
+//07/01/26
 
 /* exported wrapped */
 
@@ -1978,7 +1978,7 @@ const wrapped = {
 					nconvert.some((nc) => {
 						if (_isFile(nc)) {
 							const command = ' -out jpeg -dpi 300 -resize 600 600 -overwrite -keepfiledate -ignore_errors "' + path + '*.jpg"';
-							if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing track images (' + tracksData.length + ') with nconvert\n\tnconvert.exe' + command); }
+							if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing track images (' + tracksData.length + ') with nconvert\n\tnconvert.exe' + _foldPath(command)); }
 							_runCmd('CMD /C ' + nc + command, false);
 							return true;
 						}
@@ -3140,7 +3140,7 @@ const wrapped = {
 			.replace(/%2/gi, _q(output))
 			.replace(/%3/gi, _q(root.replace(/\\$/, '')))
 			.replace(/%4/gi, (timePeriod || period));
-		if (this.settings.logOpt.bBasic) { console.log('Wrapped: saving .tex file to\n\t ' + input); }
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: saving .tex file to\n\t ' + _foldPath(input)); }
 		_recycleFile(input, true);
 		_save(input, report, false);
 		// Parse cmd
@@ -3148,7 +3148,7 @@ const wrapped = {
 			latexCmd = 'lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1';
 		}
 		latexCmd = parseCmd(latexCmd);
-		if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing latex\n\t ' + latexCmd); }
+		if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing latex\n\t ' + _foldPath(latexCmd.replace(/\w:\\.*\\(lualatex.exe)/i, '[...]\\$1'))); }
 		if (latexCmd.includes('lualatex')) {
 			console.log('Wrapped: double compilation required');
 			_runCmd(latexCmd, true);
@@ -3159,7 +3159,7 @@ const wrapped = {
 			if (extraCmd && extraCmd.length) { extraCmd.filter(Boolean).forEach((cmd) => _runCmd(parseCmd(cmd), true)); }
 			_recycleFile(root + fileName + '.aux', true);
 			_recycleFile(root + fileName + '.log', true);
-			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .pdf file at\n\t ' + output); }
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .pdf file at\n\t ' + _foldPath(output)); }
 			_run(output);
 			return true;
 		}
@@ -3241,7 +3241,7 @@ const wrapped = {
 		// Parse cmd
 		if (_isFile(output)) {
 			if (extraCmd && extraCmd.length) { extraCmd.filter(Boolean).forEach((cmd) => _runCmd(parseCmd(cmd), true)); }
-			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .html file at\n\t ' + output); }
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .html file at\n\t ' +_foldPath(output)); }
 			utils.ShowHtmlDialog(0, 'file://' + output);
 			return true;
 		}
@@ -3316,7 +3316,7 @@ const wrapped = {
 		// Parse cmd
 		if (_isFile(output)) {
 			if (extraCmd && extraCmd.length) { extraCmd.filter(Boolean).forEach((cmd) => _runCmd(parseCmd(cmd), true)); }
-			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .json file at\n\t ' + output); }
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .json file at\n\t ' + _foldPath(output)); }
 			_run(output);
 			return true;
 		}
@@ -3398,7 +3398,7 @@ const wrapped = {
 		exifTool.some((et) => {
 			if (_isFile(et)) {
 				const command = ' -overwrite_original -r -ext jpg -ext gif -ext png -EXIF= ' + _q(root + 'img');
-				if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing images with exiftool\n\texiftool.exe ' + command); }
+				if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing images with exiftool\n\texiftool.exe ' + _foldPath(command)); }
 				_runCmd('CMD /C ' + _q(et) + command, false);
 				return true;
 			}
@@ -3423,7 +3423,7 @@ const wrapped = {
 		];
 		pingo.some((pg) => {
 			if (_isFile(pg)) {
-				if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing images with pingo\n\tpingo.exe -quiet ' + _q(root + 'img\\')); }
+				if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing images with pingo\n\tpingo.exe -quiet ' + _q(_foldPath(root + 'img\\'))); }
 				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\albums'), false);
 				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\artists'), false);
 				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\bg'), false);
@@ -3453,7 +3453,7 @@ const wrapped = {
 		ghostscript.some((gs) => {
 			if (_isFile(gs)) {
 				const command = ' -dCompatibilityLevel=1.5 -dAutoRotatePages=/None -dQUIET -sDEVICE=pdfwrite -o ' + _q(input + '_') + ' ' + _q(input);
-				if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing pdf with ghostscript\n\t ' + gs.split('\\').pop() + command); }
+				if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing pdf with ghostscript\n\t ' + gs.split('\\').pop() + _foldPath(command)); }
 				_runCmd('CMD /C ' + _q(gs) + command, true);
 				if (_isFile(input + '_')) {
 					_copyFile(input + '_', input);
