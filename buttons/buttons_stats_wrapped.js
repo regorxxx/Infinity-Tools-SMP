@@ -1,5 +1,5 @@
 ﻿'use strict';
-//16/12/25
+//07/01/26
 
 /*
 	Wrapped
@@ -91,7 +91,8 @@ addButton({
 							{ input: 'Artists images stub path (.jpg or .png). If it starts with .\\, will be relative to foobar profile folder.\n\nEnter TF expression:\n(\'%1\' will be replaced internally with the artist name)' },
 						tags: { bHide: true },
 						extraCmd: { bHide: true },
-						logOpt: { bHide: true }
+						logOpt: { bHide: true },
+						latexCmd: { input: 'The CMD expression allows these numbered arguments which are replaced at execution:\n\t• %1: input .tex file path (with quotes)\n\t• %2: output .pdf file path (with quotes)\n\t• %3: output directory path (with quotes)\n\t• %4: year\n\nPaths starting with \'.\\profile\\\' are relative to foobar profile folder.\n\n\'%FB2K_PROFILE_PATH%\' or \'%PROFILE%\' may also be used.'}
 					},
 					{
 						bDynamicMenus:

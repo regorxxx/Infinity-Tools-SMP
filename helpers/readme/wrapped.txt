@@ -178,6 +178,11 @@ The default installation uses LuaLaTeX via CMD:
 lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1
 
 A portable install may also be used as long as the CMD command is adjusted.
+For ex:
+"B\miktex-portable\texmfs\install\miktex\bin\x64\lualatex.exe" --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1
+
+Or:
+".\profile\binaries\miktex\texmfs\install\miktex\bin\x64\lualatex.exe" --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1
 
 This command may be changed at the settings menu, in case other engine
 or format is preferred (any layout problems is your responsibility though).
@@ -189,5 +194,5 @@ execution:
 	• %3: output directory path (with quotes)
 	• %4: year
 
-Ex:
+Ex after conversion:
 lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_2023 --output-directory="B:\foobar2000\profile\js_data\temp\wrapped" "B:\foobar2000\profile\js_data\temp\wrapped\Wrapped_2023.tex"

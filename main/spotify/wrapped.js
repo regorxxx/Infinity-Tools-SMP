@@ -9,7 +9,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global forEachNested:readable, _bt:readable, _q:readable, round:readable, _asciify:readable, _p:readable, _t:readable, isFbMetadbHandle:readable, range:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global sanitize:readable, _isFolder:readable,, _isFile:readable, _createFolder:readable, getFiles:readable, _runCmd:readable, _copyFile:readable, _save:readable, _run:readable, _recycleFile:readable, _deleteFolder:readable, _deleteFile:readable, _jsonParseFileCheck:readable, utf8:readable, _copyDependencies:readable, _foldPath:readable */
+/* global sanitize:readable, _isFolder:readable,, _isFile:readable, _createFolder:readable, getFiles:readable, _runCmd:readable, _copyFile:readable, _save:readable, _run:readable, _recycleFile:readable, _deleteFolder:readable, _deleteFile:readable, _jsonParseFileCheck:readable, utf8:readable, _copyDependencies:readable, _foldPath:readable, _resolvePath:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
 include('..\\..\\helpers\\helpers_xxx_statistics.js');
@@ -3147,7 +3147,7 @@ const wrapped = {
 		if (!latexCmd || !latexCmd.length) {
 			latexCmd = 'lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1';
 		}
-		latexCmd = parseCmd(latexCmd);
+		latexCmd = parseCmd(_resolvePath(latexCmd));
 		if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing latex\n\t ' + _foldPath(latexCmd.replace(/\w:\\.*\\(lualatex.exe)/i, '[...]\\$1'))); }
 		if (latexCmd.includes('lualatex')) {
 			console.log('Wrapped: double compilation required');
