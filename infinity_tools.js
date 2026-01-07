@@ -177,7 +177,7 @@ const background = new _background({
 					if (!background.useColors && !background.useCover) { bar.textColor = mostContrastColor(bar.toolbarColor).color; }
 					else if (!window.IsTransparent) {
 						bar.textColor = mostContrastColor(
-							background.getAvgPanelColor([{ col: bar.bToolbar ? bar.toolbarColor : background.getAvgUiColor() , freq: barProperties.toolbarTransparency[1] / 100 }])
+							background.getAvgPanelColor([{ col: bar.bToolbar ? bar.toolbarColor : background.getAvgUiColor(), freq: barProperties.toolbarTransparency[1] / 100 }])
 						).color;
 					} else {
 						bar.textColor = mostContrastColor(
