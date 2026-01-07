@@ -10,9 +10,9 @@
 ## [Unreleased][]
 ### Added
 - UI: added background framework found in all my other scripts, which can be tweaked at the background submenu within the toolbar menu (R. Click). By default is set to to not display any color or art, looking like previous releases. Note any setting at 'Colors' submenu is applied on top of the background, so the toolbar color, transparency or panel pseudo-transparency settings may also override background drawing. As a bonus, all features related to dynamic colors and color servers are also included, so it will work in conjunction with all other scripts making use of this feature.
+- Wrapped: './profile/', '%FB2K_PROFILE_PATH%\' or \'%PROFILE%\' special variable support for latex CMD. Also improved input popup and readme to help with path CMD tweaking.
 ### Changed
 - Wrapped: console logging of CMD commands now show paths relative to profile folder whenever possible, in other cases use-specific paths are cut to ensure no sensitive information is logged.
-- Wrapped: './profile/', '%FB2K_PROFILE_PATH%\' or \'%PROFILE%\' special variables are allowed at latex CMD. Also improved input popup and readme to help with path CMD tweaking.
 ### Removed
 ### Fixed
 - Wrapped: fix handling of non-number BPM values.
