@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/01/26
+//07/01/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -15,7 +15,8 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 {
 	const dependencies = [
 		'helpers\\buttons_xxx.js',
-		/* global buttonsBar:readable, addButtonSeparator:readable, VK_CONTROL:readable, VK_LWIN:readable, forEachButton:readable, ColourTypeDUI:readable, ColourTypeCUI:readable, addButtonSpacer:readable, addButtonNewLine:readable */
+		/* global buttonsBar:readable, addButtonSeparator:readable, VK_CONTROL:readable, VK_LWIN:readable, forEachButton:readable, ColourTypeDUI:readable, ColourTypeCUI:readable, addButtonSpacer:readable, addButtonNewLine:readable, VK_ALT:readable, VK_SHIFT:readable */
+		/* global moveEventListener:readable */
 		'helpers\\helpers_xxx.js',
 		/* global globSettings:readable, folders:readable, globFonts:readable, DT_VCENTER:readable, DT_CENTER:readable, DT_END_ELLIPSIS:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, checkUpdate:readable , globProfiler:readable */
 		'helpers\\helpers_xxx_foobar.js',
@@ -29,6 +30,8 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 		/* global _open:readable, _isFile:readable, utf8:readable, _save:readable, _jsonParseFileCheck:readable, WshShell:readable , popup:readable */
 		'helpers\\helpers_xxx_input.js',
 		/* global Input:readable */
+		'main\\window\\window_xxx_background.js',
+		/* global _background:readable */
 		'main\\window\\window_xxx_dynamic_colors.js' // Requires Chroma
 		/* global dynamicColors:readable, mostContrastColor:readable */
 	];
@@ -40,7 +43,7 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 {
 	const dependencies = [
 		'helpers\\buttons_merged_menu.js' // Loads Chroma
-		/* global createButtonsMenu:readable, importSettingsMenu:readable */
+		/* global createButtonsMenu:readable, importSettingsMenu:readable, Chroma:readable */
 	];
 	let bIncludeRel = true;
 	try { include('..\\helpers\\buttons_dummy.js'); } catch (e) { bIncludeRel = false; } // eslint-disable-line no-unused-vars
@@ -85,6 +88,10 @@ let barProperties = {
 	toolbarTransparency: ['Toolbar transparency', 80, { func: isInt, range: [[0, 100]] }],
 	buttonBorderTransparency: ['Button border transparency', 100, { func: isInt, range: [[0, 100]] }],
 	outlineIcon: ['Icon outline', 0, { func: isInt, range: [[0, Infinity]] }],
+	background: ['Background options', JSON.stringify({ ..._background.defaults(), coverMode: 'none', colorMode: 'none', offsetH: 0 }), { func: isJSON, forceDefaults: true }],
+	bDynamicColors: ['Adjust colors to artwork', false, { func: isBoolean }],
+	bDynamicColorsBg: ['Adjust colors to artwork (bg)', false, { func: isBoolean }],
+	bNotifyColors: ['Notify colors to other panels', false, { func: isBoolean }]
 };
 Object.keys(barProperties).forEach(p => barProperties[p].push(barProperties[p][1]));
 setProperties(barProperties);
@@ -134,6 +141,73 @@ buttonsBar.config.textPosition = barProperties.textPosition[1];
 buttonsBar.config.offset = JSON.parse(barProperties.offset[1]);
 buttonsBar.config.bFullSize = barProperties.bFullSize[1];
 buttonsBar.menu = () => createButtonsMenu(barProperties.name[1]);
+
+const background = new _background({
+	...JSON.parse(barProperties.background[1]),
+	x: 0, y: 0, w: window.Width, h: window.Height,
+	callbacks: {
+		change: function (config, changeArgs, callbackArgs) {
+			if (callbackArgs && callbackArgs.bSaveProperties) {
+				['x', 'y', 'w', 'h'].forEach((key) => delete config[key]);
+				barProperties.background[1] = JSON.stringify(config);
+				overwriteProperties(barProperties);
+			}
+		},
+		artColors: (colArray, bForced) => {
+			if (!bForced && !barProperties.bDynamicColors[1]) { return; }
+			else if (colArray) {
+				const bar = buttonsBar.config;
+				const bChangeBg = barProperties.bDynamicColorsBg[1];
+				const { main, sec, note, mainAlt, secAlt } = dynamicColors( // eslint-disable-line no-unused-vars
+					colArray,
+					bar.bToolbar
+						? bar.toolbarColor // background.getAvgPanelColor()
+						: (window.InstanceType === 0 ? window.GetColourCUI(1) : window.GetColourDUI(1)),
+					true
+				);
+				if (bChangeBg && background.useColors) {
+					const gradient = [Chroma(note).saturate(2).luminance(0.005).android(), note];
+					const bgColor = Chroma.scale(gradient).mode('lrgb')
+						.colors(background.colorModeOptions.color.length, 'android')
+						.reverse();
+					background.changeConfig({ config: { colorModeOptions: { color: bgColor } }, callbackArgs: { bSaveProperties: false } });
+				}
+				if (bar.bToolbar) { bar.toolbarColor = main; }
+				if (bar.textColor !== -1 && (bar.bToolbar || background.useColors || background.useCover)) {
+					if (!background.useColors && !background.useCover) { bar.textColor = mostContrastColor(bar.toolbarColor).color; }
+					else if (!window.IsTransparent) {
+						bar.textColor = mostContrastColor(
+							background.getAvgPanelColor([{ col: bar.bToolbar ? bar.toolbarColor : background.getAvgUiColor() , freq: barProperties.toolbarTransparency[1] / 100 }])
+						).color;
+					} else {
+						bar.textColor = mostContrastColor(
+							background.getAvgPanelColor([{ col: bar.toolbarColor, freq: bar.bToolbar ? barProperties.toolbarTransparency[1] / 100 : 0 }])
+						).color;
+					}
+					forEachButton((button) => { button.clearIconCache(); });
+				}
+				if (bar.buttonColor !== -1) { bar.buttonColor = note; }
+				if (bar.hoverColor !== -1) { bar.hoverColor = mainAlt; }
+				if (bar.activeColor !== -1) { bar.activeColor = sec; }
+				if (window.IsVisible) { window.Repaint(); }
+			} else {
+				buttonsBar.config.toolbarColor = barProperties.toolbarColor[1];
+				buttonsBar.config.textColor = barProperties.textColor[1];
+				buttonsBar.config.buttonColor = barProperties.buttonColor[1];
+				buttonsBar.config.hoverColor = barProperties.hoverColor[1];
+				buttonsBar.config.activeColor = barProperties.activeColor[1];
+				if (window.IsVisible) { window.Repaint(); }
+			}
+		},
+		artColorsNotify: (colArray, bForced = false) => {
+			if (!bForced && !barProperties.bNotifyColors[1]) { return; }
+			else if (colArray) {
+				background.scheme = colArray;
+				window.NotifyOthers('Colors: set color scheme', colArray);
+			}
+		}
+	},
+});
 
 // First popup
 if (!barProperties.firstPopup[1]) {
@@ -319,6 +393,12 @@ function includeButtonsAsync(timeout = 100) {
 	return Promise.resolve(false);
 }
 
+moveEventListener(addEventListener('on_paint', (gr) => {
+	if (!window.ID) { return; }
+	if (!window.Width || !window.Height) { return; }
+	if (buttonsPath.length) { background.paint(gr); }
+}), 0);
+
 addEventListener('on_paint', (gr) => {
 	if (!window.ID) { return; }
 	if (!window.Width || !window.Height) { return; }
@@ -338,6 +418,60 @@ addEventListener('on_mouse_rbtn_up', (x, y, mask) => { // eslint-disable-line no
 		return importSettingsMenu().btn_up(x, y);
 	}
 	return true;
+});
+
+addEventListener('on_size', (width, height) => {
+	background.resize({ w: width, h: height, bPaint: false });
+});
+
+addEventListener('on_playback_new_track', () => {
+	if (background.useCover) { background.updateImageBg(); }
+});
+
+addEventListener('on_selection_changed', () => {
+	if (!background.coverModeOptions.bNowPlaying || !fb.IsPlaying) {
+		if (background.useCover) { background.updateImageBg(); }
+	}
+});
+
+addEventListener('on_item_focus_change', () => {
+	if (!background.coverModeOptions.bNowPlaying || !fb.IsPlaying) {
+		if (background.useCover) { background.updateImageBg(); }
+	}
+});
+
+addEventListener('on_playlist_switch', () => {
+	if (!background.coverModeOptions.bNowPlaying || !fb.IsPlaying) {
+		if (background.useCover) { background.updateImageBg(); }
+	}
+});
+
+addEventListener('on_playback_stop', (reason) => {
+	if (reason !== 2) { // Invoked by user or Starting another track
+		if (background.useCover && background.coverModeOptions.bNowPlaying) { background.updateImageBg(); }
+	}
+});
+
+
+addEventListener('on_playlists_changed', () => { // To show/hide loaded playlist indicators...
+	if (!background.coverModeOptions.bNowPlaying || !fb.IsPlaying) {
+		if (background.useCover) { background.updateImageBg(); }
+	}
+});
+
+addEventListener('on_mouse_move', (x, y, mask) => {
+	background.move(x, y, mask);
+});
+
+addEventListener('on_mouse_leave', () => {
+	background.leave();
+});
+
+addEventListener('on_mouse_wheel', (step) => {
+	if (!window.ID) { return; }
+	if (utils.IsKeyPressed(VK_CONTROL) && utils.IsKeyPressed(VK_ALT)) {
+		if (utils.IsKeyPressed(VK_SHIFT)) { background.wheelResize(step, void (0), { bSaveProperties: true }); }
+	} else if (utils.IsKeyPressed(VK_SHIFT)) { background.cycleArtAsync(step); }
 });
 
 addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-unused-vars
@@ -389,24 +523,12 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 		}
 		case 'Colors: set color scheme':
 		case window.ScriptInfo.Name + ': set color scheme': { // Needs an array of at least 6 colors to automatically adjust dynamic colors
-			if (info && barProperties.bOnNotifyColors[1]) {
-				const bar = buttonsBar.config;
-				const { main, sec, note, mainAlt, secAlt } = dynamicColors( // eslint-disable-line no-unused-vars
-					clone(info),
-					bar.bToolbar
-						? bar.toolbarColor
-						: (window.InstanceType === 0 ? window.GetColourCUI(1) : window.GetColourDUI(1)),
-					true
-				);
-				if (bar.bToolbar) { bar.toolbarColor = main; }
-				if (bar.textColor !== -1 && bar.bToolbar) {
-					bar.textColor = mostContrastColor(bar.toolbarColor).color;
-					forEachButton((button) => { button.clearIconCache(); });
-				}
-				if (bar.buttonColor !== -1) { bar.buttonColor = note; }
-				if (bar.hoverColor !== -1) { bar.hoverColor = mainAlt; }
-				if (bar.activeColor !== -1) { bar.activeColor = sec; }
-				if (window.IsVisible) { window.Repaint(); }
+			if (info && barProperties.bOnNotifyColors[1]) { background.callbacks.artColors(clone(info), true); }
+			break;
+		}
+		case 'Colors: ask color scheme': {
+			if (info && barProperties.bNotifyColors[1] && background.scheme) {
+				window.NotifyOthers(String(info), background.scheme);
 			}
 			break;
 		}

@@ -1,9 +1,9 @@
 ﻿'use strict';
-//25/12/25
+//07/01/26
 
 /* exported createButtonsMenu, importSettingsMenu */
 
-/* global buttonsPath:readable, buttonsBar:readable, barProperties:readable, buttonStates:readable, buttonSizeCheck:readable,moveButton:readable, addButtonSeparator:readable, showButtonReadme:readable, forEachButton:readable, addButtonSpacer:readable, addButtonNewLine:readable */
+/* global buttonsPath:readable, buttonsBar:readable, barProperties:readable, buttonStates:readable, buttonSizeCheck:readable,moveButton:readable, addButtonSeparator:readable, showButtonReadme:readable, forEachButton:readable, addButtonSpacer:readable, addButtonNewLine:readable, background:readable */
 
 include('..\\..\\helpers\\menu_xxx.js');
 /* global _menu:readable */
@@ -23,6 +23,8 @@ include('..\\..\\helpers\\helpers_xxx_export.js');
 /* global exportSettings:readable, importSettings:readable */
 include('..\\..\\helpers-external\\namethatcolor\\ntc.js');
 /* global ntc:readable */
+include('..\\..\\main\\window\\window_xxx_background_menu.js');
+/* global createBackgroundMenu:readable */
 const Chroma = require('..\\helpers-external\\chroma.js\\chroma.min'); // Relative to helpers folder
 
 function createButtonsMenu(name) {
@@ -331,7 +333,7 @@ function createButtonsMenu(name) {
 				}
 				overwriteProperties(barProperties);
 				window.Repaint();
-			}, flags: buttonsBar.config.toolbarColor || !window.IsTransparent ? MF_STRING : MF_GRAYED
+			}, flags: buttonsBar.config.toolbarColor !== -1 || !window.IsTransparent ? MF_STRING : MF_GRAYED
 		});
 		menu.newEntry({
 			menuName, entryText: 'Set buttons transparency...' + '\t[' + buttonsBar.config.buttonTransparency + ']', func: () => {
@@ -344,7 +346,7 @@ function createButtonsMenu(name) {
 				}
 				overwriteProperties(barProperties);
 				window.Repaint();
-			}, flags: !barProperties.bBgButtons[1] ? MF_STRING : MF_GRAYED
+			}, flags: !barProperties.bBgButtons[1] && (barProperties.bOnNotifyColors[1] || buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) ? MF_STRING : MF_GRAYED
 		});
 		menu.newEntry({
 			menuName, entryText: 'Set border transparency...' + '\t[' + buttonsBar.config.buttonBorderTransparency + ']', func: () => {
@@ -357,7 +359,7 @@ function createButtonsMenu(name) {
 				}
 				overwriteProperties(barProperties);
 				window.Repaint();
-			}, flags: !barProperties.bBgButtons[1] ? MF_STRING : MF_GRAYED
+			}, flags: !barProperties.bBgButtons[1] && buttonsBar.config.bBorders ? MF_STRING : MF_GRAYED
 		});
 		menu.newSeparator(menuName);
 		menu.newEntry({
@@ -381,16 +383,65 @@ function createButtonsMenu(name) {
 		{
 			const subMenu = menu.newMenu('Dynamic colors', menuName);
 			menu.newEntry({
-				menuName: subMenu, entryText: 'Listen to color-servers', func: () => {
-					barProperties.bOnNotifyColors[1] = !barProperties.bOnNotifyColors[1];
+				menuName: subMenu, entryText: 'Dynamic (background art mode)', func: () => {
+					barProperties.bDynamicColors[1] = !barProperties.bDynamicColors[1];
+					if (barProperties.bDynamicColors[1] && barProperties.bOnNotifyColors[1]) { fb.ShowPopupMessage('Warning: Dynamic colors (background art mode) and Color-server listening are enabled at the same time.\n\nThis setting may probably produce glitches since 2 color sources are being used, while one tries to override the other.\n\nIt\'s recommended to only use one of these features, unless you know what you are doing.', window.ScriptInfo.Name + ': Dynamic colors'); }
 					overwriteProperties(barProperties);
+					if (barProperties.bDynamicColors[1]) {
+						// Ensure it's applied with compatible settings
+						background.changeConfig({ config: { coverModeOptions: { bProcessColors: true } }, callbackArgs: { bSaveProperties: true } });
+						if (background.coverMode === 'none') {
+							background.changeConfig({ config: { coverMode: 'front', coverModeOptions: { alpha: 0 } }, callbackArgs: { bSaveProperties: true } });
+						}
+						background.updateImageBg(true);
+					} else {
+						background.changeConfig({ config: { colorModeOptions: { color: JSON.parse(barProperties.background[1]).colorModeOptions.color } }, callbackArgs: { bSaveProperties: false } });
+						background.callbacks.artColors(void(0), true);
+						overwriteProperties(barProperties);
+					}
+				},
+				checkFunc: () => barProperties.bDynamicColors[1],
+			});
+			menu.newEntry({
+				menuName: subMenu, entryText: 'Also apply to background color', func: () => {
+					barProperties.bDynamicColorsBg[1] = !barProperties.bDynamicColorsBg[1];
+					if (!barProperties.bDynamicColorsBg[1]) {
+						background.changeConfig({ config: { colorModeOptions: { color: JSON.parse(barProperties.background[1]).colorModeOptions.color } }, callbackArgs: { bSaveProperties: false } });
+					}
+					overwriteProperties(barProperties);
+					background.updateImageBg(true);
 					if (barProperties.bOnNotifyColors[1]) {
 						window.NotifyOthers('Colors: ask color scheme', window.ScriptInfo.Name + ': set color scheme');
 						window.NotifyOthers('Colors: ask color', window.ScriptInfo.Name + ': set colors');
 					}
-				}
+				}, flags: barProperties.bDynamicColors[1] || barProperties.bOnNotifyColors[1] ? MF_STRING : MF_GRAYED,
+				checkFunc: () => barProperties.bDynamicColorsBg[1]
 			});
-			menu.newCheckMenuLast(() => barProperties.bOnNotifyColors[1]);
+			menu.newSeparator(subMenu);
+			menu.newEntry({
+				menuName: subMenu, entryText: 'Listen to color-servers', func: () => {
+					barProperties.bOnNotifyColors[1] = !barProperties.bOnNotifyColors[1];
+					if (barProperties.bDynamicColors[1] && barProperties.bOnNotifyColors[1]) { fb.ShowPopupMessage('Warning: Dynamic colors (background art mode) and Color-server listening are enabled at the same time.\n\nThis setting may probably produce glitches since 2 color sources are being used, while one tries to override the other.\n\nIt\'s recommended to only use one of these features, unless you know what you are doing.', window.ScriptInfo.Name + ': Dynamic colors'); }
+					overwriteProperties(barProperties);
+					if (barProperties.bOnNotifyColors[1]) {
+						window.NotifyOthers('Colors: ask color scheme', window.ScriptInfo.Name + ': set color scheme');
+						window.NotifyOthers('Colors: ask color', window.ScriptInfo.Name + ': set colors');
+					} else if (!barProperties.bDynamicColors[1]) {
+						background.callbacks.artColors(void(0), true);
+					}
+				},
+				checkFunc: () => barProperties.bOnNotifyColors[1]
+			});
+			menu.newEntry({
+				menuName: subMenu, entryText: 'Act as color-server', func: () => {
+					barProperties.bNotifyColors[1] = !barProperties.bNotifyColors[1];
+					overwriteProperties(barProperties);
+					if (barProperties.bNotifyColors[1] && background.scheme) {
+						window.NotifyOthers('Colors: set color scheme', background.scheme);
+					}
+				},
+				checkFunc: () => barProperties.bNotifyColors[1]
+			});
 		}
 		menu.newSeparator(menuName);
 		menu.newEntry({
@@ -780,6 +831,8 @@ function createButtonsMenu(name) {
 			});
 		}
 	}
+	menu.newSeparator();
+	createBackgroundMenu.call(background, { menuName: 'Background' }, menu, { nameColors: true });
 	menu.newSeparator();
 	{
 		const subMenu = menu.newMenu('Other settings');
