@@ -93,16 +93,15 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 	menu.newSeparator(mainMenuName);
 	// Menus
 	{
-		const subMenu = menu.newMenu('Art mode', mainMenuName);
+		const subMenu = menu.newMenu('Art mode' + (this.useCover ? '' : '\t[none sel]'), mainMenuName, this.useCover ? MF_STRING : MF_GRAYED);
 		[
-			{ isEq: null, key: this.coverMode, value: null, newValue: 'none', entryText: 'None' },
 			{ isEq: null, key: this.coverMode, value: null, newValue: 'front', entryText: 'Front' },
 			{ isEq: null, key: this.coverMode, value: null, newValue: 'back', entryText: 'Back' },
 			{ isEq: null, key: this.coverMode, value: null, newValue: 'disc', entryText: 'Disc' },
 			{ isEq: null, key: this.coverMode, value: null, newValue: 'icon', entryText: 'Icon' },
 			{ isEq: null, key: this.coverMode, value: null, newValue: 'artist', entryText: 'Artist' },
-			{ isEq: null, key: this.coverMode, value: null, newValue: 'path', entryText: 'File...' },
-			{ isEq: null, key: this.coverMode, value: null, newValue: 'folder', entryText: 'Folder...' },
+			{ isEq: null, key: this.coverMode, value: null, newValue: 'path', entryText: 'File (by TF)...' },
+			{ isEq: null, key: this.coverMode, value: null, newValue: 'folder', entryText: 'Folder (by TF)...' },
 		].forEach(createMenuOption('coverMode', void (0), subMenu, true, (option) => {
 			if (option.newValue === 'path' || option.newValue === 'folder') {
 				const bLoadXXX = typeof folders !== 'undefined' && Object.hasOwn(folders, 'xxxRootName');
@@ -114,13 +113,6 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 			}
 		}));
 		menu.newSeparator(subMenu);
-		[
-			{ isEq: null, key: this.coverModeOptions.bNowPlaying, value: null, newValue: !this.coverModeOptions.bNowPlaying, entryText: 'Follow now playing' }
-		].forEach(createMenuOption('coverModeOptions', 'bNowPlaying', subMenu, true));
-		menu.getLastEntry().flags = !this.useCover ? MF_GRAYED : MF_STRING;
-		[
-			{ isEq: null, key: this.coverModeOptions.bNoSelection, value: null, newValue: !this.coverModeOptions.bNoSelection, entryText: 'No selection (as fallback)' }
-		].forEach(createMenuOption('coverModeOptions', 'bNoSelection', subMenu, true));
 		menu.getLastEntry().flags = !this.useCover || !this.coverModeOptions.bNowPlaying ? MF_GRAYED : MF_STRING;
 		if (['path', 'folder'].includes(this.coverMode.toLowerCase())) {
 			menu.newSeparator(subMenu);
@@ -222,6 +214,35 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 	}
 	menu.newSeparator(mainMenuName);
 	{
+		const subMenu = menu.newMenu('Selection mode', mainMenuName);
+		[
+			{ isEq: null, key: this.coverMode, value: null, newValue: 'none', entryText: 'None' },
+		].forEach(createMenuOption('coverMode', void (0), subMenu));
+		menu.newSeparator(subMenu);
+		[
+			{ isEq: null, key: this.coverModeOptions.bNowPlaying, value: null, newValue: true, entryText: 'Follow now playing' }
+		].forEach(createMenuOption('coverModeOptions', 'bNowPlaying', subMenu, false, () => {
+			if (!this.useCover) {
+				this.changeConfig({ config: { coverMode: this.getDefaultCoverMode() }, callbackArgs: { bSaveProperties: true } });
+			}
+		}));
+		[
+			{ isEq: null, key: this.coverModeOptions.bNowPlaying, value: null, newValue: false, entryText: 'Follow selection' }
+		].forEach(createMenuOption('coverModeOptions', 'bNowPlaying', subMenu, false, () => {
+			if (!this.useCover) {
+				this.changeConfig({ config: { coverMode: this.getDefaultCoverMode() }, callbackArgs: { bSaveProperties: true } });
+			}
+		}));
+		menu.getLastEntry().flags = !this.useCover ? MF_GRAYED : MF_STRING;
+		menu.newCheckMenuLast(() => this.coverMode === 'none' ? 0 : (this.coverModeOptions.bNowPlaying ? 1 : 2), 4);
+		menu.newSeparator(subMenu);
+		[
+			{ isEq: null, key: this.coverModeOptions.bNoSelection, value: null, newValue: !this.coverModeOptions.bNoSelection, entryText: 'No selection (as fallback)' }
+		].forEach(createMenuOption('coverModeOptions', 'bNoSelection', subMenu, true));
+		menu.getLastEntry().flags = !this.useCover || !this.coverModeOptions.bNowPlaying ? MF_GRAYED : MF_STRING;
+	}
+	menu.newSeparator(mainMenuName);
+	{
 		const subMenu = menu.newMenu('Color mode', mainMenuName);
 		[
 			{ isEq: null, key: this.colorMode, value: null, newValue: 'none', entryText: 'None' },
@@ -238,11 +259,14 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 					input = this.colorModeOptions.color.map((color) => utils.ColourPicker(0, color));
 					console.log('Background (' + window.Name + ' (' + window.ScriptInfo.Name + ')' + '): Selected color ->' + input.map((col) => '\n\t Android: ' + col + ' - RGB: ' + Chroma(col).rgb()).join(''));
 				}
-
 				this.changeConfig({ config: { colorModeOptions: { color: input } }, callbackArgs: { bSaveProperties: true } });
 			}
 		}));
 		menu.newSeparator(subMenu);
+		[
+			{ isEq: null, key: this.colorModeOptions.bUiColors, value: null, newValue: !this.colorModeOptions.bUiColors, entryText: (window.InstanceType ? 'Use Default UI colors' : 'Use Columns UI colors') }
+		].forEach(createMenuOption('colorModeOptions', 'bUiColors', subMenu, true));
+		menu.getLastEntry().flags = this.useColors ? MF_STRING : MF_GRAYED;
 		[
 			{ isEq: null, key: this.colorModeOptions.bDither, value: null, newValue: !this.colorModeOptions.bDither, entryText: 'Apply dither' }
 		].forEach(createMenuOption('colorModeOptions', 'bDither', subMenu, true));

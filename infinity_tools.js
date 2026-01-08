@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/01/26
+//08/01/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -393,6 +393,29 @@ function includeButtonsAsync(timeout = 100) {
 	return Promise.resolve(false);
 }
 
+{
+	const callback = () => {
+		if (background.useCover && (!background.coverModeOptions.bNowPlaying || !fb.IsPlaying)) {
+			background.updateImageBg();
+		}
+	};
+	['on_item_focus_change', 'on_selection_changed', 'on_playlists_changed', 'on_playlist_items_added', 'on_playlist_items_removed', 'on_playlist_switch'].forEach((e) => addEventListener(e, callback));
+
+	addEventListener('on_playback_stop', (reason) => {
+		if (reason !== 2) { // Invoked by user or Starting another track
+			if (background.useCover && background.coverModeOptions.bNowPlaying) { background.updateImageBg(); }
+		}
+	});
+
+	addEventListener('on_playback_new_track', () => {
+		if (background.useCover) { background.updateImageBg(); }
+	});
+
+	addEventListener('on_colours_changed', () => {
+		background.colorsChanged();
+	});
+}
+
 moveEventListener(addEventListener('on_paint', (gr) => {
 	if (!window.ID) { return; }
 	if (!window.Width || !window.Height) { return; }
@@ -422,41 +445,6 @@ addEventListener('on_mouse_rbtn_up', (x, y, mask) => { // eslint-disable-line no
 
 addEventListener('on_size', (width, height) => {
 	background.resize({ w: width, h: height, bPaint: false });
-});
-
-addEventListener('on_playback_new_track', () => {
-	if (background.useCover) { background.updateImageBg(); }
-});
-
-addEventListener('on_selection_changed', () => {
-	if (!background.coverModeOptions.bNowPlaying || !fb.IsPlaying) {
-		if (background.useCover) { background.updateImageBg(); }
-	}
-});
-
-addEventListener('on_item_focus_change', () => {
-	if (!background.coverModeOptions.bNowPlaying || !fb.IsPlaying) {
-		if (background.useCover) { background.updateImageBg(); }
-	}
-});
-
-addEventListener('on_playlist_switch', () => {
-	if (!background.coverModeOptions.bNowPlaying || !fb.IsPlaying) {
-		if (background.useCover) { background.updateImageBg(); }
-	}
-});
-
-addEventListener('on_playback_stop', (reason) => {
-	if (reason !== 2) { // Invoked by user or Starting another track
-		if (background.useCover && background.coverModeOptions.bNowPlaying) { background.updateImageBg(); }
-	}
-});
-
-
-addEventListener('on_playlists_changed', () => { // To show/hide loaded playlist indicators...
-	if (!background.coverModeOptions.bNowPlaying || !fb.IsPlaying) {
-		if (background.useCover) { background.updateImageBg(); }
-	}
 });
 
 addEventListener('on_mouse_move', (x, y, mask) => {

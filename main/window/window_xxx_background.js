@@ -54,6 +54,7 @@ function _background({
 		}
 		if (!this.coverModeOptions.bProcessColors) { this.coverImg.art.colors = null; }
 		if (!this.useColors) { this.colorImg = null; }
+		else if (!this.useCover) { this.colorsChanged(bRepaint, true, false); }
 		if (!this.useCover) { return; }
 		const handle = this.getHandle();
 		const bPath = ['path', 'folder'].includes(this.coverMode);
@@ -574,7 +575,10 @@ function _background({
 		});
 		this.checkConfig();
 		if (config.coverMode || config.coverModeOptions) { this.updateImageBg(true); }
-		if (config.colorMode || config.colorModeOptions) { this.colorImg = null; }
+		if (config.colorMode || config.colorModeOptions) {
+			this.colorImg = null;
+			if (this.colorModeOptions.bUiColors) { this.colorsChanged(false, false, false); }
+		}
 		this.resize({ bRepaint });
 		if (callback && isFunction(callback)) { callback.call(this, this.exportConfig(true), arguments[0], callbackArgs); }
 	};
@@ -787,6 +791,28 @@ function _background({
 		timer: null
 	};
 	/**
+	 * Returns available cover modes plus 'none' as first value
+	 * @property
+	 * @name getCoverModes
+	 * @kind method
+	 * @memberof _background
+	 * @returns {CoverMode[]}
+	 */
+	this.getCoverModes = () => {
+		return ['none', ...trackCoverModes];
+	};
+	/**
+	 * Returns first available cover mode
+	 * @property
+	 * @name getDefaultCoverMode
+	 * @kind method
+	 * @memberof _background
+	 * @returns {CoverMode}
+	 */
+	this.getDefaultCoverMode = () => {
+		return trackCoverModes[0];
+	};
+	/**
 	 * Gets panel handle
 	 * @property
 	 * @name getHandle
@@ -987,6 +1013,13 @@ function _background({
 		configurable: false,
 		get: () => this.useCover && this.coverModeOptions.alpha > 0
 	});
+	/** @type {boolean} - Flag which indicates if panel can be used as color server  */
+	this.useCoverColors;
+	Object.defineProperty(this, 'useCoverColors', {
+		enumerable: true,
+		configurable: false,
+		get: () => this.useCover && this.coverModeOptions.bProcessColors
+	});
 	/**
 	 * Called on on_mouse_move.
 	 *
@@ -1054,6 +1087,26 @@ function _background({
 		return false;
 	};
 	/**
+	 * Called on on_colors_changed.
+	 *
+	 * @property
+	 * @name colorsChanged
+	 * @kind method
+	 * @memberof _background
+	 * @param {boolean} bRepaint
+	 * @returns {boolean}
+	*/
+	this.colorsChanged = (bRepaint = true, bSaveProperties = true, bChangeConfig = true) => {
+		if (this.colorModeOptions.bUiColors) {
+			const color = [window.InstanceType === 0 ? window.GetColourCUI(3) : window.GetColourDUI(1)];
+			color[1] = RGBA(...toRGB(this.colorModeOptions.color[0]).map((v) => v + 5));
+			if (bChangeConfig) { this.changeConfig({ bRepaint, config: { colorModeOptions: { color } }, callbackArgs: { bSaveProperties } }); }
+			else { this.colorModeOptions.color = color; }
+			return true;
+		}
+		return false;
+	};
+	/**
 	 * Panel init.
 	 * @property
 	 * @name init
@@ -1113,6 +1166,7 @@ function _background({
 	/**
 	 * @typedef {object} ColorModeOptions - Art settings
 	 * @property {Boolean} bDither - Flag to apply dither effect
+	 * @property {Boolean} bUiColors - Flag to use colors from DUI/CUI
 	 * @property {number} angle - Gradient angle (0-360)
 	 * @property {number} focus - Gradient focus (0-1)
 	 * @property {[Number, Number]} color - Array of colors (at least 2 required for gradient usage)
@@ -1152,7 +1206,7 @@ _background.defaults = (bPosition = false, bCallbacks = false) => {
 		coverMode: 'front',
 		coverModeOptions: { blur: 90, bCircularBlur: false, angle: 0, alpha: 85, mute: 0, edgeGlow: 0, bloom: 0, path: '', pathCycleTimer: 10000, pathCycleSort: 'date', bNowPlaying: true, bNoSelection: false, bProportions: true, bFill: true, fillCrop: 'center', zoom: 0, reflection: 'none', bCacheAlbum: true, bProcessColors: true },
 		colorMode: 'bigradient',
-		colorModeOptions: { bDither: true, bDarkBiGradOut: true, angle: 91, focus: 1, color: [0xff2e2e2e, 0xff212121] }, // RGB(45,45,45), RGB(33,33,33)
+		colorModeOptions: { bDither: true, bUiColors: false, bDarkBiGradOut: true, angle: 91, focus: 1, color: [0xff2e2e2e, 0xff212121] }, // RGB(45,45,45), RGB(33,33,33)
 		...(bCallbacks
 			? {
 				callbacks: {
