@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/01/26
+//08/01/26
 
 /* exported _background */
 
@@ -324,49 +324,50 @@ function _background({
 				case 'asymmetric': {
 					const offsetX = Math.max(0, this.coverModeOptions.bProportions && !this.coverModeOptions.bFill
 						? prop > 2 * imgProp
-							? this.w / 2 - this.h * imgProp + 1
+							? this.w / 2 - this.h * imgProp
 							: 0
 						: 0
 					);
 					const x = this.x + this.w / 8;
 					const w = this.w / 2;
-					this.paintImage({ gr, limits: { x: x + (prop > 2 * imgProp ? offsetX / 4 : 0), y: this.y, w, h: this.h, offsetH: this.offsetH } });
+					this.paintImage({ gr, limits: { x: Math.round(x + (prop > 2 * imgProp ? offsetX / 4 : 0)), y: this.y, w: Math.ceil(w), h: this.h, offsetH: this.offsetH } });
 					this.paintImage({
 						gr,
-						limits: { x: Math.floor(x + w - offsetX + (prop > 2 * imgProp ? offsetX / 4 : 0)), y: this.y, w, h: this.h, offsetH: this.offsetH },
+						limits: { x: Math.floor(x + w - offsetX + (prop > 2 * imgProp ? offsetX / 4 : 0)), y: this.y, w:  Math.ceil(w), h: this.h, offsetH: this.offsetH },
 						rotateFlip: RotateFlipType.RotateNoneFlipX,
 						fadeMask: (mask, gr, w, h) => gr.FillGradRect(0, 0, w / 2, h, 0.1, 0xFF000000, 0xFFFFFFFF),
-						alpha: this.coverModeOptions.alpha
+						alpha: this.coverModeOptions.alpha * 0.4
 					});
 					break;
 				}
 				case 'symmetric':
 				default: {
-					const offsetX = this.coverModeOptions.bProportions && !this.coverModeOptions.bFill
+					const offsetX = Math.round(this.coverModeOptions.bProportions && !this.coverModeOptions.bFill
 						? prop > 2 * imgProp
-							? this.w / 2 - this.h * imgProp + 1
-							: this.w / 2 - this.h * imgProp + 1 - this.h * imgProp / prop
-						: 0;
+							? this.w / 2 - this.h * imgProp
+							: this.w / 2 - this.h * imgProp - this.h * imgProp / prop
+						: 0
+					);
 					const w = Math.round(this.coverModeOptions.bProportions && !this.coverModeOptions.bFill
 						? prop > 2 * imgProp
 							? this.w / 2
 							: this.w / 2 + this.h * imgProp / prop * 2
 						: this.w / 2
 					);
-					const x = Math.round(this.x - this.w / 4 + offsetX);
+					const x = Math.max(0, Math.round(this.x - this.w / 4 + offsetX));
 					this.paintImage({
 						gr,
 						limits: { x, y: this.y, w, h: this.h, offsetH: this.offsetH },
 						rotateFlip: RotateFlipType.RotateNoneFlipX,
-						fadeMask: (mask, gr, w, h) => gr.FillGradRect(w / 2, 0, w / 2, h, 0.1, 0xFFFFFFFF, 0xFF000000),
-						alpha: this.coverModeOptions.alpha
+						fadeMask: (mask, gr, w, h) => gr.FillGradRect(w / 4, 0, w / 2, h, 0.1, 0xFFFFFFFF, 0xFF000000),
+						alpha: this.coverModeOptions.alpha * 0.75
 					});
 					this.paintImage({
 						gr,
 						limits: { x: this.w - x - w, y: this.y, w, h: this.h, offsetH: this.offsetH },
 						rotateFlip: RotateFlipType.RotateNoneFlipX,
-						fadeMask: (mask, gr, w, h) => gr.FillGradRect(0, 0, w / 2, h, 0.1, 0xFF000000, 0xFFFFFFFF),
-						alpha: this.coverModeOptions.alpha
+						fadeMask: (mask, gr, w, h) => gr.FillGradRect(0, 0, w / 2 + w/4, h, 0.1, 0xFF000000, 0xFFFFFFFF),
+						alpha: this.coverModeOptions.alpha * 0.75
 					});
 					this.paintImage({ gr, limits: { x: this.x, y: this.y, w: this.w, h: this.h, offsetH: this.offsetH } });
 				}
