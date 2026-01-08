@@ -198,7 +198,7 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 			{ key: 'bloom', entryText: 'Bloom...', checks: [(num) => num >= 0 && num <= 100], inputHint: '\n0 is disabled, 100 is max effect.\n(0 to 100)' },
 			{ key: 'edgeGlow', entryText: 'Edge...', checks: [(num) => num >= 0 && num <= 100], inputHint: '\n0 is disabled, 100 is max effect.\n(0 to 100)' },
 			{ entryText: menu.separator },
-			{ key: 'alpha', entryText: 'Transparency...', checks: [(num) => num >= 0 && num <= 100], inputHint: '\n0 is transparent, 100 is opaque.\n(0 to 100)' },
+			{ key: 'alpha', entryText: 'Opacity...', checks: [(num) => num >= 0 && num <= 100], inputHint: '\n0 is transparent, 100 is opaque.\n(0 to 100)' },
 		].forEach((option) => {
 			if (menu.isSeparator(option)) { menu.newSeparator(subMenu); return; }
 			const prevVal = option.key === 'alpha' ? Math.round(this.coverModeOptions[option.key] * 100 / 255) : this.coverModeOptions[option.key];

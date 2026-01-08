@@ -201,7 +201,7 @@ function _background({
 	 * @param {{x?:number, y?:number, w?:number, h?:number, offsetH?:number}} o.limits - Drawing coordinates
 	 * @param {number} o.rotateFlip - Rotation/flip transformation
 	 * @param {(mask, gr, w, h) => void} o.fadeMask - Fading mask for reflections. Use something like (mask, gr, w, h) => gr.FillGradRect(w / 2, 0, w, h, 0, 0xFFFFFFFF, 0xFF000000)
-	 * @param {{transparency:number}|null} o.fill - Used for panel filling instead of internal settings
+	 * @param {{opacity:number}|null} o.fill - Used for panel filling instead of internal settings
 	 * @returns {void}
 	 */
 	this.paintImage = ({
@@ -225,7 +225,7 @@ function _background({
 				);
 			}
 			if (fill) {
-				gr.DrawImage(img, limits.x, limits.y, limits.w, limits.h, 0, img.Height / 2, Math.min(img.Width, limits.w), Math.min(img.Height, limits.h), this.coverModeOptions.angle, fill.transparency);
+				gr.DrawImage(img, limits.x, limits.y, limits.w, limits.h, 0, img.Height / 2, Math.min(img.Width, limits.w), Math.min(img.Height, limits.h), this.coverModeOptions.angle, fill.opacity);
 			} else {
 				const zoomX = this.coverModeOptions.zoom > 0
 					? Math.max(Math.min(this.coverModeOptions.zoom / 100, 0.99), 0) * img.Width / 2
@@ -334,7 +334,7 @@ function _background({
 					this.paintImage({ gr, limits: { x: Math.round(x + (prop > 2 * imgProp ? offsetX / 4 : 0)), y: this.y, w: Math.ceil(w), h: this.h, offsetH: this.offsetH } });
 					this.paintImage({
 						gr,
-						limits: { x: Math.floor(x + w - offsetX + (prop > 2 * imgProp ? offsetX / 4 : 0)), y: this.y, w:  Math.ceil(w), h: this.h, offsetH: this.offsetH },
+						limits: { x: Math.floor(x + w - offsetX + (prop > 2 * imgProp ? offsetX / 4 : 0)), y: this.y, w: Math.ceil(w), h: this.h, offsetH: this.offsetH },
 						rotateFlip: RotateFlipType.RotateNoneFlipX,
 						fadeMask: (mask, gr, w, h) => gr.FillGradRect(0, 0, w / 2, h, 0.1, 0xFF000000, 0xFFFFFFFF),
 						alpha: this.coverModeOptions.alpha * 0.4
@@ -367,7 +367,7 @@ function _background({
 						gr,
 						limits: { x: this.w - x - w, y: this.y, w, h: this.h, offsetH: this.offsetH },
 						rotateFlip: RotateFlipType.RotateNoneFlipX,
-						fadeMask: (mask, gr, w, h) => gr.FillGradRect(0, 0, w / 2 + w/4, h, 0.1, 0xFF000000, 0xFFFFFFFF),
+						fadeMask: (mask, gr, w, h) => gr.FillGradRect(0, 0, w / 2 + w / 4, h, 0.1, 0xFF000000, 0xFFFFFFFF),
 						alpha: this.coverModeOptions.alpha * 0.75
 					});
 					this.paintImage({ gr, limits: { x: this.x, y: this.y, w: this.w, h: this.h, offsetH: this.offsetH } });
@@ -1144,7 +1144,7 @@ function _background({
 	 * @typedef {object} CoverModeOptions - Art settings
 	 * @property {number} blur - Blur effect in px
 	 * @property {number} angle - Image angle drawing (0-360)
-	 * @property {number} alpha - Image transparency (0-255)
+	 * @property {number} alpha - Image opacity (0-255)
 	 * @property {number} mute - Image mute effect (0-100)
 	 * @property {String} path - File or folder path for 'path' and 'folder' coverMode
 	 * @property {number} pathCycleTimer - Art cycling when using 'folder' coverMode (ms)
