@@ -399,7 +399,7 @@ function _background({
 			case 'bigradient': {
 				if (bCreateImg || !this.colorModeOptions.bDither) {
 					const gradColors = [color[0], color[1] || color[0]];
-					if (this.colorModeOptions.bDarkBiGradOut && (this.colorModeOptions.angle < 200 || this.colorModeOptions.angle > 350) && this.colorModeOptions.focus < 0.5) {
+					if (this.colorModeOptions.bDarkBiGradOut && (this.colorModeOptions.angle < 200 || this.colorModeOptions.angle > 350) && this.colorModeOptions.focus <= 0.5) {
 						if (getBrightness(...toRGB(gradColors[0])) > getBrightness(...toRGB(gradColors[1]))) { gradColors.reverse(); }
 					}
 					(grImg || gr).FillGradRect(this.x, this.y, this.w, this.h / 2, Math.abs(360 - this.colorModeOptions.angle), gradColors[0], gradColors[1], this.colorModeOptions.focus);
@@ -829,9 +829,9 @@ function _background({
 						: null
 				]
 				: [
-					window.InstanceType === 0 ? window.GetColourCUI(1) : window.GetColourDUI(1),
+					window.InstanceType === 0 ? window.GetColourCUI(3) : window.GetColourDUI(1),
 					this.colorMode === 'bigradient' || this.colorMode === 'gradient'
-						? window.InstanceType === 0 ? window.GetColourCUI(1) : window.GetColourDUI(1)
+						? window.InstanceType === 0 ? window.GetColourCUI(3) : window.GetColourDUI(1)
 						: null
 				]
 			).filter((c) => c !== null);

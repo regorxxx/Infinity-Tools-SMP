@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/01/26
+//08/01/26
 
 /* exported createBackgroundMenu */
 
@@ -158,7 +158,7 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 		});
 		menu.newSeparator(subMenu);
 		menu.newEntry({
-			menuName: subMenu, entryText: (this.coverModeOptions.bProportions && !this.coverModeOptions.bFill ? 'Margin (Y-axis)' : 'Enlarge (Y-Axis)')+ '\t[' + this.offsetH + ']', func: () => {
+			menuName: subMenu, entryText: (this.coverModeOptions.bProportions && !this.coverModeOptions.bFill ? 'Margin (Y-axis)' : 'Enlarge (Y-Axis)') + '\t[' + this.offsetH + ']', func: () => {
 				const input = Input.number('int positive', this.offsetH, 'Enter number:\n(integer number ≥0)', window.Name + ' (' + window.ScriptInfo.Name + '): Y-axis margin', 2);
 				if (input === null) { return; }
 				this.changeConfig({ config: { offsetH: input }, callbackArgs: { bSaveProperties: true } });
@@ -187,7 +187,7 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 		[
 			{ isEq: null, key: this.coverModeOptions.reflection, value: null, newValue: 'none', entryText: 'None' },
 			{ isEq: null, key: this.coverModeOptions.reflection, value: null, newValue: 'asymmetric', entryText: 'Asymmetrical' },
-			{ isEq: null, key: this.coverModeOptions.reflection, value: null, newValue: 'Symmetric', entryText: 'Symmetrical' },
+			{ isEq: null, key: this.coverModeOptions.reflection, value: null, newValue: 'symmetric', entryText: 'Symmetrical' },
 		].forEach(createMenuOption('coverModeOptions', 'reflection', subMenu, true));
 	}
 	{
