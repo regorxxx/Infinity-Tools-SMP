@@ -56,7 +56,7 @@ function _background({
 		if (!this.useColors) { this.colorImg = null; }
 		if (!this.useCover) { return; }
 		const handle = this.getHandle();
-		const bPath = ['path', 'folder'].includes(this.coverMode.toLowerCase());
+		const bPath = ['path', 'folder'].includes(this.coverMode);
 		const path = bPath ? this.getArtPath(void (0), handle) : '';
 		const bFoundPath = bPath && path.length;
 		if (!bForce && (handle && this.coverImg.handle === handle.RawPath || bPath && this.coverImg.art.path === path)) { return; }
@@ -244,7 +244,7 @@ function _background({
 							this.coverModeOptions.angle, alpha
 						);
 					} else {
-						switch ((this.coverModeOptions.fillCrop || '').toLowerCase()) {
+						switch (this.coverModeOptions.fillCrop) {
 							case 'top': {
 								gr.DrawImage(img, limits.x, limits.y, limits.w, limits.h,
 									zoomX,
@@ -384,7 +384,7 @@ function _background({
 	 * @returns {void}
 	 */
 	this.paintColors = (gr) => {
-		const colorMode = this.colorMode.toLowerCase();
+		const colorMode = this.colorMode;
 		let grImg, bCreateImg;
 		if (this.colorModeOptions.bDither && !['single', 'none'].includes(colorMode)) {
 			if (!this.colorImg || this.colorImg.Width !== this.w || this.colorImg.Height !== this.h) { this.colorImg = gdi.CreateImage(this.w, this.h); bCreateImg = true; }
@@ -438,7 +438,7 @@ function _background({
 		if (this.logging.bProfile) { profiler = fb.CreateProfiler('paint'); }
 		this.paintColors(gr);
 		if (this.logging.bProfile) { profiler.Print('colors'); profiler.Reset(); }
-		switch (this.coverMode.toLowerCase()) {
+		switch (this.coverMode) {
 			case 'front':
 			case 'back':
 			case 'disc':
@@ -446,7 +446,7 @@ function _background({
 			case 'artist':
 			case 'path':
 			case 'folder': {
-				if ((this.coverModeOptions.reflection || '').toLowerCase() !== 'none' && !this.coverModeOptions.bFill && this.coverModeOptions.bProportions) {
+				if (this.coverModeOptions.reflection !== 'none' && !this.coverModeOptions.bFill && this.coverModeOptions.bProportions) {
 					this.paintReflection({ gr, mode: this.coverModeOptions.reflection });
 				} else {
 					this.paintImage({ gr, limits: { x: this.x, y: this.y, w: this.w, h: this.h, offsetH: this.offsetH } });
@@ -572,10 +572,28 @@ function _background({
 				}
 			}
 		});
+		this.checkConfig();
 		if (config.coverMode || config.coverModeOptions) { this.updateImageBg(true); }
 		if (config.colorMode || config.colorModeOptions) { this.colorImg = null; }
 		this.resize({ bRepaint });
 		if (callback && isFunction(callback)) { callback.call(this, this.exportConfig(true), arguments[0], callbackArgs); }
+	};
+	/**
+	 * Checks and normalizes panel settings
+	 *
+	 * @method
+	 * @name checkConfig
+	 * @kind variable
+	 * @memberof _background
+	 * @returns {void}
+	 */
+	this.checkConfig = () => {
+		this.coverMode = (this.coverMode || 'none').toLowerCase();
+		this.colorMode = (this.colorMode || 'none').toLowerCase();
+		this.coverModeOptions.reflection = (this.coverModeOptions.reflection || 'none').toLowerCase();
+		this.coverModeOptions.fillCrop = (this.coverModeOptions.fillCrop || 'center').toLowerCase();
+		this.coverModeOptions.path = this.coverModeOptions.path || '';
+		this.coverModeOptions.pathCycleSort = (this.coverModeOptions.pathCycleSort || 'date').toLowerCase();
 	};
 	/**
 	 * Gets panel settings ready to be saved as properties
@@ -606,21 +624,21 @@ function _background({
 	 * @returns {string}
 	 */
 	this.getArtPath = (next, handle) => {
-		let path = _resolvePath(this.coverModeOptions.path || '');
+		let path = _resolvePath(this.coverModeOptions.path);
 		if (path.includes('$') || path.includes('%')) {
 			if (!handle) { handle = this.getHandle(); }
 			path = handle
 				? fb.TitleFormat(path).EvalWithMetadb(handle)
 				: fb.TitleFormat(path).Eval();
 		}
-		if (this.coverMode.toLowerCase() === 'folder' && path.length) {
+		if (this.coverMode === 'folder' && path.length) {
 			if (artFiles.root !== path) { this.resetArtFiles(path); next = 1; }
 			if (typeof next === 'number') {
 				next = Math.sign(next);
 				if (this.coverModeOptions.pathCycleTimer > 0) {
 					artFiles.timer = setTimeout(() => this.cycleArtFolder(), this.coverModeOptions.pathCycleTimer);
 				}
-				const files = this.coverModeOptions.pathCycleSort.toLowerCase() === 'date'
+				const files = this.coverModeOptions.pathCycleSort === 'date'
 					? getFiles(path, new Set(['.png', '.jpg', '.jpeg', '.gif']))
 						.map((file) => { return { file, date: lastModified(file, true) }; })
 						.sort((a, b) => b.date - a.date).map((o) => o.file)
@@ -721,7 +739,7 @@ function _background({
 	 */
 	this.cycleArt = (next = 1, callbackArgs) => {
 		if (this.coverMode === 'folder') { return this.cycleArtFolder(next); }
-		else if (trackCoverModes.includes(this.coverMode.toLowerCase())) { return this.cycleArtMode(next, callbackArgs); }
+		else if (trackCoverModes.includes(this.coverMode)) { return this.cycleArtMode(next, callbackArgs); }
 	};
 	/**
 	 * Cycles art mode (only between those available) or folder image according to current mode
@@ -734,7 +752,7 @@ function _background({
 	 */
 	this.cycleArtAsync = (next = 1, callbackArgs) => {
 		if (this.coverMode === 'folder') { return Promise.resolve(this.cycleArtFolder(next)); }
-		else if (trackCoverModes.includes(this.coverMode.toLowerCase())) { return this.cycleArtModeAsync(next, callbackArgs); }
+		else if (trackCoverModes.includes(this.coverMode)) { return this.cycleArtModeAsync(next, callbackArgs); }
 	};
 	/**
 	 * Resets visited art files history
@@ -953,14 +971,14 @@ function _background({
 	Object.defineProperty(this, 'useColors', {
 		enumerable: true,
 		configurable: false,
-		get: () => this.colorMode.toLowerCase() !== 'none'
+		get: () => this.colorMode !== 'none'
 	});
 	/** @type {boolean} - Flag which indicates wether panel is using any art or not  */
 	this.useCover;
 	Object.defineProperty(this, 'useCover', {
 		enumerable: true,
 		configurable: false,
-		get: () => this.coverMode.toLowerCase() !== 'none'
+		get: () => this.coverMode !== 'none'
 	});
 	/** @type {boolean} - Flag which indicates if panel is using any art and also if it's visible */
 	this.showCover;
