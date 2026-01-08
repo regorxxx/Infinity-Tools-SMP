@@ -248,9 +248,9 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 			{ isEq: null, key: this.colorMode, value: null, newValue: 'none', entryText: 'None' },
 			{ isEq: null, key: this.colorMode, value: null, newValue: 'single', entryText: 'Single...' + (options.nameColors ? '\t[' + getColorName(this.colorModeOptions.color[0]) + ']' : '') },
 			{ isEq: null, key: this.colorMode, value: null, newValue: 'gradient', entryText: 'Gradient...' + (options.nameColors ? '\t[' + this.colorModeOptions.color.map(getColorName).join(', ') + ']' : '') },
-			{ isEq: null, key: this.colorMode, value: null, newValue: 'bigradient', entryText: 'Bigradient...' + (options.nameColors ? '\t[' + this.colorModeOptions.color.map(getColorName).join(', ') + ']' : '') },
+			{ isEq: null, key: this.colorMode, value: null, newValue: 'bigradient', entryText: 'Bigradient...' + (options.nameColors ? '\t[' + this.colorModeOptions.color.map(getColorName).join(', ') + ']' : '') }
 		].forEach(createMenuOption('colorMode', void (0), subMenu, true, (option) => {
-			if (option.newValue !== 'none') {
+			if (!['none'].includes(option.newValue)) {
 				let input;
 				if (option.newValue === 'single') {
 					input = [utils.ColourPicker(0, this.colorModeOptions.color[0]), this.colorModeOptions.color[1]];
@@ -262,15 +262,20 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 				this.changeConfig({ config: { colorModeOptions: { color: input } }, callbackArgs: { bSaveProperties: true } });
 			}
 		}));
+		[
+			{ isEq: null, key: this.colorMode, value: null, newValue: 'blend', entryText: 'Blend\t[from art]' },
+		].forEach(createMenuOption('colorMode', void (0), subMenu, false));
+		menu.newCheckMenuLast(() => this.useCover && this.colorMode === 'blend');
+		menu.getLastEntry().flags = this.useCover ? MF_STRING : MF_GRAYED;
 		menu.newSeparator(subMenu);
 		[
 			{ isEq: null, key: this.colorModeOptions.bUiColors, value: null, newValue: !this.colorModeOptions.bUiColors, entryText: (window.InstanceType ? 'Use Default UI colors' : 'Use Columns UI colors') }
 		].forEach(createMenuOption('colorModeOptions', 'bUiColors', subMenu, true));
-		menu.getLastEntry().flags = this.useColors ? MF_STRING : MF_GRAYED;
+		menu.getLastEntry().flags = this.useColors && this.colorMode !== 'blend' ? MF_STRING : MF_GRAYED;
 		[
 			{ isEq: null, key: this.colorModeOptions.bDither, value: null, newValue: !this.colorModeOptions.bDither, entryText: 'Apply dither' }
 		].forEach(createMenuOption('colorModeOptions', 'bDither', subMenu, true));
-		menu.getLastEntry().flags = this.useColors ? MF_STRING : MF_GRAYED;
+		menu.getLastEntry().flags = this.useColors && this.colorMode !== 'blend' ? MF_STRING : MF_GRAYED;
 		menu.newSeparator(subMenu);
 		[
 			{ key: 'angle', entryText: 'Gradient angle...', type: 'int positive', checks: [(num) => num >= 0 && num < 360], inputHint: '\nClockwise.\n(0 to 360)' },
@@ -281,13 +286,28 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 					const input = Input.number(option.type, this.colorModeOptions[option.key], 'Enter number:' + option.inputHint, window.Name + ' (' + window.ScriptInfo.Name + ')', 100, option.checks);
 					if (input === null) { return; }
 					this.changeConfig({ config: { colorModeOptions: { [option.key]: input } }, callbackArgs: { bSaveProperties: true } });
-				}, flags: ['gradient', 'bigradient'].includes(this.colorMode.toLowerCase()) ? MF_STRING : MF_GRAYED
+				}, flags: ['gradient', 'bigradient'].includes(this.colorMode) ? MF_STRING : MF_GRAYED
 			});
 		});
 		[
 			{ isEq: null, key: this.colorModeOptions.bDarkBiGradOut, value: null, newValue: !this.colorModeOptions.bDarkBiGradOut, entryText: 'Gradient prefer dark out' }
 		].forEach(createMenuOption('colorModeOptions', 'bDarkBiGradOut', subMenu, true));
-		menu.getLastEntry().flags = ['bigradient'].includes(this.colorMode.toLowerCase()) ? MF_STRING : MF_GRAYED;
+		menu.getLastEntry().flags = ['bigradient'].includes(this.colorMode) ? MF_STRING : MF_GRAYED;
+		menu.newSeparator(subMenu);
+		[
+			{ key: 'blendIntensity', entryText: 'Blend blur intensity...', type: 'int positive', checks: [(num) => num >= 0 && num < 90], inputHint: '\nBlur intensity.\n(0 to 90)' },
+			{ key: 'blendAlpha', entryText: 'Blend opacity...', type: 'int positive', checks: [(num) => num >= 0 && num <= 100], inputHint: '\n0 is transparent, 100 is opaque.\n(0 to 100)' },
+		].forEach((option) => {
+			const prevVal = option.key === 'blendAlpha' ? Math.round(this.colorModeOptions[option.key] * 100 / 255) : this.colorModeOptions[option.key];
+			menu.newEntry({
+				menuName: subMenu, entryText: option.entryText + '\t[' + prevVal + ']', func: () => {
+					const input = Input.number('int positive', prevVal, 'Enter number:' + option.inputHint, window.Name + ' (' + window.ScriptInfo.Name + ')', 100, option.checks);
+					if (input === null) { return; }
+					const newVal = option.key === 'alpha' ? Math.round(input * 255 / 100) : input;
+					this.changeConfig({ config: { colorModeOptions: { [option.key]: newVal } }, callbackArgs: { bSaveProperties: true } });
+				}, flags: this.colorMode === 'blend' ? MF_STRING : MF_GRAYED
+			});
+		});
 	}
 	menu.newSeparator(mainMenuName);
 	[
