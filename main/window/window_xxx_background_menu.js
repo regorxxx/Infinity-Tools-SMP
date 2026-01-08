@@ -303,7 +303,7 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 				menuName: subMenu, entryText: option.entryText + '\t[' + prevVal + ']', func: () => {
 					const input = Input.number('int positive', prevVal, 'Enter number:' + option.inputHint, window.Name + ' (' + window.ScriptInfo.Name + ')', 100, option.checks);
 					if (input === null) { return; }
-					const newVal = option.key === 'alpha' ? Math.round(input * 255 / 100) : input;
+					const newVal = option.key === 'blendAlpha' ? Math.round(input * 255 / 100) : input;
 					this.changeConfig({ config: { colorModeOptions: { [option.key]: newVal } }, callbackArgs: { bSaveProperties: true } });
 				}, flags: this.colorMode === 'blend' ? MF_STRING : MF_GRAYED
 			});
