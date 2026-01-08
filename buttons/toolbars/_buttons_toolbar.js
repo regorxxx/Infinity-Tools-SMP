@@ -1,5 +1,5 @@
 ﻿'use strict';
-//11/12/25
+//08/01/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -66,7 +66,7 @@ let barProperties = {
 	bIconMode: ['Show only button\'s icons', false, { func: isBoolean }],
 	bIconModeExpand: ['Expand to full button on hover', false, { func: isBoolean }],
 	buttonColor: ['Buttons\' color', -1, { func: isInt }],
-	transparency: ['Buttons\' transparency', 0, { func: isInt, range: [[0, 100]] }],
+	opacity: ['Buttons\' opacity', 0, { func: isInt, range: [[0, 100]] }],
 	offset: ['Buttons\' offset', JSON.stringify({ button: { x: 0, y: 0 }, text: { x: 0, y: 0 }, icon: { x: 0, y: 0 } }), { func: isJSON }],
 	bFullSize: ['Full size buttons', false, { func: isBoolean }],
 	hoverColor: ['Buttons\' hover color', buttonsBar.config.hoverColor, { func: isInt }],
@@ -95,7 +95,7 @@ buttonsBar.config.buttonColor = barProperties.buttonColor[1];
 buttonsBar.config.hoverColor = barProperties.hoverColor[1];
 buttonsBar.config.bDynHoverColor = barProperties.bDynHoverColor[1];
 buttonsBar.config.bHoverGrad = barProperties.bHoverGrad[1];
-buttonsBar.config.buttonTransparency = barProperties.transparency[1];
+buttonsBar.config.buttonOpacity = barProperties.opacity[1];
 buttonsBar.config.activeColor = barProperties.activeColor[1];
 buttonsBar.config.animationColors = JSON.parse(barProperties.animationColors[1]);
 buttonsBar.config.bBorders = barProperties.bBorders[1];
@@ -342,7 +342,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 				forEachButton((button) => { button.switchHighlight(true); });
 				const answer = WshShell.Popup('Apply current settings to highlighted toolbar?\nCheck UI.', 0, window.FullPanelName, popup.question + popup.yes_no);
 				if (answer === popup.yes) {
-					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'transparency', 'scale', 'iconScale', 'textScale'].forEach((key) => {
+					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'opacity', 'scale', 'iconScale', 'textScale'].forEach((key) => {
 						buttonsBar.config[key] = barProperties[key][1] = Number(info[key][1]);
 					});
 					buttonsBar.config.bToolbar = buttonsBar.config.toolbarColor !== -1;

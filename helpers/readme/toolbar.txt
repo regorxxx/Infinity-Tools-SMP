@@ -41,7 +41,7 @@ When using dynamic hover color, it will be set according to theme, instead
 of a fixed color. So if you change between dark or light themes, it's
 adjusted automatically.
 
-The transparency setting affects all button effects and states, along
+The opacity setting affects all button effects and states, along
 the background color.
 
 Like other scripts, the panel can also listen to color servers to tint all

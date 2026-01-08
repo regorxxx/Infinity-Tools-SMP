@@ -37,9 +37,9 @@ buttonsBar.config = {
 	bShowID: true, // Show Prefixes + ID on tooltips
 	toolbarTooltip: '', // Shown on toolbar
 	toolbarColor: utils.GetSysColour(15),
-	toolbarTransparency: 80,
-	buttonTransparency: 80,
-	buttonBorderTransparency: 100,
+	toolbarOpacity: 80,
+	buttonOpacity: 80,
+	buttonBorderOpacity: 100,
 	bToolbar: false, // Change this on buttons bars files to set the background color
 	textColor: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text),
 	buttonColor: -1,
@@ -388,8 +388,8 @@ function ThemedButton({
 		const w = Math.max(this.currW - 4, arc * 2 + 2);
 		const h = this.currH + (buttonsBar.config.bFullSize && buttonsBar.config.orientation.toLowerCase() === 'x' ? +3 : -2);
 		gr.SetSmoothingMode(2); // Antialias for lines
-		const buttonTransparency = Math.max(0, Math.min(buttonsBar.config.buttonTransparency, 100));
-		const buttonBorderTransparency = Math.max(0, Math.min(buttonsBar.config.buttonBorderTransparency, 100));
+		const buttonOpacity = Math.max(0, Math.min(buttonsBar.config.buttonOpacity, 100));
+		const buttonBorderOpacity = Math.max(0, Math.min(buttonsBar.config.buttonBorderOpacity, 100));
 		switch (this.state) {
 			case buttonStates.normal:
 				if (bDrawBackground) {
@@ -399,9 +399,9 @@ function ThemedButton({
 					gr.DrawRoundRect(x, y, w, h, arc, arc, 1, RGB(0, 0, 0));
 					gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 1, RGB(243, 243, 243));
 				} else if (buttonsBar.config.buttonColor !== -1) {
-					if (buttonTransparency) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(buttonsBar.config.buttonColor, buttonTransparency)); }
-					if (buttonBorderTransparency) {
-						gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 1, opaqueColor(this.getBorderColor(this.state), buttonBorderTransparency));
+					if (buttonOpacity) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(buttonsBar.config.buttonColor, buttonOpacity)); }
+					if (buttonBorderOpacity) {
+						gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 1, opaqueColor(this.getBorderColor(this.state), buttonBorderOpacity));
 					}
 				}
 				break;
@@ -415,15 +415,15 @@ function ThemedButton({
 					gr.FillGradRect(x, y + 2, w, h / 2 - 2, 180, RGB(241, 241, 241), RGB(235, 235, 235));
 					gr.FillGradRect(x, y + h / 2, w, h - 10, 180, RGB(219, 219, 219), RGB(207, 207, 207));
 					gr.DrawRoundRect(x, y, w, h, arc, arc, 1, RGB(0, 0, 0));
-				} else if (buttonsBar.config.bBorders && buttonBorderTransparency) {
-					gr.DrawRoundRect(x, y, w, h, arc, arc, 1, opaqueColor(this.getBorderColor(this.state), buttonBorderTransparency));
+				} else if (buttonsBar.config.bBorders && buttonBorderOpacity) {
+					gr.DrawRoundRect(x, y, w, h, arc, arc, 1, opaqueColor(this.getBorderColor(this.state), buttonBorderOpacity));
 				}
 				if (bDrawBackground) {
 					gr.FillRoundRect(x, y + 1, w, h / 2 - 1, arc, arc, RGBA(225, 243, 252, 255));
 					gr.FillRoundRect(x, y + h / 2, w, h / 2, arc, arc, RGBA(17, 166, 248, 50));
 				} else if (buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) {
 					const hoverColor = this.getHoverColor(this.state);
-					if (buttonTransparency) { gr.FillRoundRect(x, y, w, h, arc, arc, hoverColor); }
+					if (buttonOpacity) { gr.FillRoundRect(x, y, w, h, arc, arc, hoverColor); }
 					if (buttonsBar.config.bHoverGrad) {
 						const alpha = buttonsBar.config.bToolbar
 							? (isDark(...toRGB(hoverColor)) ? 10 : 20)
@@ -447,8 +447,8 @@ function ThemedButton({
 					gr.DrawRoundRect(x + 1, y + 1, w - 2, h - 2, arc, arc, 3, RGBA(0, 0, 0, 50));
 				} else if (buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) {
 					const hoverColor = this.getHoverColor(this.state);
-					if (buttonsBar.config.buttonTransparency !== -1) {
-						if (buttonTransparency) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(buttonsBar.config.buttonTransparency, Math.max(25, buttonTransparency / 5))); }
+					if (buttonsBar.config.buttonOpacity !== -1) {
+						if (buttonOpacity) { gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(buttonsBar.config.buttonOpacity, Math.max(25, buttonOpacity / 5))); }
 						gr.FillRoundRect(x, y, w, h, arc, arc, opaqueColor(invert(hoverColor), 5));
 						gr.FillRoundRect(x, y, w, h / 8, arc / 4, arc / 4, opaqueColor(hoverColor, 25));
 						gr.FillRoundRect(x, y, w, h / 6, arc / 4, arc / 4, opaqueColor(hoverColor, 25));
@@ -486,8 +486,8 @@ function ThemedButton({
 						}
 					} else if (buttonsBar.config.bToolbar) {
 						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, invert(buttonsBar.config.toolbarColor, true));
-					} else if (buttonBorderTransparency) {
-						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, opaqueColor(this.getBorderColor(this.state), buttonBorderTransparency));
+					} else if (buttonBorderOpacity) {
+						gr.DrawRoundRect(x, y, w, h, arc, arc, 1, opaqueColor(this.getBorderColor(this.state), buttonBorderOpacity));
 					}
 				}
 				break;
@@ -1004,12 +1004,12 @@ addEventListener('on_paint', (gr) => {
 	if (buttonsBar.config.bToolbar) {
 		gr.FillSolidRect(
 			0, 0, window.Width, window.Height,
-			opaqueColor(buttonsBar.config.toolbarColor, buttonsBar.config.toolbarTransparency)
+			opaqueColor(buttonsBar.config.toolbarColor, buttonsBar.config.toolbarOpacity)
 		);
 	} else if (!window.IsTransparent) {
 		gr.FillSolidRect(
 			0, 0, window.Width, window.Height,
-			opaqueColor(window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).background), buttonsBar.config.toolbarTransparency)
+			opaqueColor(window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).background), buttonsBar.config.toolbarOpacity)
 		);
 	}
 	// Buttons

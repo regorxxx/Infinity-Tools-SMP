@@ -69,7 +69,7 @@ let barProperties = {
 	bIconMode: ['Show only button\'s icons', false, { func: isBoolean }],
 	bIconModeExpand: ['Expand to full button on hover', false, { func: isBoolean }],
 	buttonColor: ['Buttons\' color', -1, { func: isInt }],
-	buttonTransparency: ['Buttons\' transparency', 80, { func: isInt, range: [[0, 100]] }],
+	buttonOpacity: ['Buttons\' opacity', 80, { func: isInt, range: [[0, 100]] }],
 	offset: ['Buttons\' offset', JSON.stringify({ button: { x: 0, y: 0 }, text: { x: 0, y: 0 }, icon: { x: 0, y: 0 } }), { func: isJSON }],
 	bFullSize: ['Full size buttons', false, { func: isBoolean }],
 	hoverColor: ['Buttons\' hover color', -1, { func: isInt }],
@@ -85,8 +85,8 @@ let barProperties = {
 	bOnNotifyColors: ['Adjust colors on panel notify', true, { func: isBoolean }],
 	darkMode: ['Dark mode: auto (0), enabled (1), disabled (2)', 0, { func: isInt, range: [[0, 2]] }],
 	buttonPosition: ['UI button position', 'left', { func: isString }],
-	toolbarTransparency: ['Toolbar transparency', 80, { func: isInt, range: [[0, 100]] }],
-	buttonBorderTransparency: ['Button border transparency', 100, { func: isInt, range: [[0, 100]] }],
+	toolbarOpacity: ['Toolbar opacity', 80, { func: isInt, range: [[0, 100]] }],
+	buttonBorderOpacity: ['Button border opacity', 100, { func: isInt, range: [[0, 100]] }],
 	outlineIcon: ['Icon outline', 0, { func: isInt, range: [[0, Infinity]] }],
 	background: ['Background options', JSON.stringify({ ..._background.defaults(), coverMode: 'none', colorMode: 'none', offsetH: 0 }), { func: isJSON, forceDefaults: true }],
 	bDynamicColors: ['Adjust colors to artwork', false, { func: isBoolean }],
@@ -107,9 +107,9 @@ buttonsBar.config.buttonColor = barProperties.buttonColor[1];
 buttonsBar.config.hoverColor = barProperties.hoverColor[1];
 buttonsBar.config.bDynHoverColor = barProperties.bDynHoverColor[1];
 buttonsBar.config.bHoverGrad = barProperties.bHoverGrad[1];
-buttonsBar.config.buttonTransparency = barProperties.buttonTransparency[1];
-buttonsBar.config.toolbarTransparency = barProperties.toolbarTransparency[1];
-buttonsBar.config.buttonBorderTransparency = barProperties.buttonBorderTransparency[1];
+buttonsBar.config.buttonOpacity = barProperties.buttonOpacity[1];
+buttonsBar.config.toolbarOpacity = barProperties.toolbarOpacity[1];
+buttonsBar.config.buttonBorderOpacity = barProperties.buttonBorderOpacity[1];
 buttonsBar.config.activeColor = barProperties.activeColor[1];
 buttonsBar.config.animationColors = JSON.parse(barProperties.animationColors[1]);
 buttonsBar.config.bBorders = barProperties.bBorders[1];
@@ -177,11 +177,11 @@ const background = new _background({
 					if (!background.useColors && !background.useCover) { bar.textColor = mostContrastColor(bar.toolbarColor).color; }
 					else if (!window.IsTransparent) {
 						bar.textColor = mostContrastColor(
-							background.getAvgPanelColor([{ col: bar.bToolbar ? bar.toolbarColor : background.getAvgUiColor(), freq: barProperties.toolbarTransparency[1] / 100 }])
+							background.getAvgPanelColor([{ col: bar.bToolbar ? bar.toolbarColor : background.getAvgUiColor(), freq: barProperties.toolbarOpacity[1] / 100 }])
 						).color;
 					} else {
 						bar.textColor = mostContrastColor(
-							background.getAvgPanelColor([{ col: bar.toolbarColor, freq: bar.bToolbar ? barProperties.toolbarTransparency[1] / 100 : 0 }])
+							background.getAvgPanelColor([{ col: bar.toolbarColor, freq: bar.bToolbar ? barProperties.toolbarOpacity[1] / 100 : 0 }])
 						).color;
 					}
 					forEachButton((button) => { button.clearIconCache(); });
@@ -470,7 +470,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 				forEachButton((button) => { button.switchHighlight(true); });
 				const answer = WshShell.Popup('Apply current settings to highlighted toolbar?\nCheck UI.', 0, window.FullPanelName, popup.question + popup.yes_no);
 				if (answer === popup.yes) {
-					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'buttonTransparency', 'toolbarTransparency', 'buttonBorderTransparency', 'scale', 'iconScale', 'textScale'].forEach((key) => {
+					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'buttonOpacity', 'toolbarOpacity', 'buttonBorderOpacity', 'scale', 'iconScale', 'textScale'].forEach((key) => {
 						buttonsBar.config[key] = barProperties[key][1] = Number(info[key][1]);
 					});
 					buttonsBar.config.bToolbar = buttonsBar.config.toolbarColor !== -1;

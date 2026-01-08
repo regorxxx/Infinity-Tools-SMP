@@ -5,7 +5,7 @@
     "03.Buttons' text color": -1,
     "06.Buttons' theme enabled": false,
     "15.Buttons' color": -1,
-    "16.Buttons' transparency": 0,
+    "16.Buttons' opacity": 0,
     "19.Buttons' hover color": 4294967295.0,
     "20.Buttons' hover dynamic color": true,
     "21.Buttons' hover gradient": true,

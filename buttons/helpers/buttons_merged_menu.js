@@ -323,39 +323,39 @@ function createButtonsMenu(name) {
 		});
 		menu.newSeparator(menuName);
 		menu.newEntry({
-			menuName, entryText: 'Set toolbar transparency...' + '\t[' + buttonsBar.config.toolbarTransparency + ']', func: () => {
+			menuName, entryText: 'Set toolbar opacity...' + '\t[' + buttonsBar.config.toolbarOpacity + ']', func: () => {
 				if (utils.IsKeyPressed(VK_CONTROL)) {
-					barProperties.toolbarTransparency[1] = buttonsBar.config.toolbarTransparency = buttonsBar.config.default.toolbarTransparency;
+					barProperties.toolbarOpacity[1] = buttonsBar.config.toolbarOpacity = buttonsBar.config.default.toolbarOpacity;
 				} else {
-					const input = Input.number('int positive', buttonsBar.config.toolbarTransparency, 'Enter value:\n0 is transparent, 100 is opaque.\n(0 to 100)', 'Buttons bar: toolbar transparency', 50, [n => n <= 100]);
+					const input = Input.number('int positive', buttonsBar.config.toolbarOpacity, 'Enter value:\n0 is transparent, 100 is opaque.\n(0 to 100)', 'Buttons bar: toolbar opacity', 50, [n => n <= 100]);
 					if (input === null) { return; }
-					barProperties.toolbarTransparency[1] = buttonsBar.config.toolbarTransparency = input;
+					barProperties.toolbarOpacity[1] = buttonsBar.config.toolbarOpacity = input;
 				}
 				overwriteProperties(barProperties);
 				window.Repaint();
 			}, flags: buttonsBar.config.toolbarColor !== -1 || !window.IsTransparent ? MF_STRING : MF_GRAYED
 		});
 		menu.newEntry({
-			menuName, entryText: 'Set buttons transparency...' + '\t[' + buttonsBar.config.buttonTransparency + ']', func: () => {
+			menuName, entryText: 'Set buttons opacity...' + '\t[' + buttonsBar.config.buttonOpacity + ']', func: () => {
 				if (utils.IsKeyPressed(VK_CONTROL)) {
-					barProperties.buttonTransparency[1] = buttonsBar.config.buttonTransparency = buttonsBar.config.default.buttonTransparency;
+					barProperties.buttonOpacity[1] = buttonsBar.config.buttonOpacity = buttonsBar.config.default.buttonOpacity;
 				} else {
-					const input = Input.number('int positive', buttonsBar.config.buttonTransparency, 'Enter value:\n0 is transparent, 100 is opaque.\n(0 to 100)', 'Buttons bar: buttons transparency', 50, [n => n <= 100]);
+					const input = Input.number('int positive', buttonsBar.config.buttonOpacity, 'Enter value:\n0 is transparent, 100 is opaque.\n(0 to 100)', 'Buttons bar: buttons opacity', 50, [n => n <= 100]);
 					if (input === null) { return; }
-					barProperties.buttonTransparency[1] = buttonsBar.config.buttonTransparency = input;
+					barProperties.buttonOpacity[1] = buttonsBar.config.buttonOpacity = input;
 				}
 				overwriteProperties(barProperties);
 				window.Repaint();
 			}, flags: !barProperties.bBgButtons[1] && (barProperties.bOnNotifyColors[1] || buttonsBar.config.hoverColor !== -1 || buttonsBar.config.bDynHoverColor) ? MF_STRING : MF_GRAYED
 		});
 		menu.newEntry({
-			menuName, entryText: 'Set border transparency...' + '\t[' + buttonsBar.config.buttonBorderTransparency + ']', func: () => {
+			menuName, entryText: 'Set border opacity...' + '\t[' + buttonsBar.config.buttonBorderOpacity + ']', func: () => {
 				if (utils.IsKeyPressed(VK_CONTROL)) {
-					barProperties.buttonBorderTransparency[1] = buttonsBar.config.buttonBorderTransparency = buttonsBar.config.default.buttonBorderTransparency;
+					barProperties.buttonBorderOpacity[1] = buttonsBar.config.buttonBorderOpacity = buttonsBar.config.default.buttonBorderOpacity;
 				} else {
-					const input = Input.number('int positive', buttonsBar.config.buttonBorderTransparency, 'Enter value:\n0 is transparent, 100 is opaque.\n(0 to 100)', 'Buttons bar: buttons\' border transparency', 50, [n => n <= 100]);
+					const input = Input.number('int positive', buttonsBar.config.buttonBorderOpacity, 'Enter value:\n0 is transparent, 100 is opaque.\n(0 to 100)', 'Buttons bar: buttons\' border opacity', 50, [n => n <= 100]);
 					if (input === null) { return; }
-					barProperties.buttonBorderTransparency[1] = buttonsBar.config.buttonBorderTransparency = input;
+					barProperties.buttonBorderOpacity[1] = buttonsBar.config.buttonBorderOpacity = input;
 				}
 				overwriteProperties(barProperties);
 				window.Repaint();
@@ -460,9 +460,9 @@ function createButtonsMenu(name) {
 				barProperties.buttonColor[1] = -1;
 				buttonsBar.config.toolbarColor = buttonsBar.config.default.toolbarColor;
 				buttonsBar.config.buttonColor = buttonsBar.config.default.buttonColor;
-				barProperties.buttonTransparency[1] = buttonsBar.config.buttonTransparency = buttonsBar.config.default.buttonTransparency;
-				barProperties.toolbarTransparency[1] = buttonsBar.config.toolbarTransparency = buttonsBar.config.default.toolbarTransparency;
-				barProperties.buttonBorderTransparency[1] = buttonsBar.config.buttonBorderTransparency = buttonsBar.config.default.buttonBorderTransparency;
+				barProperties.buttonOpacity[1] = buttonsBar.config.buttonOpacity = buttonsBar.config.default.buttonOpacity;
+				barProperties.toolbarOpacity[1] = buttonsBar.config.toolbarOpacity = buttonsBar.config.default.toolbarOpacity;
+				barProperties.buttonBorderOpacity[1] = buttonsBar.config.buttonBorderOpacity = buttonsBar.config.default.buttonBorderOpacity;
 				barProperties.textColor[1] = buttonsBar.config.textColor = buttonsBar.config.default.textColor;
 				barProperties.activeColor[1] = buttonsBar.config.activeColor = buttonsBar.config.default.activeColor;
 				barProperties.animationColors[1] = JSON.stringify(buttonsBar.config.default.animationColors);
