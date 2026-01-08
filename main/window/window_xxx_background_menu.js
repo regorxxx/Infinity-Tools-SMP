@@ -208,9 +208,16 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 					if (input === null) { return; }
 					const newVal = option.key === 'alpha' ? Math.round(input * 255 / 100) : input;
 					this.changeConfig({ config: { coverModeOptions: { [option.key]: newVal } }, callbackArgs: { bSaveProperties: true } });
-				}, flags: this.useCover && (option.key === 'alpha' || this.showCover) ? MF_STRING : MF_GRAYED
+				}, flags: this.useCover && (option.key === 'alpha' || this.showCover || this.colorMode === 'blend') ? MF_STRING : MF_GRAYED
 			});
 		});
+		menu.newSeparator(subMenu);
+		[
+			{ isEq: null, key: this.coverModeOptions.bFlipX, value: null, newValue: !this.coverModeOptions.bFlipX, entryText: 'Flip on X-axis' }
+		].forEach(createMenuOption('coverModeOptions', 'bFlipX', subMenu, true));
+		[
+			{ isEq: null, key: this.coverModeOptions.bFlipY, value: null, newValue: !this.coverModeOptions.bFlipY, entryText: 'Flip on Y-axis' }
+		].forEach(createMenuOption('coverModeOptions', 'bFlipY', subMenu, true));
 	}
 	menu.newSeparator(mainMenuName);
 	{

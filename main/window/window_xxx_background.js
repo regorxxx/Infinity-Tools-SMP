@@ -130,8 +130,15 @@ function _background({
 	this.processArtEffects = () => {
 		let profiler;
 		if (this.logging.bProfile) { profiler = new FbProfiler('processArtEffects'); }
-		if (this.coverModeOptions.alpha > 0 && !!this.coverImg.art.image) {
+		if ((this.showCover || this.colorMode === 'blend') && !!this.coverImg.art.image) {
 			let intensity;
+			if (this.coverModeOptions.bFlipX && this.coverModeOptions.bFlipY) {
+				this.coverImg.art.image.RotateFlip(RotateFlipType.RotateNoneFlipXY);
+			} else if (this.coverModeOptions.bFlipX) {
+				this.coverImg.art.image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+			} else if (this.coverModeOptions.bFlipY) {
+				this.coverImg.art.image.RotateFlip(RotateFlipType.RotateNoneFlipY);
+			}
 			if (this.coverModeOptions.mute !== 0 && Number.isInteger(this.coverModeOptions.mute)) {
 				intensity = Math.max(Math.min(this.coverModeOptions.mute / 100 * 255, 255), 0);
 				applyMask(this.coverImg.art.image, (mask, gr, w, h) => {
@@ -318,7 +325,7 @@ function _background({
 		gr,
 		mode
 	}) => {
-		if (this.coverImg.art.image && this.coverModeOptions.alpha > 0) {
+		if (!!this.coverImg.art.image && this.showCover) {
 			const prop = this.w / (this.h - this.offsetH);
 			const imgProp = this.coverImg.art.image.Width / this.coverImg.art.image.Height;
 			switch (mode) {
@@ -448,7 +455,7 @@ function _background({
 		limits = { x, y, w, h },
 		alpha = this.colorModeOptions.blendAlpha
 	}) => {
-		if (this.colorMode === 'blend' && this.coverImg.art.image) {
+		if (this.colorMode === 'blend' && !!this.coverImg.art.image) {
 			const intensity = 91.05 - Math.min(Math.max(this.colorModeOptions.blendIntensity, 1.05), 90);
 			const img = this.coverImg.art.image.Clone(0, 0, this.coverImg.art.image.Width, this.coverImg.art.image.Height)
 				.Resize(limits.w * intensity / 100, limits.h * intensity / 100, 2)
@@ -1196,6 +1203,9 @@ function _background({
 	 * @property {ReflectionMode} reflection - Reflection mode
 	 * @property {FillCropMode} fillCrop - Fill panel mode
 	 * @property {number} zoom - Image zoom (0-100)
+	 * @property {boolean} bFlipX - Flip X-axis
+	 * @property {boolean} bFlipY - Flip Y-axis
+	 * @property {boolean} bCacheAlbum - Cache art from same album/folder
 	 * @property {boolean} bProcessColors - Process art colors (required as color server)
 	 */
 	/** @type {CoverModeOptions} - Panel art settings */
@@ -1244,7 +1254,7 @@ _background.defaults = (bPosition = false, bCallbacks = false) => {
 		offsetH: _scale(1),
 		timer: 60,
 		coverMode: 'front',
-		coverModeOptions: { blur: 90, bCircularBlur: false, angle: 0, alpha: 85, mute: 0, edgeGlow: 0, bloom: 0, path: '', pathCycleTimer: 10000, pathCycleSort: 'date', bNowPlaying: true, bNoSelection: false, bProportions: true, bFill: true, fillCrop: 'center', zoom: 0, reflection: 'none', bCacheAlbum: true, bProcessColors: true },
+		coverModeOptions: { blur: 90, bCircularBlur: false, angle: 0, alpha: 85, mute: 0, edgeGlow: 0, bloom: 0, path: '', pathCycleTimer: 10000, pathCycleSort: 'date', bNowPlaying: true, bNoSelection: false, bProportions: true, bFill: true, fillCrop: 'center', zoom: 0, reflection: 'none', bFlipX: false, bFlipY: false, bCacheAlbum: true, bProcessColors: true },
 		colorMode: 'blend',
 		colorModeOptions: { bDither: true, bUiColors: false, bDarkBiGradOut: true, angle: 91, focus: 1, color: [0xff2e2e2e, 0xff212121], blendIntensity: 90, blendAlpha: 105 }, // RGB(45,45,45), RGB(33,33,33)
 		...(bCallbacks
