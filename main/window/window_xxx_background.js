@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/01/26
+//11/01/26
 
 /* exported _background */
 
@@ -775,7 +775,7 @@ function _background({
 					return false;
 				});
 			if (bDone) { break; }
-			modes.rotate(1);
+			modes.rotate();
 		}
 		return modes[0];
 	};
