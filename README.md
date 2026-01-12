@@ -76,7 +76,7 @@ Not properly following the installation instructions will result in scripts not 
 
 ## Support
  1. [Issues tracker](../../issues).
- 2. [Hydrogenaudio forum](https://hydrogenaud.io/index.php/topic,120978.0.html).
+ 2. [Hydrogenaudio forum](https://hydrogenaudio.org/index.php/topic,128978.0.html).
  3. [Wiki](../../wiki).
 
 ## Nightly releases
