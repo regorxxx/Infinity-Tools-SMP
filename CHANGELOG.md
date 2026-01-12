@@ -2,12 +2,19 @@
 
 ## [Table of Contents]
 - [Unreleased](#unreleased)
+- [1.4.0](#140---2026-01-12)
 - [1.3.0](#130---2026-01-01)
 - [1.2.0](#120---2025-12-23)
 - [1.1.0](#110---2025-12-12)
 - [1.0.0](#100---2025-11-19)
 
 ## [Unreleased][]
+### Added
+### Changed
+### Removed
+### Fixed
+
+## [1.4.0] - 2026-01-12
 ### Added
 - UI: added background framework found in all my other scripts, which can be tweaked at the background submenu within the toolbar menu (R. Click). By default is set to to not display any color or art, looking like previous releases. Note any setting at 'Colors' submenu is applied on top of the background, so the toolbar color, transparency or panel pseudo-transparency settings may also override background drawing. As a bonus, all features related to dynamic colors and color servers are also included, so it will work in conjunction with all other scripts making use of this feature.
 - Wrapped: './profile/', '%FB2K_PROFILE_PATH%\' or \'%PROFILE%\' special variable support for latex CMD. Also improved input popup and readme to help with path CMD tweaking.
@@ -144,7 +151,8 @@
 - Multiple foobar v2.25 file-relative fixes.
 
 
-[Unreleased]: ../../compare/v1.3.0...HEAD
+[Unreleased]: ../../compare/v1.4.0...HEAD
+[1.4.0]: ../../compare/v.1.3.0...v1.4.0
 [1.3.0]: ../../compare/v.1.2.0...v1.3.0
 [1.2.0]: ../../compare/v.1.1.0...v1.2.0
 [1.1.0]: ../../compare/v.1.0.0...v1.1.0
