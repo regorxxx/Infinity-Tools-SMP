@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/01/26
+//12/01/26
 
 /* exported createBackgroundMenu */
 
@@ -112,7 +112,6 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 				this.changeConfig({ config: { coverModeOptions: { path: input } }, callbackArgs: { bSaveProperties: true } });
 			}
 		}));
-		menu.newSeparator(subMenu);
 		menu.getLastEntry().flags = !this.useCover || !this.coverModeOptions.bNowPlaying ? MF_GRAYED : MF_STRING;
 		if (['path', 'folder'].includes(this.coverMode.toLowerCase())) {
 			menu.newSeparator(subMenu);

@@ -11,8 +11,10 @@
 ## [Unreleased][]
 ### Added
 ### Changed
+- Buttons: minor playback controls preset changes.
 ### Removed
 ### Fixed
+- UI: removed extra separator at background 'Art mode' submenu.
 
 ## [1.4.0] - 2026-01-12
 ### Added

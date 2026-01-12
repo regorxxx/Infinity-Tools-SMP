@@ -10,7 +10,7 @@
 // eslint-disable-next-line no-unused-vars
 var bLoadTags = true; // NOSONAR
 
-if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '1.4.0', features: { drag_n_drop: false } }); }
+if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '1.4.0-beta', features: { drag_n_drop: false } }); }
 
 {
 	const dependencies = [
@@ -136,6 +136,7 @@ buttonsBar.config.toolbarTooltip = 'R. Click for toolbar menu' +
 buttonsBar.config.scale = barProperties.scale[1];
 buttonsBar.config.textScale = barProperties.textScale[1];
 buttonsBar.config.iconScale = barProperties.iconScale[1];
+buttonsBar.config.outlineIcon = barProperties.outlineIcon[1];
 buttonsBar.config.buttonPosition = barProperties.buttonPosition[1];
 buttonsBar.config.textPosition = barProperties.textPosition[1];
 buttonsBar.config.offset = JSON.parse(barProperties.offset[1]);
@@ -289,7 +290,7 @@ function loadButtonsFile(bStartup = false) {
 			},
 			{
 				name: 'Playback controls', files:
-					['buttons_playback_random.js', 'separator', 'buttons_playback_prev.js', 'buttons_playback_play.js', 'buttons_playback_next.js', 'separator', 'buttons_playback_love.js'],
+					['buttons_playback_random.js', 'spacer', 'buttons_playback_prev.js', 'buttons_playback_play.js', 'buttons_playback_next.js', 'spacer', 'buttons_playback_love.js'],
 				properties: folders.xxx + 'presets\\Playlist Tools\\toolbars\\playbackcontrol.json'
 			},
 			{
