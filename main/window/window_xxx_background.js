@@ -687,6 +687,7 @@ function _background({
 			if (typeof next === 'number') {
 				next = Math.sign(next);
 				if (this.coverModeOptions.pathCycleTimer > 0) {
+					if (artFiles.timer !== null) { clearTimeout(artFiles.timer); }
 					artFiles.timer = setTimeout(() => this.cycleArtFolder(), this.coverModeOptions.pathCycleTimer);
 				}
 				const files = this.coverModeOptions.pathCycleSort === 'date'

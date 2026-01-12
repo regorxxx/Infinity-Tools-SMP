@@ -15,6 +15,7 @@
 ### Removed
 ### Fixed
 - UI: removed extra separator at background 'Art mode' submenu.
+- UI: fixed art cycling glitch on folder mode after using the mouse wheel.
 
 ## [1.4.0] - 2026-01-12
 ### Added
