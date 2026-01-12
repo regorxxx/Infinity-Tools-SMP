@@ -1,5 +1,5 @@
 ﻿'use strict';
-//11/01/26
+//12/01/26
 
 /* exported _background */
 
@@ -1081,8 +1081,8 @@ function _background({
 	this.move = (x, y) => {
 		if (!window.ID) { return false; }
 		if (this.trace(x, y)) {
-			this.mx = x;
-			this.my = y;
+			this.mX = x;
+			this.mY = y;
 			return true;
 		}
 		this.leave();
@@ -1099,8 +1099,8 @@ function _background({
 	*/
 	this.leave = () => {
 		if (!window.ID) { return false; }
-		this.mx = -1;
-		this.my = -1;
+		this.mX = -1;
+		this.mY = -1;
 		return true;
 	};
 	/**
@@ -1115,7 +1115,7 @@ function _background({
 	 * @returns {boolean}
 	*/
 	this.wheelResize = (step, bForce, callbackArgs) => {
-		if ((this.trace(this.mx, this.my) || bForce) && step !== 0) {
+		if ((this.trace(this.mX, this.mY) || bForce) && step !== 0) {
 			let key, min, max, delta = Math.sign(step);
 			switch (true) {
 				case true:
@@ -1235,9 +1235,9 @@ function _background({
 	/** @type {Callbacks} - Callbacks for third party integration */
 	this.callbacks = {};
 	/** @type {number} - Cached X position */
-	this.mx = -1;
+	this.mX = -1;
 	/** @type {number} - Cached Y position */
-	this.my = -1;
+	this.mY = -1;
 	/**
 	 * @typedef {object} Logging - Panel logging related settings.
 	 * @property {boolean} [bProfile] - Profiling logging flag.

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/12/25
+//12/01/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -1122,7 +1122,7 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 				const maxX = last.currX + last.currW + _scale(5);
 				const maxY = last.currY + last.currH + _scale(5);
 				const axis = buttonsBar.config.orientation;
-				const coordDiff = buttonsBar.move.mX !== -1 && buttonsBar.move.my !== -1
+				const coordDiff = buttonsBar.move.mX !== -1 && buttonsBar.move.mY !== -1
 					? axis === 'x'
 						? Math.abs(x - buttonsBar.move.mX)
 						: Math.abs(y - buttonsBar.move.mY)
