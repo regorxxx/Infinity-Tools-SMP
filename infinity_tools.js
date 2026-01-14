@@ -96,13 +96,13 @@ let barProperties = {
 Object.keys(barProperties).forEach(p => barProperties[p].push(barProperties[p][1]));
 { 	// Change internals for next releases
 	if (getPropertiesValues(barProperties).filter(Boolean).length === 0) {
-		setProperties(barProperties, 'bar_', 0);
-		barProperties = getPropertiesPairs(barProperties, 'bar_', 0);
+		setProperties(barProperties, 'bar', 0);
+		barProperties = getPropertiesPairs(barProperties, 'bar', 0);
 	} else {
 		setProperties(barProperties);
 		barProperties = getPropertiesPairs(barProperties);
 		deleteProperties(barProperties);
-		for (let key in barProperties) { barProperties[key][0] = barProperties[key][0].replace(/\d\d\./, 'bar_'); }
+		for (let key in barProperties) { barProperties[key][0] = barProperties[key][0].replace(/\d\d\./, 'bar'); }
 		overwriteProperties(barProperties);
 	}
 }
