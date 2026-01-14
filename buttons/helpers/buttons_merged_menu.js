@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/01/26
+//14/01/26
 
 /* exported createButtonsMenu, importSettingsMenu */
 
@@ -625,15 +625,15 @@ function createButtonsMenu(name) {
 			}, options.length);
 		}
 		{
-			const currPos = buttonsBar.config.buttonPosition;
-			const subMenuName = menu.newMenu('Button position' + '\t' + _b(capitalize(currPos)), menuName);
+			const currPos = buttonsBar.config.xButtonPosition;
+			const subMenuName = menu.newMenu('Button X-axis position' + '\t' + _b(capitalize(currPos)), menuName);
 			menu.newEntry({ menuName: subMenuName, entryText: 'Relative to panel\'s size:', flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
 			const options = ['left', 'center'];
 			options.forEach((o, i) => {
 				menu.newEntry({
 					menuName: subMenuName, entryText: capitalize(o) + (i !== 0 ? '\t (experimental)' : ''), func: () => {
-						buttonsBar.config.buttonPosition = barProperties.buttonPosition[1] = o;
+						buttonsBar.config.xButtonPosition = barProperties.xButtonPosition[1] = o;
 						overwriteProperties(barProperties);
 						window.Reload();
 					}

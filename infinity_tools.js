@@ -21,7 +21,7 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 		/* global globSettings:readable, folders:readable, globFonts:readable, DT_VCENTER:readable, DT_CENTER:readable, DT_END_ELLIPSIS:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, checkUpdate:readable , globProfiler:readable */
 		'helpers\\helpers_xxx_foobar.js',
 		'helpers\\helpers_xxx_properties.js',
-		/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable, checkJsonProperties:readable */
+		/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable, checkJsonProperties:readable, getPropertiesValues:readable, deleteProperties:readable */
 		'helpers\\helpers_xxx_prototypes.js',
 		/* global randomString:readable, isString:readable, isInt:readable, isBoolean:readable, isReal:readable, isJSON:readable, _b:readable, isJSON:readable, clone:readable */
 		'helpers\\helpers_xxx_UI.js',
@@ -84,7 +84,7 @@ let barProperties = {
 	bTooltipInfo: ['Show shortcuts on tooltip', true, { func: isBoolean }],
 	bOnNotifyColors: ['Adjust colors on panel notify', true, { func: isBoolean }],
 	darkMode: ['Dark mode: auto (0), enabled (1), disabled (2)', 0, { func: isInt, range: [[0, 2]] }],
-	buttonPosition: ['UI button position', 'left', { func: isString }],
+	xButtonPosition: ['UI X-axis button position', 'left', { func: isString }],
 	toolbarOpacity: ['Toolbar opacity', 80, { func: isInt, range: [[0, 100]] }],
 	buttonBorderOpacity: ['Button border opacity', 100, { func: isInt, range: [[0, 100]] }],
 	outlineIcon: ['Icon outline', 0, { func: isInt, range: [[0, Infinity]] }],
@@ -94,8 +94,19 @@ let barProperties = {
 	bNotifyColors: ['Notify colors to other panels', false, { func: isBoolean }]
 };
 Object.keys(barProperties).forEach(p => barProperties[p].push(barProperties[p][1]));
-setProperties(barProperties);
-barProperties = getPropertiesPairs(barProperties);
+{ 	// Change internals for next releases
+	if (getPropertiesValues(barProperties).filter(Boolean).length === 0) {
+		setProperties(barProperties, 'bar_', 0);
+		barProperties = getPropertiesPairs(barProperties, 'bar_', 0);
+	} else {
+		setProperties(barProperties);
+		barProperties = getPropertiesPairs(barProperties);
+		deleteProperties(barProperties);
+		for (let key in barProperties) { barProperties[key][0] = barProperties[key][0].replace(/\d\d\./, 'bar_'); }
+		overwriteProperties(barProperties);
+	}
+}
+checkJsonProperties(barProperties);
 
 // Config at buttons_xxx.js
 // Global toolbar color
@@ -137,7 +148,7 @@ buttonsBar.config.scale = barProperties.scale[1];
 buttonsBar.config.textScale = barProperties.textScale[1];
 buttonsBar.config.iconScale = barProperties.iconScale[1];
 buttonsBar.config.outlineIcon = barProperties.outlineIcon[1];
-buttonsBar.config.buttonPosition = barProperties.buttonPosition[1];
+buttonsBar.config.xButtonPosition = barProperties.xButtonPosition[1];
 buttonsBar.config.textPosition = barProperties.textPosition[1];
 buttonsBar.config.offset = JSON.parse(barProperties.offset[1]);
 buttonsBar.config.bFullSize = barProperties.bFullSize[1];
@@ -534,11 +545,11 @@ if (barProperties.bOnNotifyColors[1]) { // Ask color-servers at init
 let buttonsPath = [];
 if (barProperties.bLoadAsync[1]) {
 	loadButtonsFile(true) && includeButtonsAsync().finally(() => {
-		if (buttonsBar.config.buttonPosition === 'center' && window.IsVisible) { setTimeout(() => window.Repaint(true), 100); }
+		if (buttonsBar.config.xButtonPosition === 'center' && window.IsVisible) { setTimeout(() => window.Repaint(true), 100); }
 	});
 } else {
 	loadButtonsFile(true) && includeButtons();
-	if (buttonsBar.config.buttonPosition === 'center' && window.IsVisible) { setTimeout(() => window.Repaint(true), 100); }
+	if (buttonsBar.config.xButtonPosition === 'center' && window.IsVisible) { setTimeout(() => window.Repaint(true), 100); }
 }
 
 // Update check

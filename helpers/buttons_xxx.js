@@ -1,5 +1,5 @@
 ﻿'use strict';
-//12/01/26
+//14/01/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -47,7 +47,8 @@ buttonsBar.config = {
 	animationColors: [RGBA(10, 120, 204, 50), RGBA(199, 231, 255, 30)],
 	orientation: 'x',
 	textPosition: 'right',
-	buttonPosition: 'left',
+	xButtonPosition: 'left',
+	yButtonPosition: 'top',
 	bReflow: false,
 	bAlignSize: true,
 	bUseThemeManager: true,
@@ -912,10 +913,9 @@ function drawAllButtons(gr) {
 	const maxSizeNoReflow = getButtonsMaxSize(false);
 	// Size check
 	doOnce('Buttons Size Check', buttonSizeCheck)();
-	if (buttonsBar.config.buttonPosition === 'center') {
-		let i = 0;
+	if (buttonsBar.config.xButtonPosition === 'center') {
 		let line = 0;
-		forEachButton((button) => {
+		forEachButton((button, prevButton, i) => {
 			if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
 			else if (button.state === buttonStates.hide && Object.hasOwn(button.buttonsProperties, 'bHeadlessMode')) { button.state = buttonStates.normal; }
 			// Don't normalize size in certain axis if not needed
@@ -926,7 +926,7 @@ function drawAllButtons(gr) {
 					buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
 					buttonsBar.oldButtonCoordinates.x -= Math.max(window.Width - maxSizes[line - 1].totalW, 0) / 2 + maxSizes[line - 1].totalW - Math.max(window.Width - maxSizes[line].totalW, 0) / 2;
 				} else if (i === 0) { buttonsBar.oldButtonCoordinates.x += Math.max(window.Width - maxSizes[line].totalW, 0) / 2; }
-				button.draw(gr, void(0), void(0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
+				button.draw(gr, void (0), void (0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
 			} else if (bAlignSize && orientation === 'y') {
 				const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
 				// TODO new lines
@@ -943,14 +943,13 @@ function drawAllButtons(gr) {
 				} else if (orientation === 'y') {
 					// TODO new lines
 				}
-				button.draw(gr, void(0), void(0));
+				button.draw(gr);
 			}
-			i++;
 		});
 	} else {
 		let line = 0;
 		// Then draw
-		forEachButton((button) => {
+		forEachButton((button, prevButton, i) => {
 			if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
 			else if (button.state === buttonStates.hide && Object.hasOwn(button.buttonsProperties, 'bHeadlessMode')) { button.state = buttonStates.normal; }
 			// Don't normalize size in certain axis if not needed
@@ -961,7 +960,7 @@ function drawAllButtons(gr) {
 					buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
 					buttonsBar.oldButtonCoordinates.x -= maxSizes[line - 1].totalW;
 				}
-				button.draw(gr, void(0), void(0), bReflow && bNormalize ? maxSizes[line].w : void (0), maxSizes[line].h, bReflow && bNormalize);
+				button.draw(gr, void (0), void (0), bReflow && bNormalize ? maxSizes[line].w : void (0), maxSizes[line].h, bReflow && bNormalize);
 			} else if (bAlignSize && orientation === 'y') {
 				const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
 				// TODO new lines
@@ -976,7 +975,7 @@ function drawAllButtons(gr) {
 						// TODO new lines
 					}
 				}
-				button.draw(gr, void(0), void(0));
+				button.draw(gr, void (0), void (0));
 			}
 		});
 	}
@@ -1521,12 +1520,13 @@ function showButtonReadme(fileName) {
  * @returns {boolean} True when it was iteration was broken by callback.
  */
 function forEachButton(callback) {
-	let button, prevButton;
+	let button, prevButton, i = 0;
 	for (let key in buttonsBar.buttons) {
 		if (Object.hasOwn(buttonsBar.buttons, key)) {
 			button = buttonsBar.buttons[key];
-			if (callback(button, prevButton)) { return true; };
+			if (callback(button, prevButton, i)) { return true; };
 			prevButton = button;
+			i++;
 		}
 	}
 	return false;
