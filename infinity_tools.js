@@ -102,7 +102,7 @@ Object.keys(barProperties).forEach(p => barProperties[p].push(barProperties[p][1
 		setProperties(barProperties);
 		barProperties = getPropertiesPairs(barProperties);
 		deleteProperties(barProperties);
-		for (let key in barProperties) { barProperties[key][0] = barProperties[key][0].replace(/\d\d\./, 'bar'); }
+		for (let key in barProperties) { barProperties[key][0] = barProperties[key][0].replace(/\d\d\./, 'bar.'); }
 		overwriteProperties(barProperties);
 	}
 }
