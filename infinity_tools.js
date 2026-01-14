@@ -1,5 +1,5 @@
 ﻿'use strict';
-//12/01/26
+//14/01/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -21,7 +21,7 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 		/* global globSettings:readable, folders:readable, globFonts:readable, DT_VCENTER:readable, DT_CENTER:readable, DT_END_ELLIPSIS:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, checkUpdate:readable , globProfiler:readable */
 		'helpers\\helpers_xxx_foobar.js',
 		'helpers\\helpers_xxx_properties.js',
-		/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable */
+		/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable, checkJsonProperties:readable */
 		'helpers\\helpers_xxx_prototypes.js',
 		/* global randomString:readable, isString:readable, isInt:readable, isBoolean:readable, isReal:readable, isJSON:readable, _b:readable, isJSON:readable, clone:readable */
 		'helpers\\helpers_xxx_UI.js',
@@ -65,12 +65,12 @@ let barProperties = {
 	bAlignSize: ['Align buttons according to size', true, { func: isBoolean }],
 	scale: ['UI scale', _scale(0.7, false), { func: isReal }],
 	activeColor: ['Buttons\' active icon color', buttonsBar.config.activeColor, { func: isInt }],
-	animationColors: ['Buttons\' animation colors', JSON.stringify(buttonsBar.config.animationColors), { func: isJSON }],
+	animationColors: ['Buttons\' animation colors', JSON.stringify(buttonsBar.config.animationColors), { func: isJSON, forceDefaults: true }],
 	bIconMode: ['Show only button\'s icons', false, { func: isBoolean }],
 	bIconModeExpand: ['Expand to full button on hover', false, { func: isBoolean }],
 	buttonColor: ['Buttons\' color', -1, { func: isInt }],
 	buttonOpacity: ['Buttons\' opacity', 80, { func: isInt, range: [[0, 100]] }],
-	offset: ['Buttons\' offset', JSON.stringify({ button: { x: 0, y: 0 }, text: { x: 0, y: 0 }, icon: { x: 0, y: 0 } }), { func: isJSON }],
+	offset: ['Buttons\' offset', JSON.stringify({ button: { x: 0, y: 0 }, text: { x: 0, y: 0 }, icon: { x: 0, y: 0 } }), { func: isJSON, forceDefaults: true }],
 	bFullSize: ['Full size buttons', false, { func: isBoolean }],
 	hoverColor: ['Buttons\' hover color', -1, { func: isInt }],
 	bDynHoverColor: ['Buttons\' hover dynamic color', true, { func: isBoolean }],
