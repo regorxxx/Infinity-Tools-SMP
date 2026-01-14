@@ -300,7 +300,7 @@ function loadButtonsFile(bStartup = false) {
 			},
 			{ name: 'Blank', files: [] }
 		].map((preset) =>
-			preset.files.every((file) => _isFile(folders.xxx + 'buttons\\' + file) || file.toLowerCase() === 'separator') ? preset : void (0)
+			preset.files.every((file) => _isFile(folders.xxx + 'buttons\\' + file) || ['separator', 'spacer', 'newline'].includes(file.toLowerCase())) ? preset : void (0)
 		).filter(Boolean);
 		const input = Input.number('int positive', presets.length, 'Choose a preset (by number) from the following list, to load the toolbar with pre-defined buttons:\n' + presets.map((p, i) => '\t' + _b((i + 1).toString().padStart(2, '0')) + ' ' + p.name).join('\n') + '\n\nCanceling will load a blank toolbar by default.\n\nNote buttons may be added or removed at any time later by R. Clicking on the toolbar.', 'Toolbar: preset', 1, [(n) => n > 0 && n <= presets.length]);
 		if (input == null) { return false; }

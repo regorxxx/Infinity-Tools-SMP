@@ -16,6 +16,7 @@
 ### Fixed
 - UI: removed extra separator at background 'Art mode' submenu.
 - UI: fixed art cycling glitch on background folder mode after using the mouse wheel.
+- UI: some default toolbar presets not being shown on first installation.
 
 ## [1.4.0] - 2026-01-12
 ### Added
