@@ -129,14 +129,15 @@ function createButtonsMenu(name) {
 	{
 		const subMenu = menu.newMenu('Remove button');
 		buttonsPath.forEach((path, idx) => {
-			const buttonName = path.split('\\').pop();
+			let buttonName = path.split('\\').pop();
+			if (['separator', 'newline', 'spacer'].includes(buttonName)) { buttonName = '-- ' + buttonName + ' --'; }
 			menu.newEntry({
-				menuName: subMenu, entryText: (buttonName === 'separator' ? '-- separator --' : buttonName) + '\t(' + (idx + 1) + ')', func: () => {
+				menuName: subMenu, entryText: buttonName + '\t(' + (idx + 1) + ')', func: () => {
 					// Remove button
 					buttonsPath.splice(idx, 1);
 					// Remove properties
 					// Since properties have a prefix according to their loading order when there are multiple instances of the same
-					// script, removing a button when there a other 'clones' means the other buttons will get their properties names
+					// script, removing a button when there are other 'clones' means the other buttons will get their properties names
 					// shifted by one. They need to be adjusted or buttons at greater indexes will inherit properties from lower ones!
 					const properties = buttonsBar.list[idx];
 					if (properties) { deleteProperties(properties); } // Delete current position

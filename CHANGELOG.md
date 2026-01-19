@@ -16,6 +16,7 @@
 - Buttons: minor playback controls preset changes.
 ### Removed
 ### Fixed
+- UI: small fixes to display of separators, new lines, etc. at menu button lists.
 - UI: removed extra separator at background 'Art mode' submenu.
 - UI: small fixes for background blend color mode.
 - UI: fixed art cycling glitch on background folder mode after using the mouse wheel.
