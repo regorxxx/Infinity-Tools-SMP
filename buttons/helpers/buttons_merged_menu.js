@@ -931,7 +931,7 @@ function createButtonsMenu(name) {
 			const answer = WshShell.Popup('Share current UI settings with other panels?\nSettings which will be copied:\n\n' + keys.join(', '), 0, window.FullPanelName + ': Toolbar', popup.question + popup.yes_no);
 			if (answer === popup.yes) {
 				const obj = clone(barProperties);
-				window.NotifyOthers(window.ScriptInfo.Name + ': share settings', obj);
+				window.NotifyOthers(window.ScriptInfo.Name + ': share UI settings', obj);
 			}
 		}
 	});

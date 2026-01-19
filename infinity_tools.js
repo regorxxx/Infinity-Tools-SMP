@@ -1,5 +1,5 @@
 ﻿'use strict';
-//14/01/26
+//16/01/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -169,7 +169,7 @@ const background = new _background({
 			if (!bForced && !barProperties.bDynamicColors[1]) { return; }
 			else if (colArray) {
 				const bar = buttonsBar.config;
-				const bChangeBg = barProperties.bDynamicColorsBg[1];
+				const bChangeBg = barProperties.bDynamicColorsBg[1] && background.useColors && !background.useColorsBlend;
 				const { main, sec, note, mainAlt, secAlt } = dynamicColors( // eslint-disable-line no-unused-vars
 					colArray,
 					bar.bToolbar
@@ -177,7 +177,7 @@ const background = new _background({
 						: (window.InstanceType === 0 ? window.GetColourCUI(1) : window.GetColourDUI(1)),
 					true
 				);
-				if (bChangeBg && background.useColors) {
+				if (bChangeBg) {
 					const gradient = [Chroma(note).saturate(2).luminance(0.005).android(), note];
 					const bgColor = Chroma.scale(gradient).mode('lrgb')
 						.colors(background.colorModeOptions.color.length, 'android')
@@ -432,7 +432,7 @@ moveEventListener(addEventListener('on_paint', (gr) => {
 	if (!window.ID) { return; }
 	if (!window.Width || !window.Height) { return; }
 	if (buttonsPath.length) { background.paint(gr); }
-}), 0);
+}));
 
 addEventListener('on_paint', (gr) => {
 	if (!window.ID) { return; }
@@ -477,28 +477,33 @@ addEventListener('on_mouse_wheel', (step) => {
 addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-unused-vars
 	if (name === 'bio_imgChange' || name === 'biographyTags' || name === 'bio_chkTrackRev' || name === 'xxx-scripts: panel name reply') { return; }
 	switch (name) { // NOSONAR
-		case window.ScriptInfo.Name + ': share settings': {
+		case window.ScriptInfo.Name + ': share UI settings': {
 			if (info) {
 				forEachButton((button) => { button.switchHighlight(true); });
 				const answer = WshShell.Popup('Apply current settings to highlighted toolbar?\nCheck UI.', 0, window.FullPanelName, popup.question + popup.yes_no);
 				if (answer === popup.yes) {
+					const newBg = JSON.parse(String(info.background[1]));
 					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'buttonOpacity', 'toolbarOpacity', 'buttonBorderOpacity', 'scale', 'iconScale', 'textScale'].forEach((key) => {
 						buttonsBar.config[key] = barProperties[key][1] = Number(info[key][1]);
 					});
+					['xButtonPosition'].forEach((key) => {
+						buttonsBar.config[key] = barProperties[key][1] = String(info[key][1]);
+					});
 					buttonsBar.config.bToolbar = buttonsBar.config.toolbarColor !== -1;
-					['bDynHoverColor', 'bHoverGrad', 'bBorders'].forEach((key) => {
+					['bDynHoverColor', 'bHoverGrad', 'bBorders', 'bDynamicColors', 'bDynamicColorsBg', 'bOnNotifyColors', 'bNotifyColors'].forEach((key) => {
 						buttonsBar.config[key] = barProperties[key][1] = !!info[key][1];
 					});
 					['animationColors'].forEach((key) => {
 						barProperties[key][1] = String(info[key][1]);
-						buttonsBar.config[key] = JSON.parse(info[key][1]);
+						buttonsBar.config[key] = JSON.parse(String(info[key][1]));
 					});
 					barProperties.offset[1] = String(info.offset[1]);
-					const offset = JSON.parse(barProperties.offset[1]);
+					const offset = JSON.parse(String(barProperties.offset[1]));
 					buttonsBar.config.offset.button = offset.button;
 					buttonsBar.config.offset.text = offset.button;
 					barProperties.bBgButtons[1] = !!info.bBgButtons[1];
 					buttonsBar.config.partAndStateID = info.bBgButtons[1] ? 1 : 6;
+					background.changeConfig({ config: newBg, bRepaint: false, callbackArgs: { bSaveProperties: true } });
 					overwriteProperties(barProperties);
 				}
 				forEachButton((button) => { button.switchHighlight(false); });
