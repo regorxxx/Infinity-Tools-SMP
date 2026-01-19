@@ -10,6 +10,7 @@
 
 ## [Unreleased][]
 ### Added
+- Buttons: menu entry to remove all buttons (along their properties).
 ### Changed
 - Settings: internal changes at properties for future releases. This update MUST be installed before any possible future release to ensure settings are not lost on upgrading.
 - Buttons: minor playback controls preset changes.

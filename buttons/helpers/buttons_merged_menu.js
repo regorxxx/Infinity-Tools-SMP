@@ -1,5 +1,5 @@
 ﻿'use strict';
-//14/01/26
+//19/01/26
 
 /* exported createButtonsMenu, importSettingsMenu */
 
@@ -174,6 +174,18 @@ function createButtonsMenu(name) {
 					window.Reload();
 				}
 			});
+		});
+		menu.newSeparator(subMenu);
+		menu.newEntry({
+			menuName: subMenu, entryText: 'Remove all', func: () => {
+				// Remove buttons
+				buttonsPath.length = 0;
+				buttonsBar.list.forEach((properties) => properties && deleteProperties(properties));
+				// Save and reload
+				const fileNames = buttonsPath.map((path) => path.split('\\').pop());
+				_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
+				window.Reload();
+			}
 		});
 	}
 	{
@@ -398,7 +410,7 @@ function createButtonsMenu(name) {
 						background.updateImageBg(true);
 					} else {
 						background.changeConfig({ config: { colorModeOptions: { color: JSON.parse(barProperties.background[1]).colorModeOptions.color } }, callbackArgs: { bSaveProperties: false } });
-						background.callbacks.artColors(void(0), true);
+						background.callbacks.artColors(void (0), true);
 						overwriteProperties(barProperties);
 					}
 				},
@@ -429,7 +441,7 @@ function createButtonsMenu(name) {
 						window.NotifyOthers('Colors: ask color scheme', window.ScriptInfo.Name + ': set color scheme');
 						window.NotifyOthers('Colors: ask color', window.ScriptInfo.Name + ': set colors');
 					} else if (!barProperties.bDynamicColors[1]) {
-						background.callbacks.artColors(void(0), true);
+						background.callbacks.artColors(void (0), true);
 					}
 				},
 				checkFunc: () => barProperties.bOnNotifyColors[1]
