@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/01/26
+//16/01/26
 
 /* exported ListenBrainz */
 
@@ -1642,7 +1642,7 @@ ListenBrainz.contentResolver = function contentResolver(jspf, filter = '', sort 
 	const profiler = this.bProfile ? new FbProfiler('ListenBrainz.contentResolver') : null;
 	// Query cache (Library)
 	// Makes consecutive playlist loading by queries much faster (for ex. .xspf fuzzy matching)
-	const queryCache = new Map(); // {Query: handleList} // NOSONAR
+	fb.queryCache.clear();
 	let handleArr = [];
 	const notFound = [];
 	const playlist = jspf.playlist;
@@ -1682,14 +1682,9 @@ ListenBrainz.contentResolver = function contentResolver(jspf, filter = '', sort 
 			}
 		});
 		for (let condition of conditions) {
-			if (condition.every((tag) => { return lookup.hasOwnProperty(tag); })) { // eslint-disable-line no-prototype-builtins
-				query = condition.map((tag) => { return lookup[tag]; }).join(' AND ');
-				const matches = queryCache.has(query)
-					? queryCache.get(query)
-					: checkQuery(query, true)
-						? fb.GetQueryItems(libItems, query)
-						: null;
-				if (!queryCache.has(query)) { queryCache.set(query, matches); }
+			if (condition.every((tag) => lookup.hasOwnProperty(tag))) { // eslint-disable-line no-prototype-builtins
+				query = condition.map((tag) => lookup[tag]).join(' AND ');
+				const matches = fb.GetQueryItemsCheck(libItems, query, true);
 				if (matches && matches.Count) {
 					if (sortTF) { matches.OrderByFormat(sortTF, -1); }
 					handleArr[i] = matches[0];
@@ -1703,6 +1698,7 @@ ListenBrainz.contentResolver = function contentResolver(jspf, filter = '', sort 
 		}
 	}
 	if (notFound.length) { console.log('Some tracks have not been found on library:\n\t ' + notFound.map((row) => row.creator + ' - ' + row.title + ': ' + row.identifier).join('\n\t ')); }
+	fb.queryCache.clear();
 	if (this.bProfile) { profiler.Print(''); }
 	return { handleList: new FbMetadbHandleList(handleArr.filter((n) => n)), handleArr, notFound };
 };
