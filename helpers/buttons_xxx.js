@@ -911,35 +911,47 @@ function drawAllButtons(gr) {
 	const maxSizes = getButtonsMaxSizePerLine();
 	const maxSize = getButtonsMaxSize(void (0), maxSizes);
 	const maxSizeNoReflow = getButtonsMaxSize(false);
+	const totalH = maxSizes.reduce((prev, curr) => prev + curr.totalH, 0);
 	// Size check
 	doOnce('Buttons Size Check', buttonSizeCheck)();
+	let line = 0;
+	const adjustCoordsX = (button, i) => {
+		if (i === 0) {
+			switch (buttonsBar.config.yButtonPosition) {
+				case 'center': buttonsBar.oldButtonCoordinates.y += window.Height / 2 - totalH / 2; break;
+				case 'bottom': buttonsBar.oldButtonCoordinates.y += window.Height - totalH; break;
+				case 'top':
+				default:
+			}
+			buttonsBar.oldButtonCoordinates.x += buttonsBar.config.xButtonPosition === 'center'
+				? Math.max(window.Width - maxSizes[line].totalW, 0) / 2
+				: 0;
+		}
+		if (button.isNewLine) {
+			line++;
+			buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
+			buttonsBar.oldButtonCoordinates.x -= maxSizes[line - 1].totalW + (buttonsBar.config.xButtonPosition === 'center'
+				? Math.max(window.Width - maxSizes[line - 1].totalW, 0) / 2 - Math.max(window.Width - maxSizes[line].totalW, 0) / 2
+				: 0
+			);
+		}
+	};
 	if (buttonsBar.config.xButtonPosition === 'center') {
-		let line = 0;
 		forEachButton((button, prevButton, i) => {
 			if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
 			else if (button.state === buttonStates.hide && Object.hasOwn(button.buttonsProperties, 'bHeadlessMode')) { button.state = buttonStates.normal; }
 			// Don't normalize size in certain axis if not needed
 			if (bAlignSize && orientation === 'x') {
 				const bNormalize = maxSizes[line].totalW > window.Width && maxSizeNoReflow.totalW > window.Width;
-				if (button.isNewLine) {
-					line++;
-					buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
-					buttonsBar.oldButtonCoordinates.x -= Math.max(window.Width - maxSizes[line - 1].totalW, 0) / 2 + maxSizes[line - 1].totalW - Math.max(window.Width - maxSizes[line].totalW, 0) / 2;
-				} else if (i === 0) { buttonsBar.oldButtonCoordinates.x += Math.max(window.Width - maxSizes[line].totalW, 0) / 2; }
+				adjustCoordsX(button, i);
 				button.draw(gr, void (0), void (0), bReflow && bNormalize ? maxSize.w : void (0), maxSize.h, bReflow && bNormalize);
 			} else if (bAlignSize && orientation === 'y') {
 				const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
 				// TODO new lines
 				button.draw(gr, void (0), void (0), maxSize.w, bReflow && bNormalize ? maxSize.h : void (0), true);
 			} else {
-				if (button.isNewLine) { line++; }
 				if (orientation === 'x') {
-					if (i === 0) {
-						buttonsBar.oldButtonCoordinates.x += Math.max(window.Width - maxSizes[line].totalW, 0) / 2;
-					} else if (button.isNewLine) {
-						buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
-						buttonsBar.oldButtonCoordinates.x -= Math.max(window.Width - maxSizes[line - 1].totalW, 0) / 2 + maxSizes[line - 1].totalW - Math.max(window.Width - maxSizes[line].totalW, 0) / 2;
-					}
+					adjustCoordsX(button, i);
 				} else if (orientation === 'y') {
 					// TODO new lines
 				}
@@ -947,7 +959,6 @@ function drawAllButtons(gr) {
 			}
 		});
 	} else {
-		let line = 0;
 		// Then draw
 		forEachButton((button, prevButton, i) => {
 			if (button.isHeadlessMode()) { button.state = buttonStates.hide; }
@@ -955,11 +966,7 @@ function drawAllButtons(gr) {
 			// Don't normalize size in certain axis if not needed
 			if (bAlignSize && orientation === 'x') {
 				const bNormalize = maxSize.totalW > window.Width && maxSizeNoReflow.totalW > window.Width;
-				if (button.isNewLine) {
-					line++;
-					buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
-					buttonsBar.oldButtonCoordinates.x -= maxSizes[line - 1].totalW;
-				}
+				adjustCoordsX(button, i);
 				button.draw(gr, void (0), void (0), bReflow && bNormalize ? maxSizes[line].w : void (0), maxSizes[line].h, bReflow && bNormalize);
 			} else if (bAlignSize && orientation === 'y') {
 				const bNormalize = maxSize.totalH > window.Height && maxSizeNoReflow.totalH > window.Height;
@@ -967,13 +974,10 @@ function drawAllButtons(gr) {
 				button.draw(gr, void (0), void (0), maxSize.w, bReflow && bNormalize ? maxSize.h : void (0), true);
 			} else {
 				if (button.isNewLine) { line++; }
-				if (button.isNewLine) {
-					if (orientation === 'x') {
-						buttonsBar.oldButtonCoordinates.y += maxSizes[line - 1].totalH;
-						buttonsBar.oldButtonCoordinates.x -= maxSizes[line - 1].totalW;
-					} else if (orientation === 'y') {
-						// TODO new lines
-					}
+				if (orientation === 'x') {
+					adjustCoordsX(button, i);
+				} else if (orientation === 'y') {
+					// TODO new lines
 				}
 				button.draw(gr, void (0), void (0));
 			}
@@ -1466,24 +1470,37 @@ function buttonSizeCheck() {
 
 function getButtonsMaxSizePerLine(bCurrent = true) {
 	const orientation = buttonsBar.config.orientation.toLowerCase();
-	let maxSizes = [{ w: -1, h: -1, totalW: 0, totalH: 0 }];
+	let maxSizes = [{ w: 0, h: 0, totalW: 0, totalH: 0 }];
 	let line = 0;
-	let maxSize;
+	let lineMaxSize;
 	forEachButton((button) => {
-		if (button.isNewLine) { line++; maxSizes.push({ w: -1, h: -1, totalW: 0, totalH: 0 }); }
-		maxSize = maxSizes[line];
-		maxSize.h = Math.max(bCurrent ? button.currH : button.h, maxSize.h);
+		if (button.isNewLine) { line++; maxSizes.push({ w: 0, h: 0, totalW: 0, totalH: 0, isNewLine: true }); }
+		lineMaxSize = maxSizes[line];
+		lineMaxSize.h = Math.max(bCurrent ? button.currH : button.h, lineMaxSize.h);
 		if (button.isIconMode()) {
-			maxSize.w = Math.max(30, maxSize.w);
+			lineMaxSize.w = Math.max(30, lineMaxSize.w);
 		} else {
-			maxSize.w = Math.max(bCurrent ? button.currW : button.w, maxSize.w);
+			lineMaxSize.w = Math.max(bCurrent ? button.currW : button.w, lineMaxSize.w);
 		}
-		if (orientation === 'x') { maxSize.totalW += (bCurrent ? button.currW : button.w); }
-		if (orientation === 'y') { maxSize.totalH += (bCurrent ? button.currH : button.h); }
+		if (orientation === 'x') { lineMaxSize.totalW += (bCurrent ? button.currW : button.w); }
+		if (orientation === 'y') { lineMaxSize.totalH += (bCurrent ? button.currH : button.h); }
 	});
-	maxSizes.forEach((maxSize) => {
-		if (orientation === 'x') { maxSize.totalH = maxSize.h; }
-		if (orientation === 'y') { maxSize.totalW = maxSize.w; }
+	maxSizes.forEach((lineMaxSize) => {
+		if (orientation === 'x') { lineMaxSize.totalH = lineMaxSize.h; }
+		if (orientation === 'y') { lineMaxSize.totalW = lineMaxSize.w; }
+	});
+	const maxSize = getButtonsMaxSize(bCurrent, maxSizes);
+	maxSizes.forEach((lineMaxSize, i) => {
+		if (lineMaxSize.isNewLine) {
+			if (lineMaxSize.h === 0) { lineMaxSize.h = (maxSizes[i - 1] || maxSize).h; }
+			if (orientation === 'x') { lineMaxSize.totalH = lineMaxSize.h; }
+			if (orientation === 'y') { lineMaxSize.totalW = lineMaxSize.w; }
+			delete lineMaxSize.isNewLine;
+		} else if (lineMaxSize.h === 0) {
+			lineMaxSize.h = (maxSizes[i - 1] || maxSize).h;
+			if (orientation === 'x') { lineMaxSize.totalH = lineMaxSize.h; }
+			if (orientation === 'y') { lineMaxSize.totalW = lineMaxSize.w; }
+		}
 	});
 	return maxSizes;
 }

@@ -91,7 +91,8 @@ let barProperties = {
 	background: ['Background options', JSON.stringify({ ..._background.defaults(), coverMode: 'none', colorMode: 'none', offsetH: 0 }), { func: isJSON, forceDefaults: true }],
 	bDynamicColors: ['Adjust colors to artwork', false, { func: isBoolean }],
 	bDynamicColorsBg: ['Adjust colors to artwork (bg)', false, { func: isBoolean }],
-	bNotifyColors: ['Notify colors to other panels', false, { func: isBoolean }]
+	bNotifyColors: ['Notify colors to other panels', false, { func: isBoolean }],
+	yButtonPosition: ['UI Y-axis button position', 'top', { func: isString }],
 };
 Object.keys(barProperties).forEach(p => barProperties[p].push(barProperties[p][1]));
 { 	// Change internals for next releases
@@ -149,6 +150,7 @@ buttonsBar.config.textScale = barProperties.textScale[1];
 buttonsBar.config.iconScale = barProperties.iconScale[1];
 buttonsBar.config.outlineIcon = barProperties.outlineIcon[1];
 buttonsBar.config.xButtonPosition = barProperties.xButtonPosition[1];
+buttonsBar.config.yButtonPosition = barProperties.yButtonPosition[1];
 buttonsBar.config.textPosition = barProperties.textPosition[1];
 buttonsBar.config.offset = JSON.parse(barProperties.offset[1]);
 buttonsBar.config.bFullSize = barProperties.bFullSize[1];
@@ -486,7 +488,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 					['toolbarColor', 'buttonColor', 'textColor', 'hoverColor', 'activeColor', 'buttonOpacity', 'toolbarOpacity', 'buttonBorderOpacity', 'scale', 'iconScale', 'textScale'].forEach((key) => {
 						buttonsBar.config[key] = barProperties[key][1] = Number(info[key][1]);
 					});
-					['xButtonPosition'].forEach((key) => {
+					['xButtonPosition', 'yButtonPosition'].forEach((key) => {
 						buttonsBar.config[key] = barProperties[key][1] = String(info[key][1]);
 					});
 					buttonsBar.config.bToolbar = buttonsBar.config.toolbarColor !== -1;

@@ -11,6 +11,7 @@
 ## [Unreleased][]
 ### Added
 - Buttons: menu entry to remove all buttons (along their properties).
+- UI: 'Top', 'Center' and 'Bottom' Y-Axis position settings. By default is set to 'Top'.
 ### Changed
 - Settings: internal changes at properties for future releases. This update MUST be installed before any possible future release to ensure settings are not lost on upgrading.
 - Buttons: minor playback controls preset changes.

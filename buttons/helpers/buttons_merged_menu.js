@@ -654,6 +654,23 @@ function createButtonsMenu(name) {
 			});
 			menu.newCheckMenuLast(() => { return options.indexOf(currPos); }, options.length);
 		}
+		{
+			const currPos = buttonsBar.config.yButtonPosition;
+			const subMenuName = menu.newMenu('Button Y-axis position' + '\t' + _b(capitalize(currPos)), menuName);
+			menu.newEntry({ menuName: subMenuName, entryText: 'Relative to panel\'s size:', flags: MF_GRAYED });
+			menu.newSeparator(subMenuName);
+			const options = ['top', 'center', 'bottom'];
+			options.forEach((o, i) => {
+				menu.newEntry({
+					menuName: subMenuName, entryText: capitalize(o) + (i !== 0 ? '\t (experimental)' : ''), func: () => {
+						buttonsBar.config.yButtonPosition = barProperties.yButtonPosition[1] = o;
+						overwriteProperties(barProperties);
+						window.Reload();
+					}
+				});
+			});
+			menu.newCheckMenuLast(() => { return options.indexOf(currPos); }, options.length);
+		}
 		menu.newSeparator(menuName);
 		menu.newEntry({
 			menuName, entryText: 'Reflow buttons according to ' + (orientation === 'x' ? 'width' : 'height'), func: () => {
