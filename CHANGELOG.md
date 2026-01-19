@@ -16,6 +16,7 @@
 - Buttons: minor playback controls preset changes.
 ### Removed
 ### Fixed
+- Installation: panel menu, accessed through 'Ctrl + Win + R. Click' (which works globally on any script and panel, at any position), not being displayed in some cases.
 - UI: missing settings for 'Share UI settings' feature.
 - UI: small fixes to display of separators, new lines, etc. at menu button lists.
 - UI: removed extra separator at background 'Art mode' submenu.

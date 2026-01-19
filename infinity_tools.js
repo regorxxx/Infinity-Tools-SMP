@@ -448,12 +448,12 @@ addEventListener('on_mouse_lbtn_up', (x, y, mask) => { // eslint-disable-line no
 	if (window.IsVisible) { window.Repaint(); }
 });
 
-addEventListener('on_mouse_rbtn_up', (x, y, mask) => { // eslint-disable-line no-unused-vars
+moveEventListener(addEventListener('on_mouse_rbtn_up', (x, y, mask) => { // eslint-disable-line no-unused-vars
 	if (utils.IsKeyPressed(VK_CONTROL) && utils.IsKeyPressed(VK_LWIN)) {
 		return importSettingsMenu().btn_up(x, y);
 	}
 	return true;
-});
+}));
 
 addEventListener('on_size', (width, height) => {
 	background.resize({ w: width, h: height, bPaint: false });
