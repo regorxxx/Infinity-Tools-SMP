@@ -1,5 +1,5 @@
 ﻿'use strict';
-//12/01/26
+//16/01/26
 
 /* exported _background */
 
@@ -11,7 +11,7 @@ include('window_xxx_helpers.js');
  *
  * @class
  * @name _background
- * @param {{ x: number, y: number, w: number, h: number, offsetH?: number, coverMode: CoverMode, coverModeOptions: CoverModeOptions, colorMode: ColorMode, colorModeOptions: ColorModeOptions, timer: number, callbacks: Callbacks, logging: Logging }} { x, y, w, h, offsetH, coverMode, coverModeOptions, colorMode, colorModeOptions, timer, callbacks, }?
+ * @param {{ x: number, y: number, w: number, h: number, offsetH?: number, coverMode: CoverMode, coverModeOptions: CoverModeOptions, colorMode: ColorMode, colorModeOptions: ColorModeOptions, timer: number, callbacks: Callbacks, logging: Logging }} { x, y, w, h, offsetH, coverMode, coverModeOptions, colorMode, colorModeOptions, timer, callbacks, logging }?
  */
 function _background({
 	x, y, w, h,
@@ -53,7 +53,7 @@ function _background({
 			this.coverImg.handle = null; this.coverImg.id = null;
 		}
 		if (!this.coverModeOptions.bProcessColors) { this.coverImg.art.colors = null; }
-		if (!this.useColors) { this.colorImg = null; }
+		if (!this.useColors || this.useColorsBlend) { this.colorImg = null; }
 		else if (!this.useCover) { this.colorsChanged(bRepaint, true, false); }
 		if (!this.useCover) { return; }
 		const handle = this.getHandle();
@@ -130,7 +130,7 @@ function _background({
 	this.processArtEffects = () => {
 		let profiler;
 		if (this.logging.bProfile) { profiler = new FbProfiler('processArtEffects'); }
-		if ((this.showCover || this.colorMode === 'blend') && !!this.coverImg.art.image) {
+		if ((this.showCover || this.useColorsBlend) && !!this.coverImg.art.image) {
 			let intensity;
 			if (this.coverModeOptions.bFlipX && this.coverModeOptions.bFlipY) {
 				this.coverImg.art.image.RotateFlip(RotateFlipType.RotateNoneFlipXY);
@@ -399,7 +399,7 @@ function _background({
 	}) => {
 		const colorMode = this.colorMode;
 		let grImg, bCreateImg;
-		if (this.colorModeOptions.bDither && !['single', 'none'].includes(colorMode)) {
+		if (this.colorModeOptions.bDither && !['single', 'none', 'blend'].includes(colorMode)) {
 			if (!this.colorImg || this.colorImg.Width !== limits.w || this.colorImg.Height !== limits.h) { this.colorImg = gdi.CreateImage(limits.w, limits.h); bCreateImg = true; }
 			grImg = this.colorImg.GetGraphics();
 		}
@@ -454,8 +454,8 @@ function _background({
 		gr,
 		limits = { x, y, w, h },
 		alpha = this.colorModeOptions.blendAlpha
-	}) => {
-		if (this.colorMode === 'blend' && !!this.coverImg.art.image) {
+	} = {}) => {
+		if (this.useColorsBlend && !!this.coverImg.art.image) {
 			const intensity = 91.05 - Math.min(Math.max(this.colorModeOptions.blendIntensity, 1.05), 90);
 			const img = this.coverImg.art.image.Clone(0, 0, this.coverImg.art.image.Width, this.coverImg.art.image.Height)
 				.Resize(limits.w * intensity / 100, limits.h * intensity / 100, 2)
@@ -644,7 +644,7 @@ function _background({
 		this.coverModeOptions.fillCrop = (this.coverModeOptions.fillCrop || 'center').toLowerCase();
 		this.coverModeOptions.path = this.coverModeOptions.path || '';
 		this.coverModeOptions.pathCycleSort = (this.coverModeOptions.pathCycleSort || 'date').toLowerCase();
-		if (!this.useCover && this.colorMode === 'blend') { this.colorMode = 'bigradient'; }
+		if (!this.useCover && this.useColorsBlend) { this.colorMode = 'bigradient'; }
 	};
 	/**
 	 * Gets panel settings ready to be saved as properties
@@ -919,7 +919,15 @@ function _background({
 	 * @returns {[number]}
 	 */
 	this.getUiColors = () => {
-		return [window.InstanceType === 0 ? window.GetColourCUI(3) : window.GetColourDUI(1), window.InstanceType === 0 ? window.GetColourCUI(3) : window.GetColourDUI(1)];
+		let color;
+		if (window.InstanceType === 0) {
+			color = window.GetColourCUI(3);
+		} else {
+			color = window.GetColourDUI(1);
+			// Workaround for foo_flowin using DUI and not matching global CUI theme (at least on foobar v1.6)
+			if (window.IsDark && color === 4293059298) { color = RGBA(25, 25, 25); }
+		}
+		return [color, color];
 	};
 	/**
 	 * Gets upt to 2 main colors from panel (either art or color settings)
@@ -1001,6 +1009,7 @@ function _background({
 			{ col: this.getAvgDrawColor(), freq: this.useCover && this.useColors ? (255 - this.coverModeOptions.alpha) / 255 : (this.useColors ? 1 : 0) },
 			{ col: this.getAvgUiColor(), freq: this.useCover && !this.useColors ? (255 - this.coverModeOptions.alpha) / 255 : (!this.useCover && !this.useColors ? 1 : 0) }
 		].filter((c) => c.col !== null);
+		console.log(extraColors)
 		if (extraColors && extraColors.length) {
 			const extraFreq = extraColors.reduce((prev, curr) => prev + Object.hasOwn(curr, 'freq') ? curr.freq : 0, 0);
 			if (extraFreq !== 0) {
@@ -1046,6 +1055,13 @@ function _background({
 		enumerable: true,
 		configurable: false,
 		get: () => this.colorMode !== 'none'
+	});
+	/** @type {boolean} */
+	this.useColorsBlend;
+	Object.defineProperty(this, 'useColorsBlend', {
+		enumerable: true,
+		configurable: false,
+		get: () => this.colorMode === 'blend' && this.useCover
 	});
 	/** @type {boolean} - Flag which indicates wether panel is using any art or not  */
 	this.useCover;
@@ -1255,7 +1271,7 @@ _background.defaults = (bPosition = false, bCallbacks = false) => {
 		offsetH: _scale(1),
 		timer: 60,
 		coverMode: 'front',
-		coverModeOptions: { blur: 90, bCircularBlur: false, angle: 0, alpha: 85, mute: 0, edgeGlow: 0, bloom: 0, path: '', pathCycleTimer: 10000, pathCycleSort: 'date', bNowPlaying: true, bNoSelection: false, bProportions: true, bFill: true, fillCrop: 'center', zoom: 0, reflection: 'none', bFlipX: false, bFlipY: false, bCacheAlbum: true, bProcessColors: true },
+		coverModeOptions: { blur: 90, bCircularBlur: false, angle: 0, alpha: 0, mute: 0, edgeGlow: 0, bloom: 0, path: '', pathCycleTimer: 10000, pathCycleSort: 'date', bNowPlaying: true, bNoSelection: false, bProportions: true, bFill: true, fillCrop: 'center', zoom: 0, reflection: 'none', bFlipX: false, bFlipY: false, bCacheAlbum: true, bProcessColors: true },
 		colorMode: 'blend',
 		colorModeOptions: { bDither: true, bUiColors: false, bDarkBiGradOut: true, angle: 91, focus: 1, color: [0xff2e2e2e, 0xff212121], blendIntensity: 90, blendAlpha: 105 }, // RGB(45,45,45), RGB(33,33,33)
 		...(bCallbacks
