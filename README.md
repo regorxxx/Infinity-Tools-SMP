@@ -7,9 +7,11 @@
 ![GitHub](https://img.shields.io/github/license/regorxxx/Infinity-Tools-SMP)  
 A collection of [Spider Monkey Panel](https://theqwertiest.github.io/foo_spider_monkey_panel)/[JSplitter](https://foobar2000.ru/forum/viewtopic.php?t=6378) Tools for [foobar2000](https://www.foobar2000.org): removing duplicates, wrapped, statistics report, advanced playlist manipulation, dynamic queries, genre analysis, "spotify-like" playlist creation, ... Infinite possibilities. Previous users of my scripts will notice this is a merge of all the previous toolbar scripts, for simplicity, into a new package format.
 
-To use this plugin at its best and to benefit the most from your library, you will want to make sure that your songs have the most possible information: genre, style, key, moods, etc. and a cohesive tagging applied to all files.
+> [!TIP]
+> To use this plugin at its best and to benefit the most from your library, you will want to make sure that your songs have the most possible information: genre, style, key, moods, etc. and a cohesive tagging applied to all files.
 
-**WARNING: THESE ARE ADVANCED TOOLS, IF YOU ARE EXPECTING A FOOLPROOF TOOL, LOOK ELSEWHERE. WHILE BUG REPORTS AND CONSTRUCTIVE FEEDBACK ARE WELCOME, DON'T COMPLAIN ABOUT THINGS BEING TOO COMPLEX. THEY ARE MEANT THIS WAY.**
+> [!WARNING]
+> **These are advanced tools. While bug reports and constructive feedback are welcome, don't complain about things being too complex. They are meant this way.**
 
 <img width="1370" height="174" alt="{63A745E1-3384-4B77-8E53-1F8997EF0C80}" src="https://github.com/user-attachments/assets/a9874ef9-cb25-4f11-b02e-9b9a9831fb2b" />
 
