@@ -455,10 +455,10 @@ function _background({
 		limits = { x, y, w, h },
 		alpha = this.colorModeOptions.blendAlpha
 	} = {}) => {
-		if (this.useColorsBlend && !!this.coverImg.art.image) {
+		if (this.useColorsBlend && !!this.coverImg.art.image && limits.h > 1 && limits.w > 1) {
 			const intensity = 91.05 - Math.min(Math.max(this.colorModeOptions.blendIntensity, 1.05), 90);
 			const img = this.coverImg.art.image.Clone(0, 0, this.coverImg.art.image.Width, this.coverImg.art.image.Height)
-				.Resize(limits.w * intensity / 100, limits.h * intensity / 100, 2)
+				.Resize(Math.max(limits.w * intensity / 100, 1), Math.max(limits.h * intensity / 100, 1), 2)
 				.Resize(limits.w, limits.h, 2);
 			const offset = 90 - intensity;
 			gr.FillSolidRect(limits.x, limits.y, limits.w, limits.h, this.getUiColors()[0]);
