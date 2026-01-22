@@ -1,5 +1,5 @@
 ﻿'use strict';
-//16/01/26
+//21/01/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -374,14 +374,17 @@ const includeButton = (() => {
 			globProfiler.Print('button - ' + buttonPath.split('\\').pop());
 		} else if (buttonPath.toLowerCase().endsWith('separator')) {
 			const newKeys = Object.keys(addButtonSeparator());
+			newKeys.forEach((key) => bProcessed.add(key));
 			buttonsBar.listKeys.push(newKeys);
 			globProfiler.Print('button - ' + buttonPath.split('\\').pop());
 		} else if (buttonPath.toLowerCase().endsWith('spacer')) {
 			const newKeys = Object.keys(addButtonSpacer());
+			newKeys.forEach((key) => bProcessed.add(key));
 			buttonsBar.listKeys.push(newKeys);
 			globProfiler.Print('button - ' + buttonPath.split('\\').pop());
 		} else if (buttonPath.toLowerCase().endsWith('newline')) {
 			const newKeys = Object.keys(addButtonNewLine());
+			newKeys.forEach((key) => bProcessed.add(key));
 			buttonsBar.listKeys.push(newKeys);
 			globProfiler.Print('button - ' + buttonPath.split('\\').pop());
 		} else {
@@ -393,7 +396,7 @@ const includeButton = (() => {
 function includeButtons() {
 	if (buttonsPath.length) {
 		for (const path of buttonsPath) { includeButton(path); }
-		console.log(window.ScriptInfo.Name + ' - buttons loaded:\n\t ' + buttonsBar.listKeys.flat(Infinity).joinEvery(', ', 4));
+		console.log(window.ScriptInfo.Name + ' - buttons loaded:\n\t ' + buttonsBar.listKeys.flat(Infinity).joinEvery(', ', 8, '\n\t '));
 		return true;
 	}
 	return false;
