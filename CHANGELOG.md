@@ -24,6 +24,7 @@
 - UI: small fixes for background blend color mode.
 - UI: fixed art cycling glitch on background folder mode after using the mouse wheel.
 - UI: some default toolbar presets not being shown on first installation.
+- Presets: playback controls preset not loading properly.
 
 ## [1.4.0] - 2026-01-12
 ### Added
