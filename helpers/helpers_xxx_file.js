@@ -701,13 +701,37 @@ function _exec(command, rate = 50) {
 	const parentId = getProcessID('foobar2000.exe');
 	if (parentId !== null) { WshShell.AppActivate(parentId); }
 	return new Promise((res, rej) => {
+		let stdOut = '';
+		let stdErr = '';
 		const intervalID = setInterval(() => {
 			switch (execObj.Status) {
-				case 2: rej(execObj.StdErr.ReadAll()); break;
-				case 1: res(execObj.StdOut.ReadAll()); break;
+				case 2: {
+					while (!execObj.StdErr.AtEndOfStream) {
+						stdErr += execObj.StdErr.ReadAll();
+					}
+					clearInterval(intervalID);
+					rej(stdErr);
+					break;
+				}
+				case 1: {
+					while (!execObj.StdOut.AtEndOfStream) {
+						stdOut += execObj.StdOut.ReadAll();
+					}
+					clearInterval(intervalID);
+					res(stdOut);
+					break;
+				}
+				case 0: {
+					while (!execObj.StdOut.AtEndOfStream) {
+						stdOut += execObj.StdOut.ReadAll();
+					}
+					while (!execObj.StdErr.AtEndOfStream) {
+						stdErr += execObj.StdErr.ReadAll();
+					}
+					break;
+				}
 				default: return; // do nothing
 			}
-			clearInterval(intervalID);
 		}, rate);
 	});
 }
