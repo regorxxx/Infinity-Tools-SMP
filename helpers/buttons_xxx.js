@@ -1,5 +1,5 @@
 ﻿'use strict';
-//14/01/26
+//26/01/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -241,8 +241,18 @@ function ThemedButton({
 		}
 	};
 
+	this.stopAllAnimations = function () {
+		this.animation.forEach((obj) => {
+			obj.bActive = false;
+			obj.condition = null;
+			obj.animStep = -1;
+			obj.date =  -1;
+		});
+		throttledRepaint(this);
+	};
+
 	this.switchAnimation = function (name, bActive, condition = null, animationColors = buttonsBar.config.animationColors) {
-		const idx = this.animation.findIndex((obj) => { return obj.name === name; });
+		const idx = this.animation.findIndex((obj) => obj.name === name);
 		if (idx !== -1) { // Deactivated ones must be removed using this.cleanAnimation() afterwards
 			this.animation[idx].bActive = bActive;
 			this.animation[idx].condition = bActive ? condition : null;
@@ -261,20 +271,23 @@ function ThemedButton({
 	};
 
 	this.cleanAnimation = function () {
-		if (this.animation.length) { this.animation = this.animation.filter((animation) => { return animation.bActive; }); }
+		if (this.animation.length) { this.animation = this.animation.filter((animation) => animation.bActive); }
 	};
 
 	this.isAnimationActive = function (name) {
-		const idx = this.animation.findIndex((obj) => { return obj.name === name; });
+		const idx = this.animation.findIndex((obj) => obj.name === name);
 		return (idx !== -1 && this.animation[idx].bActive);
 	};
 
 	this.isAnyAnimationActive = function () {
-		return this.animation.some((obj) => { return obj.bActive; });
+		return this.animation.some((obj) => obj.bActive);
 	};
 
 	this.getAnimationText = function () {
-		return (this.isAnyAnimationActive() ? 'Currently processing: ' + this.animation.map((ani) => ani.name).join(', ') + '\n' : '');
+		const active = this.animation.filter((obj) => obj.bActive);
+		return active.length
+			? 'Currently processing: ' + active.map((obj) => obj.name).join(', ') + '\n'
+			: '';
 	};
 
 	this.headerText = function (bWithId) {
@@ -812,7 +825,7 @@ function ThemedButton({
 		const newScale = scale / buttonsBar.config.textScale;
 		this.gFont = _gdiFont(this.gFont.Name, this.gFont.Size * newScale);
 		this.textWidth = isFunction(this.text)
-			? (parent) => { return _gr.CalcTextWidth(this.text(parent), this.gFont); }
+			? (parent) => _gr.CalcTextWidth(this.text(parent), this.gFont)
 			: _gr.CalcTextWidth(this.text, this.gFont);
 	};
 	this.changeIconScale = function (scale) {
@@ -821,10 +834,10 @@ function ThemedButton({
 		if (!this.iconImage) {
 			this.gFontIcon = _gdiFont(this.gFontIcon.Name, this.gFontIcon.Size * newScale);
 			this.iconWidth = isFunction(this.icon)
-				? (parent) => { return _gr.CalcTextWidth(this.icon(parent), this.gFontIcon); }
+				? (parent) => _gr.CalcTextWidth(this.icon(parent), this.gFontIcon)
 				: _gr.CalcTextWidth(this.icon, this.gFontIcon);
 			this.iconHeight = isFunction(this.icon)
-				? (parent) => { return _gr.CalcTextHeight(this.icon(parent), gFontIcon); }
+				? (parent) => _gr.CalcTextHeight(this.icon(parent), gFontIcon)
 				: _gr.CalcTextHeight(this.icon, gFontIcon);
 		} else {
 			this.iconWidth = this.iconHeight = isFunction(this.icon)
@@ -1369,7 +1382,7 @@ function moveButton(fromKey, toKey) {
 	const toPos = buttonsBar.listKeys.findIndex((arr) => arr.includes(toKey));
 	buttonsPath.splice(toPos, 0, buttonsPath.splice(fromPos, 1)[0]);
 	buttonsBar.list.splice(toPos, 0, buttonsBar.list.splice(fromPos, 1)[0]);
-	const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
+	const fileNames = buttonsPath.map((path) => path.split('\\').pop());
 	_save(folders.data + barProperties.name[1] + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n')); // NOSONAR
 	// Since properties have a prefix according to their loading order, when there are multiple instances of the same
 	// script, moving a button when there are other 'clones' means the other buttons may get their properties names
@@ -1381,7 +1394,7 @@ function moveButton(fromKey, toKey) {
 		const currentId = prefix.match(/([A-z]*)(?:\d*)/)[1]; // plto
 		let currentIdNumber = 0;
 		// Backup all properties
-		const propertiesBack = buttonsBar.list.map((oldProperties) => { return getPropertiesPairs(oldProperties, '', 0, false); });
+		const propertiesBack = buttonsBar.list.map((oldProperties) => getPropertiesPairs(oldProperties, '', 0, false));
 		// Just rewrite all Ids with same prefix
 		buttonsBar.list.forEach((oldProperties, newIdx) => {
 			const oldKeys = oldProperties ? Object.keys(oldProperties) : [];
