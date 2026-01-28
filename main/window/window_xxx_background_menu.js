@@ -1,5 +1,5 @@
 ﻿'use strict';
-//12/01/26
+//23/01/26
 
 /* exported createBackgroundMenu */
 
@@ -61,7 +61,7 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 						}
 						else { this.changeConfig({ config: { [key]: option.newValue }, callbackArgs: { bSaveProperties: true } }); }
 						if (postFunc) { postFunc(option); }
-					}
+					}, flags: Object.hasOwn(option, 'flags') ? option.flags : MF_STRING
 				});
 				if (bCheck) {
 					menu.newCheckMenuLast(() => {
@@ -112,7 +112,6 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 				this.changeConfig({ config: { coverModeOptions: { path: input } }, callbackArgs: { bSaveProperties: true } });
 			}
 		}));
-		menu.getLastEntry().flags = !this.useCover || !this.coverModeOptions.bNowPlaying ? MF_GRAYED : MF_STRING;
 		if (['path', 'folder'].includes(this.coverMode.toLowerCase())) {
 			menu.newSeparator(subMenu);
 			menu.newEntry({
