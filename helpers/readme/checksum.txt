@@ -1,0 +1,30 @@
+﻿Batch checksum processing and verifier based on selection.
+
+For every selected item, it retrieves the inmmediate parent folder and then
+runs the checksum tool on every found path (after deduplication).
+
+Notes:
+------
+• Configurable checksum too. Uses ExactFile by default (pre-bundled).
+
+• To ensure UTF-8 support, file writing should be done by command line
+tool.
+
+• Header and comments tweaking can be enabled but requires reading the
+output file and re-writing it as UTF-8 file.
+
+• There is a setting for cheksum creation to skip existing checksum files
+or overwrite them. For the latter, the existing file is always deleted
+first before further processing (to avoid cyclic erorrs).
+
+Example:
+--------
+Selecting tracks from 'Aerokorda - Ashes fell' and 'Aerokorda - Hush the
+wolves' albums, will apply the tool at these paths:
+
+	H:\CD\Aerokorda\Ashes fell {2021 Self Release}
+	H:\CD\Aerokorda\Hush the wolves {2017 EU 1st Self Release}
+
+Note it doesn't try to run the tool for every track's path, but only once
+per parent folder! This ensures functionality with most folder structures
+contrary to command line scripts.

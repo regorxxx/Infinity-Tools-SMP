@@ -730,7 +730,7 @@ CALL :copy_folder helpers-external\curl
 CALL :copy_folder helpers-external\easy-table-1.2.0
 CALL :copy_folder helpers-external\exiftool
 CALL :copy_folder helpers-external\essentia
-CALL :copy_folder helpers-external\exiftool
+CALL :copy_folder helpers-external\exactfile
 CALL :copy_folder helpers-external\fastmap-0.1.2
 CALL :copy_folder helpers-external\ffmpeg
 CALL :copy_folder helpers-external\fooid-utils-js

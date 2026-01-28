@@ -50,7 +50,7 @@ addButton({
 		text: 'Checksum Tools',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {
-				const menu = settingsMenu(this, true, ['buttons_utils_crc.js.js'], {
+				const menu = settingsMenu(this, true, ['buttons_utils_checksum.js'], {
 					binCalcArgs: { input: 'Enter command line arguments for calculation:\n\n%1 will be replaced with parent folder path.\n%2 will be replaced with checksum file path.' },
 					binCheckArgs: { input: 'Enter command line arguments for verification:\n\n%1 will be replaced with parent folder path.\n%2 will be replaced with checksum file path.' },
 					checkFile: { input: 'Enter checksum file name:\n\n%1 will be replaced with parent folder name.\n\nIf there is no parent name, it will be replaced with \'_\'.' },
@@ -189,7 +189,7 @@ addButton({
 				menu.newSeparator();
 				menu.newEntry({ entryText: 'Settings...', func: () => this.onClick(MK_SHIFT) });
 				menu.newSeparator();
-				menu.newEntry({ entryText: 'Open readme...', func: () => showButtonReadme('buttons_utils_autobackup.js') });
+				menu.newEntry({ entryText: 'Open readme...', func: () => showButtonReadme('buttons_utils_checksum.js') });
 				menu.btn_up(this.currX, this.currY + this.currH);
 			}
 		},

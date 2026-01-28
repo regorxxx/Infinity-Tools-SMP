@@ -32,5 +32,6 @@
 	"buttons_tags_batch_tagger.js": "tagger.txt",
 	"buttons_stats_wrapped.js": "wrapped.txt",
 	"buttons_utils_autobackup.js": "autobackup.txt",
+	"buttons_utils_checksum.js": "checksum.txt",
 	"buttons_utils_main_menu.js": "main_menu_shortcut.txt"
 }
