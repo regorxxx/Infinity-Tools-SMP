@@ -20,8 +20,14 @@ const checksumUtils = {
 	abort: () => {
 		this.bAbort = true;
 	},
+	getSelection: function getSelection() {
+		return fb.GetFocusItem(true);
+	},
 	getSelections: function getSelections() {
 		return fb.GetSelections(1);
+	},
+	getSelectionsPaths: function getSelectionsPaths(handleList) {
+		return Array.from(new Set(fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList)));
 	},
 	getChecksumPath: function getChecksumPath(handlePath, fileMask) {
 		const idx = handlePath.lastIndexOf('\\');
@@ -30,6 +36,12 @@ const checksumUtils = {
 		const filePath = handlePath + '\\' + fileName;
 		return { parentName, fileName, filePath };
 	},
+	hasChecksum: function hasChecksum(handlePath, fileMask) {
+		return Array.isArray(handlePath)
+			? Array.from(new Set(handlePath)).every((path) => _isFile(this.getChecksumPath(path, fileMask).filePath))
+			:  _isFile(this.getChecksumPath(handlePath, fileMask).filePath);
+	},
+
 	rewriteChecksumHeader: function rewriteChecksumHeader(paths, header, bReplace) {
 		let checksum = _open(paths.filePath, utf8);
 		if (bReplace) { checksum = checksum.replace(this.commentRe, ''); }
@@ -80,9 +92,9 @@ const checksumUtils = {
 		this.bRunning = true;
 		if (handleList && handleList.Count) {
 			handleList.Sort();
-			const paths = [...new Set(fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList))];
+			const paths = this.getSelectionsPaths(handleList);
 			parent.switchAnimation('Checksum Tools processing selection', false);
-			Promise.serial(paths, (path, i) => {
+			return Promise.serial(paths, (path, i) => {
 				const animId = 'Checksum Tools processing folder ' + (i + 1) + '/' + paths.length;
 				if (bAnimation) { parent.switchAnimation(animId, true); }
 				const { parentName, fileName, filePath } = this.getChecksumPath(path, fileMask);
@@ -129,7 +141,7 @@ const checksumUtils = {
 			const paths = [...new Set(fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList))];
 			parent.switchAnimation('Checksum Tools processing selection', false);
 			const errorRe = /^(\d+).*errors/mi;
-			Promise.serial(paths, (path, i) => {
+			return Promise.serial(paths, (path, i) => {
 				const animId = 'Checksum Tools verifying folder ' + (i + 1) + '/' + paths.length;
 				if (bAnimation) { parent.switchAnimation(animId, true); }
 				const idx = path.lastIndexOf('\\');

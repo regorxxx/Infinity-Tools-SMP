@@ -29,6 +29,7 @@ prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
 	bIconMode: ['Icon-only mode', false, { func: isBoolean }],
+	bCheckOnSel: ['Icon changes if checksum found', false, { func: isBoolean }],
 	binPath: ['Binary path', (_isFile(folders.binaries + 'exactfile\\exf.exe')
 		? _foldPath(folders.binaries)
 		: folders.xxxRootName + 'helpers-external\\'
@@ -57,7 +58,12 @@ addButton({
 					binCheckArgs: { input: 'Enter command line arguments for verification:\n\n%1 will be replaced with parent folder path.\n%2 will be replaced with checksum file path.' },
 					checkFile: { input: 'Enter checksum file name:\n\n%1 will be replaced with parent folder name.\n\nIf there is no parent name, it will be replaced with \'_\'.' },
 					checkHeader: { input: 'Enter checksum header text (js-compatible string):\n\n%1 will be replaced with parent folder name.\n%2 will be replaced with current date\n\nNote every line of text should be prefixed with \';\' and new lines require \'\\r\\n\'.\n\nWarning: adding a header involves reading and then re-writing the output checksum file (to ensure UTF-8 support).' },
-					bDelComments: { popup:'Warning: deleting comment lines involves reading and then re-writing the output checksum file (to ensure UTF-8 support).' },
+					bDelComments: { popup: 'Warning: deleting comment lines involves reading and then re-writing the output checksum file (to ensure UTF-8 support).' },
+				}, {
+					bCheckOnSel: (val) => {
+						this.setCallbacks(this, val);
+						this.changeActiveOnSelection();
+					}
 				});
 				menu.btn_up(this.currX, this.currY + this.currH);
 			} else {
@@ -72,6 +78,8 @@ addButton({
 							bOverwrite: properties.bOverwrite[1], bDelComments: properties.bDelComments[1], bShowPopup: properties.bReportOnCalc[1],
 							header: properties.checkHeader[1],
 							parent: this
+						}).then(() => {
+							if (properties.bCheckOnSel[1]) { this.changeActiveOnSelection(); }
 						});
 					}, flags: checksumUtils.isRunning() ? MF_GRAYED : MF_STRING
 				});
@@ -101,6 +109,7 @@ addButton({
 			const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 			const bInfo = typeof barProperties === 'undefined' || barProperties.bTooltipInfo[1];
 			let info = 'Checksum tools for library:';
+			info += '\nChecksum: ' + (this.active ? 'found' : this.checkSelection() ? 'found' : 'not found');
 			// Entries
 			if (bCtrl || bInfo) {
 				info += '\n-----------------------------------------------------';
@@ -109,6 +118,41 @@ addButton({
 			return info;
 		},
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: '\uf1ec'
+		icon: '\uf1ec',
+		variables: {
+			checkSelection: function () {
+				const handleList = checksumUtils.getSelections();
+				handleList.Sort();
+				return handleList
+					? checksumUtils.hasChecksum(checksumUtils.getSelectionsPaths(handleList), this.buttonsProperties.checkFile[1])
+					: false;
+			},
+			changeActiveOnSelection: function () {
+				const prev = this.active;
+				this.active = this.buttonsProperties.bCheckOnSel[1]
+					? this.checkSelection()
+					: false;
+				if (prev !== this.active) { this.repaint(); }
+			},
+			eventListeners: [],
+			setCallbacks: function (parent, add) {
+				if (add) {
+					this.eventListeners.push(addEventListener('on_metadb_changed', () => {
+						this.changeActiveOnSelection();
+					}));
+					this.eventListeners.push(addEventListener('on_selection_changed', () => {
+						this.changeActiveOnSelection();
+					}));
+				} else {
+					this.eventListeners.forEach((listener) => removeEventListener(listener.event, void (0), listener.id));
+				}
+			},
+		},
+		onInit: function () {
+			if (this.buttonsProperties.bCheckOnSel[1]) {
+				this.setCallbacks(this, true);
+				this.changeActiveOnSelection();
+			}
+		}
 	})
 });
