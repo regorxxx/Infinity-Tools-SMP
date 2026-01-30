@@ -1,0 +1,170 @@
+﻿'use strict';
+//30/01/26
+
+/* exported checksumUtils */
+
+include('..\\..\\helpers\\helpers_xxx.js');
+/* global folders:readable */
+include('..\\..\\helpers\\helpers_xxx_prototypes.js');
+/* global _q:readable, dateFormatter:readable */
+include('..\\..\\helpers\\helpers_xxx_file.js');
+/* global _isFile:readable, _exec:readable, _recycleFile:readable, _resolvePath:readable, _save:readable, _jsonParse:readable, _open:readable, utf8:readable */
+
+const checksumUtils = {
+	bRunning: false,
+	bAbort: false,
+	commentRe: /;.*\r?\n?\r?/gim,
+	isRunning: () => {
+		return this.bRunning;
+	},
+	abort: () => {
+		this.bAbort = true;
+	},
+	getSelections: function getSelections() {
+		return fb.GetSelections(1);
+	},
+	getChecksumPath: function getChecksumPath(handlePath, fileMask) {
+		const idx = handlePath.lastIndexOf('\\');
+		const parentName = idx !== -1 ? handlePath.slice(idx + 1) : '_';
+		const fileName = fileMask.replaceAll('%1', parentName);
+		const filePath = handlePath + '\\' + fileName;
+		return { parentName, fileName, filePath };
+	},
+	rewriteChecksumHeader: function rewriteChecksumHeader(paths, header, bReplace) {
+		let checksum = _open(paths.filePath, utf8);
+		if (bReplace) { checksum = checksum.replace(this.commentRe, ''); }
+		checksum = (_jsonParse(_q(header)) || '')
+			.replaceAll('%1', paths.parentName)
+			.replaceAll('%2', dateFormatter.format(new Date()))
+			+ checksum;
+		return { checksum, saved: _save(paths.filePath, checksum) };
+	},
+	showCreateReport: function showCreateReport(results, bShowPopup = false) {
+		let report = 'Checksum Tools:\n';
+		if (this.bAbort) { report += '\tProcessing was aborted\n'; }
+		report += '\t' + results.length + ' processed folders';
+		report += '\t' + results.filter((r) => r.checksum === null).length + ' skipped folders';
+		report += '\n';
+		report += '\t' + results.filter((r) => r.saved).length + ' saved files';
+		report += '\t\t' + results.filter((r) => r.overwritten).length + ' overwritten files';
+		console.log(report);
+		if (bShowPopup || this.bAbort || results.some((r) => r.checksum && !r.saved)) {
+			report += '\n\n' + results.map((r) => r.path + '\\' + r.fileName + ' - ' + (r.saved ? 'saved' : (r.checksum === null ? 'skipped' : 'error'))).join('\n');
+			fb.ShowPopupMessage(report);
+		}
+		return report;
+	},
+	showVerifyReport: function showVerifyReport(results, bShowPopup = true) {
+		let report = 'Checksum Tools:\n';
+		if (this.bAbort) { report += '\tProcessing was aborted\n'; }
+		report += '\t' + results.length + ' processed folders';
+		report += '\t' + results.filter((r) => r.errors === null).length + ' skipped folders';
+		report += '\n';
+		report += '\t' + results.filter((r) => r.pass).length + ' passed';
+		report += '\t\t\t' + results.filter((r) => r.errors).length + ' errors';
+		console.log(report);
+		if (bShowPopup) {
+			report += '\n\n' + results.map((r) => r.path + '\\' + r.file + ' - ' + (r.errors ? r.errors + ' errors' : 'passed')).join('\n');
+			fb.ShowPopupMessage(report);
+		}
+		return report;
+	},
+	create: function ({
+		handleList = this.getSelections(), binPath = folders.xxx + 'exactfile\\exf.exe',
+		fileMask = '%1.sfv', args = '-osfv -r -d "%1" -otf "%2" *.*',
+		bOverwrite = true, bDelComments = true, header = '', bShowPopup = false,
+		parent = void (0)
+	} = {}) {
+		const bAnimation = parent && Object.hasOwn(parent, 'switchAnimation') && Object.hasOwn(parent, 'stopAllAnimations');
+		if (bAnimation) { parent.switchAnimation('Checksum Tools processing selection', true); }
+		this.bRunning = true;
+		if (handleList && handleList.Count) {
+			handleList.Sort();
+			const paths = [...new Set(fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList))];
+			parent.switchAnimation('Checksum Tools processing selection', false);
+			Promise.serial(paths, (path, i) => {
+				const animId = 'Checksum Tools processing folder ' + (i + 1) + '/' + paths.length;
+				if (bAnimation) { parent.switchAnimation(animId, true); }
+				const { parentName, fileName, filePath } = this.getChecksumPath(path, fileMask);
+				if (this.bAbort) { return { path, fileName, checksum: null, overwritten: false, saved: false }; }
+				const bFound = _isFile(filePath);
+				if (bFound && !bOverwrite) { return { path, fileName, checksum: null, overwritten: false, saved: false }; }
+				const overwritten = bFound ? _recycleFile(filePath) : false;
+				return _exec(_resolvePath(binPath) + ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
+					.then(() => {
+						if (bAnimation) { parent.switchAnimation(animId, false); }
+						if (_isFile(filePath)) {
+							if (bDelComments || header) {
+								const { checksum, saved } = this.rewriteChecksumHeader({ parentName, fileName, filePath }, header, bDelComments);
+								return { path, fileName, checksum, overwritten, saved };
+							}
+							console.log('Checksum Tools: ' + fileName);
+							return { path, fileName, checksum: '-not available-', overwritten, saved: true };
+						}
+						return { path, fileName, checksum: null, overwritten: false, saved: false };
+					});
+			}).then((results) => {
+				this.showCreateReport(results, bShowPopup);
+				return results;
+			}).finally(() => {
+				this.bRunning = this.bAbort = false;
+				if (bAnimation) { parent.stopAllAnimations(); }
+			});
+		} else {
+			this.bRunning = this.bAbort = false;
+			if (bAnimation) { parent.stopAllAnimations(); }
+			return Promise.resolve([]);
+		}
+	},
+	verify: function ({
+		handleList = this.getSelections(), binPath = folders.xxx + 'exactfile\\exf.exe',
+		fileMask = '%1.sfv', args = '-osfv -r -d "%1" -otf "%2" *.*',
+		parent = void (0)
+	} = {}) {
+		const bAnimation = parent && Object.hasOwn(parent, 'switchAnimation') && Object.hasOwn(parent, 'stopAllAnimations');
+		if (bAnimation) { parent.switchAnimation('Checksum Tools processing selection', true); }
+		this.bRunning = true;
+		if (handleList && handleList.Count) {
+			handleList.Sort();
+			const paths = [...new Set(fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList))];
+			parent.switchAnimation('Checksum Tools processing selection', false);
+			const errorRe = /^(\d+).*errors/mi;
+			Promise.serial(paths, (path, i) => {
+				const animId = 'Checksum Tools verifying folder ' + (i + 1) + '/' + paths.length;
+				if (bAnimation) { parent.switchAnimation(animId, true); }
+				const idx = path.lastIndexOf('\\');
+				const parentName = idx !== -1 ? path.slice(idx + 1) : '_';
+				const file = fileMask.replaceAll('%1', parentName);
+				const filePath = path + '\\' + file;
+				if (this.bAbort) { return { path, file, pass: false, errors: null }; }
+				const bFound = _isFile(filePath);
+				if (!bFound) { return { path, file, pass: false, errors: null }; }
+				return _exec(_resolvePath(binPath) + ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
+					.then((out) => {
+						if (bAnimation) { parent.switchAnimation(animId, false); }
+						if (out) { out = out.trim(); }
+						console.log(out);
+						if (out && out.length) {
+							const errors = errorRe.exec(out);
+							if (errors && errors[1]) {
+								console.log('Checksum Tools: ' + file + ' - ' + errors[1] + ' errors found');
+								return { path, file, pass: false, errors: errors[1] };
+							}
+						}
+						console.log('Checksum Tools: ' + file);
+						return { path, file, pass: true, errors: 0 };
+					});
+			}).then((results) => {
+				this.showVerifyReport(results);
+				return results;
+			}).finally(() => {
+				this.bRunning = this.bAbort = false;
+				if (bAnimation) { parent.stopAllAnimations(); }
+			});
+		} else {
+			this.bRunning = this.bAbort = false;
+			if (bAnimation) { parent.stopAllAnimations(); }
+			return Promise.resolve([]);
+		}
+	},
+};

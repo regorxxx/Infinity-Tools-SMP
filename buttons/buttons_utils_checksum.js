@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/01/26
+//30/01/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -9,15 +9,17 @@ include('..\\helpers\\buttons_xxx.js');
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable */
 include('..\\helpers\\menu_xxx.js');
-/* global _menu:readable, MF_STRING:readable, MF_GRAYED:readable, dateFormatter:readable */
+/* global _menu:readable, MF_STRING:readable, MF_GRAYED:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isBoolean:readable, isString:readable, isStringWeak:readable, _q:readable */
+/* global isBoolean:readable, isString:readable, isStringWeak:readable, */
 include('..\\helpers\\helpers_xxx_file.js');
-/* global _foldPath:readable, _isFile:readable, _exec:readable, _recycleFile:readable, _resolvePath:readable, _save:readable, _jsonParse:readable, _open:readable, utf8:readable */
+/* global _foldPath:readable, _isFile:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _gdiFont:readable, _gr:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
+include('..\\main\\checksum\\checksum.js');
+/* global checksumUtils:readable */
 
 var prefix = 'chk'; // NOSONAR[global]
 
@@ -60,131 +62,33 @@ addButton({
 				menu.btn_up(this.currX, this.currY + this.currH);
 			} else {
 				// Menu
+				const properties = this.buttonsProperties;
 				const menu = new _menu();
 				menu.newEntry({
 					entryText: 'Create checksum per dir', func: () => {
-						this.switchAnimation('Checksum Tools processing selection', true);
-						this.bRunning = true;
-						const handleList = fb.GetSelections(1);
-						if (handleList && handleList.Count) {
-							handleList.Sort();
-							const commentRe = /;.*\r?\n?\r?/gim;
-							const paths = [...new Set(fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList))];
-							this.switchAnimation('Checksum Tools processing selection', false);
-							Promise.serial(paths, (path, i) => {
-								const animId = 'Checksum Tools processing folder ' + (i + 1) + '/' + paths.length;
-								this.switchAnimation(animId, true);
-								const idx = path.lastIndexOf('\\');
-								const parentName = idx !== -1 ? path.slice(idx + 1) : '_';
-								const file = this.buttonsProperties.checkFile[1].replaceAll('%1', parentName);
-								const filePath = path + '\\' + file;
-								if (this.bAbort) { return { path, file, checksum: null, overwritten: false, saved: false }; }
-								const bFound = _isFile(filePath);
-								if (bFound && !this.buttonsProperties.bOverwrite[1]) { return { path, file, checksum: null, overwritten: false, saved: false }; }
-								const overwritten = bFound ? _recycleFile(filePath) : false;
-								return _exec(_resolvePath(this.buttonsProperties.binPath[1]) + ' ' + this.buttonsProperties.binCalcArgs[1].replaceAll('%1', path).replaceAll('%2', filePath))
-									.then(() => {
-										this.switchAnimation(animId, false);
-										if (_isFile(filePath)) {
-											if (this.buttonsProperties.bDelComments[1] || this.buttonsProperties.checkHeader[1]) {
-												let checksum = _open(filePath, utf8);
-												if (this.buttonsProperties.bDelComments[1]) { checksum = checksum.replace(commentRe, ''); }
-												checksum = (_jsonParse(_q(this.buttonsProperties.checkHeader[1])) || '')
-													.replaceAll('%1', parentName)
-													.replaceAll('%2', dateFormatter.format(new Date()))
-													+ checksum;
-												const saved = _save(filePath, checksum);
-												return { path, file, checksum, overwritten, saved };
-											}
-											console.log('Checksum Tools: ' + file);
-											return { path, file, checksum: '-not available-', overwritten, saved: true };
-										}
-										return { path, file, checksum: null, overwritten: false, saved: false };
-									});
-							}).then((results) => {
-								let report = 'Checksum Tools:\n';
-								if (this.bAbort) { report += '\tProcessing was aborted\n'; }
-								report += '\t' + results.length + ' processed folders';
-								report += '\t' + results.filter((r) => r.checksum === null).length + ' skipped folders';
-								report += '\n';
-								report += '\t' + results.filter((r) => r.saved).length + ' saved files';
-								report += '\t\t' + results.filter((r) => r.overwritten).length + ' overwritten files';
-								console.log(report);
-								if (this.buttonsProperties.bReportOnCalc[1] || this.bAbort || results.some((r) => r.checksum && !r.saved)) {
-									report += '\n\n' + results.map((r) => r.path + '\\' + r.file + ' - ' + (r.saved ? 'saved' : (r.checksum === null ? 'skipped' : 'error'))).join('\n');
-									fb.ShowPopupMessage(report);
-								}
-							}).finally(() => {
-								this.bRunning = this.bAbort = false;
-								this.stopAllAnimations();
-							});
-						} else {
-							this.bRunning = this.bAbort = false;
-							this.stopAllAnimations();
-						}
-					}, flags: this.bRunning ? MF_GRAYED : MF_STRING
+						checksumUtils.create({
+							binPath: properties.binPath[1],
+							fileMask: properties.checkFile[1], args: properties.binCalcArgs[1],
+							bOverwrite: properties.bOverwrite[1], bDelComments: properties.bDelComments[1], bShowPopup: properties.bReportOnCalc[1],
+							header: properties.checkHeader[1],
+							parent: this
+						});
+					}, flags: checksumUtils.isRunning() ? MF_GRAYED : MF_STRING
 				});
 				menu.newEntry({
 					entryText: 'Verify checksum per dir', func: () => {
-						this.switchAnimation('Checksum Tools processing selection', true);
-						this.bRunning = true;
-						const handleList = fb.GetSelections(1);
-						if (handleList && handleList.Count) {
-							handleList.Sort();
-							const paths = [...new Set(fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList))];
-							this.switchAnimation('Checksum Tools processing selection', false);
-							const errorRe = /^(\d+).*errors/mi;
-							Promise.serial(paths, (path, i) => {
-								const animId = 'Checksum Tools verifying folder ' + (i + 1) + '/' + paths.length;
-								this.switchAnimation(animId, true);
-								const idx = path.lastIndexOf('\\');
-								const parentName = idx !== -1 ? path.slice(idx + 1) : '_';
-								const file = this.buttonsProperties.checkFile[1].replaceAll('%1', parentName);
-								const filePath = path + '\\' + file;
-								if (this.bAbort) { return { path, file, pass: false, errors: null }; }
-								const bFound = _isFile(filePath);
-								if (!bFound) { return { path, file, pass: false, errors: null }; }
-								return _exec(_resolvePath(this.buttonsProperties.binPath[1]) + ' ' + this.buttonsProperties.binCheckArgs[1].replaceAll('%1', path).replaceAll('%2', filePath))
-									.then((out) => {
-										this.switchAnimation(animId, false);
-										if (out) { out = out.trim(); }
-										console.log(out);
-										if (out && out.length) {
-											const errors = errorRe.exec(out);
-											if (errors && errors[1]) {
-												console.log('Checksum Tools: ' + file + ' - ' + errors[1] + ' errors found');
-												return { path, file, pass: false, errors: errors[1] };
-											}
-										}
-										console.log('Checksum Tools: ' + file);
-										return { path, file, pass: true, errors: 0 };
-									});
-							}).then((results) => {
-								let report = 'Checksum Tools:\n';
-								if (this.bAbort) { report += '\tProcessing was aborted\n'; }
-								report += '\t' + results.length + ' processed folders';
-								report += '\t' + results.filter((r) => r.errors === null).length + ' skipped folders';
-								report += '\n';
-								report += '\t' + results.filter((r) => r.pass).length + ' passed';
-								report += '\t\t\t' + results.filter((r) => r.errors).length + ' errors';
-								console.log(report);
-								report += '\n\n' + results.map((r) => r.path + '\\' + r.file + ' - ' + (r.errors ? r.errors + ' errors' : 'passed')).join('\n');
-								fb.ShowPopupMessage(report);
-							}).finally(() => {
-								this.bRunning = this.bAbort = false;
-								this.stopAllAnimations();
-							});
-						} else {
-							this.bRunning = this.bAbort = false;
-							this.stopAllAnimations();
-						}
-					}, flags: this.bRunning ? MF_GRAYED : MF_STRING
+						checksumUtils.verify({
+							binPath: properties.binPath[1],
+							fileMask: properties.checkFile[1], args: properties.binCheckArgs[1],
+							parent: this
+						});
+					}, flags: checksumUtils.isRunning() ? MF_GRAYED : MF_STRING
 				});
 				menu.newSeparator();
 				menu.newEntry({
 					entryText: 'Abort processing', func: () => {
-						this.bAbort = true;
-					}, flags: this.bRunning ? MF_STRING : MF_GRAYED
+						checksumUtils.abort();
+					}, flags: checksumUtils.isRunning() ? MF_STRING : MF_GRAYED
 				});
 				menu.newSeparator();
 				menu.newEntry({ entryText: 'Settings...', func: () => this.onClick(MK_SHIFT) });
@@ -205,10 +109,6 @@ addButton({
 			return info;
 		},
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: '\uf1ec',
-		variables: {
-			bAbort: false,
-			bRunning: false,
-		}
+		icon: '\uf1ec'
 	})
 });
