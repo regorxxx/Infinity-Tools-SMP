@@ -1,5 +1,5 @@
 ﻿'use strict';
-//30/01/26
+//31/01/26
 
 /* exported checksumUtils */
 
@@ -26,8 +26,10 @@ const checksumUtils = {
 	getSelections: function getSelections() {
 		return fb.GetSelections(1);
 	},
-	getSelectionsPaths: function getSelectionsPaths(handleList) {
-		return Array.from(new Set(fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList)));
+	getSelectionsPaths: function getSelectionsPaths(handleList, bDeduplicate = true) {
+		return bDeduplicate
+			? Array.from(new Set(fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList)))
+			: fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList);
 	},
 	getChecksumPath: function getChecksumPath(handlePath, fileMask) {
 		const idx = handlePath.lastIndexOf('\\');
@@ -36,12 +38,16 @@ const checksumUtils = {
 		const filePath = handlePath + '\\' + fileName;
 		return { parentName, fileName, filePath };
 	},
+	findChecksum: function hasChecksum(handlePath, fileMask) {
+		return Array.isArray(handlePath)
+			? Array.from(new Set(handlePath)).map((path) => _isFile(this.getChecksumPath(path, fileMask).filePath)).filter(Boolean).length
+			: (_isFile(this.getChecksumPath(handlePath, fileMask).filePath) ? 1 : 0);
+	},
 	hasChecksum: function hasChecksum(handlePath, fileMask) {
 		return Array.isArray(handlePath)
 			? Array.from(new Set(handlePath)).every((path) => _isFile(this.getChecksumPath(path, fileMask).filePath))
-			:  _isFile(this.getChecksumPath(handlePath, fileMask).filePath);
+			: _isFile(this.getChecksumPath(handlePath, fileMask).filePath);
 	},
-
 	rewriteChecksumHeader: function rewriteChecksumHeader(paths, header, bReplace) {
 		let checksum = _open(paths.filePath, utf8);
 		if (bReplace) { checksum = checksum.replace(this.commentRe, ''); }
@@ -77,6 +83,24 @@ const checksumUtils = {
 		console.log(report);
 		if (bShowPopup) {
 			report += '\n\n' + results.map((r) => r.path + '\\' + r.file + ' - ' + (r.errors ? r.errors + ' errors' : 'passed')).join('\n');
+			fb.ShowPopupMessage(report);
+		}
+		return report;
+	},
+	showMissingReport: function showMissingReport(results, bShowPopup = true) {
+		let report = 'Checksum Tools:\n';
+		if (this.bAbort) { report += '\tProcessing was aborted\n'; }
+		const missing = results.filter((r) => r.found === false);
+		report += '\t' + results.length + ' processed folders';
+		report += '\t' + results.filter((r) => r.found === null).length + ' skipped folders';
+		report += '\n';
+		report += '\t' + missing.length + ' missing';
+		console.log(report);
+		if (bShowPopup) {
+			if (missing.length) {
+				report += '\n\nList of missing checksums:';
+				report += '\n\n' + results.filter((r) => r.found === false).map((r) => r.path).join('\n');
+			}
 			fb.ShowPopupMessage(report);
 		}
 		return report;
@@ -138,7 +162,7 @@ const checksumUtils = {
 		this.bRunning = true;
 		if (handleList && handleList.Count) {
 			handleList.Sort();
-			const paths = [...new Set(fb.TitleFormat('$directory_path(%PATH%)').EvalWithMetadbs(handleList))];
+			const paths = this.getSelectionsPaths(handleList);
 			parent.switchAnimation('Checksum Tools processing selection', false);
 			const errorRe = /^(\d+).*errors/mi;
 			return Promise.serial(paths, (path, i) => {
@@ -168,6 +192,44 @@ const checksumUtils = {
 					});
 			}).then((results) => {
 				this.showVerifyReport(results);
+				return results;
+			}).finally(() => {
+				this.bRunning = this.bAbort = false;
+				if (bAnimation) { parent.stopAllAnimations(); }
+			});
+		} else {
+			this.bRunning = this.bAbort = false;
+			if (bAnimation) { parent.stopAllAnimations(); }
+			return Promise.resolve([]);
+		}
+	},
+	findMissing: function ({
+		handleList = this.getSelections(),
+		fileMask = '%1.sfv',
+		parent = void (0)
+	} = {}) {
+		const bAnimation = parent && Object.hasOwn(parent, 'switchAnimation') && Object.hasOwn(parent, 'stopAllAnimations');
+		if (bAnimation) { parent.switchAnimation('Checksum Tools processing selection', true); }
+		this.bRunning = true;
+		if (handleList && handleList.Count) {
+			handleList.Sort();
+			const dic = new Map();
+			let paths = new Set();
+			this.getSelectionsPaths(handleList, false).forEach((path, i) => {
+				if (!paths.has(path)) {
+					paths.add(path);
+					dic.set(path, i);
+				}
+			});
+			paths = Array.from(paths);
+			parent.switchAnimation('Checksum Tools processing selection', false);
+			return Promise.serial(paths, (path, i) => {
+				const animId = 'Checksum Tools verifying folder ' + (i + 1) + '/' + paths.length;
+				if (bAnimation) { parent.switchAnimation(animId, true); }
+				if (this.bAbort) { return { path, found: null, handle: null }; }
+				return { path, found: _isFile(this.getChecksumPath(path, fileMask).filePath), handle: handleList[dic.get(path)] };
+			}).then((results) => {
+				this.showMissingReport(results);
 				return results;
 			}).finally(() => {
 				this.bRunning = this.bAbort = false;

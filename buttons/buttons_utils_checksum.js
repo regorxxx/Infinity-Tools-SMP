@@ -1,5 +1,5 @@
 ﻿'use strict';
-//30/01/26
+//31/01/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -11,9 +11,11 @@ include('..\\helpers\\buttons_xxx_menu.js');
 include('..\\helpers\\menu_xxx.js');
 /* global _menu:readable, MF_STRING:readable, MF_GRAYED:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isBoolean:readable, isString:readable, isStringWeak:readable, */
+/* global isBoolean:readable, isString:readable, isStringWeak:readable, isIntInf:readable */
 include('..\\helpers\\helpers_xxx_file.js');
 /* global _foldPath:readable, _isFile:readable */
+include('..\\helpers\\helpers_xxx_playlists.js');
+/* global sendToPlaylist:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _gdiFont:readable, _gr:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -41,6 +43,8 @@ var newButtonsProperties = { // NOSONAR[global]
 	bDelComments: ['Delete comments', false, { func: isBoolean }],
 	bOverwrite: ['Overwrite existing checksum', true, { func: isBoolean }],
 	bReportOnCalc: ['Show report on calculation', false, { func: isBoolean }],
+	bTooltipCheck: ['Tooltip shows checksums found', false, { func: isBoolean }],
+	checkOnSelLimit: ['Icon/tooltip limit to ≤n dirs', 2000, { func: isIntInf, range: [[0, Infinity]] }],
 };
 Object.keys(newButtonsProperties).forEach(p => newButtonsProperties[p].push(newButtonsProperties[p][1]));
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
@@ -59,6 +63,8 @@ addButton({
 					checkFile: { input: 'Enter checksum file name:\n\n%1 will be replaced with parent folder name.\n\nIf there is no parent name, it will be replaced with \'_\'.' },
 					checkHeader: { input: 'Enter checksum header text (js-compatible string):\n\n%1 will be replaced with parent folder name.\n%2 will be replaced with current date\n\nNote every line of text should be prefixed with \';\' and new lines require \'\\r\\n\'.\n\nWarning: adding a header involves reading and then re-writing the output checksum file (to ensure UTF-8 support).' },
 					bDelComments: { popup: 'Warning: deleting comment lines involves reading and then re-writing the output checksum file (to ensure UTF-8 support).' },
+					bTooltipCheck: { popup: 'Warning: enabling this option may affect performance when showing the tooltip on large selections, since it will check for checksum files existence at every dir before showing the tooltip.' },
+					bCheckOnSel: { popup: 'Warning: enabling this option may affect performance while performing large selections, since UI will be updated on real time after checking for checksum files existence at every dir selected.' },
 				}, {
 					bCheckOnSel: (val) => {
 						this.setCallbacks(this, val);
@@ -83,12 +89,24 @@ addButton({
 						});
 					}, flags: checksumUtils.isRunning() ? MF_GRAYED : MF_STRING
 				});
+				menu.newSeparator();
 				menu.newEntry({
 					entryText: 'Verify checksum per dir', func: () => {
 						checksumUtils.verify({
 							binPath: properties.binPath[1],
 							fileMask: properties.checkFile[1], args: properties.binCheckArgs[1],
 							parent: this
+						});
+					}, flags: checksumUtils.isRunning() ? MF_GRAYED : MF_STRING
+				});
+				menu.newEntry({
+					entryText: 'Missing checksums per dir', func: () => {
+						checksumUtils.findMissing({
+							fileMask: properties.checkFile[1],
+							parent: this
+						}).then((results) => {
+							const handleList = new FbMetadbHandleList(results.filter((r) => r.found === false).map((r) => r.handle).filter(Boolean));
+							if (handleList.Count) { sendToPlaylist(handleList, 'Checksum Tools: missing', false); }
 						});
 					}, flags: checksumUtils.isRunning() ? MF_GRAYED : MF_STRING
 				});
@@ -109,7 +127,11 @@ addButton({
 			const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 			const bInfo = typeof barProperties === 'undefined' || barProperties.bTooltipInfo[1];
 			let info = 'Checksum tools for library:';
-			info += '\nChecksum: ' + (this.active ? 'found' : this.checkSelection() ? 'found' : 'not found');
+			const cache = this.cache || (this.buttonsProperties.bTooltipCheck[1] ? this.checkSelection() : null);
+			if (cache) {
+				info += '\nChecksum: ' + cache.foundCount + ' found / ' + cache.fileCount + ' total' +
+					(this.buttonsProperties.checkOnSelLimit[1] > 0 && cache.skippedCount > 0 ? ' (' + cache.skippedCount + ' skipped)' : '');
+			}
 			// Entries
 			if (bCtrl || bInfo) {
 				info += '\n-----------------------------------------------------';
@@ -120,17 +142,24 @@ addButton({
 		prefix, buttonsProperties: newButtonsProperties,
 		icon: '\uf1ec',
 		variables: {
+			cache: null,
 			checkSelection: function () {
 				const handleList = checksumUtils.getSelections();
 				handleList.Sort();
-				return handleList
-					? checksumUtils.hasChecksum(checksumUtils.getSelectionsPaths(handleList), this.buttonsProperties.checkFile[1])
-					: false;
+				const paths = checksumUtils.getSelectionsPaths(handleList);
+				const fileCount = paths.length;
+				if (fileCount > this.buttonsProperties.checkOnSelLimit[1]) { paths.length = this.buttonsProperties.checkOnSelLimit[1]; }
+				const foundCount = handleList
+					? checksumUtils.findChecksum(paths, this.buttonsProperties.checkFile[1])
+					: 0;
+				return { count: handleList.Count, fileCount, foundCount, skippedCount: fileCount - paths.length };
 			},
 			changeActiveOnSelection: function () {
 				const prev = this.active;
-				this.active = this.buttonsProperties.bCheckOnSel[1]
-					? this.checkSelection()
+				if (this.buttonsProperties.bCheckOnSel[1]) { this.cache = this.checkSelection(); }
+				else { this.cache = null; }
+				this.active = this.cache
+					? this.cache.foundCount === this.cache.fileCount
 					: false;
 				if (prev !== this.active) { this.repaint(); }
 			},
