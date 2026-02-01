@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/01/26
+//01/02/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -18,7 +18,7 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 		/* global buttonsBar:readable, addButtonSeparator:readable, VK_CONTROL:readable, VK_LWIN:readable, forEachButton:readable, ColourTypeDUI:readable, ColourTypeCUI:readable, addButtonSpacer:readable, addButtonNewLine:readable, VK_ALT:readable, VK_SHIFT:readable */
 		/* global moveEventListener:readable */
 		'helpers\\helpers_xxx.js',
-		/* global globSettings:readable, folders:readable, globFonts:readable, DT_VCENTER:readable, DT_CENTER:readable, DT_END_ELLIPSIS:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, checkUpdate:readable , globProfiler:readable */
+		/* global globSettings:readable, folders:readable, globFonts:readable, DT_VCENTER:readable, DT_CENTER:readable, DT_END_ELLIPSIS:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, checkUpdate:readable , globProfiler:readable, debounce:readable */
 		'helpers\\helpers_xxx_foobar.js',
 		'helpers\\helpers_xxx_properties.js',
 		/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable, checkJsonProperties:readable, getPropertiesValues:readable, deleteProperties:readable */
@@ -472,10 +472,16 @@ addEventListener('on_mouse_leave', () => {
 	background.leave();
 });
 
+const scrollReload = debounce(() => window.Reload(), 250);
 addEventListener('on_mouse_wheel', (step) => {
 	if (!window.ID) { return; }
 	if (utils.IsKeyPressed(VK_CONTROL) && utils.IsKeyPressed(VK_ALT)) {
 		if (utils.IsKeyPressed(VK_SHIFT)) { background.wheelResize(step, void (0), { bSaveProperties: true }); }
+		else {
+			barProperties.scale[1] = barProperties.textScale[1] = barProperties.iconScale[1] = buttonsBar.config.scale += 0.5 * step;
+			overwriteProperties(barProperties);
+			scrollReload();
+		}
 	} else if (utils.IsKeyPressed(VK_SHIFT)) { background.cycleArtAsync(step); }
 });
 

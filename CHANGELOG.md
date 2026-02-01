@@ -13,6 +13,7 @@
 - Buttons: new button "Utils\Checksum" which is meant to greatly help with backup and integrity checks. Tool scans current selection and checks for checksum file for every parent directory (this is usually a folder per album) or creates a new one for every dir. Binary paths and arguments are customizable, by default it uses fsum (already bundled). Results are sent to console and/or popups. The main advantage of this tool over batch files and other scripts is path de-duplication, you can easily select 200 tracks and run it while ensuring the actual code only process every parent path once; while it works across libraries scattered at multiple disks, etc.
 - Buttons: menu entry to remove all buttons (along their properties).
 - UI: 'Top', 'Center' and 'Bottom' Y-Axis position settings. By default is set to 'Top'.
+- UI: UI elements are now resizable using Alt + Ctrl + Mouse wheel. It works like 'Size and placement\Set scale...' menu entry.
 ### Changed
 - Settings: internal changes at properties for future releases. This update MUST be installed before any possible future release to ensure settings are not lost on upgrading.
 - Playlist Tools\Pools: modified some of the default presets.
