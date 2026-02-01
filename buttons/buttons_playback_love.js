@@ -1,5 +1,5 @@
 ﻿'use strict';
-//24/12/25
+//01/02/26
 
 /*
 	Playback controls
@@ -146,11 +146,13 @@ addButton({
 						sel.MakeIntersection(handleList);
 						if (sel.Count) { this.repaint(); }
 					}));
-					this.eventListeners.push(addEventListener('on_selection_changed', () => {
-						this.clearSelectionCache();
-						this.getSelection();
-						this.repaint();
-					}));
+					['on_item_focus_change', 'on_selection_changed', 'on_playlists_changed', 'on_playlist_items_added', 'on_playlist_items_removed', 'on_playlist_switch', 'on_playback_new_track', 'on_playback_stop'].forEach((eventName) => {
+						this.eventListeners.push(addEventListener(eventName, () => {
+							this.clearSelectionCache();
+							this.getSelection();
+							this.repaint();
+						}));
+					});
 				} else {
 					this.eventListeners.forEach((listener) => removeEventListener(listener.event, void (0), listener.id));
 				}

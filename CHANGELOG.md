@@ -25,6 +25,7 @@
 - UI: small fixes for background blend color mode.
 - UI: fixed art cycling glitch on background folder mode after using the mouse wheel.
 - UI: some default toolbar presets not being shown on first installation.
+- Buttons: some minor fixes to repainting routines for loved button.
 - Presets: playback controls preset not loading properly.
 - Logging: spacers being shown twice at console logging (startup).
 
