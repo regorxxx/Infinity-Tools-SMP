@@ -15,6 +15,7 @@
 - UI: 'Top', 'Center' and 'Bottom' Y-Axis position settings. By default is set to 'Top'.
 ### Changed
 - Settings: internal changes at properties for future releases. This update MUST be installed before any possible future release to ensure settings are not lost on upgrading.
+- Playlist Tools\Pools: modified some of the default presets.
 - Buttons: minor playback controls preset changes.
 ### Removed
 ### Fixed

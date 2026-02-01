@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/12/25
+//31/01/26
 
 /* exported createPoolPresets */
 
@@ -455,7 +455,7 @@ function createPoolPresets({ size = 50 } = {}) {
 					fromPls: { _GROUP_0: size },
 					group: { _GROUP_0: globTags.artist },
 					limit: { _GROUP_0: 1 },
-					query: { _GROUP_0: _qCond(globTags.playCount) + ' GREATER 0 AND NOT ' + globQuery.recent  +  ' AND  (' + globQuery.ratingGr3 + ' OR ' + globQuery.loved + ') SORT DESCENDING BY ' + _qCond(globTags.playCountExpectedSincePlayed) },
+					query: { _GROUP_0: _qCond(globTags.playCount) + ' GREATER 0 AND NOT ' + globQuery.recent + ' AND  (' + globQuery.ratingGr3 + ' OR ' + globQuery.loved + ') SORT DESCENDING BY ' + _qCond(globTags.playCountExpectedSincePlayed) },
 					toPls: 'Overdue top tracks (since played)',
 					smartShuffle: 'ARTIST',
 				}
@@ -1114,7 +1114,7 @@ function createPoolPresets({ size = 50 } = {}) {
 						_LIBRARY_1: Math.floor(tenth * 1.4),
 						_LIBRARY_2: Math.floor(tenth * 1.4),
 						_LIBRARY_3: Math.floor(tenth * 0.8) || 1,
-						_LIBRARY_4: Math.floor(tenth * 1.3) ,
+						_LIBRARY_4: Math.floor(tenth * 1.3),
 						_LIBRARY_5: Math.floor(tenth * 1.4),
 						_LIBRARY_6: tenth,
 						_LIBRARY_7: Math.floor(tenth * 1.2),
@@ -1441,17 +1441,23 @@ function createPoolPresets({ size = 50 } = {}) {
 						_LIBRARY_4: queryJoin(
 							[
 								queryJoin(
-									queryCombinations(
-										['folk metal', 'Atmospheric Black Metal'],
-										[globTags.genre, globTags.style],
-										'OR'
-									),
-									'OR'
+									[
+										queryJoin(
+											queryCombinations(
+												['folk metal', 'Atmospheric Black Metal'],
+												[globTags.genre, globTags.style],
+												'OR'
+											),
+											'OR'
+										),
+										queryJoin(queryCombinations(['instrumental', 'acoustic', 'folk'], [globTags.genre, globTags.style], 'OR'), 'OR'),
+										globQuery.ratingGr3
+									],
+									'AND'
 								),
-								queryJoin(queryCombinations(['instrumental', 'acoustic', 'folk'], [globTags.genre, globTags.style], 'OR'), 'OR'),
-								globQuery.ratingGr3
+								queryJoin(queryCombinations(['power metal'], [globTags.genre, globTags.style], 'OR'), 'OR')
 							],
-							'AND'
+							'AND NOT'
 						),
 						_LIBRARY_5: queryJoin(
 							[
