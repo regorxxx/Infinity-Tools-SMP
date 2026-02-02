@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/02/26
+//02/02/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -43,7 +43,7 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 {
 	const dependencies = [
 		'helpers\\buttons_merged_menu.js' // Loads Chroma
-		/* global createButtonsMenu:readable, importSettingsMenu:readable, Chroma:readable */
+		/* global createButtonsMenu:readable, onRbtnUpImportSettings:readable, Chroma:readable */
 	];
 	let bIncludeRel = true;
 	try { include('..\\helpers\\buttons_dummy.js'); } catch (e) { bIncludeRel = false; } // eslint-disable-line no-unused-vars
@@ -455,7 +455,7 @@ addEventListener('on_mouse_lbtn_up', (x, y, mask) => { // eslint-disable-line no
 
 moveEventListener(addEventListener('on_mouse_rbtn_up', (x, y, mask) => { // eslint-disable-line no-unused-vars
 	if (utils.IsKeyPressed(VK_CONTROL) && utils.IsKeyPressed(VK_LWIN)) {
-		return importSettingsMenu().btn_up(x, y);
+		return onRbtnUpImportSettings.call(void(0), barProperties).btn_up(x, y);
 	}
 	return true;
 }));

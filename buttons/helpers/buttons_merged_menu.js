@@ -1,7 +1,7 @@
 ﻿'use strict';
-//19/01/26
+//02/02/26
 
-/* exported createButtonsMenu, importSettingsMenu */
+/* exported createButtonsMenu, onRbtnUpImportSettings */
 
 /* global buttonsPath:readable, buttonsBar:readable, barProperties:readable, buttonStates:readable, buttonSizeCheck:readable,moveButton:readable, addButtonSeparator:readable, showButtonReadme:readable, forEachButton:readable, addButtonSpacer:readable, addButtonNewLine:readable, background:readable */
 
@@ -961,16 +961,17 @@ function createButtonsMenu(name) {
 	return menu;
 }
 
-function importSettingsMenu() {
+function onRbtnUpImportSettings(properties = this.properties || {}) {
 	const menu = new _menu();
 	menu.newEntry({ entryText: 'Panel menu: ' + window.Name, flags: MF_GRAYED });
+	menu.newEntry({ entryText: 'Version: ' + window.ScriptInfo.Version, flags: MF_GRAYED });
 	menu.newSeparator();
 	menu.newEntry({
 		entryText: 'Export panel settings...', func: () => {
 			exportSettings(
-				barProperties,
+				properties,
 				[
-					barProperties.name[1] + '.json',
+					properties.name[1] + '.json',
 					Object.hasOwn(buttonsBar.buttons, 'ListenBrainz Tools') ? 'listenbrainz_*.json' : '',
 					...(Object.hasOwn(buttonsBar.buttons, 'Playlist Tools') ? ['playlistTools_*.json', 'check_library_tags_exclusion.json'] : ['']),
 					/* global sbd:readable */
@@ -1022,7 +1023,7 @@ function importSettingsMenu() {
 							.every(Boolean);
 					}
 				},
-				barProperties,
+				properties,
 				window.ScriptInfo.Name
 			);
 		}
@@ -1040,6 +1041,31 @@ function importSettingsMenu() {
 	menu.newEntry({
 		entryText: 'Panel properties...', func: () => window.ShowProperties()
 	});
+	menu.newSeparator();
+	{
+		const subMenu = menu.newMenu('Updates');
+		menu.newEntry({
+			menuName: subMenu, entryText: 'Automatically check for updates', func: () => {
+				properties.bAutoUpdateCheck[1] = !properties.bAutoUpdateCheck[1];
+				overwriteProperties(properties);
+				if (properties.bAutoUpdateCheck[1]) {
+					if (typeof checkUpdate === 'undefined') { include('..\\..\\helpers\\helpers_xxx_web_update.js'); }
+					checkUpdate({ bDownload: globSettings.bAutoUpdateDownload, bOpenWeb: globSettings.bAutoUpdateOpenWeb, bDisableWarning: false });
+				}
+			}
+		});
+		menu.newCheckMenuLast(() => properties.bAutoUpdateCheck[1]);
+		menu.newSeparator(subMenu);
+		menu.newEntry({
+			menuName: subMenu, entryText: 'Check for updates...', func: () => {
+				if (typeof checkUpdate === 'undefined') { include('..\\..\\helpers\\helpers_xxx_web_update.js'); }
+				checkUpdate({ bDownload: globSettings.bAutoUpdateDownload, bOpenWeb: globSettings.bAutoUpdateOpenWeb, bDisableWarning: false })
+					.then((result) => {
+						if (!result) { fb.ShowPopupMessage('No updates found.', window.FullPanelName + ': Update check'); }
+					});
+			}
+		});
+	}
 	menu.newSeparator();
 	menu.newEntry({
 		entryText: 'Reload panel', func: () => window.Reload()
