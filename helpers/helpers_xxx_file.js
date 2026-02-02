@@ -264,13 +264,21 @@ function _isFile(file) {
 	if (!isString(file)) { return false; }
 	file = _resolvePath(file);
 	if (file.endsWith('\\')) { file = file.slice(0, -1); }
-	try { return utils.IsFile(file); } catch (e) { return fso.FileExists(file); }  // eslint-disable-line no-unused-vars
+	if (file.length > 260) { // Long paths workaround https://stackoverflow.com/a/74352295
+		return fso.FileExists('\\\\?\\' + file);
+	} else {
+		try { return utils.IsFile(file); } catch (e) { return fso.FileExists(file); }  // eslint-disable-line no-unused-vars
+	}
 }
 
 function _isFolder(folder) {
 	if (!isString(folder)) { return false; }
 	folder = _resolvePath(folder);
-	try { return utils.IsDirectory(folder); } catch (e) { return fso.FolderExists(folder); } // eslint-disable-line no-unused-vars
+	if (folder.length > 260) { // Long paths workaround https://stackoverflow.com/a/74352295
+		return fso.FolderExists('\\\\?\\' + folder);
+	} else {
+		try { return utils.IsDirectory(folder); } catch (e) { return fso.FolderExists(folder); } // eslint-disable-line no-unused-vars
+	}
 }
 
 function _isLink(path) {
@@ -552,7 +560,7 @@ function _save(file, value, bBOM = false) {
 		}
 	}
 	if (file.length > 255) {
-		fb.ShowPopupMessage('Script is trying to save a file in a path containing more than 256 chars which leads to problems on Windows systems.\n\nPath:\n' + file + '\n\nTo avoid this problem, install your foobar portable installation at another path (with less nesting).');
+		fb.ShowPopupMessage('Script is trying to save a file in a path containing more than 260 chars which leads to problems on Windows systems.\n\nPath:\n' + file + '\n\nTo avoid this problem, install your foobar portable installation at another path (with less nesting).');
 	}
 	console.log('Error saving to ' + file);
 	return false;
