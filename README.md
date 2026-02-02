@@ -27,11 +27,13 @@ It's impossible to offer a complete list of the things that can be done with the
 
 * **Macros:** record and save menus entries used, as a macro, to be called later.
 
-* **AutoBackup:** peridic configuration backups. [foo_jesus](https://www.foobar2000.org/components/view/foo_jesus) replacement, compatible with foobar2000 v2+ and x64.
+* **AutoBackup:** periodic configuration backups. [foo_jesus](https://www.foobar2000.org/components/view/foo_jesus) replacement, compatible with foobar2000 v2+ and x64.
 
 * **ListenBrainz & last.fm:** integration with these services, for listening and feedback syncing, and/or recommendations.
 
 * **Wrapped:** create a report of your listening habits, like Spotify does, with configurable time ranges. Ready to be shared.
+
+* **Checksum tools:** batch checksum verification and creation for files on your library, to easily handle backups and files integrity.
 
 * **Music Map:** advanced [offline music similarity recommendation service](https://github.com/regorxxx/Music-Graph) based on genre similarity and not "popularity".
   
