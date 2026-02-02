@@ -19,6 +19,7 @@
 - Settings: internal changes at properties for future releases. This update MUST be installed before any possible future release to ensure settings are not lost on upgrading.
 - Playlist Tools\Pools: modified some of the default presets.
 - Buttons: minor playback controls preset changes.
+- Helpers: support for long paths (>260 chars) in multiple internal file handling functions.
 ### Removed
 ### Fixed
 - Installation: panel menu, accessed through 'Ctrl + Win + R. Click' (which works globally on any script and panel, at any position), not being displayed in some cases.
