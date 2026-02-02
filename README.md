@@ -89,6 +89,6 @@ Not properly following the installation instructions will result in scripts not 
 Automatic package [built from GitHub](https://nightly.link/regorxxx/Infinity-Tools-SMP/workflows/build/main/file.zip) (using the latest commit). Unzip 'file.zip' downloaded and load the '\*-SMP-\*-\*-\*-package.zip' inside as package within your JS host component.
 
 [changelog]: CHANGELOG.md
-[version_badge]: https://img.shields.io/github/release/regorxxx/Playlist-Tools-SMP.svg
+[version_badge]: https://img.shields.io/github/release/regorxxx/Infinity-Tools-SMP.svg
 [codacy_badge]: https://api.codacy.com/project/badge/Grade/e04be28637dd40d99fae7bd92f740677
-[codefactor_badge]: https://www.codefactor.io/repository/github/regorxxx/Playlist-Tools-SMP/badge/main
+[codefactor_badge]: https://www.codefactor.io/repository/github/regorxxx/Infinity-Tools-SMP/badge/main
