@@ -15,6 +15,7 @@
 - UI: 'Top', 'Center' and 'Bottom' Y-Axis position settings. By default is set to 'Top'.
 - UI: UI elements are now resizable using Alt + Ctrl + Mouse wheel. It works like 'Size and placement\Set scale...' menu entry.
 ### Changed
+- Playlist Tools\Pools: modified some of the default presets and added new ones.
 - Installation: panel menu, accessed through 'Ctrl + Win + R. Click' (which works globally on any script and panel, at any position), now also includes the script version number and a submenu to check and set auto-updates.
 - Settings: internal changes at properties for future releases. This update MUST be installed before any possible future release to ensure settings are not lost on upgrading.
 - Playlist Tools\Pools: modified some of the default presets.
@@ -22,6 +23,7 @@
 - Helpers: support for long paths (>260 chars) in multiple internal file handling functions.
 ### Removed
 ### Fixed
+- Playlist Tools\Pools: fix to one of the default presets.
 - Installation: panel menu, accessed through 'Ctrl + Win + R. Click' (which works globally on any script and panel, at any position), not being displayed in some cases.
 - UI: missing settings for 'Share UI settings' feature.
 - UI: small fixes to display of separators, new lines, etc. at menu button lists.
