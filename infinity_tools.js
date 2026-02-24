@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/02/26
+//24/02/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -54,6 +54,7 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 globProfiler.Print('helpers');
 
 let barProperties = {
+	drawMode: ['Draw mode: GDI (0), D2D (1)', 0, { func: isInt, range: [[0,1]] }],
 	name: ['Name of config json file', 'buttons_' + randomString(5), { func: isString }],
 	toolbarColor: ['Toolbar color', -1, { func: isInt }],
 	textColor: ['Buttons\' text color', -1, { func: isInt }],
@@ -108,6 +109,9 @@ Object.keys(barProperties).forEach(p => barProperties[p].push(barProperties[p][1
 	}
 }
 checkJsonProperties(barProperties);
+
+// GDI/D2D draw mode
+window.DrawMode = barProperties.drawMode[1];
 
 // Config at buttons_xxx.js
 // Global toolbar color
