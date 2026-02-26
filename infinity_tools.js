@@ -12,6 +12,9 @@ var bLoadTags = true; // NOSONAR
 
 if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '1.4.0-beta', features: { drag_n_drop: false } }); }
 
+// GDI/D2D draw mode
+window.DrawMode = Math.max(Math.min(window.GetProperty('bar.Draw mode: GDI (0), D2D (1)', 0), 1), 0);
+
 {
 	const dependencies = [
 		'helpers\\buttons_xxx.js',
@@ -109,9 +112,6 @@ Object.keys(barProperties).forEach(p => barProperties[p].push(barProperties[p][1
 	}
 }
 checkJsonProperties(barProperties);
-
-// GDI/D2D draw mode
-window.DrawMode = barProperties.drawMode[1];
 
 // Config at buttons_xxx.js
 // Global toolbar color
