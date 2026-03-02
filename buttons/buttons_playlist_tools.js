@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//02/03/26
 
 /*
 	Playlist Tools Menu
@@ -26,7 +26,7 @@ if (!window.ScriptInfo.Name) { window.DefineScript('Playlist Tools: Button', { a
 		'main\\playlist_tools\\playlist_tools_menu.js'];
 	/* global menu_prefix:writable, menu:readable, menuAlt:readable, defaultArgs:readable, menu_prefix_panel:readable, updateMenuProperties:readable, menu_properties:readable , menuTooltip:readable */
 	/* global isBoolean:readable */
-	/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+	/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 	/* global updateCache:readable */
 	let bIncludeRel = true;
 	try { include('..\\helpers\\helpers_xxx_dummy.js'); } catch (e) { bIncludeRel = false; } // eslint-disable-line no-unused-vars
@@ -57,7 +57,7 @@ var newButtonsProperties = { // NOSONAR [shared on files]
 
 addButton({
 	'Playlist Tools': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth('Playlist Tools', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Playlist Tools', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 		text: 'Playlist Tools',
 		func: function (mask) {
 			if (!defaultArgs.parent) { defaultArgs.parent = this; } // Register this button as parent

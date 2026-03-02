@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//02/03/26
 
 /*
 	Main Menu shortcut
@@ -21,7 +21,7 @@ include('..\\helpers\\menu_xxx_extras.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isJSON:readable, isString:readable, _p:readable, isStringWeak:readable, _b:readable, doOnce:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
 include('..\\helpers\\helpers_xxx_input.js');
@@ -53,7 +53,7 @@ buttonsBar.list.push(newButtonsProperties);
 {
 	const newButton = {
 		'Main Menu': new ThemedButton({
-			coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth(newButtonsProperties.customName[1], _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+			coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.customName[1], _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 			text: newButtonsProperties.customName[1],
 			func: function (mask) {
 				const list = JSON.parse(this.buttonsProperties.entries[1]);
@@ -133,7 +133,7 @@ buttonsBar.list.push(newButtonsProperties);
 									// Rename
 									this.icon = this.buttonsProperties.icon[1] = option.icon || this.buttonsProperties.icon[3];
 									this.text = this.buttonsProperties.customName[1] = option.entryText;
-									this.w = _gr.CalcTextWidth(option.entryText, _gdiFont('Segoe UI', 12 * buttonsBar.config.scale)) + 30;
+									this.w = _textWidth(option.entryText, _gdiFont('Segoe UI', 12 * buttonsBar.config.scale)) + 30;
 									this.w *= buttonsBar.config.scale;
 									this.changeScale(buttonsBar.config.scale);
 									// Other config
@@ -261,7 +261,7 @@ buttonsBar.list.push(newButtonsProperties);
 							if (input === null) { return; }
 							this.text = this.buttonsProperties.customName[1] = input;
 							overwriteProperties(this.buttonsProperties); // Force overwriting
-							this.w = _gr.CalcTextWidth(input, _gdiFont('Segoe UI', 12 * buttonsBar.config.scale)) + 30;
+							this.w = _textWidth(input, _gdiFont('Segoe UI', 12 * buttonsBar.config.scale)) + 30;
 							this.w *= buttonsBar.config.scale;
 							this.changeScale(buttonsBar.config.scale);
 							window.Repaint();

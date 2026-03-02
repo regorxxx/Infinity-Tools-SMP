@@ -1,5 +1,5 @@
 'use strict';
-//11/12/25
+//02/03/26
 
 /*
 	Integrates Last.fm recommendations statistics within foobar2000 library.
@@ -17,7 +17,7 @@ include('..\\helpers\\helpers_xxx_file.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isStringWeak:readable, _t:readable, _b:readable, isInt:readable, isJSON:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
@@ -77,7 +77,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Last.fm Tools': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth('Last.fm', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Last.fm', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 		text: 'Last.fm',
 		func: function (mask) {
 			const properties = this.buttonsProperties;

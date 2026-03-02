@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/25
+//02/03/26
 
 /*
 	Automatic tagging...
@@ -21,7 +21,7 @@ include('..\\helpers\\buttons_xxx.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isJSON:readable, isString:readable,  */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _textLinesWrap:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -59,7 +59,7 @@ buttonsBar.list.push(newButtonsProperties);
 {
 	const newButton = {
 		'Tagger': new ThemedButton({
-			coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth('Tagger', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+			coordinates: { x: 0, y: 0, w: _textWidth('Tagger', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 			text: 'Tagger',
 			func: function (mask) {
 				const handleList = plman.GetPlaylistSelectedItems(plman.ActivePlaylist);
@@ -255,7 +255,7 @@ buttonsBar.list.push(newButtonsProperties);
 				let info = 'Tag selected tracks:';
 				info += '\n' + this.tAut.description();
 				const font = buttonsBar.tooltipButton.font;
-				info = _gr.EstimateLineWrap(info, _gdiFont(font.name, font.size), 400).filter(isString).join('\n');
+				info = _textLinesWrap(info, _gdiFont(font.name, font.size), 400).filter(isString).join('\n');
 				// Modifiers
 				const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 				const bInfo = typeof barProperties === 'undefined' || barProperties.bTooltipInfo[1];

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/02/26
+//02/03/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -17,7 +17,7 @@ include('helpers_xxx_prototypes_smp.js');
 include('helpers_xxx_properties.js');
 /* global getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable */
 include('helpers_xxx_UI.js');
-/* global RGB:readable, RGBA:readable, _tt:readable, _scale:readable, _gdiFont:readable, _gr:readable, invert:readable, isDark:readable, opaqueColor:readable, toRGB:readable, blendColors:readable, lightenColor:readable */
+/* global RGB:readable, RGBA:readable, _tt:readable, _scale:readable, _gdiFont:readable, _textWidth:readable, _textHeight:readable, invert:readable, isDark:readable, opaqueColor:readable, toRGB:readable, blendColors:readable, lightenColor:readable */
 include('helpers_xxx_flags.js');
 /* global buttonStates:readable, Flag:readable */
 include('callbacks_xxx.js');
@@ -174,11 +174,11 @@ function ThemedButton({
 			? text
 			: String(text);
 	this.textWidth = isFunction(this.text)
-		? (parent) => _gr.CalcTextWidth(this.text(parent), gFont)
-		: _gr.CalcTextWidth(this.text, gFont);
+		? (parent) => _textWidth(this.text(parent), gFont)
+		: _textWidth(this.text, gFont);
 	this.textHeight = isFunction(this.text)
-		? (parent) => _gr.CalcTextHeight(this.text(parent), gFont)
-		: _gr.CalcTextHeight(this.text, gFont);
+		? (parent) => _textHeight(this.text(parent), gFont)
+		: _textHeight(this.text, gFont);
 	this.textFlags = new Flag(DT_CENTER | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX | DT_NOCLIP);
 	this.iconImage = this.gFontIcon === null;
 	if (this.iconImage) {
@@ -190,11 +190,11 @@ function ThemedButton({
 		// if using the default font, then it has probably failed to load the right one, skip icon
 		this.icon = this.gFontIcon.Name !== 'Microsoft Sans Serif' ? icon : null;
 		this.iconWidth = isFunction(this.icon)
-			? (parent) => _gr.CalcTextWidth(this.icon(parent), gFontIcon)
-			: _gr.CalcTextWidth(this.icon, gFontIcon);
+			? (parent) => _textWidth(this.icon(parent), gFontIcon)
+			: _textWidth(this.icon, gFontIcon);
 		this.iconHeight = isFunction(this.icon)
-			? (parent) => _gr.CalcTextHeight(this.icon(parent), gFontIcon)
-			: _gr.CalcTextHeight(this.icon, gFontIcon);
+			? (parent) => _textHeight(this.icon(parent), gFontIcon)
+			: _textHeight(this.icon, gFontIcon);
 	}
 	this.func = func;
 	this.prefix = prefix; // This let us identify properties later for different instances of the same button, like an unique ID
@@ -801,7 +801,7 @@ function ThemedButton({
 	};
 
 	this.adjustButtonWidth = function (newName, offset = 30) {
-		this.w = _gr.CalcTextWidth(newName, this.gFont) + offset;
+		this.w = _textWidth(newName, this.gFont) + offset;
 		this.w *= buttonsBar.config.scale;
 	};
 
@@ -825,8 +825,8 @@ function ThemedButton({
 		const newScale = scale / buttonsBar.config.textScale;
 		this.gFont = _gdiFont(this.gFont.Name, this.gFont.Size * newScale);
 		this.textWidth = isFunction(this.text)
-			? (parent) => _gr.CalcTextWidth(this.text(parent), this.gFont)
-			: _gr.CalcTextWidth(this.text, this.gFont);
+			? (parent) => _textWidth(this.text(parent), this.gFont)
+			: _textWidth(this.text, this.gFont);
 	};
 	this.changeIconScale = function (scale) {
 		this.clearIconCache();
@@ -834,11 +834,11 @@ function ThemedButton({
 		if (!this.iconImage) {
 			this.gFontIcon = _gdiFont(this.gFontIcon.Name, this.gFontIcon.Size * newScale);
 			this.iconWidth = isFunction(this.icon)
-				? (parent) => _gr.CalcTextWidth(this.icon(parent), this.gFontIcon)
-				: _gr.CalcTextWidth(this.icon, this.gFontIcon);
+				? (parent) => _textWidth(this.icon(parent), this.gFontIcon)
+				: _textWidth(this.icon, this.gFontIcon);
 			this.iconHeight = isFunction(this.icon)
-				? (parent) => _gr.CalcTextHeight(this.icon(parent), gFontIcon)
-				: _gr.CalcTextHeight(this.icon, gFontIcon);
+				? (parent) => _textHeight(this.icon(parent), gFontIcon)
+				: _textHeight(this.icon, gFontIcon);
 		} else {
 			this.iconWidth = this.iconHeight = isFunction(this.icon)
 				? () => 12.25 * scale

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//24/09/25
+//02/03/26
 
 /*
 	Fingerprint tag (Chromaprint)
@@ -16,7 +16,7 @@ include('..\\helpers\\helpers_xxx_file.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isString:readable, isInt:readable, isBoolean:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 include('..\\main\\main_menu\\main_menu_custom.js'); // Dynamic SMP menu
@@ -51,7 +51,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Fingerprint Tools': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth('Fingerprinting', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Fingerprinting', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 		text: 'Fingerprinting',
 		func: function (mask) { // eslint-disable-line no-unused-vars
 			return createFpMenuLeft.bind(this)().btn_up(this.currX, this.currY + this.currH);

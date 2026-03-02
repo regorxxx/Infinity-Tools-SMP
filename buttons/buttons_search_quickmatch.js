@@ -1,5 +1,5 @@
 ﻿'use strict';
-//11/12/25
+//02/03/26
 
 /*
 	Quickmatch same....
@@ -23,7 +23,7 @@ include('..\\helpers\\helpers_xxx_prototypes.js');
 include('..\\helpers\\helpers_xxx_file.js');
 /* global _isFile:readable, utf8:readable, _jsonParseFileCheck:readable, _foldPath:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable  */
 include('..\\helpers\\helpers_xxx_input.js');
@@ -90,7 +90,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Quickmatch': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth('Quickmatch', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Quickmatch', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 		text: 'Quickmatch',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

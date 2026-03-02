@@ -1,5 +1,5 @@
 ﻿'use strict';
-//11/12/25
+//02/03/26
 
 /*
 	Removes duplicates on active playlist without changing order. It's currently set to title-artist-date,
@@ -24,7 +24,7 @@ include('..\\helpers\\menu_xxx_extras.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isStringWeak:readable, isJSON:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
 include('..\\main\\filter_and_query\\remove_duplicates.js');
@@ -70,7 +70,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Remove Duplicates': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth('Rmv. duplicates', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Rmv. duplicates', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 		text: 'Rmv. duplicates',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

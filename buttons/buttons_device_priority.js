@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//02/03/26
 
 /*
 	Output device priority
@@ -19,7 +19,7 @@ include('..\\helpers\\helpers_xxx_prototypes.js');
 include('..\\helpers\\helpers_xxx_file.js');
 /* global _isFile:readable, _save:readable, utf8:readable, _jsonParseFileCheck:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
 include('..\\helpers\\callbacks_xxx.js');
@@ -51,7 +51,7 @@ const devicesPriorityFile = folders.data + 'devices_priority.json';
 
 addButton({
 	'Output device priority': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth('Auto-device', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Auto-device', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 		text: 'Auto-device',
 		func: function () {
 			const length = 5;

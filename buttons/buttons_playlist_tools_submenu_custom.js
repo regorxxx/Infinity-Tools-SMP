@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/10/25
+//02/03/26
 
 /*
 	Playlist Tools Submenu Custom
@@ -17,7 +17,7 @@ include('..\\helpers\\helpers_xxx_properties.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isStringWeak:readable, isFunction:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 include('..\\helpers\\menu_xxx.js');
 /* global _menu:readable  */
 
@@ -34,7 +34,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Playlist Tools SubMenu (CUSTOM)': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth(newButtonsProperties.customName[1], _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.customName[1], _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 		text: newButtonsProperties.customName[1],
 		func: function (mask) {
 			if (isPlaylistToolsLoaded()) {
@@ -190,7 +190,7 @@ addButton({
 				}
 				if (icon !== this.icon) {
 					this.icon = icon;
-					this.iconWidth = _gr.CalcTextWidth(this.icon, this.gFontIcon);
+					this.iconWidth = _textWidth(this.icon, this.gFontIcon);
 				}
 			}
 		},

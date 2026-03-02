@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/09/25
+//02/03/26
 
 /*
 	Output device selector
@@ -16,7 +16,7 @@ include('..\\helpers\\menu_xxx.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 
@@ -36,7 +36,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Output device switcher': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth('Devices', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Devices', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 		text: 'Devices',
 		func: function () {
 			const menu = new _menu();

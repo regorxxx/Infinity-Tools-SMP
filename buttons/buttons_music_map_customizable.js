@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//02/03/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -11,7 +11,7 @@ include('..\\helpers\\helpers_xxx_properties.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isJSON:readable, _p:readable , isStringWeak:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_file.js');
 /* global _isFile:readable, utf8:readable, _jsonParseFileCheck:readable, WshShell:readable , popup:readable */
 include('..\\main\\search_by_distance\\search_by_distance.js'); // Load after buttons_xxx.js so properties are only set once
@@ -62,7 +62,7 @@ testBaseTags(JSON.parse(newButtonsProperties.tags[1]));
 */
 addButton({
 	[sbd.name + ' Customizable']: new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth(newButtonsProperties.customName[1], _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 35 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.customName[1], _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 35 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 		text: newButtonsProperties.customName[1],
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

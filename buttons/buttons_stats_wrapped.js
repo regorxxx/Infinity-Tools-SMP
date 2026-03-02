@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/01/26
+//02/03/26
 
 /*
 	Wrapped
@@ -20,7 +20,7 @@ include('..\\helpers\\buttons_xxx_menu.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isStringWeak:readable, _p:readable, isJSON:readable, capitalizeAll:readable, _b:readable, isInt:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _gr:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable  */
 include('..\\main\\main_menu\\main_menu_custom.js');
@@ -74,7 +74,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Wrapped': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _gr.CalcTextWidth('Wrapped', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Wrapped', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
 		text: 'Wrapped',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {
