@@ -1,5 +1,5 @@
 ﻿'use strict';
-//26/01/26
+//27/02/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -684,9 +684,9 @@ function ThemedButton({
 					iconImage = gdi.CreateImage(this.gFontIcon.Size, this.gFontIcon.Size);
 					const g = iconImage.GetGraphics();
 					g.DrawString(iconCalculated, this.gFontIcon, lightenColor(buttonsBar.config.activeColor, 50), 0, 0, this.gFontIcon.Size, this.gFontIcon.Size, DT_CENTER | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX);
+					iconImage.ReleaseGraphics(g);
 					iconImage = iconImage.Resize(this.gFontIcon.Size + 2, this.gFontIcon.Size + 2, InterpolationMode.Bilinear);
 					iconImage.StackBlur(2);
-					iconImage.ReleaseGraphics(g);
 					// Image gets shifted in x and y axis... since it's not using text flags
 					if (bVerticalAlignIcon) {
 						if (textPos === 'top') { iconCoordsBg.y += iconImage.Height - _scale(2); }

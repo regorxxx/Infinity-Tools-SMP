@@ -67,7 +67,7 @@ recommendations using these stats.
 Additional Tips:
 ----------------
 	• You can use your own images in offline mode by putting them
-	at '[foobar profile]\js_data\temp\wrapped\img\' subfolders. All
+	at '[FB2K_PROFILE]\js_data\temp\wrapped\img\' subfolders. All
 	(artist, album & cities) image file names must be lower case,
 	without spaces, limited to 10 chars and jpg. Ex: 'fleetwoodm.jpg'
 
@@ -85,13 +85,13 @@ Additional Tips:
 	some listens are missing. Note it will take some time since it
 	will retrieve the entire listening history from external services.
 	This database (to be reused offline) will be saved at:
-	'[foobar profile]\js_data\listenbrainz_listens_[user].json'
+	'[FB2K_PROFILE]\js_data\listenbrainz_listens_[user].json'
 
 	• In offline mode external listens may also be used as long as
 	the user name associated have been provided (since the listening
 	history is saved on JSON by username). Database as a single file
 	containing an array of listen objects must be present at:
-	'[foobar profile]\js_data\listenbrainz_listens_[user].json'
+	'[FB2K_PROFILE]\js_data\listenbrainz_listens_[user].json'
 
 	• There is a setting to halve reported BPMs by tracks with a high
 	value (> 130) because automatic BPM analysis tools usually fail
@@ -163,12 +163,12 @@ Optional:
 		◦ Win 7: 4.3.0 (or lower)
 
 	• ExifTool: To clean all metadata from images used on report.
-	Put binaries at: [profile folder]\binaries\exiftool\exiftool.exe
+	Put binaries at: [FB2K_PROFILE]\binaries\exiftool\exiftool.exe
 		◦ 64 bit: https://exiftool.org/
 		◦ 32 bit: https://oliverbetz.de/pages/Artikel/ExifTool-for-Windows
 
 	• Pingo: To optimize images used (will greatly reduce file size).
-	Put binaries at: [profile folder]\binaries\pingo\pingo.exe
+	Put binaries at: [FB2K_PROFILE]\binaries\pingo\pingo.exe
 		◦ 64 bit: https://css-ig.net/pingo
 		◦ 32 bit: not available
 

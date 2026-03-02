@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/12/25
+//02/03/26
 
 /* exported findStyleGenresMissingGraph , getNearestGenreStyles, getNearestGenreStylesV2 */
 
@@ -95,8 +95,8 @@ function findStyleGenresMissingGraph({ genreStyleFilter = [], genreStyleTag = ['
 			'planned to add every possible substitution to the original graph)\n\n' +
 			'Graph descriptors:\n'
 			: '') +
-		'[scripts folder]\\main\\music_graph\\music_graph_descriptors_xxx.js\n' +
-		'[profile folder]\\js_data\\helpers\\music_graph_descriptors_xxx_user.js' + (userFileNotFound || userFileEmpty) + '\n\n' +
+		'[SCRIPTS_FOLDER]\\main\\music_graph\\music_graph_descriptors_xxx.js\n' +
+		'[FB2K_PROFILE]\\js_data\\helpers\\music_graph_descriptors_xxx_user.js' + (userFileNotFound || userFileEmpty) + '\n\n' +
 		(missing.length > 5
 			? 'If you don\'t plan to re-tag your files or add substitutions and there are\n' +
 			'too many missing genre/styles, then it\'s recommended to use only\n' +
