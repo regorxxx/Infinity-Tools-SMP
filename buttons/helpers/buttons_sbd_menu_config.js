@@ -1,5 +1,5 @@
 ﻿'use strict';
-//26/12/25
+//05/03/26
 
 /* exported createConfigMenu */
 
@@ -1607,14 +1607,14 @@ function createConfigMenu(parent) {
 								stats.total += sbd.profiler.Time;
 								sbd.profiler.CheckPoints.forEach((sp) => {
 									const found = stats.steps.find((s) => s && s.name === sp.name);
-									if (found) { found.acc += sp.acc; }
+									if (found) { found.timeAcc += sp.timeAcc; }
 									else { stats.steps.push({ ...sp }); }
 								});
 								return Promise.wait(1000);
 							}).then(() => {
 								console.log('Times executed:\t' + times);
 								console.log('Average runtime:\t' + stats.total / times + ' ms');
-								stats.steps.sort((a, b) => strNumCollator.compare(a.name, b.name)).forEach((s) => console.log('\t' + s.name + ':\t' + s.acc / times + ' ms')); // NOSONAR
+								stats.steps.sort((a, b) => strNumCollator.compare(a.name, b.name)).forEach((s) => console.log('\t' + s.name + ':\t' + s.timeAcc / times + ' ms')); // NOSONAR
 							});
 
 						}
