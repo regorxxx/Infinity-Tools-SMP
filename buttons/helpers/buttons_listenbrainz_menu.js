@@ -1,5 +1,5 @@
 'use strict';
-//01/12/25
+//07/03/26
 
 /* exported listenBrainzMenu */
 
@@ -1148,6 +1148,58 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				}, flags: bListenBrainz ? MF_STRING : MF_GRAYED
 			});
 		}
+	}
+	menu.newSeparator();
+	{
+		menu.newEntry({
+			entryText: 'Discover lastest releases...', func: async () => {
+				if (!await checkLBToken()) { return false; }
+				const token = bListenBrainz ? getToken() : null;
+				if (!token) { return; }
+				this.switchAnimation('ListenBrainz user retrieval', true);
+				const user = await lb.retrieveUser(token);
+				this.switchAnimation('ListenBrainz user retrieval', false);
+				this.switchAnimation('ListenBrainz data retrieval', true);
+				const response = await lb.getFreshReleases(user, void (0), { sort: 'release_date', past: true, future: false, days: 90 }, token);
+				this.switchAnimation('ListenBrainz data retrieval', false);
+				if (!response) { return; }
+				const library = fb.GetLibraryItems();
+				const table = new Table;
+				response.reverse().forEach((r) => {
+					if ((fb.GetQueryItemsCheck(library, 'ALBUM IS ' + r.release_name) || new FbMetadbHandleList()).Count === 0) {
+						table.cell('Artist - Album', r.artist_credit_name.cut(50) + ' - ' + r.release_name.cut(100));
+						table.cell('Date', r.release_date);
+						table.cell('URL', 'https://listenbrainz.org/album/' + r.release_group_mbid);
+						table.newRow();
+					}
+				});
+				const report = table.toString();
+				fb.ShowPopupMessage(report, 'ListenBrainz');
+			}, flags: bListenBrainz ? MF_STRING : MF_GRAYED, data: { bDynamicMenu: true }
+		});
+		menu.newEntry({
+			entryText: 'Discover upcoming releases...', func: async () => {
+				if (!await checkLBToken()) { return false; }
+				const token = bListenBrainz ? getToken() : null;
+				if (!token) { return; }
+				this.switchAnimation('ListenBrainz user retrieval', true);
+				const user = await lb.retrieveUser(token);
+				this.switchAnimation('ListenBrainz user retrieval', false);
+				this.switchAnimation('ListenBrainz data retrieval', true);
+				const response = await lb.getFreshReleases(user, void (0), { sort: 'release_date', past: false, future: true, days: 90 }, token);
+				this.switchAnimation('ListenBrainz data retrieval', false);
+				if (!response) { return; }
+				const table = new Table;
+				response.reverse().forEach((r) => {
+					table.cell('Artist - Album', r.artist_credit_name.cut(50) + ' - ' + r.release_name.cut(100));
+					table.cell('Date', r.release_date);
+					table.cell('URL', 'https://listenbrainz.org/album/' + r.release_group_mbid);
+					table.newRow();
+				});
+				const report = table.toString();
+				fb.ShowPopupMessage(report, 'ListenBrainz');
+			}, flags: bListenBrainz ? MF_STRING : MF_GRAYED, data: { bDynamicMenu: true }
+		});
 	}
 	menu.newSeparator();
 	{	// Other tools

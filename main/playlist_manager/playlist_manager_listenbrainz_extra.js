@@ -1,5 +1,5 @@
 ﻿'use strict';
-//06/08/25
+//07/03/26
 
 /* global youTube:readable */
 include('..\\..\\helpers\\helpers_xxx.js');
@@ -15,7 +15,7 @@ include('..\\..\\helpers\\helpers_xxx_tags.js');
 include('..\\..\\helpers\\helpers_xxx_tags_extra.js');
 /* global writeSimilarArtistsTags:readable, updateTrackSimilarTags:readable, updateSimilarDataFile:readable */
 include('..\\..\\helpers\\helpers_xxx_web.js');
-/* global send:readable */
+/* global send:readable, addUrlParams:readable, sendV2:readable */
 include('..\\filter_and_query\\remove_duplicates.js');
 /* global removeDuplicates:readable */
 include('..\\..\\helpers-external\\easy-table-1.2.0\\table.js'); const Table = module.exports;
@@ -473,4 +473,97 @@ ListenBrainz.updateTrackSimilarTags = function ({ data, iNum = 10, tagName = glo
  * @returns {boolean}
  */
 ListenBrainz.updateSimilarDataFile = updateSimilarDataFile.bind(ListenBrainz);
+/**
+ * Retrieves fresh releases data for the given user
+ * @see {@link https://listenbrainz.readthedocs.io/en/latest/users/api/misc.html#get--1-user-(mb_username-user_name)-fresh_releases}
+ * @name getFreshReleases
+ * @kind method
+ * @memberof ListenBrainz
+ * @param {string} user
+ * @param {{include: Set<string>, exclude: Set<string>}} type - [['album']] Release type: 'Album'|'Compilation'|'EP|'Single'|'Live'|'Soundtrack'|'Remix'|'Broadcast'|'Other'
+ * @param {{sort: 'release_date'|'artist_credit_name'|'release_name'|'confidence', past: boolean, future: boolean, days: number }} params - [{sort: 'release_date', past: true, future: true, days: 90} Query param. Max days = 14]
+ * @param {string} token
+ * @returns {Promise.<{artist_credit_name: string, artist_mbids: string[], caa_id: number|null, caa_release_mbid: string|null, confidence: number, listen_count: 0, release_date: string, release_group_mbid: string, release_group_primary_type: string, release_group_secondary_type: string|null, release_mbid: string, release_name: string, release_tags: string[] }[]>}
+ */
+ListenBrainz.getFreshReleases = function (user, type = { include: new Set(['Album']), exclude: new Set(['Compilation', 'Live', 'Soundtrack']) }, params = { sort: 'release_date', past: true, future: true, days: 90 }, token = '') {
+	if (!user) { console.log('getFreshReleases: no user provided'); return Promise.resolve([]); }
+	return send({
+		method: 'GET',
+		URL: 'https://api.listenbrainz.org/1/user/' + user + '/fresh_releases' + addUrlParams(params),
+		requestHeader: [['Content-Type', 'application/json'], ['Authorization', 'Token ' + token]],
+		bypassCache: true
+	}).then(
+		(resolve) => {
+			const response = JSON.parse(resolve);
+			if (response && Object.hasOwn(response, 'payload') && Object.hasOwn(response.payload, 'releases')) {
+				const releases = response.payload.releases.filter((r) => {
+					return (type.include.has(r.release_group_primary_type || '') || type.include.has(r.release_group_secondary_type || '')) && !type.exclude.has(r.release_group_primary_type || '') && !type.exclude.has(r.release_group_secondary_type || '');
+				});
+				console.log('getFreshReleases: ' + user + ' -> ' + releases.length + ' fresh releases (' + ([...type.include].join(', ') || 'all') + ')');
+				return releases;
+			}
+			return [];
+		},
+		(reject) => {
+			console.log('getFreshReleases: ' + JSON.stringify(reject));
+			return [];
+		}
+	);
+};
 
+/**
+ * Retrieves art for given release mbid
+ * @see {@link https://musicbrainz.org/doc/Cover_Art_Archive/API}
+ * @name getArtFromReleaseGroup
+ * @kind method
+ * @memberof ListenBrainz
+ * @param {string} mbid
+ * @returns {Promise.<{approved: bolean, back: bolean[], comment: string, edit: number, front: boolean, id: 0, image: string, thumbnails: {1200: string, 250: string, 500: string, large: string, small: string}, types: string[]}[]>}
+ */
+ListenBrainz.getArtFromReleaseGroup = function (mbid) {
+	return sendV2({
+		method: 'GET',
+		URL: 'https://coverartarchive.org/release-group/' + mbid,
+		requestHeader: [['Content-Type', 'application/json'], ['referer', 'https://listenbrainz.org/'], ['origin', 'https://listenbrainz.org/'], ['user-agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36']],
+		bypassCache: true
+	}).then(
+		(resolve) => {
+			const response = JSON.parse(resolve);
+			if (response && Object.hasOwn(response, 'images')) {
+				return response.images;
+			}
+			return [];
+		},
+		(reject) => {
+			console.log('getArtFromReleaseGroup: ' + JSON.stringify(reject));
+			return [];
+		}
+	);
+};
+
+/**
+ * Retrieves cover for given release group mbid
+ * @see {@link https://musicbrainz.org/doc/Cover_Art_Archive/API}
+ * @name getCoverFromReleaseGroup
+ * @kind method
+ * @memberof ListenBrainz
+ * @param {string} mbid
+ * @param {'1200'|'500'|'250'|'small'|'large'|'original'} size
+ * @returns {Promise.<{approved: bolean, back: bolean[], comment: string, edit: number, front: boolean, id: 0, image: string, thumbnails: {1200: string, 250: string, 500: string, large: string, small: string}, types: string[]}[]>}
+ */
+ListenBrainz.getCoverFromReleaseGroup = function (mbid, size = 'small') {
+	return ListenBrainz.getArtFromReleaseGroup(mbid).then(
+		(imgs) => {
+			let img = imgs.find((img) => img.front);
+			return img
+				? size === 'original'
+					? img.image
+					: img.thumbnails[size]
+				: '';
+		},
+		(reject) => {
+			console.log('getCoverFromReleaseGroup: ' + JSON.stringify(reject));
+			return '';
+		}
+	);
+};
