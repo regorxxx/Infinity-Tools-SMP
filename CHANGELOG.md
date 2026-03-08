@@ -10,7 +10,7 @@
 
 ## [Unreleased][]
 ### Added
-- ListenBrainz Tools: added Discover releases feature as 2 menu entries: one to discover latest releases not on your library and another for upcoming ones. It's fully based on [ListenBrainz fresh releases](https://listenbrainz.org/explore/fresh-releases/) and will display results as a formatted text table.
+- ListenBrainz Tools: added Discover releases feature: to discover latest releases not on your library or upcoming ones. It's fully based on [ListenBrainz fresh releases](https://listenbrainz.org/explore/fresh-releases/) and will display results as a formatted text table.
 - Buttons: new button "Utils\Checksum" which is meant to greatly help with backup and integrity checks. Tool scans current selection and checks for checksum file for every parent directory (this is usually a folder per album) or creates a new one for every dir. Binary paths and arguments are customizable, by default it uses fsum (already bundled). Results are sent to console and/or popups. The main advantage of this tool over batch files and other scripts is path de-duplication, you can easily select 200 tracks and run it while ensuring the actual code only process every parent path once; while it works across libraries scattered at multiple disks, etc.
 - Buttons: menu entry to remove all buttons (along their properties).
 - UI: 'Top', 'Center' and 'Bottom' Y-Axis position settings. By default is set to 'Top'.

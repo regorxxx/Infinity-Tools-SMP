@@ -1,5 +1,5 @@
 'use strict';
-//07/03/26
+//08/03/26
 
 /* exported listenBrainzMenu */
 
@@ -1113,7 +1113,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 			menu.newEntry({
 				menuName: menuNameMain,
 				entryText: 'Import playlist by MBID...', func: async () => {
-					const identifier = Input.string('string', '', 'Enter Playlist MBID:', 'ListenBrainz Tools', '866b5a46-c474-4fae-8782-0f46240a9507', [(mbid) => isUUID(mbid.replace(lb.regEx, ''))]);
+					const identifier = Input.string('string', '', 'Enter Playlist MBID:', 'ListenBrainz Tools: Import playlist (MBID)', '866b5a46-c474-4fae-8782-0f46240a9507', [(mbid) => isUUID(mbid.replace(lb.regEx, ''))]);
 					if (identifier === null) { return; }
 					importPlaylist({ identifier });
 				}
@@ -1150,9 +1150,11 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 		}
 	}
 	menu.newSeparator();
-	{
+	{	// Discover
+		const menuName = menu.newMenu('Discover releases');
 		menu.newEntry({
-			entryText: 'Discover lastest releases...', func: async () => {
+			menuName,
+			entryText: 'Missing lastest albums', func: async () => {
 				if (!await checkLBToken()) { return false; }
 				const token = bListenBrainz ? getToken() : null;
 				if (!token) { return; }
@@ -1166,7 +1168,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				const library = fb.GetLibraryItems();
 				const table = new Table;
 				response.reverse().forEach((r) => {
-					if ((fb.GetQueryItemsCheck(library, 'ALBUM IS ' + r.release_name) || new FbMetadbHandleList()).Count === 0) {
+					if ((fb.GetQueryItemsCheck(library, 'ALBUM IS ' + r.release_name + ' OR MUSICBRAINZ_RELEASEGROUPID IS ' + r.release_group_mbid + ' OR MUSICBRAINZ_ALBUMID IS ' + r.release_mbid) || new FbMetadbHandleList()).Count === 0) {
 						table.cell('Artist - Album', r.artist_credit_name.cut(50) + ' - ' + r.release_name.cut(100));
 						table.cell('Date', r.release_date);
 						table.cell('URL', 'https://listenbrainz.org/album/' + r.release_group_mbid);
@@ -1178,7 +1180,8 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 			}, flags: bListenBrainz ? MF_STRING : MF_GRAYED, data: { bDynamicMenu: true }
 		});
 		menu.newEntry({
-			entryText: 'Discover upcoming releases...', func: async () => {
+			menuName,
+			entryText: 'Upcoming new albums', func: async () => {
 				if (!await checkLBToken()) { return false; }
 				const token = bListenBrainz ? getToken() : null;
 				if (!token) { return; }
@@ -1187,6 +1190,36 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				this.switchAnimation('ListenBrainz user retrieval', false);
 				this.switchAnimation('ListenBrainz data retrieval', true);
 				const response = await lb.getFreshReleases(user, void (0), { sort: 'release_date', past: false, future: true, days: 90 }, token);
+				this.switchAnimation('ListenBrainz data retrieval', false);
+				if (!response) { return; }
+				const table = new Table;
+				response.reverse().forEach((r) => {
+					table.cell('Artist - Album', r.artist_credit_name.cut(50) + ' - ' + r.release_name.cut(100));
+					table.cell('Date', r.release_date);
+					table.cell('URL', 'https://listenbrainz.org/album/' + r.release_group_mbid);
+					table.newRow();
+				});
+				const report = table.toString();
+				fb.ShowPopupMessage(report, 'ListenBrainz');
+			}, flags: bListenBrainz ? MF_STRING : MF_GRAYED, data: { bDynamicMenu: true }
+		});
+		menu.newSeparator(menuName);
+		menu.newEntry({
+			menuName,
+			entryText: 'Custom search...', func: async () => {
+				if (!await checkLBToken()) { return false; }
+				const token = bListenBrainz ? getToken() : null;
+				if (!token) { return; }
+				this.switchAnimation('ListenBrainz user retrieval', true);
+				const user = await lb.retrieveUser(token);
+				this.switchAnimation('ListenBrainz user retrieval', false);
+				const params = Input.json('object', { past: true, future: false, days: 90 }, 'Enter ListenBrainz fresh releases parameters:\n(Days 0-90)', 'ListenBrainz Tools: Discover releases', { past: true, future: false, days: 15 }) || Input.lastInput;
+				if (params === null) { return; }
+				const types = Input.json('object', { include: ['Album'], exclude: ['Compilation', 'Live', 'Soundtrack'] }, 'Set the release type to look for:\n\nAvailable: Live|Soundtrack|Remix|Broadcast|Other', 'ListenBrainz Tools: Discover releases', { include: ['Album'], exclude: ['Compilation', 'Live', 'Soundtrack'] }) || Input.lastInput;
+				if (types === null) { return; }
+				types.include = new Set(types.include); types.exclude = new Set(types.exclude);
+				this.switchAnimation('ListenBrainz data retrieval', true);
+				const response = await lb.getFreshReleases(user, types, { sort: 'release_date', ...params }, token);
 				this.switchAnimation('ListenBrainz data retrieval', false);
 				if (!response) { return; }
 				const table = new Table;
@@ -1258,7 +1291,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 					if (!await checkLBToken()) { return false; }
 					const token = bListenBrainz ? lb.decryptToken({ lBrainzToken: properties.lBrainzToken[1], bEncrypted: properties.lBrainzEncrypt[1] }) : null;
 					if (!token) { return false; }
-					const file = Input.string('string', '', 'Enter .jsonl file path:\n\nImporting of duplicated listens is automatically handled by ListenBrainz servers, adding them only once. You can process the same file multiple times and only new listens will be added.', 'ListenBrainz Tools', folders.xxx + 'examples\\scrobbles_log.jsonl', [(file) => _isFile(file)]);
+					const file = Input.string('string', '', 'Enter .jsonl file path:\n\nImporting of duplicated listens is automatically handled by ListenBrainz servers, adding them only once. You can process the same file multiple times and only new listens will be added.', 'ListenBrainz Tools: Import listens', folders.xxx + 'examples\\scrobbles_log.jsonl', [(file) => _isFile(file)]);
 					if (file === null) { console.log('ListenBrainz tools:', Input.lastInput, 'not found.'); return false; }
 					const event = 'scrobble';
 					const payload = lb.parsePanoScrobblerJson(file, { client: this.scriptName, version: this.version }, event);
@@ -1275,7 +1308,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 					if (!await checkLBToken()) { return false; }
 					const token = bListenBrainz ? lb.decryptToken({ lBrainzToken: properties.lBrainzToken[1], bEncrypted: properties.lBrainzEncrypt[1] }) : null;
 					if (!token) { return false; }
-					const file = Input.string('string', '', 'Enter .jsonl file path:\n\nImporting of duplicated feedback is automatically handled by the script, adding it only once.', 'ListenBrainz Tools', folders.xxx + 'examples\\scrobbles_log.jsonl', [(file) => _isFile(file)]);
+					const file = Input.string('string', '', 'Enter .jsonl file path:\n\nImporting of duplicated feedback is automatically handled by the script, adding it only once.', 'ListenBrainz Tools: Import feedback', folders.xxx + 'examples\\scrobbles_log.jsonl', [(file) => _isFile(file)]);
 					if (file === null) { console.log('ListenBrainz tools:', Input.lastInput, 'not found.'); return false; }
 					const user = await lb.retrieveUser(token);
 					const event = 'love';
@@ -1423,11 +1456,9 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 			}
 			{
 				menu.newEntry({
-					menuName: subMenuName, entryText: 'Query filter for matches...', func: (cache) => {
-						let input = '';
-						try { input = utils.InputBox(window.ID, 'Enter query used to pre-filter library when retrieving tracks:\n\n(note files with a feedback tag will always be shown, even if the filter would discard them)', 'ListenBrainz Tools', cache || properties.feedbackQuery[1], true); }
-						catch (e) { return; } // eslint-disable-line no-unused-vars
-						if ((!cache || cache !== input) && properties.feedbackQuery[1] === input) { return; }
+					menuName: subMenuName, entryText: 'Query filter for matches...', func: () => {
+						const input = Input.string('string', properties.feedbackQuery[1], 'Enter query used to pre-filter library when retrieving tracks:\n\n(note files with a feedback tag will always be shown, even if the filter would discard them)', 'ListenBrainz Tools: Feedback query filter', '%RATING% GREATER 2');
+						if (input === null) { return; }
 						try { if (isString(input) && fb.GetQueryItems(fb.GetLibraryItems(), input).Count === 0) { throw new Error('No items'); } } // Sanity check
 						catch (e) {
 							if (e.message === 'No items') {
@@ -1459,7 +1490,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 								.find((defTag) => tag.name === defTag.name);
 							if (defTag) { input = defTag.tf; }
 						} else {
-							input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s):\n(JSON)\n\nSetting it to [] will disable the menu entry.', 'ListenBrainz Tools', '["ARTIST","ALBUM ARTIST"]', void (0), true);
+							input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s):\n(JSON)\n\nSetting it to [] will disable the menu entry.', 'ListenBrainz Tools: Track recommendations', '["ARTIST","ALBUM ARTIST"]', void (0), true);
 							if (input === null) { return; }
 						}
 						tag.tf = input;
@@ -1478,11 +1509,9 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 		}
 		menu.newSeparator(menuName);
 		menu.newEntry({
-			menuName, entryText: 'Global query filter...', func: (cache) => {
-				let input = '';
-				try { input = utils.InputBox(window.ID, 'Enter global query used to pre-filter library:', 'ListenBrainz Tools', cache || properties.forcedQuery[1], true); }
-				catch (e) { return; } // eslint-disable-line no-unused-vars
-				if ((!cache || cache !== input) && properties.forcedQuery[1] === input) { return; }
+			menuName, entryText: 'Global query filter...', func: () => {
+				const input = Input.string('string', properties.forcedQuery[1], 'Enter global query used to pre-filter library:', 'ListenBrainz Tools: Global query filter', '%RATING% GREATER 2');
+				if (input === null) { return; }
 				try { if (isString(input) && fb.GetQueryItems(fb.GetLibraryItems(), input).Count === 0) { throw new Error('No items'); } } // Sanity check
 				catch (e) {
 					if (e.message === 'No items') {

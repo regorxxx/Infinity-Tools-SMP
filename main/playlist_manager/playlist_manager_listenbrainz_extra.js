@@ -480,7 +480,7 @@ ListenBrainz.updateSimilarDataFile = updateSimilarDataFile.bind(ListenBrainz);
  * @kind method
  * @memberof ListenBrainz
  * @param {string} user
- * @param {{include: Set<string>, exclude: Set<string>}} type - [['album']] Release type: 'Album'|'Compilation'|'EP|'Single'|'Live'|'Soundtrack'|'Remix'|'Broadcast'|'Other'
+ * @param {{include: Set.<'Album'|'Compilation'|'EP|'Single'|'Live'|'Soundtrack'|'Remix'|'Broadcast'|'Other'>, exclude: Set<string>}} type - [['album']] Release type: 'Album'|'Compilation'|'EP|'Single'|'Live'|'Soundtrack'|'Remix'|'Broadcast'|'Other'
  * @param {{sort: 'release_date'|'artist_credit_name'|'release_name'|'confidence', past: boolean, future: boolean, days: number }} params - [{sort: 'release_date', past: true, future: true, days: 90} Query param. Max days = 14]
  * @param {string} token
  * @returns {Promise.<{artist_credit_name: string, artist_mbids: string[], caa_id: number|null, caa_release_mbid: string|null, confidence: number, listen_count: 0, release_date: string, release_group_mbid: string, release_group_primary_type: string, release_group_secondary_type: string|null, release_mbid: string, release_name: string, release_tags: string[] }[]>}
