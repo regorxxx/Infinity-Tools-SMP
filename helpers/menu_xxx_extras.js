@@ -1,10 +1,14 @@
 ﻿'use strict';
-//25/11/25
+//10/03/26
 
 /* exported _createSubMenuEditEntries */
 
 include('menu_xxx.js');
-/* global _menu:readable, MF_GRAYED:readable, MF_STRING:readable, clone:readable */ /* window.FullPanelName:readable */
+/* global _menu:readable, MF_GRAYED:readable, MF_STRING:readable */
+include('helpers_xxx_basic_js');
+/* global clone:readable */
+// helpers_xxx_prototypes_smp.js
+/* window.FullPanelName:readable */
 
 /**
  * Description
@@ -60,7 +64,7 @@ function _createSubMenuEditEntries(parent, menuName, options /*{name, subMenuNam
 	const subMenuSecondName = parent.newMenu(options.subMenuName || 'Edit entries from list', menuName); // It will throw if the menu already exists!
 	let i = 0;
 	const bAdd = !Object.hasOwn(options, 'bAdd') || options.bAdd;
-	const bClone = bAdd && !Object.hasOwn(options, 'bClone') || options.bClone;
+	const bClone = bAdd && (!Object.hasOwn(options, 'bClone') || options.bClone) && typeof clone !== 'undefined';
 	const bMove = !Object.hasOwn(options, 'bMove') || options.bMove;
 	options.list.forEach((entry, index) => {
 		if (parent.isNotSeparator(entry)) { i++; }
@@ -79,7 +83,7 @@ function _createSubMenuEditEntries(parent, menuName, options /*{name, subMenuNam
 				try { newEntry = JSON.parse(newEntry); } catch (e) { fb.ShowPopupMessage('Input: ' + newEntry.toString() + '\n\n' + e, 'JSON error'); return; }
 				if (!newEntry) { return; }
 				if (!options.bDuplicate && options.list.filter((otherEntry) => otherEntry !== entry).findIndex((otherEntry) => otherEntry.name === newEntry.name) !== -1) {
-					fb.ShowPopupMessage('There is another entry with same name.\nRetry with another name.', window.FullPanelName);
+					fb.ShowPopupMessage('There is another entry with same name.\nRetry with another name.', window.FullPanelName || (window.Name + ' (' + window.ScriptInfo.Name + ')'));
 					return;
 				}
 				options.list[index] = newEntry;
