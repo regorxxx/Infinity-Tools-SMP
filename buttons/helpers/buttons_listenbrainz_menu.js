@@ -1,5 +1,5 @@
 'use strict';
-//08/03/26
+//10/03/26
 
 /* exported listenBrainzMenu */
 
@@ -136,7 +136,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 		// Similar artists tags
 		[
 			{ file: filePaths.listenBrainzArtists, dataId: 'artist', tag: globTags.lbSimilarArtist },
-			{ file: filePaths.searchByDistanceArtists, dataId: 'artist', tag: globTags.sbdSimilarArtist },
+			{ file: filePaths.musicMapArtists, dataId: 'artist', tag: globTags.sbdSimilarArtist },
 			{ file: filePaths.lastfmArtists, dataId: 'artist', tag: globTags.lfmSimilarArtist }
 		].forEach((option) => {
 			if (_isFile(option.file)) {
@@ -1154,7 +1154,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 		const menuName = menu.newMenu('Discover releases');
 		menu.newEntry({
 			menuName,
-			entryText: 'Missing lastest albums', func: async () => {
+			entryText: 'Missing lastest albums' + (bListenBrainz ? '' : '\t(token not set)'), func: async () => {
 				if (!await checkLBToken()) { return false; }
 				const token = bListenBrainz ? getToken() : null;
 				if (!token) { return; }
@@ -1181,7 +1181,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 		});
 		menu.newEntry({
 			menuName,
-			entryText: 'Upcoming new albums', func: async () => {
+			entryText: 'Upcoming new albums' + (bListenBrainz ? '' : '\t(token not set)'), func: async () => {
 				if (!await checkLBToken()) { return false; }
 				const token = bListenBrainz ? getToken() : null;
 				if (!token) { return; }
@@ -1206,7 +1206,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 		menu.newSeparator(menuName);
 		menu.newEntry({
 			menuName,
-			entryText: 'Custom search...', func: async () => {
+			entryText: 'Custom search...' + (bListenBrainz ? '' : '\t(token not set)'), func: async () => {
 				if (!await checkLBToken()) { return false; }
 				const token = bListenBrainz ? getToken() : null;
 				if (!token) { return; }
