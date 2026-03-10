@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/02/26
+//08/03/26
 
 /* exported createButtonsMenu, onRbtnUpImportSettings */
 
@@ -976,7 +976,7 @@ function onRbtnUpImportSettings(properties = this.properties || {}) {
 					...(Object.hasOwn(buttonsBar.buttons, 'Playlist Tools') ? ['playlistTools_*.json', 'check_library_tags_exclusion.json'] : ['']),
 					/* global sbd:readable */
 					typeof sbd !== 'undefined'
-						? Object.keys(buttonsBar.buttons).some((key) => key.startsWith(sbd.name)) ? 'searchByDistance_*.json' : ''
+						? Object.keys(buttonsBar.buttons).some((key) => key.startsWith(sbd.name)) ? 'musicmap_*.json' : ''
 						: '',
 					Object.hasOwn(buttonsBar.buttons, 'Output device priority') ? 'devices*.json' : '',
 					Object.hasOwn(buttonsBar.buttons, 'Fingerprint Tools') ? 'fpChromaprintReverseMap*.json' : '',
@@ -998,7 +998,7 @@ function onRbtnUpImportSettings(properties = this.properties || {}) {
 								'playlistTools_*.json',
 								'listenbrainz_*.json',
 								'check_library_tags_exclusion*.json',
-								'searchByDistance_*.json',
+								'musicmap_*.json',
 								'devices*.json',
 								'fpChromaprintReverseMap*.json'
 							].forEach((mask) => dataPaths.add(mask));

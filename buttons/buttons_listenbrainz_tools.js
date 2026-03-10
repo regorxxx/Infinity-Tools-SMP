@@ -1,5 +1,5 @@
 ﻿'use strict';
-//11/12/25
+//08/03/26
 
 /*
 	Integrates ListenBrainz feedback and recommendations statistics within foobar2000 library.
@@ -69,7 +69,7 @@ var newButtonsProperties = { // NOSONAR[global]
 	])],
 	filePaths: ['External database paths', JSON.stringify({
 		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
-		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
+		musicMapArtists: _foldPath(folders.data + 'musicmap_artists.json'),
 		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
 		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
 	})]

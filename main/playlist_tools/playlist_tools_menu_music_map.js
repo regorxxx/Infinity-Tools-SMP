@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/10/25
+//08/03/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, configMenu:readable, specialMenu:readable, deferFunc:readable, menu_propertiesBack:readable, createSmartShuffleMenu:readable */
 
@@ -157,8 +157,8 @@
 				});
 				menu.newEntry({
 					menuName: subMenu, entryText: 'Write similar artists tag', func: () => {
-						writeSimilarArtistsTags({ file: folders.data + 'searchByDistance_artists.json', tagName: globTags.sbdSimilarArtist, windowName: scriptName + ': Write similar artists tag' });
-					}, flags: _isFile(folders.data + 'searchByDistance_artists.json') ? MF_STRING : MF_GRAYED
+						writeSimilarArtistsTags({ file: folders.data + 'musicmap_artists.json', tagName: globTags.sbdSimilarArtist, windowName: scriptName + ': Write similar artists tag' });
+					}, flags: _isFile(folders.data + 'musicmap_artists.json') ? MF_STRING : MF_GRAYED
 				});
 			}
 			{	// -> Config menu

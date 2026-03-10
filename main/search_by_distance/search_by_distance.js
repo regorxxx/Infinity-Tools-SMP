@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/12/25
+//08/03/26
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -162,7 +162,7 @@ const SearchByDistance_properties = {
 	trackSource: ['Tracks source', JSON.stringify({ sourceType: 'library', sourceArg: null })],
 	filePaths: ['External database paths', JSON.stringify({
 		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
-		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
+		musicMapArtists: _foldPath(folders.data + 'musicmap_artists.json'),
 		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
 		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
 	})]
@@ -212,6 +212,12 @@ if (typeof buttonsBar === 'undefined' && typeof bNotProperties === 'undefined') 
 	setProperties(SearchByDistance_properties, sbd_prefix);
 } else { // With buttons, set these properties only once per panel
 	setProperties(SearchByDistance_panelProperties, sbd_prefix);
+}
+
+{ // TODO: remove on next relase
+	/* global getFiles:readable, _moveFile:readable */
+	getFiles(folders.data, new Set(['.json']), '*\\searchByDistance_*.json')
+		.forEach((file) => _moveFile(file, file.replace('searchByDistance_', 'musicmap_')));
 }
 
 /*
@@ -366,8 +372,8 @@ const bMismatchCRC = sbd.panelProperties.descriptorCRC[1] !== descriptorCRC;
 if (bMismatchCRC) {
 	if (sbd.panelProperties.descriptorCRC[1] !== -1) { // There may be multiple panels, don't nuke it on first init on a new panel
 		console.log(sbd.name + ': CRC mismatch. Deleting old json cache.');
-		_deleteFile(folders.data + 'searchByDistance_cacheLink.json');
-		_deleteFile(folders.data + 'searchByDistance_cacheLinkSet.json');
+		_deleteFile(folders.data + 'musicmap_cacheLink.json');
+		_deleteFile(folders.data + 'musicmap_cacheLinkSet.json');
 	}
 	sbd.panelProperties.descriptorCRC[1] = descriptorCRC;
 	overwriteProperties(sbd.panelProperties); // Updates panel
@@ -375,15 +381,15 @@ if (bMismatchCRC) {
 if (sbd.panelProperties.bProfile[1]) { sbd.profiler.Print(); }
 // Start cache
 var cacheLinkSet; // NOSONAR [shared on files]
-if (_isFile(folders.data + 'searchByDistance_cacheLink.json')) {
-	const data = loadCache(folders.data + 'searchByDistance_cacheLink.json');
+if (_isFile(folders.data + 'musicmap_cacheLink.json')) {
+	const data = loadCache(folders.data + 'musicmap_cacheLink.json');
 	if (data.size) {
 		cacheLink = data;
 		if (sbd.panelProperties.bStartLogging[1]) { console.log(sbd.name + ': Used Cache - cacheLink from file.'); }
 	}
 }
-if (_isFile(folders.data + 'searchByDistance_cacheLinkSet.json')) {
-	const data = loadCache(folders.data + 'searchByDistance_cacheLinkSet.json');
+if (_isFile(folders.data + 'musicmap_cacheLinkSet.json')) {
+	const data = loadCache(folders.data + 'musicmap_cacheLinkSet.json');
 	if (data.size) {
 		cacheLinkSet = data;
 		if (sbd.panelProperties.bStartLogging[1]) { console.log(sbd.name + ': Used Cache - cacheLinkSet from file.'); }
@@ -483,7 +489,7 @@ async function updateCache({ newCacheLink, newCacheLinkSet, bForce = false, prop
 		} else {
 			cacheLink = new Map();
 		}
-		saveCache(cacheLink, folders.data + 'searchByDistance_cacheLink.json');
+		saveCache(cacheLink, folders.data + 'musicmap_cacheLink.json');
 		if (sbd.panelProperties.bProfile[1]) { profiler.Print(); }
 		console.log(sbd.name + ': New Cache - cacheLink');
 		window.NotifyOthers(sbd.name + ': cacheLink map', cacheLink);
@@ -545,8 +551,8 @@ addEventListener('on_notify_data', (name, info) => {
 
 addEventListener('on_script_unload', () => {
 	if (sbd.panelProperties.bStartLogging[1]) { console.log(sbd.name + ': Saving Cache.'); }
-	if (cacheLink) { saveCache(cacheLink, folders.data + 'searchByDistance_cacheLink.json'); }
-	if (cacheLinkSet) { saveCache(cacheLinkSet, folders.data + 'searchByDistance_cacheLinkSet.json'); }
+	if (cacheLink) { saveCache(cacheLink, folders.data + 'musicmap_cacheLink.json'); }
+	if (cacheLinkSet) { saveCache(cacheLinkSet, folders.data + 'musicmap_cacheLinkSet.json'); }
 	console.flush();
 });
 
@@ -1605,7 +1611,7 @@ async function searchByDistance({
 	}
 	if (bSimilArtistsFilter && !bUseTheme) {
 		const files = [
-			folders.data + 'searchByDistance_artists.json',
+			folders.data + 'musicmap_artists.json',
 			...(bSimilArtistsExternal
 				? [
 					folders.data + 'listenbrainz_artists.json'

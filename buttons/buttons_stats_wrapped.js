@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//08/03/26
 
 /*
 	Wrapped
@@ -55,7 +55,7 @@ var newButtonsProperties = { // NOSONAR[global]
 	bIconMode: ['Icon-only mode', false, { func: isBoolean }, false],
 	filePaths: ['External database paths', JSON.stringify({
 		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
-		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
+		musicMapArtists: _foldPath(folders.data + 'musicmap_artists.json'),
 		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
 		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
 	})],

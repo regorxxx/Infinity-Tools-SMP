@@ -1,5 +1,5 @@
 'use strict';
-//02/03/26
+//08/03/26
 
 /*
 	Integrates Last.fm recommendations statistics within foobar2000 library.
@@ -63,7 +63,7 @@ var newButtonsProperties = { // NOSONAR[global]
 	cacheTime: ['YouTube lookups cache expiration', 86400000, { func: isInt }, 86400000],
 	filePaths: ['External database paths', JSON.stringify({
 		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
-		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
+		musicMapArtists: _foldPath(folders.data + 'musicmap_artists.json'),
 		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
 		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
 	})]

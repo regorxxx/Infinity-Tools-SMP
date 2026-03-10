@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//08/03/26
 
 /*
 	Quickmatch same....
@@ -76,7 +76,7 @@ var newButtonsProperties = { // NOSONAR[global]
 	bBioTags: ['Use tags from Bio panel', false, { func: isBoolean }, false],
 	filePaths: ['External database paths', JSON.stringify({
 		listenBrainzArtists: _foldPath(folders.data + 'listenbrainz_artists.json'),
-		searchByDistanceArtists: _foldPath(folders.data + 'searchByDistance_artists.json'),
+		musicMapArtists: _foldPath(folders.data + 'musicmap_artists.json'),
 		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
 		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
 	})]
@@ -244,7 +244,7 @@ function quickmatchMenu() {
 		// Similar artists tags
 		[
 			{ file: filePaths.listenBrainzArtists, dataId: 'artist', tag: globTags.lbSimilarArtist },
-			{ file: filePaths.searchByDistanceArtists, dataId: 'artist', tag: globTags.sbdSimilarArtist },
+			{ file: filePaths.musicMapArtists, dataId: 'artist', tag: globTags.sbdSimilarArtist },
 			{ file: filePaths.lastfmArtists, dataId: 'artist', tag: globTags.lfmSimilarArtist }
 		].forEach((option) => {
 			if (_isFile(option.file)) {

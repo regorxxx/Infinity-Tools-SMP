@@ -1,5 +1,5 @@
 ﻿'use strict';
-//05/03/26
+//08/03/26
 
 /* exported createConfigMenu */
 
@@ -1413,8 +1413,8 @@ function createConfigMenu(parent) {
 			});
 			menu.newEntry({
 				menuName: subMenu, entryText: 'Write similar artists tags', func: () => {
-					writeSimilarArtistsTags({ file: folders.data + 'searchByDistance_artists.json', tagName: globTags.sbdSimilarArtist, windowName: sbd.name });
-				}, flags: _isFile(folders.data + 'searchByDistance_artists.json') ? MF_STRING : MF_GRAYED
+					writeSimilarArtistsTags({ file: folders.data + 'musicmap_artists.json', tagName: globTags.sbdSimilarArtist, windowName: sbd.name });
+				}, flags: _isFile(folders.data + 'musicmap_artists.json') ? MF_STRING : MF_GRAYED
 			});
 		}
 		if (!bLiteMode) { // Same zone artists
@@ -1525,7 +1525,7 @@ function createConfigMenu(parent) {
 						const profiler = sbd.panelProperties.bProfile[1] ? new FbProfiler('graphStatistics') : null;
 						parent.switchAnimation('Graph statistics', true);
 						graphStatistics({ properties, graph: sbd.allMusicGraph, influenceMethod: sbd.influenceMethod }).then((resolve) => {
-							_save(folders.temp + 'musicGraphStatistics.txt', resolve.text.replace(/\n/g, '\r\n'));
+							_save(folders.temp + 'musicMapStatistics.txt', resolve.text.replace(/\n/g, '\r\n'));
 							console.log(resolve.text); // DEBUG
 							parent.switchAnimation('Graph statistics', false);
 							if (sbd.panelProperties.bProfile[1]) { profiler.Print(); }
@@ -1628,8 +1628,8 @@ function createConfigMenu(parent) {
 							fb.ShowPopupMessage('There is a calculation currently on process.\nTry again after it finishes. Check console (or animation).', 'Graph cache');
 							return;
 						}
-						_deleteFile(folders.data + 'searchByDistance_cacheLink.json');
-						_deleteFile(folders.data + 'searchByDistance_cacheLinkSet.json');
+						_deleteFile(folders.data + 'musicmap_cacheLink.json');
+						_deleteFile(folders.data + 'musicmap_cacheLinkSet.json');
 						cacheLink = void (0); // NOSONAR [global]
 						cacheLinkSet = void (0); // NOSONAR [global]
 						updateCache({ bForce: true, properties }); // Creates new one and also notifies other panels to discard their cache

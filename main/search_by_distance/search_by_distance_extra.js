@@ -1,5 +1,5 @@
 ﻿'use strict';
-//14/12/25
+//08/03/26
 
 /* exported calculateSimilarArtistsFromPls, addTracksRelation, calculateTrackSimilarity */
 
@@ -147,7 +147,7 @@ async function calculateSimilarArtists({ selHandle = fb.GetFocusItem(), properti
 	return { artist: artist.join(', '), val: total };
 }
 
-async function calculateSimilarArtistsFromPls({ items = plman.GetPlaylistSelectedItems(plman.ActivePlaylist), file = folders.data + 'searchByDistance_artists.json', iNum = 10, tagName = 'SIMILAR ARTISTS SEARCHBYDISTANCE', properties } = {}) {
+async function calculateSimilarArtistsFromPls({ items = plman.GetPlaylistSelectedItems(plman.ActivePlaylist), file = folders.data + 'musicmap_artists.json', iNum = 10, tagName = globTags.sbdSimilarArtist, properties } = {}) {
 	const handleList = removeDuplicates({ handleList: items, sortOutput: globTags.artist, checkKeys: [globTags.artist] });
 	const time = secondsToTime(Math.round(handleList.Count * 5 * fb.GetLibraryItems().Count / 70000));
 	if (WshShell.Popup('Process [different] artists from currently selected items and calculate their most similar artists?\nResults are output to console and saved to JSON:\n' + _foldPath(file) + '\n\nEstimated time: <= ' + time, 0, sbd.name, popup.question + popup.yes_no) === popup.no) { return; }

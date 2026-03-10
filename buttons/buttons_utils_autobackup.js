@@ -1,9 +1,9 @@
 ﻿'use strict';
-//02/03/26
+//08/03/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_CONTROL:readable, VK_CONTROL:readable, popup:readable */
+/* global globFonts:readable, MK_CONTROL:readable, VK_CONTROL:readable, popup:readable, folders:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, showButtonReadme:readable */
 include('..\\helpers\\menu_xxx.js');
@@ -59,16 +59,16 @@ var newButtonsProperties = { // NOSONAR[global]
 			{ name: 'foo_upnp', path: 'foo_upnp*' },
 			// JS scripts
 			{ name: 'Playlist Organizer', path: 'pl_organizer.txt', bCopy: true },
-			{ name: 'JS presets', path: 'js_data\\presets' },
-			{ name: 'JS helpers', path: 'js_data\\helpers' },
-			{ name: 'JS Buttons', path: 'js_data\\buttons_*' },
-			{ name: 'Playlist-Manager-SMP', path: 'js_data\\playlistManager_*' },
-			{ name: 'Device-Priority-SMP', path: 'js_data\\devices*' },
-			{ name: 'ListenBrainz-SMP', path: 'js_data\\listenbrainz_*' },
-			{ name: 'Infinity-Tools-SMP (1)', path: 'js_data\\playlistTools_*' },
-			{ name: 'Infinity-Tools-SMP (2)', path: 'js_data\\pools_presets.json' },
-			{ name: 'JS Similar Artists', path: 'js_data\\searchByDistance_artists.json' },
-			{ name: 'World-Map-SMP', path: 'js_data\\worldMap*' }
+			{ name: 'JS presets', path: folders.dataName + 'presets' },
+			{ name: 'JS helpers', path: folders.dataName + 'helpers' },
+			{ name: 'JS Buttons', path: folders.dataName + 'buttons_*' },
+			{ name: 'Playlist-Manager-SMP', path: folders.dataName + 'playlistManager_*' },
+			{ name: 'Device-Priority-SMP', path: folders.dataName + 'devices*' },
+			{ name: 'ListenBrainz-SMP', path: folders.dataName + 'listenbrainz_*' },
+			{ name: 'Infinity-Tools-SMP (1)', path: folders.dataName + 'playlistTools_*' },
+			{ name: 'Infinity-Tools-SMP (2)', path: folders.dataName + 'pools_presets.json' },
+			{ name: 'JS Similar Artists', path: folders.dataName + 'musicmap_artists.json' },
+			{ name: 'World-Map-SMP', path: folders.dataName + 'worldMap*' }
 		]),
 		{ func: isJSON }],
 	outputPath: ['Directory to store backup files', 'autobackup\\autobackup.', { func: isString }, 'autobackup\\autobackup.'],
@@ -145,7 +145,7 @@ addButton({
 								'string', '',
 								'Enter folder path relative to profile folder:\n' +
 								'Ex: js_data\\presets'
-								, 'AutoBackup: files', 'js_data\\presets', void (0), true
+								, 'AutoBackup: files', folders.dataName + 'presets', void (0), true
 							),
 							bCopy: false
 						};
