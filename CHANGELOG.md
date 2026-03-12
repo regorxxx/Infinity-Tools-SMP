@@ -21,7 +21,7 @@
 - Installation: panel menu, accessed through 'Ctrl + Win + R. Click' (which works globally on any script and panel, at any position), now also includes the script version number and a submenu to check and set auto-updates.
 - Settings: internal changes at properties for future releases. This update MUST be installed before any possible future release to ensure settings are not lost on upgrading.
 - Settings: internal rename of file 'searchByDistance_artists.json' to 'musicmap_artists.json'. This update MUST be installed before any possible future release to ensure settings are not lost on upgrading.
-- Settings: similar artists tag changed from 'SIMILAR ARTISTS SEARCHBYDISTANCE' to 'SIMILAR ARTISTS MUSICMAP'. on existing installations file at '.\profile\js_data\presets\global\globTags.json' must be manually updated if desired (or deleted to recreate it).
+- Settings: similar artists tag changed from 'SIMILAR ARTISTS SEARCHBYDISTANCE' to 'SIMILAR ARTISTS MUSICMAP'. On existing installations file at '.\profile\js_data\presets\global\globTags.json' must be manually updated if desired (or deleted to recreate it).
 - Playlist Tools\Pools: modified some of the default presets.
 - Buttons: minor playback controls preset changes.
 - Helpers: support for long paths (>260 chars) in multiple internal file handling functions.
