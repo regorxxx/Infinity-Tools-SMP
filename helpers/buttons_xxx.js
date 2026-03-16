@@ -1,11 +1,11 @@
 ﻿'use strict';
-//02/03/26
+//16/03/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
 /* global buttonsPath:readable, barProperties:readable */
 include('helpers_xxx.js');
-/* global globFonts:readable, InterpolationMode:readable, DT_CENTER:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_LEFT:readable, DT_RIGHT:readable, DT_TOP:readable, DT_NOCLIP:readable, IDC_SIZEALL:readable, IDC_NO:readable, IDC_HAND:readable, IDC_ARROW:readable, MK_RBUTTON:readable, MK_SHIFT:readable, folders:readable, _save:readable, globSettings:readable, ColourTypeCUI:readable, ColourTypeDUI:readable */
+/* global globFonts:readable, InterpolationMode:readable, DT_CENTER:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_LEFT:readable, DT_RIGHT:readable, DT_TOP:readable, DT_NOCLIP:readable, IDC_SIZEALL:readable, IDC_NO:readable, IDC_HAND:readable, IDC_ARROW:readable, MK_RBUTTON:readable, MK_SHIFT:readable, folders:readable, _save:readable, globSettings:readable, ColourTypeCUI:readable, ColourTypeDUI:readable, SmoothingMode:readable */
 include('helpers_xxx_basic_js.js');
 /* global doOnce:readable, throttle:readable */
 include('helpers_xxx_file.js');
@@ -401,7 +401,7 @@ function ThemedButton({
 		const y = this.currY + (buttonsBar.config.bFullSize && buttonsBar.config.orientation.toLowerCase() === 'x' ? -2 : 0);
 		const w = Math.max(this.currW - 4, arc * 2 + 2);
 		const h = this.currH + (buttonsBar.config.bFullSize && buttonsBar.config.orientation.toLowerCase() === 'x' ? +3 : -2);
-		gr.SetSmoothingMode(2); // Antialias for lines
+		gr.SetSmoothingMode(SmoothingMode.HighQuality); // Antialias for lines
 		const buttonOpacity = Math.max(0, Math.min(buttonsBar.config.buttonOpacity, 100));
 		const buttonBorderOpacity = Math.max(0, Math.min(buttonsBar.config.buttonBorderOpacity, 100));
 		switch (this.state) {
@@ -508,7 +508,7 @@ function ThemedButton({
 			case buttonStates.hide:
 				return;
 		}
-		gr.SetSmoothingMode(0);
+		gr.SetSmoothingMode();
 	};
 
 	this.drawSeparator = function (gr, textColor, bAlign) {
