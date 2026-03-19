@@ -27,6 +27,7 @@
 - Playlist Tools\Pools: modified some of the default presets.
 - Buttons: minor playback controls preset changes.
 - Helpers: support for long paths (>260 chars) in multiple internal file handling functions.
+- Readmes: general cleanup.
 ### Removed
 ### Fixed
 - Playlist Tools\Pools: fix to one of the default presets.
