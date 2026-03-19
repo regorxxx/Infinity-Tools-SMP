@@ -129,7 +129,7 @@ function createBackgroundMenu(appendTo, parentMenu, options = { nameColors: fals
 			if (!bDone) { menu.newEntry({ menuName: subMenuSecond, entryText: ' - none - ', flags: MF_GRAYED }); }
 			menu.newSeparator(subMenuSecond);
 			menu.newEntry({
-				menuName: subMenuSecond, entryText: 'Edit entries...', func: () => {
+				menuName: subMenuSecond, entryText: 'Edit art types...', func: () => {
 					const input = Input.json('array strings', this.coverModePriority, 'Enter art types:\n(array of strings)\n\nAllowed: ' + this.getCoverModes(false).join(', ') + '\nSuffix \'_stub\' or \'_embedded\' can also be added.\n\ne.g. ["front", "back_stub", "artist"]' , window.Name + ' (' + window.ScriptInfo.Name + '): Y-axis margin', 2);
 					if (input === null) { return; }
 					this.changeConfig({ config: { coverModePriority: [...new Set(input)] }, callbackArgs: { bSaveProperties: true } });
