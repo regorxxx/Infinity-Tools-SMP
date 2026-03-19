@@ -21,6 +21,7 @@
 ### Changed
 - Playlist Tools\Pools: modified some of the default presets and added new ones.
 - Installation: panel menu, accessed through 'Ctrl + Win + R. Click' (which works globally on any script and panel, at any position), now also includes the script version number and a submenu to check and set auto-updates.
+- UI: new 'Edit all...' menu entry in tools with customizable menu entries, queries, presets, etc. which allows to easily edit entries on batch, instead of manually navigating the menus. This serves as a workaround of menu being closed everytime a menu entry is clicked on. See [Issue 7]/https://github.com/regorxxx/Infinity-Tools-SMP/issues/7).
 - Settings: internal changes at properties for future releases. This update MUST be installed before any possible future release to ensure settings are not lost on upgrading.
 - Settings: internal rename of file 'searchByDistance_artists.json' to 'musicmap_artists.json'. This update MUST be installed before any possible future release to ensure settings are not lost on upgrading.
 - Settings: similar artists tag changed from 'SIMILAR ARTISTS SEARCHBYDISTANCE' to 'SIMILAR ARTISTS MUSICMAP'. On existing installations file at '.\profile\js_data\presets\global\globTags.json' must be manually updated if desired (or deleted to recreate it).
