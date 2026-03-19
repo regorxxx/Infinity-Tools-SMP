@@ -13,10 +13,8 @@ Other UI usage:
 ---------------
 	• Ctrl + Alt + Mouse Wheel to resize UI elements under mouse.
 
-
 	• Shift + Win + R. Click to open SMP/JSplitter panel menu (works
 	globally on any script and panel, at any position).
-
 
 	• Ctrl + Win + R. Click to open script panel menu.
 
