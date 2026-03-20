@@ -1,12 +1,12 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 /*
 	-> EDIT
  */
 
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, folders:readable */
+/* global folders:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\helpers_xxx_file.js');
@@ -14,7 +14,7 @@ include('..\\helpers\\helpers_xxx_file.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 include('..\\main\\tags\\save_tags.js');
@@ -34,7 +34,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Save tags': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Save tags', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Save tags', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Save tags',
 		func: function () {
 			const readmePath = folders.xxx + 'helpers\\readme\\save_tags.txt';
@@ -51,7 +51,7 @@ addButton({
 		icon: chars.save
 	}),
 	'Compare tags': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Compare tags', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Compare tags', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Compare tags',
 		func: function () {
 			let file;

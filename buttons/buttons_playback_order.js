@@ -12,7 +12,7 @@ include('..\\helpers\\buttons_xxx.js');
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable  */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global chars:readable */
+/* global chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 
@@ -32,7 +32,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Playback repeat': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: 0, h: 22 },
+		coordinates: { x: 0, y: 0, w: 0, h: _scale(16, false) },
 		func: function (mask) {
 			if (mask === MK_SHIFT) {
 				settingsMenu(this, true, ['buttons_playback_repeat.js']).btn_up(this.currX, this.currY + this.currH);

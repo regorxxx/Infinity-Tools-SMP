@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/03/26
+//20/03/26
 
 /*
 	Integrates ListenBrainz feedback and recommendations statistics within foobar2000 library.
@@ -17,7 +17,7 @@ include('..\\helpers\\helpers_xxx_prototypes.js');
 include('..\\helpers\\helpers_xxx_file.js');
 /* global utf8:readable, _isFile:readable, _jsonParseFile:readable, _recycleFile:readable, _save:readable, _foldPath:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global chars:readable */
+/* global chars:readable, _textWidth:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable  */
 include('..\\helpers\\helpers_xxx_input.js');
@@ -83,7 +83,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'ListenBrainz Tools': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: 100, h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('ListenBrainz', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'ListenBrainz',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

@@ -1,5 +1,5 @@
 'use strict';
-//08/03/26
+//19/03/26
 
 /*
 	Integrates Last.fm recommendations statistics within foobar2000 library.
@@ -7,7 +7,7 @@
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, globQuery:readable, doOnce:readable, MF_GRAYED:readable, VK_CONTROL:readable, folders:readable */
+/* global MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, globQuery:readable, doOnce:readable, MF_GRAYED:readable, VK_CONTROL:readable, folders:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
@@ -17,7 +17,7 @@ include('..\\helpers\\helpers_xxx_file.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isStringWeak:readable, _t:readable, _b:readable, isInt:readable, isJSON:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
@@ -77,7 +77,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Last.fm Tools': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Last.fm', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Last.fm', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Last.fm',
 		func: function (mask) {
 			const properties = this.buttonsProperties;

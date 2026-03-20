@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/03/26
+//19/03/26
 
 /*
 	Quickmatch same....
@@ -9,7 +9,7 @@
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, MF_STRING:readable, MF_GRAYED:readable, VK_CONTROL:readable, folders:readable, MF_MENUBREAK:readable */
+/* global MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, MF_STRING:readable, MF_GRAYED:readable, VK_CONTROL:readable, folders:readable, MF_MENUBREAK:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\menu_xxx.js');
@@ -23,7 +23,7 @@ include('..\\helpers\\helpers_xxx_prototypes.js');
 include('..\\helpers\\helpers_xxx_file.js');
 /* global _isFile:readable, utf8:readable, _jsonParseFileCheck:readable, _foldPath:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable  */
 include('..\\helpers\\helpers_xxx_input.js');
@@ -90,7 +90,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Quickmatch': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Quickmatch', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Quickmatch', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Quickmatch',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

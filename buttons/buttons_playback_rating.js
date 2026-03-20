@@ -17,7 +17,7 @@ include('..\\helpers\\helpers_xxx_file.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isInt:readable, _bt:readable, _t:readable, isJSON:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global  RGB:readable */
+/* global RGB:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 
@@ -176,7 +176,7 @@ buttonsBar.list.push(newButtonsProperties);
 	// Buttons
 	for (let i = 0; i < newButtonsProperties.totalRating[1]; i++) {
 		const button = new ThemedButton({
-			coordinates: { x: 0, y: 0, w: 0, h: 22 },
+			coordinates: { x: 0, y: 0, w: 0, h: _scale(16, false) },
 			func: function (mask) {
 				if (mask === MK_SHIFT) {
 					settingsMenu(

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/03/26
+//19/03/26
 
 /*
 	Wrapped
@@ -8,7 +8,7 @@
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, isPlayCount:readable, isEnhPlayCount:readable, isPlayCount2003:readable, folders:readable */
+/* global MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, isPlayCount:readable, isEnhPlayCount:readable, isPlayCount2003:readable, folders:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\helpers_xxx_input.js');
@@ -20,13 +20,13 @@ include('..\\helpers\\buttons_xxx_menu.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isStringWeak:readable, _p:readable, isJSON:readable, capitalizeAll:readable, _b:readable, isInt:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _textWidth:readable, chars:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable  */
 include('..\\main\\main_menu\\main_menu_custom.js');
 /* global bindDynamicMenus:readable, deleteMainMenuDynamic:readable */
 include('helpers\\buttons_stats_wrapped_menu.js');
-/* global wrappedMenu:readable */
+/* global wrappedMenu:readable, _scale:readable  */
 include('..\\main\\playlist_manager\\playlist_manager_listenbrainz.js');
 /* global ListenBrainz:readable */
 include('..\\main\\spotify\\wrapped.js');
@@ -74,7 +74,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Wrapped': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Wrapped', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Wrapped', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Wrapped',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {
@@ -92,7 +92,7 @@ addButton({
 						tags: { bHide: true },
 						extraCmd: { bHide: true },
 						logOpt: { bHide: true },
-						latexCmd: { input: 'The CMD expression allows these numbered arguments which are replaced at execution:\n\t• %1: input .tex file path (with quotes)\n\t• %2: output .pdf file path (with quotes)\n\t• %3: output directory path (with quotes)\n\t• %4: year\n\nPaths starting with \'.\\profile\\\' are relative to foobar profile folder.\n\n\'%FB2K_PROFILE_PATH%\' or \'%PROFILE%\' may also be used.'}
+						latexCmd: { input: 'The CMD expression allows these numbered arguments which are replaced at execution:\n\t• %1: input .tex file path (with quotes)\n\t• %2: output .pdf file path (with quotes)\n\t• %3: output directory path (with quotes)\n\t• %4: year\n\nPaths starting with \'.\\profile\\\' are relative to foobar profile folder.\n\n\'%FB2K_PROFILE_PATH%\' or \'%PROFILE%\' may also be used.' }
 					},
 					{
 						bDynamicMenus:

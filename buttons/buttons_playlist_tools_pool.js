@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 /*
 	Playlist Tools Pools
@@ -9,7 +9,7 @@
 
 /* global menu:readable, barProperties:readable, menu_properties:readable, defaultArgs:readable, menu_prefix:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MF_GRAYED:readable */
+/* global MF_GRAYED:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -17,7 +17,7 @@ include('..\\helpers\\helpers_xxx_properties.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\menu_xxx.js');
 /* global _menu:readable  */
 
@@ -33,7 +33,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Playlist Tools Pools': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Pools', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Pools', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Pools',
 		func: function () {
 			if (isPlaylistToolsLoaded()) {

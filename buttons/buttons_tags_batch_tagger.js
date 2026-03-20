@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 /*
 	Automatic tagging...
@@ -15,13 +15,13 @@
 include('..\\helpers\\menu_xxx.js');
 /* global _menu:readable  */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, soFeat:readable, MK_CONTROL:readable, MF_STRING:readable, MF_GRAYED:readable, VK_SHIFT:readable, VK_CONTROL:readable */
+/* global soFeat:readable, MK_CONTROL:readable, MF_STRING:readable, MF_GRAYED:readable, VK_SHIFT:readable, VK_CONTROL:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, showButtonReadme:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isJSON:readable, isString:readable,  */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _textLinesWrap:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _textLinesWrap:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -59,7 +59,7 @@ buttonsBar.list.push(newButtonsProperties);
 {
 	const newButton = {
 		'Tagger': new ThemedButton({
-			coordinates: { x: 0, y: 0, w: _textWidth('Tagger', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+			coordinates: { x: 0, y: 0, w: _textWidth('Tagger', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 			text: 'Tagger',
 			func: function (mask) {
 				const handleList = plman.GetPlaylistSelectedItems(plman.ActivePlaylist);

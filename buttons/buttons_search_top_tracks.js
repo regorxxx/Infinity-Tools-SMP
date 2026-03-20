@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 /*
 	Top Tracks
@@ -9,7 +9,7 @@
 
 /* global barProperties:readable, menu_panelProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globQuery:readable */
+/* global MK_SHIFT:readable, VK_SHIFT:readable, globQuery:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
@@ -17,7 +17,7 @@ include('..\\helpers\\buttons_xxx_menu.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isInt:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
@@ -41,7 +41,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Top Tracks': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Top ' + newButtonsProperties.playlistLength[1] + ' Tracks', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Top ' + newButtonsProperties.playlistLength[1] + ' Tracks', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: function () { return 'Top ' + this.buttonsProperties.playlistLength[1] + ' Tracks'; },
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 /*
 	Removes duplicates on active playlist without changing order. It's currently set to title-artist-date,
@@ -17,7 +17,7 @@
 
 /* global barProperties:readable, menu_panelProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, globQuery:readable, VK_CONTROL:readable, MK_CONTROL:readable, globRegExp:readable*/
+/* global MK_SHIFT:readable, VK_SHIFT:readable, globTags:readable, globQuery:readable, VK_CONTROL:readable, MK_CONTROL:readable, globRegExp:readable*/
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
@@ -27,7 +27,7 @@ include('..\\helpers\\menu_xxx_extras.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isStringWeak:readable , isInt:readable, isJSON:readable  */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
 include('..\\main\\filter_and_query\\remove_duplicates.js');
@@ -72,7 +72,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Filter Playlist': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Filter playlist', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Filter playlist', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Filter playlist',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

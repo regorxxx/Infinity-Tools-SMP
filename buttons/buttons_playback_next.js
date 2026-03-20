@@ -10,7 +10,7 @@ include('..\\helpers\\helpers_xxx.js');
 include('..\\helpers\\buttons_xxx.js');
 /* global buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global chars:readable */
+/* global chars:readable, _scale:readable */
 
 if (!window.ScriptInfo.Name) { window.DefineScript('Playback Next button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
@@ -21,7 +21,7 @@ buttonsBar.list.push({});
 
 addButton({
 	'Playback next': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: 0, h: 22 },
+		coordinates: { x: 0, y: 0, w: 0, h: _scale(16, false) },
 		func: function () {
 			fb.Next();
 		},

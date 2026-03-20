@@ -16,7 +16,7 @@ include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global findRecursiveFile:readable, _open:readable, _isFile:readable, utf8:readable, _save:readable, _isFolder:readable, _createFolder:readable, WshShell:readable, _explorer:readable, getFiles:readable, _moveFile:readable, popup:readable */
 include('..\\..\\helpers\\helpers_xxx_UI.js');
-/* global RGBA:readable, toRGB:readable */
+/* global RGBA:readable, toRGB:readable, _scale:readable */
 include('..\\..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\..\\helpers\\helpers_xxx_export.js');
@@ -505,6 +505,7 @@ function createButtonsMenu(name) {
 				if (bApplyAll) {
 					barProperties.iconScale[1] = buttonsBar.config.iconScale = buttonsBar.config.scale;
 					barProperties.textScale[1] = buttonsBar.config.textScale = buttonsBar.config.scale;
+					buttonsBar.config.buttonMargin = _scale(buttonsBar.config.default.buttonMargin * buttonsBar.config.scale, false);
 				}
 				overwriteProperties(barProperties);
 				window.Reload();

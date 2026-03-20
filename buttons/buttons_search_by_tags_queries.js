@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 /*
 	Search n tracks (randomly) on library with the same tag(s) than the current selected track.
@@ -8,7 +8,7 @@
 
 /* global barProperties:readable, menu_panelProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_SHIFT:readable, MK_CONTROL:readable, VK_SHIFT:readable, globTags:readable, globQuery:readable, globRegExp:readable, MF_GRAYED:readable */
+/* global MK_SHIFT:readable, MK_CONTROL:readable, VK_SHIFT:readable, globTags:readable, globQuery:readable, globRegExp:readable, MF_GRAYED:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
@@ -18,7 +18,7 @@ include('..\\helpers\\menu_xxx_extras.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, isInt:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
@@ -99,7 +99,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Search Same By Tags (Queries)': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.customName[1], _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.customName[1], buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: newButtonsProperties.customName[1],
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

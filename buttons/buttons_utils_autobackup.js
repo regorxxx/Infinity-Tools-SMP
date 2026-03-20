@@ -3,7 +3,7 @@
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_CONTROL:readable, VK_CONTROL:readable, popup:readable, folders:readable */
+/* global MK_CONTROL:readable, VK_CONTROL:readable, popup:readable, folders:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, showButtonReadme:readable */
 include('..\\helpers\\menu_xxx.js');
@@ -15,7 +15,7 @@ include('..\\helpers\\helpers_xxx_prototypes.js');
 include('..\\helpers\\helpers_xxx_file.js');
 /* global _explorer:readable, WshShell:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, checkProperty:readable, overwriteProperties:readable */
 include('..\\helpers\\helpers_xxx_input.js');
@@ -104,7 +104,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	AutoBackup: new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('AutoBackup', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('AutoBackup', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'AutoBackup',
 		func: function (mask) {
 			if ((MK_CONTROL & mask) === MK_CONTROL) { // NOSONAR [bitwise]

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
@@ -7,11 +7,11 @@ include('..\\helpers\\buttons_xxx.js');
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable  */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, globRegExp:readable, doOnce:readable, debounce:readable */
+/* global MK_SHIFT:readable, VK_SHIFT:readable, globRegExp:readable, doOnce:readable, debounce:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, _p:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 include('..\\main\\search_by_distance\\search_by_distance.js'); // Load after buttons_xxx.js so properties are only set once
@@ -75,7 +75,7 @@ setProperties(newButtonsProperties, prefix, 0); //This sets all the panel proper
 
 addButton({
 	[sbd.name + ' basic']: new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Similar Tracks', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Similar Tracks', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Similar Tracks',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

@@ -15,7 +15,7 @@ include('..\\helpers\\buttons_xxx_menu.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isFunction:readable, isBoolean:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 
@@ -36,7 +36,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Volume control mute': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: 0, h: 22 },
+		coordinates: { x: 0, y: 0, w: 0, h: _scale(16, false) },
 		func: function () {
 			fb.VolumeMute();
 		},
@@ -48,7 +48,7 @@ addButton({
 		},
 	}),
 	'Volume control down': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: 0, h: 22 },
+		coordinates: { x: 0, y: 0, w: 0, h: _scale(16, false) },
 		func: function () {
 			fb.VolumeDown();
 		},
@@ -80,7 +80,7 @@ addButton({
 		}
 	}),
 	'Volume control up': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: 0, h: 22 },
+		coordinates: { x: 0, y: 0, w: 0, h: _scale(16, false) },
 		func: function () {
 			fb.VolumeUp();
 		},
@@ -112,7 +112,7 @@ addButton({
 		}
 	}),
 	'Volume display': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.voldB[1] ? ' -100 dB ' : ' 100 ', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 8 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.voldB[1] ? ' -100 dB ' : ' 100 ', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 8 * _scale(1, false) / _scale(buttonsBar.config.scale), h: _scale(16, false) },
 		text: function () { return this.volumeFunc(); },
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

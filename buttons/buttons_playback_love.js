@@ -17,7 +17,7 @@ include('..\\helpers\\helpers_xxx_prototypes.js');
 include('..\\helpers\\helpers_xxx_playlists.js');
 /* global getLocks:readable, setLocks:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global chars:readable, RGB:readable */
+/* global chars:readable, RGB:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 
@@ -43,7 +43,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Playback love': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: 0, h: 22 },
+		coordinates: { x: 0, y: 0, w: 0, h: _scale(16, false) },
 		func: function (mask) {
 			if (mask === MK_SHIFT) {
 				settingsMenu(

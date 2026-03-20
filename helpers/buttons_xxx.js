@@ -1,5 +1,5 @@
 ﻿'use strict';
-//16/03/26
+//20/03/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -53,9 +53,10 @@ buttonsBar.config = {
 	bAlignSize: true,
 	bUseThemeManager: true,
 	partAndStateID: 1, // 1 standard button, 6  bg/border button (+hover)
-	scale: _scale(0.7, false),
-	iconScale: _scale(0.7, false),
-	textScale: _scale(0.7, false),
+	scale: 1,
+	iconScale: 1,
+	textScale: 1,
+	buttonMargin: 22,
 	bIconMode: false,
 	bIconModeExpand: false,
 	bUseCursors: true,
@@ -69,9 +70,16 @@ buttonsBar.config = {
 	hiddenTimeout: 2000,
 	darkMode: 0,
 	spacerSize: 20,
-	outlineIcon: 0
+	outlineIcon: 0,
+	font: {
+		text: null,
+		icon: null
+	}
 };
 buttonsBar.config.default = Object.fromEntries(Object.entries(buttonsBar.config));
+buttonsBar.config.font.text = _gdiFont(globFonts.button.name, _scale(globFonts.button.size * buttonsBar.config.textScale, false));
+buttonsBar.config.font.icon = _gdiFont(globFonts.buttonIcon.name, _scale(globFonts.buttonIcon.size * buttonsBar.config.iconScale, false));
+buttonsBar.config.buttonMargin = _scale(buttonsBar.config.default.buttonMargin * buttonsBar.config.scale, false);
 // Drag n drop (internal use)
 buttonsBar.move = { bIsMoving: false, btn: null, mX: -1, mY: -1, moveX: null, moveY: null, fromKey: null, toKey: null, rec: { x: null, y: null, w: null, h: null }, last: -1 };
 buttonsBar.hidden = { bShow: false, id: null };
@@ -141,12 +149,12 @@ function ThemedButton({
 	text = '',
 	func,
 	state,
-	gFont = _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.textScale),
+	gFont = buttonsBar.config.font.text,
 	description,
 	prefix = '',
 	buttonsProperties = {},
 	icon = null,
-	gFontIcon = _gdiFont(globFonts.buttonIcon.name, globFonts.buttonIcon.size * buttonsBar.config.iconScale),
+	gFontIcon = buttonsBar.config.font.icon,
 	variables = null,
 	listener = null,
 	onInit = null,
@@ -800,12 +808,12 @@ function ThemedButton({
 		this.func && this.func(mask);
 	};
 
-	this.adjustButtonWidth = function (newName, offset = 30) {
+	this.adjustButtonWidth = function (newName, offset = buttonsBar.config.buttonMargin) {
 		this.w = _textWidth(newName, this.gFont) + offset;
 		this.w *= buttonsBar.config.scale;
 	};
 
-	this.adjustNameWidth = function (newName, offset = 30) {
+	this.adjustNameWidth = function (newName, offset = buttonsBar.config.buttonMargin) {
 		this.text = newName;
 		this.adjustButtonWidth(newName, offset);
 		this.changeTextScale(buttonsBar.config.textScale);
@@ -1445,7 +1453,7 @@ function addButtonSeparator() {
 	buttonsBar.list.push({});
 	return addButton({
 		'separator': new ThemedButton({
-			coordinates: { x: 0, y: 0, w: _scale(4), h: 22 },
+			coordinates: { x: 0, y: 0, w: _scale(4), h: _scale(16, false) },
 			func: null, description: null, variables: { isSeparator: true }
 		}),
 	});
@@ -1455,7 +1463,7 @@ function addButtonSpacer(w = buttonsBar.config.spacerSize) {
 	buttonsBar.list.push({});
 	return addButton({
 		'spacer': new ThemedButton({
-			coordinates: { x: 0, y: 0, w: _scale(w), h: 22 },
+			coordinates: { x: 0, y: 0, w: _scale(w), h: _scale(16, false) },
 			func: null, description: null, variables: { isSpacer: true }
 		}),
 	});
@@ -1465,7 +1473,7 @@ function addButtonNewLine() {
 	buttonsBar.list.push({});
 	return addButton({
 		'newline': new ThemedButton({
-			coordinates: { x: 0, y: 0, w: 0, h: 22 },
+			coordinates: { x: 0, y: 0, w: 0, h: _scale(16, false) },
 			func: null, description: null, variables: { isNewLine: true }
 		}),
 	});

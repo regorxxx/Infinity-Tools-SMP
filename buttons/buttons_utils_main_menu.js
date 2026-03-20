@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 /*
 	Main Menu shortcut
@@ -11,7 +11,7 @@
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, MF_GRAYED:readable, clone:readable, MF_STRING:readable, tryMethod:readable, compareObjects:readable */
+/* global MK_SHIFT:readable, VK_SHIFT:readable, MF_GRAYED:readable, clone:readable, MF_STRING:readable, tryMethod:readable, compareObjects:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, showButtonReadme:readable */
 include('..\\helpers\\menu_xxx.js');
@@ -21,7 +21,7 @@ include('..\\helpers\\menu_xxx_extras.js');
 include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isJSON:readable, isString:readable, _p:readable, isStringWeak:readable, _b:readable, doOnce:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+/* global _gdiFont:readable, _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable */
 include('..\\helpers\\helpers_xxx_input.js');
@@ -53,7 +53,7 @@ buttonsBar.list.push(newButtonsProperties);
 {
 	const newButton = {
 		'Main Menu': new ThemedButton({
-			coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.customName[1], _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 30 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+			coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.customName[1], buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 			text: newButtonsProperties.customName[1],
 			func: function (mask) {
 				const list = JSON.parse(this.buttonsProperties.entries[1]);

@@ -152,12 +152,15 @@ buttonsBar.config.toolbarTooltip = 'R. Click for toolbar menu' +
 buttonsBar.config.scale = barProperties.scale[1];
 buttonsBar.config.textScale = barProperties.textScale[1];
 buttonsBar.config.iconScale = barProperties.iconScale[1];
+buttonsBar.config.buttonMargin = _scale(buttonsBar.config.default.buttonMargin * buttonsBar.config.scale, false);
 buttonsBar.config.outlineIcon = barProperties.outlineIcon[1];
 buttonsBar.config.xButtonPosition = barProperties.xButtonPosition[1];
 buttonsBar.config.yButtonPosition = barProperties.yButtonPosition[1];
 buttonsBar.config.textPosition = barProperties.textPosition[1];
 buttonsBar.config.offset = JSON.parse(barProperties.offset[1]);
 buttonsBar.config.bFullSize = barProperties.bFullSize[1];
+buttonsBar.config.font.text = _gdiFont(globFonts.button.name, _scale(globFonts.button.size * buttonsBar.config.textScale / 1.33, false));
+buttonsBar.config.font.icon = _gdiFont(globFonts.buttonIcon.name, _scale(globFonts.buttonIcon.size * buttonsBar.config.iconScale / 1.33, false));
 buttonsBar.menu = () => createButtonsMenu(barProperties.name[1]);
 
 const background = new _background({

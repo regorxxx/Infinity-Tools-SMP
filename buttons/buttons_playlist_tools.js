@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 /*
 	Playlist Tools Menu
@@ -12,7 +12,7 @@
  */
 
 /* global menu_panelProperties:readable */
-/* global globFonts:readable, MK_SHIFT:readable, doOnce:readable, debounce:readable, MK_CONTROL:readable */
+/* global MK_SHIFT:readable, doOnce:readable, debounce:readable, MK_CONTROL:readable */
 try { include('..\\helpers\\buttons_xxx.js'); } catch (e) { include('helpers\\buttons_xxx.js'); } // eslint-disable-line no-unused-vars
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 if (!window.ScriptInfo.Name) { window.DefineScript('Playlist Tools: Button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
@@ -26,7 +26,7 @@ if (!window.ScriptInfo.Name) { window.DefineScript('Playlist Tools: Button', { a
 		'main\\playlist_tools\\playlist_tools_menu.js'];
 	/* global menu_prefix:writable, menu:readable, menuAlt:readable, defaultArgs:readable, menu_prefix_panel:readable, updateMenuProperties:readable, menu_properties:readable , menuTooltip:readable */
 	/* global isBoolean:readable */
-	/* global _gdiFont:readable, _textWidth:readable, _scale:readable, chars:readable */
+	/* global _textWidth:readable, chars:readable, _scale:readable */
 	/* global updateCache:readable */
 	let bIncludeRel = true;
 	try { include('..\\helpers\\helpers_xxx_dummy.js'); } catch (e) { bIncludeRel = false; } // eslint-disable-line no-unused-vars
@@ -57,7 +57,7 @@ var newButtonsProperties = { // NOSONAR [shared on files]
 
 addButton({
 	'Playlist Tools': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Playlist Tools', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Playlist Tools', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Playlist Tools',
 		func: function (mask) {
 			if (!defaultArgs.parent) { defaultArgs.parent = this; } // Register this button as parent

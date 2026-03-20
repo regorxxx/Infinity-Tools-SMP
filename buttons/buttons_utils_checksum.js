@@ -1,9 +1,9 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, VK_CONTROL:readable, folders:readable, MK_SHIFT:readable */
+/* global VK_CONTROL:readable, folders:readable, MK_SHIFT:readable */
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, showButtonReadme:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
@@ -17,7 +17,7 @@ include('..\\helpers\\helpers_xxx_file.js');
 include('..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
-/* global _gdiFont:readable, _textWidth:readable, _scale:readable */
+/* global _textWidth:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 include('..\\main\\checksum\\checksum.js');
@@ -53,7 +53,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	'Checksum Tools': new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Checksum Tools', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Checksum Tools', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Checksum Tools',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {

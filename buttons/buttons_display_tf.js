@@ -74,7 +74,7 @@ addButton({
 					? Math.min(this.buttonsProperties.buttonSize[1] / 100 * window.Width, window.Width - this.currX)
 					: _scale(this.buttonsProperties.buttonSize[1]) * buttonsBar.config.scale;
 			},
-			h: 22
+			h: _scale(16, false)
 		},
 		text: function () { return this.displayFunc(); },
 		func: function (mask) {

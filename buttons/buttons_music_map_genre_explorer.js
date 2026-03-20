@@ -1,11 +1,11 @@
 ﻿'use strict';
-//02/03/26
+//19/03/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
-/* global globFonts:readable, MK_SHIFT:readable, VK_SHIFT:readable, VK_CONTROL:readable, globTags:readable */
+/* global MK_SHIFT:readable, VK_SHIFT:readable, VK_CONTROL:readable, globTags:readable */
 include('..\\helpers\\buttons_xxx.js');
-/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable, _textWidth:readable, _scale:readable, _gdiFont:readable, ThemedButton:readable, chars:readable */
+/* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
 include('..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -14,6 +14,8 @@ include('..\\helpers\\helpers_xxx_prototypes.js');
 /* global isBoolean:readable, isJSON:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
 /* global _b:readable, _t:readable */
+include('..\\helpers\\helpers_xxx_UI.js');
+/* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable */
 include('..\\helpers\\menu_xxx_extras.js');
@@ -50,7 +52,7 @@ buttonsBar.list.push(newButtonsProperties);
 
 addButton({
 	[sbd.name + ' Genre explorer']: new ThemedButton({
-		coordinates: { x: 0, y: 0, w: _textWidth('Genre explorer', _gdiFont(globFonts.button.name, globFonts.button.size * buttonsBar.config.scale)) + 25 * _scale(1, false) / _scale(buttonsBar.config.scale), h: 22 },
+		coordinates: { x: 0, y: 0, w: _textWidth('Genre explorer', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Genre explorer',
 		func: function (mask) {
 			if (mask === MK_SHIFT) {
