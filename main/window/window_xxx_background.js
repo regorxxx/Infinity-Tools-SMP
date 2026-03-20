@@ -157,7 +157,7 @@ function _background({
 				this.coverImg.art.image.RotateFlip(RotateFlipType.RotateNoneFlipY);
 			}
 			if (this.useD2D) {
-				applyEffect(this.coverImg.art.image, (img) => {
+				this.coverImg.art.image = applyEffect(this.coverImg.art.image, (img) => {
 					let prevEffect, effect;
 					if (this.coverModeOptions.mute !== 0 && Number.isInteger(this.coverModeOptions.mute)) {
 						intensity = Math.max(Math.min(this.coverModeOptions.mute / 100, 1), 0);
