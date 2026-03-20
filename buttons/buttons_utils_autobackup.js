@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/03/26
+//20/03/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -71,7 +71,7 @@ var newButtonsProperties = { // NOSONAR[global]
 			{ name: 'World-Map-SMP', path: folders.dataName + 'worldMap*' }
 		]),
 		{ func: isJSON }],
-	outputPath: ['Directory to store backup files', 'autobackup\\autobackup.', { func: isString }, 'autobackup\\autobackup.'],
+	outputPath: ['Directory to store backup files', '.\\profile\\autobackup\\autobackup.', { func: isString }, '.\\profile\\autobackup\\autobackup.'],
 	iBackups: ['Number of backups to keep', 20, { func: isInt }, 20],
 	backupFormat: ['Backups file format replacers',
 		JSON.stringify([
@@ -93,6 +93,13 @@ newButtonsProperties.backupFormat.push(newButtonsProperties.backupFormat[1]);
 
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 newButtonsProperties = getPropertiesPairs(newButtonsProperties, prefix, 0);
+{ // TODO: remove on next relase
+	if (!/^(\w:\\|\.\\profile|%FB2K_PROFILE_PATH%|%PROFILE%)/.test(newButtonsProperties.outputPath[1])) {
+		newButtonsProperties.outputPath[1] = '.\\profile\\' + newButtonsProperties.outputPath[1];
+		overwriteProperties(newButtonsProperties);
+	}
+}
+
 buttonsBar.list.push(newButtonsProperties);
 
 addButton({
@@ -115,7 +122,8 @@ addButton({
 					['iPlaying', 'iStop', 'iInterval', 'iStart', 'iTrack', 'iClose', 'sep', 'iTrackSave'].forEach((key) => {
 						if (menu.isSeparator(key)) { menu.newEntry({ menuName, entryText: key }); return; }
 						const value = this.buttonsProperties[key][1];
-						const entryText = this.buttonsProperties[key][0].replace(/[a-zA-Z]*\d*_*\d*\./, '') + '\t[' + value + ']';
+						const title = this.buttonsProperties[key][0].replace(/[a-zA-Z]*\d*_*\d*\./, '');
+						const entryText = title + '\t[' + value + ']';
 						const unit = key === 'iTrack' || key === 'iTrackSave'
 							? 'tracks'
 							: key === 'iClose'
@@ -123,7 +131,7 @@ addButton({
 								: 'minutes';
 						menu.newEntry({
 							menuName, entryText, func: () => {
-								const input = Input.number('int', value, 'Enter ' + unit + ':\n(0 = off)', 'AutoBackup', this.buttonsProperties[key][3]);
+								const input = Input.number('int', value, 'Enter ' + unit + ':\n(0 = off)', 'AutoBackup: ' + title.replace(/\(.*\)$/, ''), this.buttonsProperties[key][3]);
 								if (input === null) { return; }
 								if (!checkProperty(this.buttonsProperties[key], input)) { return; } // Apply properties check which should be personalized for input value
 								this.buttonsProperties[key][1] = input;
@@ -167,11 +175,12 @@ addButton({
 						const entryText = this.buttonsProperties.outputPath[0].replace(/[a-zA-Z]*\d*_*\d*\./, '') + '\t[' + value + ']';
 						menu.newEntry({
 							menuName, entryText, func: () => {
-								const input = Input.string('string', value, 'Enter path relative to profile folder:', 'AutoBackup', this.buttonsProperties.outputPath[3]);
+								const input = Input.string('string', value, 'Enter path and filename prefix, for ex.: \'.\\profile\\autobackup\\autobackup.\'\n\nPaths starting with \'.\\profile\\\' are relative to foobar profile folder.\n\'%FB2K_PROFILE_PATH%\' or \'%PROFILE%\' may also be used.\n\nAbsolute paths (same drive) are allowed although not recommended.\n\nFinal backup filenames will also include a timestamp, for ex.:\n\'autobackup.20260317-213219.zip\'\n\nFurther file formatting can be set at menus.', 'AutoBackup: backup files path', this.buttonsProperties.outputPath[3]);
 								if (input === null) { return; }
 								if (!checkProperty(this.buttonsProperties.outputPath, input)) { return; } // Apply properties check which should be personalized for input value
 								this.buttonsProperties.outputPath[1] = input;
 								overwriteProperties(this.buttonsProperties);
+								this.autoBackup.setOutputPath(input);
 							}
 						});
 					}
@@ -186,7 +195,7 @@ addButton({
 									'object', JSON.stringify({ regex: '[\\- :,]', flag: 'g', replacer: '_' }),
 									'Enter regex and replacer:\n' +
 									'Ex: ' + JSON.stringify({ regex: '[\\- :,]', flag: 'g', replacer: '_' })
-									, 'AutoBackup', JSON.stringify({ regex: '[\\- :,]', flag: 'g', replacer: '_' }), void (0), true
+									, 'AutoBackup: backup file formatting', JSON.stringify({ regex: '[\\- :,]', flag: 'g', replacer: '_' }), void (0), true
 								) || {})
 							};
 							if (!Object.hasOwn(entry, 'regex') || !Object.hasOwn(entry, 'flag') || !Object.hasOwn(entry, 'replacer')) { return; }
@@ -206,7 +215,7 @@ addButton({
 						const entryText = this.buttonsProperties.iBackups[0].replace(/[a-zA-Z]*\d*_*\d*\./, '') + '\t[' + value + ']';
 						menu.newEntry({
 							menuName, entryText, func: () => {
-								const input = Input.number('int', value, 'Enter number' + ':\n(0 = off)', 'AutoBackup', this.buttonsProperties.iBackups[3]);
+								const input = Input.number('int', value, 'Enter number' + ':\n(0 = off)', 'AutoBackup: max backup files', this.buttonsProperties.iBackups[3]);
 								if (input === null) { return; }
 								if (!checkProperty(this.buttonsProperties.iBackups, input)) { return; } // Apply properties check which should be personalized for input value
 								this.buttonsProperties.iBackups[1] = input;
@@ -219,7 +228,7 @@ addButton({
 						const entryText = this.buttonsProperties.backupsMaxSize[0].replace(/[a-zA-Z]*\d*_*\d*\./, '') + '\t[' + value + ' MB]';
 						menu.newEntry({
 							menuName, entryText, func: () => {
-								const input = Input.number('int', value, 'Enter MB' + ':\n(0 = off)', 'AutoBackup', this.buttonsProperties.backupsMaxSize[3]);
+								const input = Input.number('int', value, 'Enter MB' + ':\n(0 = off)', 'AutoBackup: max total backup files size', this.buttonsProperties.backupsMaxSize[3]);
 								if (input === null) { return; }
 								if (!checkProperty(this.buttonsProperties.backupsMaxSize, input)) { return; } // Apply properties check which should be personalized for input value
 								this.buttonsProperties.backupsMaxSize[1] = input;
@@ -233,7 +242,7 @@ addButton({
 						const entryText = this.buttonsProperties.minDriveSize[0].replace(/[a-zA-Z]*\d*_*\d*\./, '') + '\t[' + value + ' MB]';
 						menu.newEntry({
 							menuName, entryText, func: () => {
-								const input = Input.number('int', value, 'Enter MB' + ':\n(0 = off)', 'AutoBackup', this.buttonsProperties.minDriveSize[3]);
+								const input = Input.number('int', value, 'Enter MB' + ':\n(0 = off)', 'AutoBackup: min drive free space', this.buttonsProperties.minDriveSize[3]);
 								if (input === null) { return; }
 								if (!checkProperty(this.buttonsProperties.minDriveSize, input)) { return; } // Apply properties check which should be personalized for input value
 								this.buttonsProperties.minDriveSize[1] = input;

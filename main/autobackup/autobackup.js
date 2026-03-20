@@ -1,5 +1,5 @@
 'use strict';
-//08/10/25
+//20/03/26
 
 /* exported AutoBackup */
 
@@ -8,7 +8,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global round:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global _createFolder:readable, getFiles:readable, _recycleFile:readable, getPathMeta:readable, created:readable, _isFile:readable, _isFolder:readable, _deleteFile:readable, _deleteFolder:readable, _copyFile:readable, _copyFolder:readable */
+/* global _createFolder:readable, getFiles:readable, _recycleFile:readable, getPathMeta:readable, created:readable, _isFile:readable, _isFolder:readable, _deleteFile:readable, _deleteFolder:readable, _copyFile:readable, _copyFolder:readable, _resolvePath:readable, _foldPath:readable */
 include('..\\..\\helpers\\helpers_xxx_file_zip.js');
 /* global _zip:readable */
 
@@ -64,6 +64,7 @@ function AutoBackup({
 		this.id = setInterval(this.backupDebounced, 2500);
 		this.active = true;
 		this.counter.timeInit = Date.now();
+		this.setOutputPath(this.outputPath);
 	};
 
 	this.clear = () => {
@@ -173,7 +174,7 @@ function AutoBackup({
 	this.deleteOldFiles = (iBackups, backupsMaxSize, folderPath) => {
 		if (iBackups <= 0 && backupsMaxSize <= 0) { return false; }
 		let files = getFiles(folderPath, new Set(['.zip']))
-			.filter((path) => path.startsWith(fb.ProfilePath + outputPath))
+			.filter((path) => path.startsWith(this.outputPath))
 			.map((path) => {
 				return { path, created: new Date(created(path)), size: backupsMaxSize > 0 ? utils.GetFileSize(path) : 0 };
 			})
@@ -233,7 +234,7 @@ function AutoBackup({
 	this.backup = ({ iBackups = this.iBackups, backupsMaxSize = this.backupsMaxSize, bAsync = this.bAsync, outputPath = this.outputPath, reason = '', timeout = 0 } = {}) => {
 		if (timeout) { bAsync = true; }
 		let test = !bAsync ? new FbProfiler('AutoBackup') : null;
-		const folderPath = fb.ProfilePath + outputPath.split('\\').slice(0, -1).join('\\') + '\\' || '';
+		const folderPath = outputPath.split('\\').slice(0, -1).join('\\') + '\\' || '';
 		_createFolder(folderPath);
 		this.deleteOldFiles(iBackups, backupsMaxSize, folderPath);
 		if (reason.toLowerCase() !== 'forced' && !this.checkDriveSpace()) { return false; }
@@ -256,23 +257,31 @@ function AutoBackup({
 				}
 			}
 		});
-		_zip(fileMask.flat(Infinity), fb.ProfilePath + outputPath + zipName + '.zip', bAsync, fb.ProfilePath, timeout, this.zipArgs || '');
+		_zip(fileMask.flat(Infinity), outputPath + zipName + '.zip', bAsync, fb.ProfilePath, timeout, this.zipArgs || '');
 		if (timeout) {
-			console.log(this.name + ' (' + reason + '): Scheduled backup of items on ' + timeout + ' seconds to\n\t ' + outputPath + zipName); // DEBUG
-		} else {
-			console.log(this.name + ' (' + reason + '): Backed up items to\n\t ' + outputPath + zipName); // DEBUG
+			console.log(this.name + ' (' + reason + '): Scheduled backup of items on ' + timeout + ' seconds to\n\t ' + _foldPath(outputPath) + zipName); // DEBUG
 		}
 		// Delete the file copies
 		if (!bAsync) {
 			this.deleteTempFiles(fileMask);
 			test.Print(reason);
+			if (_isFile(outputPath + zipName + '.zip')) {
+				console.log(this.name + ' (' + reason + '): Backed up items to\n\t ' + outputPath + zipName); // DEBUG
+			} else {
+				console.log(this.name + ' (' + reason + '): Failed creating backup at\n\t ' + outputPath + zipName); // DEBUG
+			}
 		} else if (reason !== 'unload') {
+			const now = Date.now();
 			const id = setInterval(() => {
-				if (_isFile(fb.ProfilePath + outputPath + zipName + '.zip')) {
+				if (_isFile(outputPath + zipName + '.zip')) {
 					this.deleteTempFiles(fileMask);
 					clearInterval(id);
+					console.log(this.name + ' (' + reason + '): Backed up items to\n\t ' + outputPath + zipName); // DEBUG
+				} else if (Date.now() - now >= this.backupMinInterval) {
+					clearInterval(id);
+					console.log(this.name + ' (' + reason + '): Failed creating backup at\n\t ' + outputPath + zipName); // DEBUG
 				}
-			}, this.backupMinInterval);
+			}, 1000);
 		}
 		return true;
 	};
@@ -325,6 +334,9 @@ function AutoBackup({
 	};
 	this.forceBackup = () => {
 		return this.saveFooConfig() && setTimeout(() => this.backup({ reason: 'forced' }), this.configTimeout);
+	};
+	this.setOutputPath = (path) => {
+		this.outputPath = _resolvePath(path);
 	};
 	// Internals
 	this.counter = {
