@@ -20,6 +20,8 @@
 - UI: added multiple new background art effects and image histogram while using D2D draw mode. See [here](https://hydrogenaudio.org/index.php/topic,126743.msg1079362.html#msg1079362).
 - UI: added new art mode 'By priority' which lets you set different art types by priority order to use if one is not available for current track. The submenu will show the list of art types set and the parent menu the actual one used. This feature also allows to specify between default, stub or embedded art (contrary to the other modes). Works like 'Album art' script bundled with JSP3 panel, see [here](https://hydrogenaudio.org/index.php/topic,116509.msg1079405.html#msg1079405).
 ### Changed
+- Autobackup: improved input popup titles and descriptions.
+- Autobackup: allows absolute and relative paths for backup output path setting, using the full path, ./profile, %FB2K_PROFILE_PATH% or %PROFILE% suffixes. Note absolute paths will only work if they reside on same drive than foobar2000. Use symlinks or other native Windows tools if you want to store such files at other places.
 - Playlist Tools\Pools: modified some of the default presets and added new ones.
 - Installation: panel menu, accessed through 'Ctrl + Win + R. Click' (which works globally on any script and panel, at any position), now also includes the script version number and a submenu to check and set auto-updates.
 - UI: new 'Edit all...' menu entry in tools with customizable menu entries, queries, presets, etc. which allows to easily edit entries on batch, instead of manually navigating the menus. This serves as a workaround of menu being closed everytime a menu entry is clicked on. See [Issue 7]/https://github.com/regorxxx/Infinity-Tools-SMP/issues/7).
