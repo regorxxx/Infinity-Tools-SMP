@@ -1,5 +1,5 @@
 'use strict';
-//10/03/26
+//27/03/26
 
 /* exported listenBrainzMenu */
 
@@ -8,7 +8,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global WshShell:readable, _isFile:readable, _jsonParseFileCheck:readable, utf8:readable, _jsonParseFileCheck:readable, _jsonParseFileCheck:readable, _runCmd:readable */
+/* global WshShell:readable, _isFile:readable, _jsonParseFileCheck:readable, utf8:readable, _jsonParseFileCheck:readable, _jsonParseFileCheck:readable, _runCmd:readable, _save:readable, _jsonParseFile:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global _b:readable, _t:readable, _q:readable, _p:readable, _asciify:readable, isArrayEqual:readable, isUUID:readable, range:readable, isString:readable, capitalizeAll:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
@@ -16,7 +16,7 @@ include('..\\..\\helpers\\helpers_xxx_properties.js');
 include('..\\..\\helpers\\buttons_xxx_menu.js');
 /* global _menu:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
-/* global sanitizeQueryVal:readable, sanitizeTagValIds:readable, sanitizeTagIds:readable, sanitizeQueryVal:readable,queryJoin:readable */
+/* global sanitizeQueryVal:readable, sanitizeTagValIds:readable, sanitizeTagIds:readable, sanitizeQueryVal:readable,queryJoin:readable, getHandleListTagsV3 */
 include('..\\..\\helpers\\helpers_xxx_tags_extra.js');
 /* global getSimilarDataFromFile:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
@@ -1167,9 +1167,13 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				if (!response) { return; }
 				const library = fb.GetLibraryItems();
 				const table = new Table;
+				const blacklist = (_jsonParseFile(folders.data + 'listenbrainz_discover.json') || { skip: { artists: [], releases: [] } }).skip;
+				blacklist.artists = new Set(blacklist.artists);
+				blacklist.releases = new Set(blacklist.releases);
 				response.reverse().forEach((r) => {
+					if (blacklist.artists.has(r.artist_credit_name) || r.artist_mbids.some((m) => blacklist.artists.has(m)) || blacklist.releases.has(r.release_group_mbid)) { return; }
 					if ((fb.GetQueryItemsCheck(library, 'ALBUM IS ' + r.release_name + ' OR MUSICBRAINZ_RELEASEGROUPID IS ' + r.release_group_mbid + ' OR MUSICBRAINZ_ALBUMID IS ' + r.release_mbid) || new FbMetadbHandleList()).Count === 0) {
-						table.cell('Artist - Album', r.artist_credit_name.cut(50) + ' - ' + r.release_name.cut(100));
+						table.cell('Artist - Album', r.artist_credit_name.cut(30) + ' - ' + r.release_name.cut(50));
 						table.cell('Date', r.release_date);
 						table.cell('URL', 'https://listenbrainz.org/album/' + r.release_group_mbid);
 						table.newRow();
@@ -1192,8 +1196,12 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				const response = await lb.getFreshReleases(user, void (0), { sort: 'release_date', past: false, future: true, days: 90 }, token);
 				this.switchAnimation('ListenBrainz data retrieval', false);
 				if (!response) { return; }
+				const blacklist = (_jsonParseFile(folders.data + 'listenbrainz_discover.json') || { skip: { artists: [], releases: [] } }).skip;
+				blacklist.artists = new Set(blacklist.artists);
+				blacklist.releases = new Set(blacklist.releases);
 				const table = new Table;
-				response.reverse().forEach((r) => {
+				response.forEach((r) => {
+					if (blacklist.artists.has(r.artist_credit_name) || r.artist_mbids.some((m) => blacklist.artists.has(m)) || blacklist.releases.has(r.release_group_mbid)) { return; }
 					table.cell('Artist - Album', r.artist_credit_name.cut(50) + ' - ' + r.release_name.cut(100));
 					table.cell('Date', r.release_date);
 					table.cell('URL', 'https://listenbrainz.org/album/' + r.release_group_mbid);
@@ -1223,7 +1231,11 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				this.switchAnimation('ListenBrainz data retrieval', false);
 				if (!response) { return; }
 				const table = new Table;
+				const blacklist = (_jsonParseFile(folders.data + 'listenbrainz_discover.json') || { skip: { artists: [], releases: [] } }).skip;
+				blacklist.artists = new Set(blacklist.artists);
+				blacklist.releases = new Set(blacklist.releases);
 				response.reverse().forEach((r) => {
+					if (blacklist.artists.has(r.artist_credit_name) || r.artist_mbids.some((m) => blacklist.artists.has(m)) || blacklist.releases.has(r.release_group_mbid)) { return; }
 					table.cell('Artist - Album', r.artist_credit_name.cut(50) + ' - ' + r.release_name.cut(100));
 					table.cell('Date', r.release_date);
 					table.cell('URL', 'https://listenbrainz.org/album/' + r.release_group_mbid);
@@ -1233,6 +1245,37 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				fb.ShowPopupMessage(report, 'ListenBrainz');
 			}, flags: bListenBrainz ? MF_STRING : MF_GRAYED, data: { bDynamicMenu: true }
 		});
+		menu.newSeparator(menuName);
+		{
+			const subMenuName = menu.newMenu('Blacklist', menuName);
+			menu.newEntry({
+				menuName: subMenuName,
+				entryText: 'Ignore selected artists', func: async () => {
+					const sel = fb.GetSelections(1);
+					if (sel && sel.Count) {
+						const tags = getHandleListTagsV3(sel, ['ALBUM ARTIST', 'ARTIST', 'MUSICBRAINZ_ALBUMARTISTID'], { bMerged: true }).flat(Infinity);
+						const data = _jsonParseFile(folders.data + 'listenbrainz_discover.json') || { skip: { artists: [], releases: [] } };
+						data.skip.artists = [...new Set(data.skip.artists.concat(tags))].filter(Boolean);
+						_save(folders.data + 'listenbrainz_discover.json', JSON.stringify(data, null, '\t').replace(/\n/g, '\r\n'));
+						fb.ShowPopupMessage(tags.join('\n'), 'ListenBrainz: artists blacklist');
+					}
+				}, data: { bDynamicMenu: true }
+			});
+			menu.newEntry({
+				menuName: subMenuName,
+				entryText: 'Ignore releases...', func: async () => {
+					let input = Input.string('string', '', 'Add release group MBIDs or URLS:\n(multiple values are allowed split by \'|\')', 'Listenbrainz: releases blacklist', 'https://listenbrainz.org/album/a8b717df-56ec-415b-9933-f75e81a60991');
+					if (!input) { return; }
+					input = input.split('|').filter(Boolean)
+						.map((m) => m.replace('https://listenbrainz.org/album/', '').replace('https://musicbrainz.org/release-group/', ''))
+						.filter((m) => isUUID(m) && m);
+					const data = _jsonParseFile(folders.data + 'listenbrainz_discover.json') || { skip: { artists: [], releases: [] } };
+					data.skip.releases = [...new Set(data.skip.releases.concat(input))].filter((m) => isUUID(m) && m);
+					_save(folders.data + 'listenbrainz_discover.json', JSON.stringify(data, null, '\t').replace(/\n/g, '\r\n'));
+					fb.ShowPopupMessage(input.join('\n'), 'ListenBrainz: releases blacklist');
+				}, data: { bDynamicMenu: true }
+			});
+		}
 	}
 	menu.newSeparator();
 	{	// Other tools
