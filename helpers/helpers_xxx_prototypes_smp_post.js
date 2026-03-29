@@ -1,5 +1,5 @@
 ﻿'use strict';
-//24/11/25
+//29/03/26
 
 if (typeof addEventListener !== 'undefined' && typeof removeEventListenerSelf !== 'undefined') {
 	const playbackHistory = [];
@@ -10,7 +10,7 @@ if (typeof addEventListener !== 'undefined' && typeof removeEventListenerSelf !=
 			idx: pl.IsValid ? pl.PlaylistItemIndex : -1,
 			plsIdx: pl.IsValid ? pl.PlaylistIndex : -1,
 			plsName: pl.IsValid && pl.PlaylistIndex !== -1 ? plman.GetPlaylistName(pl.PlaylistIndex) : null,
-			plsGUID: pl.IsValid && pl.PlaylistIndex !== -1 ? plman.GetGUID(pl.PlaylistIndex) : null
+			plsGUID: pl.IsValid && pl.PlaylistIndex !== -1 && pl.plsIdx < plman.PlaylistIndex ? plman.GetGUID(pl.PlaylistIndex) : null
 		};
 		if (playbackHistory.unshift(item) > 10) { playbackHistory.pop(); }
 	};
@@ -22,7 +22,8 @@ if (typeof addEventListener !== 'undefined' && typeof removeEventListenerSelf !=
 		const prev = playbackHistory[idx];
 		if (prev) { // Refresh all data preferring old matches
 			if (prev.plsGUID) {
-				if (plman.GetGUID(prev.plsIdx) !== prev.plsGUID) { prev.plsIdx = plman.FindByGUID(prev.plsGUID); }
+				if (prev.plsIdx === -1 || prev.plsIdx > plman.PlaylistCount) { prev.plsIdx = -1; }
+				if (prev.plsIdx === -1 || plman.GetGUID(prev.plsIdx) !== prev.plsGUID) { prev.plsIdx = plman.FindByGUID(prev.plsGUID); }
 				if (prev.plsIdx !== -1) { prev.plsName = plman.GetPlaylistName(prev.plsIdx); };
 			} else if (plman.GetPlaylistName(prev.plsIdx) !== prev.plsName) {
 				prev.plsIdx = plman.FindPlaylist(prev.plsName);
