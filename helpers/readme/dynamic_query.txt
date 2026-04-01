@@ -18,7 +18,7 @@ Rules:
 ------
 • Dynamic variables are allowed too, enclosed on '#': #ARTIST#,
 #$year(%date%)#, ...
-• Dynamic variables are not case sensitive. i.e. #TAG# or #tag#.
+• Dynamic variables are not case-sensitive. i.e. #TAG# or #tag#.
 • There are a few special variables, which are not evaluated against
 a track but globally. For ex: #YEAR# -> 2023
 • These placeholders will be replaced with focused item\'s TF result on

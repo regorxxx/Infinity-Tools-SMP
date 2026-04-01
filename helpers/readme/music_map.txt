@@ -62,7 +62,7 @@ tracks with YYYY-MM tags or YYYY tags.
 +---------+--------------------------+
 
 Genre and Style tag slots (or their remapped values) can be globally
-filtered. See 'Filter genre/style values'. Case sensitive. For example,
+filtered. See 'Filter genre/style values'. case-sensitive. For example,
 when comparing genre values from track A to track B, 'Soundtrack' and
 'Radio Program' values can be omitted:
 +---------------------------+--------------------------+

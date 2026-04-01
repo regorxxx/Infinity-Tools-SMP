@@ -74,5 +74,5 @@ commands to newly created playlists.
 
 (*) Another approach would be using SMP main menus and associated those
 entries to http url commands. See 'SMP Main menu' readme.
-(**) Names are not case sensitive... 'PT:Harmonic' is equivalent to
+(**) Names are not case-sensitive... 'PT:Harmonic' is equivalent to
 'pt:harmonic'.
