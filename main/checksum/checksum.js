@@ -1,5 +1,5 @@
 ﻿'use strict';
-//31/01/26
+//03/04/26
 
 /* exported checksumUtils */
 
@@ -40,7 +40,7 @@ const checksumUtils = {
 	},
 	findChecksum: function hasChecksum(handlePath, fileMask) {
 		return Array.isArray(handlePath)
-			? Array.from(new Set(handlePath)).map((path) => _isFile(this.getChecksumPath(path, fileMask).filePath)).filter(Boolean).length
+			? Array.from(new Set(handlePath)).reduce((prev, path) => _isFile(this.getChecksumPath(path, fileMask).filePath) ? prev + 1 : prev, 0)
 			: (_isFile(this.getChecksumPath(handlePath, fileMask).filePath) ? 1 : 0);
 	},
 	hasChecksum: function hasChecksum(handlePath, fileMask) {

@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//07/01/26
+//03/04/26
 
 /* exported wrapped */
 
@@ -1470,7 +1470,7 @@ const wrapped = {
 	 * @returns {FbMetadbHandleList}
 	*/
 	computeTopArtistsPlaylist: function (artistsData, size = 100) {
-		const artists = artistsData.slice(0, 100).map((artist) => artist.artist).filter(Boolean);
+		const artists = artistsData.slice(0, 100).reduce((prev, artist) => { if (artist.artist) { prev.push(artist.artist); } return prev; }, []);
 		if (artists.length) {
 			if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating top artists playlist...'); }
 			const query = queryJoin([
@@ -1501,7 +1501,7 @@ const wrapped = {
 	 * @returns {FbMetadbHandleList}
 	*/
 	computeTopGenresPlaylist: function (genresData, size = 100) {
-		const genres = genresData.slice(0, this.settings.topSlice).map((genre) => genre.genre).filter(Boolean);
+		const genres = genresData.slice(0, this.settings.topSlice).reduce((prev, genre) => { if (genre.genre) { prev.push(genre.genre); } return prev; }, []);
 		if (genres.length) {
 			if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating top genres playlist...'); }
 			const query = queryJoin([
@@ -1532,13 +1532,16 @@ const wrapped = {
 	 * @returns {FbMetadbHandleList}
 	*/
 	computeTopCountriesPlaylist: function (countriesData, size = 100) {
-		const ISO = this.stats.countries.byISO.map((country) => country.iso).filter(Boolean);
+		const ISO = this.stats.countries.byISO.reduce((prev, country) => { if (country.iso) { prev.push(country.iso); } return prev; }, []);
 		if (ISO.length) {
 			if (this.settings.logOpt.bBasic) { console.log('Wrapped: creating top countries playlist...'); }
 			const worldMapData = _jsonParseFileCheck(this.settings.filePaths.worldMapArtists, 'Tags json', window.FullPanelName, utf8);
 			if (worldMapData) {
-				const filters = ISO.map((iso) => getZoneArtistFilter(iso, 'country', worldMapData)).filter(Boolean)
-					.map((filter) => queryJoin([globTags.rating + ' MISSING OR ' + globTags.rating + ' GREATER 2', filter.query], 'AND'));
+				const filters = ISO.reduce((prev, iso) => {
+					const query = getZoneArtistFilter(iso, 'country', worldMapData);
+					if (query) { prev.push(query); }
+					return prev;
+				}, []).map((filter) => queryJoin([globTags.rating + ' MISSING OR ' + globTags.rating + ' GREATER 2', filter.query], 'AND'));
 				const count = filters.length;
 				if (count) {
 					/** @type {FbMetadbHandleList} */
@@ -3241,7 +3244,7 @@ const wrapped = {
 		// Parse cmd
 		if (_isFile(output)) {
 			if (extraCmd && extraCmd.length) { extraCmd.filter(Boolean).forEach((cmd) => _runCmd(parseCmd(cmd), true)); }
-			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .html file at\n\t ' +_foldPath(output)); }
+			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .html file at\n\t ' + _foldPath(output)); }
 			utils.ShowHtmlDialog(0, 'file://' + output);
 			return true;
 		}

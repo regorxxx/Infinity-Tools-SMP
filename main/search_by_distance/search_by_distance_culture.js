@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//03/04/26
 
 /* exported getArtistsSameZone, getZoneArtistFilter, getZoneGraphFilter */
 
@@ -131,7 +131,11 @@ function getZoneArtistFilter(iso, mode = 'region', worldMapData = folders.data +
 	if (!worldMapData) { console.log('getZoneArtistFilter: no world map data available'); return; }
 	// Set allowed countries from current region
 	const [countryISO, noCountryISO] = getCountriesFromISO(iso, mode);
-	const countryName = new Set(countryISO.map((iso) => { return isoMapRev.get(iso).toLowerCase(); }).filter(Boolean));
+	const countryName = new Set(countryISO.reduce((prev, iso) => {
+		const name = isoMapRev.get(iso).toLowerCase();
+		if (name) { prev.push(name); }
+		return prev;
+	}, []));
 	countryName.forEach((name) => { if (nameReplacersRev.has(name)) { countryName.add(nameReplacersRev.get(name)); } }); // Add alternate names
 	// Compare and get list of allowed artists
 	const artists = [];
@@ -144,7 +148,11 @@ function getZoneArtistFilter(iso, mode = 'region', worldMapData = folders.data +
 	query.push(queryJoin(artists.map((artist) => globTags.artist + ' IS ' + artist.toLowerCase()), 'OR'));
 	// Compare if negating countries is smaller than the opposite list, which should be faster for queries
 	if (noCountryISO.length < countryISO.length) {
-		const noCountryName = new Set(noCountryISO.map((iso) => isoMapRev.get(iso).toLowerCase()).filter(Boolean));
+		const noCountryName = new Set(noCountryISO.reduce((prev, iso) => {
+			const name = isoMapRev.get(iso).toLowerCase();
+			if (name) { prev.push(name); }
+			return prev;
+		}, []));
 		noCountryName.forEach((name) => { if (nameReplacersRev.has(name)) { countryName.add(nameReplacersRev.get(name)); } });
 		query.push(_qCond(localeTag) + ' PRESENT AND NOT ' + _p(queryJoin(Array.from(noCountryName, (country) => _qCond(localeTag) + ' IS ' + country.toLowerCase()), 'OR')));
 	} else {
