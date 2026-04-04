@@ -56,7 +56,7 @@ buttonsBar.config = {
 	scale: 1,
 	iconScale: 1,
 	textScale: 1,
-	buttonMargin: 22,
+	buttonMargin: 26,
 	bIconMode: false,
 	bIconModeExpand: false,
 	bUseCursors: true,
