@@ -1,15 +1,15 @@
 ﻿'use strict';
-//06/08/25
+//05/04/26
 
 /* exported createPoolMusicGraphPresets */
 
 include('..\\..\\helpers\\helpers_xxx_tags.js');
-/* global queryJoin:readable, queryCombinations:readable, */
+/* global queryJoin:readable, queryCombinations:readable, _qCond:readable */
 include('..\\music_graph\\music_graph_descriptors_xxx.js');
 /* global globTags:readable */
 
 /* global music_graph_descriptors:readable */
-function createPoolMusicGraphPresets({size = 50} = {}) {
+function createPoolMusicGraphPresets({ size = 50 } = {}) {
 	const tenth = Math.floor(size / 10) || 1;
 	const pools = [];
 	[...music_graph_descriptors.style_cluster, ...music_graph_descriptors.style_supergenre]
@@ -22,52 +22,72 @@ function createPoolMusicGraphPresets({size = 50} = {}) {
 			// Some groups require further splitting or fine-tuning
 			const versions = (() => {
 				const name = cluster[0].replace('_supergenre', ' Supergenre');
-				if (cluster[0] === 'Downtempo_supergenre') {
-					return [
-						{
-							name: 'Electronic ' + name,
-							subFolder: music_graph_descriptors.getStyleGroup(cluster[0].replace('_supergenre', '')),
-							query: queryJoin([
-								genreQuery,
-								queryJoin(queryCombinations(['electronic', 'hip-hop', 'electropop', 'industrial', 'synth-pop', 'trip-hop', 'future soul', 'contemporary r&b', 'chill-out downtempo'], [globTags.genre, globTags.style], 'OR'),'OR')
-							], 'AND')
-						},
-						{
-							name,
-							subFolder: 'Other styles',
-							query: queryJoin([
-								genreQuery,
-								queryJoin(queryCombinations(['electronic', 'hip-hop', 'electropop', 'industrial', 'synth-pop', 'trip-hop', 'future soul', 'contemporary r&b', 'chill-out downtempo'], [globTags.genre, globTags.style], 'OR'),'OR')
-							], 'AND NOT')
-						}
-					];
-				} else if (cluster[0] === 'Hardcore Punk_supergenre') {
-					return [
-						{
-							name: 'Hardcore Rock-Metal Supergenre',
-							subFolder: 'Metal and Hard Rock',
-							query: queryJoin([
-								genreQuery,
-								queryJoin(queryCombinations(['heavy metal', 'hard rock'], [globTags.genre, globTags.style], 'OR'),'OR')
-							], 'AND')
-						},
-						{
-							name: 'Hardcore Psy-Alt-Punk Supergenre',
-							subFolder: music_graph_descriptors.getStyleGroup(cluster[0].replace('_supergenre', '')),
-							query: queryJoin([
-								genreQuery,
-								queryJoin(queryCombinations(['heavy metal', 'hard rock'], [globTags.genre, globTags.style], 'OR'),'OR')
-							], 'AND NOT')
-						}
-					];
-				} else {
-					return [
-						{
-							name,
-							subFolder: music_graph_descriptors.getStyleGroup(cluster[0].replace('_supergenre', '')),
-							query: genreQuery,
-						}
-					];
+				switch (cluster[0]) {
+					case 'Downtempo_supergenre':
+						return [
+							{
+								name: 'Electronic ' + name,
+								subFolder: music_graph_descriptors.getStyleGroup(cluster[0].replace('_supergenre', '')),
+								query: queryJoin([
+									genreQuery,
+									queryJoin(queryCombinations(['electronic', 'hip-hop', 'electropop', 'industrial', 'synth-pop', 'trip-hop', 'future soul', 'contemporary r&b', 'chill-out downtempo'], [globTags.genre, globTags.style], 'OR'), 'OR')
+								], 'AND')
+							},
+							{
+								name,
+								subFolder: 'Other styles',
+								query: queryJoin([
+									genreQuery,
+									queryJoin(queryCombinations(['electronic', 'hip-hop', 'electropop', 'industrial', 'synth-pop', 'trip-hop', 'future soul', 'contemporary r&b', 'chill-out downtempo'], [globTags.genre, globTags.style], 'OR'), 'OR')
+								], 'AND NOT')
+							}
+						];
+					case 'Hardcore Punk_supergenre':
+						return [
+							{
+								name: 'Hardcore Rock-Metal Supergenre',
+								subFolder: 'Metal and Hard Rock',
+								query: queryJoin([
+									genreQuery,
+									queryJoin(queryCombinations(['heavy metal', 'hard rock'], [globTags.genre, globTags.style], 'OR'), 'OR')
+								], 'AND')
+							},
+							{
+								name: 'Hardcore Psy-Alt-Punk Supergenre',
+								subFolder: music_graph_descriptors.getStyleGroup(cluster[0].replace('_supergenre', '')),
+								query: queryJoin([
+									genreQuery,
+									queryJoin(queryCombinations(['heavy metal', 'hard rock'], [globTags.genre, globTags.style], 'OR'), 'OR')
+								], 'AND NOT')
+							}
+						];
+					case 'Traditional Blues XL':
+					case 'Traditional Country':
+					case 'Traditional American Folk XL':
+					case 'Traditional Pop':
+						return [
+							{
+								name: name + ' (oldies)',
+								subFolder: music_graph_descriptors.getStyleGroup(cluster[0].replace('_supergenre', '')),
+								query: queryJoin([
+									genreQuery,
+									_qCond(globTags.date) + ' LESS ' + (name === 'Traditional American Folk XL' ? 1980 : 1965)
+								], 'AND')
+							},
+							{
+								name: name + ' (all dates)',
+								subFolder: music_graph_descriptors.getStyleGroup(cluster[0].replace('_supergenre', '')),
+								query: genreQuery
+							}
+						];
+					default:
+						return [
+							{
+								name,
+								subFolder: music_graph_descriptors.getStyleGroup(cluster[0].replace('_supergenre', '')),
+								query: genreQuery,
+							}
+						];
 				}
 			})();
 			versions.forEach((version) => {
@@ -115,7 +135,7 @@ function createPoolMusicGraphPresets({size = 50} = {}) {
 							_LIBRARY_4: queryJoin(
 								[
 									version.query,
-									queryJoin(queryCombinations(['instrumental', 'ambiental'], [globTags.genre, globTags.style], 'OR'),'OR'),
+									queryJoin(queryCombinations(['instrumental', 'ambiental'], [globTags.genre, globTags.style], 'OR'), 'OR'),
 									globTags.rating + ' GREATER 2'
 								]
 								, 'AND'
