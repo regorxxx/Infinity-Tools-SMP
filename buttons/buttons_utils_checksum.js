@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//12/04/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -166,12 +166,14 @@ addButton({
 			eventListeners: [],
 			setCallbacks: function (parent, add) {
 				if (add) {
-					this.eventListeners.push(addEventListener('on_metadb_changed', () => {
-						this.changeActiveOnSelection();
-					}));
-					this.eventListeners.push(addEventListener('on_selection_changed', () => {
-						this.changeActiveOnSelection();
-					}));
+					this.eventListeners.push(
+						addEventListener('on_metadb_changed', () => {
+							this.changeActiveOnSelection();
+						}),
+						addEventListener('on_selection_changed', () => {
+							this.changeActiveOnSelection();
+						})
+					);
 				} else {
 					this.eventListeners.forEach((listener) => removeEventListener(listener.event, void (0), listener.id));
 				}
