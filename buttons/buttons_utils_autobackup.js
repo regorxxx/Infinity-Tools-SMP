@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/03/26
+//12/04/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -68,7 +68,9 @@ var newButtonsProperties = { // NOSONAR[global]
 			{ name: 'Infinity-Tools-SMP (1)', path: folders.dataName + 'playlistTools_*' },
 			{ name: 'Infinity-Tools-SMP (2)', path: folders.dataName + 'pools_presets.json' },
 			{ name: 'JS Similar Artists', path: folders.dataName + 'musicmap_artists.json' },
-			{ name: 'World-Map-SMP', path: folders.dataName + 'worldMap*' }
+			{ name: 'World-Map-SMP', path: folders.dataName + 'worldMap*' },
+			{ name: 'JSplitter packages', path: 'foo_uie_jsplitter' },
+			{ name: 'SMP packages', path: 'foo_spider_monkey_panel' }
 		]),
 		{ func: isJSON }],
 	outputPath: ['Directory to store backup files', '.\\profile\\autobackup\\autobackup.', { func: isString }, '.\\profile\\autobackup\\autobackup.'],
@@ -191,12 +193,12 @@ addButton({
 						defaults: JSON.parse(this.buttonsProperties.backupFormat[3]),
 						input: () => {
 							const entry = {
-								...(Input.json(
+								...Input.json(
 									'object', JSON.stringify({ regex: '[\\- :,]', flag: 'g', replacer: '_' }),
 									'Enter regex and replacer:\n' +
 									'Ex: ' + JSON.stringify({ regex: '[\\- :,]', flag: 'g', replacer: '_' })
 									, 'AutoBackup: backup file formatting', JSON.stringify({ regex: '[\\- :,]', flag: 'g', replacer: '_' }), void (0), true
-								) || {})
+								)
 							};
 							if (!Object.hasOwn(entry, 'regex') || !Object.hasOwn(entry, 'flag') || !Object.hasOwn(entry, 'replacer')) { return; }
 							try { new RegExp(entry.regex, entry.flag); } catch (e) { return; } // eslint-disable-line no-unused-vars
