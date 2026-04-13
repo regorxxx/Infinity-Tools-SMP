@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//03/04/26
+//06/04/26
 
 /* exported wrapped */
 
@@ -46,7 +46,7 @@ const wrapped = {
 	basePath: folders.temp + 'wrapped\\',
 	tags: {
 		artist: 'ALBUM ARTIST',
-		genre: [globTags.genre, globTags.style].map(_t).join(', '),
+		genre: [globTags.genre, globTags.style].map((s) => _t(s)).join(', '),
 		bpm: globTags.bpm,
 		key: globTags.key,
 		mood: globTags.mood
@@ -415,10 +415,10 @@ const wrapped = {
 					);
 					track.loved = fb.TitleFormat(globTags.isLoved)
 						.EvalWithMetadbs(new FbMetadbHandleList(track.handle))
-						.some((val) => val === '1');
+						.includes('1');
 					track.hated = fb.TitleFormat(globTags.isHated)
 						.EvalWithMetadbs(new FbMetadbHandleList(track.handle))
-						.some((val) => val === '1');
+						.includes('1');
 					delete track.x;
 					delete track.y;
 				});
@@ -1211,29 +1211,29 @@ const wrapped = {
 					, 0
 				) / this.stats.bpms.high.val, 1) * this.stats.bpms.mean.listens / this.stats.listens.total
 			) / 2;
-			if (this.stats.bpms.high.listens > this.stats.bpms.low.listens && this.stats.bpms.mean.val > 110 && hBpmWeight > 0.10) {
+			if (this.stats.bpms.high.listens > this.stats.bpms.low.listens && this.stats.bpms.mean.val > 110 && hBpmWeight > 0.1) {
 				char.score += Math.min(hBpmWeight / 1.5 * 100, 40);
 			}
 			const majKeyWeight = (this.stats.keys.major.listens - this.stats.keys.minor.listens / 2) / this.stats.listens.total;
-			if (majKeyWeight > 0.10) {
+			if (majKeyWeight > 0.1) {
 				char.score += Math.min(majKeyWeight / 1.5 * 100, 30);
 			}
 			const upbeatWeight = (this.stats.moods.energetic.listens + this.stats.moods.happy.listens) / 2 / this.stats.moods.total;
-			if (upbeatWeight > 0.10) {
+			if (upbeatWeight > 0.1) {
 				char.score += Math.min(upbeatWeight / 1.5 * 100, 30);
 			}
 			// Vampire: many listens for atmospheric/emotional tracks -> minor key (30%) + mood (30%) + low bpm (40%)
 			char = findChar('vampire');
 			const lBpmWeight = this.stats.bpms.low.listens / this.stats.listens.total;
-			if (this.stats.bpms.low.listens > this.stats.bpms.high.listens && this.stats.bpms.mean.val < 110 && lBpmWeight > 0.10) {
+			if (this.stats.bpms.low.listens > this.stats.bpms.high.listens && this.stats.bpms.mean.val < 110 && lBpmWeight > 0.1) {
 				char.score += Math.min(lBpmWeight / 1.5 * 100, 40);
 			}
 			const minKeyWeight = (this.stats.keys.minor.listens - this.stats.keys.major.listens / 2) / this.stats.listens.total;
-			if (minKeyWeight > 0.10) {
+			if (minKeyWeight > 0.1) {
 				char.score += Math.min(minKeyWeight / 1.5 * 100, 30);
 			}
 			const emotionWeight = (this.stats.moods.calm.listens + this.stats.moods.sad.listens) / 2 / this.stats.moods.total;
-			if (emotionWeight > 0.10) {
+			if (emotionWeight > 0.1) {
 				char.score += Math.min(emotionWeight / 1.5 * 100, 30);
 			}
 			// Joker: similar listens for light/upbeat and atmospheric/emotional tracks -> equal key (30%) + mood (30%) + bpm (40%)
@@ -1287,7 +1287,7 @@ const wrapped = {
 				findChar('Alchemist').score = Math.min(plsWeight * 100, 100);
 			}
 			// Collector: listen to own playlists, checking for the top tracks listened present on them
-			if (plsWeight >= 0.10) {
+			if (plsWeight >= 0.1) {
 				const plsItems = range(0, plman.PlaylistCount - 1).map((i) => {
 					const handleList = plman.GetPlaylistItems(i);
 					handleList.Sort();
@@ -2389,10 +2389,10 @@ const wrapped = {
 			});
 		}
 		// Helpers
-		const [firstYear, lastYear] = !year
-			? [this.stats.time.first.date, this.stats.time.last.date].map((d) => d.getFullYear().toString())
-			: [null, null];
-		const period = !year ? firstYear + ' - ' + lastYear : null;
+		const [firstYear, lastYear] = year
+			? [null, null]
+			: [this.stats.time.first.date, this.stats.time.last.date].map((d) => d.getFullYear().toString());
+		const period = year ? null : firstYear + ' - ' + lastYear;
 		const topDay = this.stats.time.most.date
 			? this.stats.time.most.date.toLocaleDateString('en-us', { month: 'long', day: 'numeric' })
 			: '- no date -';
@@ -2774,8 +2774,8 @@ const wrapped = {
 				wrappedData.artists.forEach((artist, i) => {
 					const month = this.stats.artists.byMonth[i].month;
 					const monthName = this.stats.artists.byMonth[i].monthName;
-					if (i !== 0) { report += '\\pagebreak\n'; }
-					else { report += '\\phantomsection\n\\addcontentsline{toc}{section}{Artists by Month}\n'; }
+					if (i === 0) { report += '\\phantomsection\n\\addcontentsline{toc}{section}{Artists by Month}\n'; }
+					else { report += '\\pagebreak\n'; }
 					report += '\\pagecolor{teal}\n';
 					report += '\\clearpage \\vspace*{\\fill}\n';
 					report += '\\tikz[remember picture,overlay] \\node[opacity=0.1,inner sep=0pt] at (current page.center){\\includegraphics[width=\\paperwidth,height=\\paperheight]{' + getBgImg(root) + '}};\n';
@@ -3132,9 +3132,9 @@ const wrapped = {
 	 */
 	compileLatexReport: function compileLatexReport(report, timePeriod, latexCmd, extraCmd, root = this.basePath) {
 		if (this.settings.logOpt.bBasic) { console.log('Wrapped: compiling LaTeX report...'); }
-		const period = !timePeriod
-			? this.stats.time.first.date.getFullYear().toString() + '_' + this.stats.time.last.date.getFullYear().toString()
-			: null;
+		const period = timePeriod
+			? null
+			: this.stats.time.first.date.getFullYear().toString() + '_' + this.stats.time.last.date.getFullYear().toString();
 		// Save report
 		const fileName = 'Wrapped_' + (timePeriod || period);
 		const input = root + fileName + '.tex';
@@ -3229,9 +3229,9 @@ const wrapped = {
 		 */
 	compileHtmlIeReport: function compileLatexReport(report, timePeriod, extraCmd, root = this.basePath) {
 		if (this.settings.logOpt.bBasic) { console.log('Wrapped: compiling HTML IE-compatible report...'); }
-		const period = !timePeriod
-			? this.stats.time.first.date.getFullYear().toString() + '_' + this.stats.time.last.date.getFullYear().toString()
-			: null;
+		const period = timePeriod
+			? null
+			: this.stats.time.first.date.getFullYear().toString() + '_' + this.stats.time.last.date.getFullYear().toString();
 		// Save report
 		const fileName = 'Wrapped_' + (timePeriod || period);
 		const data = root + fileName + '.js';
@@ -3305,9 +3305,9 @@ const wrapped = {
 		 */
 	compileJsonReport: function compileLatexReport(report, timePeriod, extraCmd, root = this.basePath) {
 		if (this.settings.logOpt.bBasic) { console.log('Wrapped: compiling JSON report...'); }
-		const period = !timePeriod
-			? this.stats.time.first.date.getFullYear().toString() + '_' + this.stats.time.last.date.getFullYear().toString()
-			: null;
+		const period = timePeriod
+			? null
+			: this.stats.time.first.date.getFullYear().toString() + '_' + this.stats.time.last.date.getFullYear().toString();
 		// Save report
 		const fileName = 'Wrapped_' + (timePeriod || period);
 		const output = root + fileName + '.json';
@@ -3431,6 +3431,7 @@ const wrapped = {
 				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\artists'), false);
 				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\bg'), false);
 				_runCmd('CMD /C ' + _q(pg) + ' -quiet ' + _q(root + 'img\\char'), false);
+				return true;
 			}
 		});
 	},

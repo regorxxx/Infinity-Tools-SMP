@@ -1,5 +1,5 @@
 ﻿'use strict';
-//24/02/26
+//13/04/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -144,7 +144,7 @@ buttonsBar.config.bAlignSize = barProperties.bAlignSize[1];
 // Tooltip at empty bar
 buttonsBar.config.toolbarTooltip = 'R. Click for toolbar menu' +
 	'\nHold R. Click to move buttons' +
-	'\nM. Click to show headless buttons (for ' + parseFloat(buttonsBar.config.hiddenTimeout / 1000).toFixed(1) + ' s)' +
+	'\nM. Click to show headless buttons (for ' + Number.parseFloat(buttonsBar.config.hiddenTimeout / 1000).toFixed(1) + ' s)' +
 	'\n' + '-'.repeat(60) +
 	'\n(Shift + Win + R. Click for SMP panel menu)' +
 	'\n(Ctrl + Win + R.Click for script panel menu)';
@@ -179,7 +179,7 @@ const background = new _background({
 			else if (colArray) {
 				const bar = buttonsBar.config;
 				const bChangeBg = barProperties.bDynamicColorsBg[1] && background.useColors && !background.useColorsBlend;
-				const { main, sec, note, mainAlt, secAlt } = dynamicColors( // eslint-disable-line no-unused-vars
+				const { main, sec, note, mainAlt } = dynamicColors( // eslint-disable-line no-unused-vars
 					colArray,
 					bar.bToolbar
 						? bar.toolbarColor // background.getAvgPanelColor()
@@ -196,13 +196,13 @@ const background = new _background({
 				if (bar.bToolbar) { bar.toolbarColor = main; }
 				if (bar.textColor !== -1 && (bar.bToolbar || background.useColors || background.useCover)) {
 					if (!background.useColors && !background.useCover) { bar.textColor = mostContrastColor(bar.toolbarColor).color; }
-					else if (!window.IsTransparent) {
+					else if (window.IsTransparent) {
 						bar.textColor = mostContrastColor(
-							background.getAvgPanelColor([{ col: bar.bToolbar ? bar.toolbarColor : background.getAvgUiColor(), freq: barProperties.toolbarOpacity[1] / 100 }])
+							background.getAvgPanelColor([{ col: bar.toolbarColor, freq: bar.bToolbar ? barProperties.toolbarOpacity[1] / 100 : 0 }])
 						).color;
 					} else {
 						bar.textColor = mostContrastColor(
-							background.getAvgPanelColor([{ col: bar.toolbarColor, freq: bar.bToolbar ? barProperties.toolbarOpacity[1] / 100 : 0 }])
+							background.getAvgPanelColor([{ col: bar.bToolbar ? bar.toolbarColor : background.getAvgUiColor(), freq: barProperties.toolbarOpacity[1] / 100 }])
 						).color;
 					}
 					forEachButton((button) => { button.clearIconCache(); });
@@ -256,11 +256,11 @@ function loadButtonsFile(bStartup = false) {
 			},
 			/* global sbd:readable */
 			{
-				name: (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ' (basic)', files:
+				name: (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ' (basic)', files:
 					['buttons_music_map_basic.js', 'buttons_music_map_genre_explorer.js']
 			},
 			{
-				name: (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ' (customizable)', files:
+				name: (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ' (customizable)', files:
 					['buttons_music_map_customizable.js', 'buttons_music_map_customizable.js', 'buttons_music_map_genre_explorer.js']
 			},
 			{
@@ -296,7 +296,7 @@ function loadButtonsFile(bStartup = false) {
 					['buttons_playlist_tools.js', 'buttons_playlist_tools_submenu_custom.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_remove_duplicates.js', 'buttons_search_quicksearch.js']
 			},
 			{
-				name: 'Full' + (typeof sbd !== 'undefined' ? ' (with ' + sbd.name + ')' : ' (with Music Map)'), files:
+				name: 'Full' + (typeof sbd === 'undefined' ? ' (with Music Map)' : ' (with ' + sbd.name + ')'), files:
 					['buttons_playlist_tools.js', 'buttons_playlist_tools_submenu_custom.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_remove_duplicates.js', 'buttons_music_map_customizable.js', 'buttons_search_quicksearch.js']
 			},
 			{
@@ -339,13 +339,13 @@ function loadButtonsFile(bStartup = false) {
 			}
 		}
 	};
-	if (!_isFile(file)) {
-		presetPopup();
-	} else {
+	if (_isFile(file)) {
 		const data = _jsonParseFileCheck(file, 'Buttons bar', window.Name, utf8);
 		// Strip full path
 		if (data) { names = data.map((path) => path.split('\\').pop()); }
 		if (!names.length) { presetPopup(); }
+	} else {
+		presetPopup();
 	}
 	const remap = new Map([
 		['buttons_lastfm_list.js', 'buttons_lastfm_tools.js'],
@@ -462,7 +462,7 @@ addEventListener('on_mouse_lbtn_up', (x, y, mask) => { // eslint-disable-line no
 
 moveEventListener(addEventListener('on_mouse_rbtn_up', (x, y, mask) => { // eslint-disable-line no-unused-vars
 	if (utils.IsKeyPressed(VK_CONTROL) && utils.IsKeyPressed(VK_LWIN)) {
-		return onRbtnUpImportSettings.call(void(0), barProperties).btn_up(x, y);
+		return onRbtnUpImportSettings(barProperties).btn_up(x, y);
 	}
 	return true;
 }));
