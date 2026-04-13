@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//12/04/26
 
 /*
 	Top Tracks
@@ -48,7 +48,7 @@ addButton({
 			if (mask === MK_SHIFT) {
 				settingsMenu(this, true, ['buttons_search_top_tracks_from_date.js'], void (0), void (0), void (0), { parentName: 'Top Tracks from Date: ' }).btn_up(this.currX, this.currY + this.currH);
 			} else {
-				topTracksFromDate({ playlistLength: Number(this.buttonsProperties.playlistLength[1]), forcedQuery: this.buttonsProperties.forcedQuery[1], year: this.buttonsProperties.year[1] || (new Date().getFullYear() - 1), bProfile: typeof menu_panelProperties !== 'undefined' ? menu_panelProperties.bProfile[1] : false });
+				topTracksFromDate({ playlistLength: Number(this.buttonsProperties.playlistLength[1]), forcedQuery: this.buttonsProperties.forcedQuery[1], year: this.buttonsProperties.year[1] || (new Date().getFullYear() - 1), bProfile: typeof menu_panelProperties === 'undefined' ? false : menu_panelProperties.bProfile[1] });
 			}
 		},
 		description: function () {

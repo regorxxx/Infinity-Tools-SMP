@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//12/04/26
 
 /*
 	Automatic tagging...
@@ -69,7 +69,7 @@ buttonsBar.list.push(newButtonsProperties);
 				} else {
 					const menu = new _menu({ iMaxEntryLen: 50 }); // To avoid collisions with other buttons and check menu
 					const selFlags = handleList.Count ? MF_STRING : MF_GRAYED;
-					const allFlags = () => !this.tAut.isRunning() ? selFlags : MF_GRAYED;
+					const allFlags = () => this.tAut.isRunning() ? MF_GRAYED : selFlags;
 					menu.newEntry({
 						entryText: () => 'Tag selected tracks' + (this.tAut.isRunning() ? ' (running)' : ''), func: () => {
 							this.tAut.run({ bDebug: this.buttonsProperties.bDebug[1], bProfile: this.buttonsProperties.bProfile[1] });
@@ -85,7 +85,7 @@ buttonsBar.list.push(newButtonsProperties);
 					}
 					menu.newSeparator();
 					{
-						const subMenu = menu.newMenu('Available tools', void (0), !this.tAut.isRunning() ? MF_STRING : MF_GRAYED);
+						const subMenu = menu.newMenu('Available tools', void (0), this.tAut.isRunning() ? MF_GRAYED : MF_STRING);
 						menu.newEntry({ menuName: subMenu, entryText: 'Toggle (click) / Single (Shift + click):', func: null, flags: MF_GRAYED });
 						menu.newSeparator(subMenu);
 						this.tAut.tools.forEach((tool) => {
@@ -146,7 +146,7 @@ buttonsBar.list.push(newButtonsProperties);
 					}
 					menu.newSeparator();
 					{
-						const subMenu = menu.newMenu('Settings', void (0), !this.tAut.isRunning() ? MF_STRING : MF_GRAYED);
+						const subMenu = menu.newMenu('Settings', void (0), this.tAut.isRunning() ? MF_GRAYED : MF_STRING);
 						{
 							const subMenuTwo = menu.newMenu('Quiet mode', subMenu);
 							menu.newEntry({ menuName: subMenuTwo, entryText: 'Disable user input and reports:', flags: MF_GRAYED });

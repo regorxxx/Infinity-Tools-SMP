@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/01/26
+//06/04/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -113,7 +113,7 @@ buttonsBar.config.bAlignSize = barProperties.bAlignSize[1];
 // Tooltip at empty bar
 buttonsBar.config.toolbarTooltip = 'R. Click for toolbar menu' +
 	'\nHold R. Click to move buttons' +
-	'\nM. Click to show headless buttons (for ' + parseFloat(buttonsBar.config.hiddenTimeout / 1000).toFixed(1) + ' s)' +
+	'\nM. Click to show headless buttons (for ' + Number.parseFloat(buttonsBar.config.hiddenTimeout / 1000).toFixed(1) + ' s)' +
 	'\n' + '-'.repeat(60) +
 	'\n(Shift + Win + R. Click for SMP panel menu)' +
 	'\n(Ctrl + Win + R.Click for script panel menu)';

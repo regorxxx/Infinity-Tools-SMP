@@ -47,7 +47,7 @@ addButton({
 			if (mask === MK_SHIFT) {
 				settingsMenu(this, true, ['buttons_search_top_tracks.js'], void (0), void (0), void (0), { parentName: 'Top Tracks: ' }).btn_up(this.currX, this.currY + this.currH);
 			} else {
-				topTracks({ playlistLength: Number(this.buttonsProperties.playlistLength[1]), forcedQuery: this.buttonsProperties.forcedQuery[1], bProfile: typeof menu_panelProperties !== 'undefined' ? menu_panelProperties.bProfile[1] : false });
+				topTracks({ playlistLength: Number(this.buttonsProperties.playlistLength[1]), forcedQuery: this.buttonsProperties.forcedQuery[1], bProfile: typeof menu_panelProperties === 'undefined' ? false : menu_panelProperties.bProfile[1] });
 			}
 		},
 		description: function () {
