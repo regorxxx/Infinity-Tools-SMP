@@ -1,5 +1,5 @@
 ﻿'use strict';
-//04/04/26
+//15/04/26
 
 /* exported findCountryCoords,isNearCountry, findCountry, getCountryName, alpha3toAlpha2, nameReplacersRev, nameShortRev */
 
@@ -174,13 +174,13 @@ if (typeof music_graph_descriptors_countries !== 'undefined' && typeof music_gra
 	const parent = music_graph_descriptors_countries;
 	// Check all region names match
 	let bMatch = true;
-	if (typeof include !== 'undefined') {
-		include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-		if (!(new Set(music_graph_descriptors_culture.getRegionNames()).isEqual(new Set(parent.getRegionNames())))) { bMatch = false; }
-	} else {
+	if (typeof include === 'undefined') {
 		const isSuperset = (parent, subset) => { for (let elem of subset) { if (!parent.has(elem)) { return false; } } return true; };
 		const isEqual = (parent, subset) => { return (parent.size === subset.size && isSuperset(parent, subset)); };
 		if (!(isEqual(new Set(music_graph_descriptors_culture.getRegionNames()), new Set(parent.getRegionNames())))) { bMatch = false; }
+	} else {
+		include('..\\..\\helpers\\helpers_xxx_prototypes.js');
+		if (!(new Set(music_graph_descriptors_culture.getRegionNames()).isEqual(new Set(parent.getRegionNames())))) { bMatch = false; }
 	}
 	if (!bMatch) { console.log('music_graph_descriptors_xxx_culture: Regions don\'t match'); }
 	// Check all countries are present in both places
