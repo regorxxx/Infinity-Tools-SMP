@@ -1,5 +1,5 @@
 ﻿'use strict';
-//11/12/25
+//19/04/26
 
 /* exported settingsMenu */
 
@@ -50,7 +50,7 @@ function settingsMenu(parent, bShowValues = false, readmeFiles = [], entrySettin
 					? 'object'
 					: check.func === isBoolean
 						? 'boolean'
-						: [isFinite, isInt, isReal].includes(check.func)
+						: [Number.isFinite, isInt, isReal].includes(check.func)
 							? 'number'
 							: [isString, isStringWeak].includes(check.func)
 								? 'string'
@@ -75,7 +75,7 @@ function settingsMenu(parent, bShowValues = false, readmeFiles = [], entrySettin
 							try { input = utils.InputBox(window.ID, desc || 'Enter number:', popupName, value, true); }
 							catch (e) { return; } // eslint-disable-line no-unused-vars, no-empty
 							try { input = Number(input); } catch (e) { input = null; } // eslint-disable-line no-unused-vars
-							if (isNaN(input)) { fb.ShowPopupMessage('Value must be a number.', popupName); return; }
+							if (Number.isNaN(input)) { fb.ShowPopupMessage('Value must be a number.', popupName); return; }
 							break;
 						}
 						case 'string': {
