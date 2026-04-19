@@ -1,5 +1,5 @@
 ﻿'use strict';
-//09/03/25
+//17/04/26
 
 /*
 	Add Skip Tag From Playback
@@ -15,12 +15,12 @@
 /* global isSubsong:readable */
 
 function skipTagFromPlayback(selItem = new FbMetadbHandleList(fb.GetNowPlaying())) {
-	const isHandleSubsong = typeof isSubsong !== 'undefined'
-		? isSubsong
-		: (handle, ext = '') => {
+	const isHandleSubsong = typeof isSubsong === 'undefined'
+		? (handle, ext = '') => {
 			const blackList = new Set(['.dsf']);
 			return handle.SubSong !== 0 && !blackList.has(ext || handle.Path.split('.').pop());
-		};
+		}
+		: isSubsong;
 	if (typeof selItem !== 'undefined' && selItem !== null) {
 		const countItems = selItem.Count;
 		if (countItems === 0) {
@@ -48,14 +48,15 @@ function skipTagFromPlayback(selItem = new FbMetadbHandleList(fb.GetNowPlaying()
 		const fileInfo = selItem[0].GetFileInfo();
 		if (fileInfo) {
 			const idx = fileInfo.MetaFind('SKIP');
-			if (idx !== -1) {
+			if (idx === -1) { bAppend = false; }
+			else {
 				const count = fileInfo.MetaValueCount(idx);
 				if (count) {
 					for (let i = 0; i < count; i++) {
 						SKIP.push(fileInfo.MetaValue(idx, i));
 					}
 				} else { bAppend = false; }
-			} else { bAppend = false; }
+			}
 		}
 	}
 	SKIP.push((bEnd ? '' : '-') + time);

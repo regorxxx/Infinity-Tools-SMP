@@ -1,5 +1,5 @@
 'use strict';
-//27/09/24
+//17/04/26
 
 /* exported ffprobeUtils */
 
@@ -31,12 +31,11 @@ const ffprobeUtils = {
 		return true;
 	},
 	getPath: function getPath() {
-		if (!this.testPath()) { this.path = null; }
-		else {
+		if (this.testPath()) {
 			this.path = Array.isArray(this.paths)
 				? this.paths.find((path) => _isFile(path)) || null
 				: this.paths || null;
-		}
+		} else { this.path = null; }
 		return this.path;
 	},
 	getTagsFromFile: function getTagsFromFile(file, tagName = globTags.acoustidFP, undefinedVal = '') {

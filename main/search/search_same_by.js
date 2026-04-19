@@ -1,5 +1,5 @@
 ﻿'use strict';
-//06/08/25
+//17/04/26
 
 /*
 	Search same by
@@ -161,7 +161,7 @@ function searchSameByCombs({
 		const tagNameTF = bIsFunc ? tagName : _t(tagName); // It's a function? Then at eval as is, and at queries use '"' + tagNameTF + '"'
 		const queryTagNameTF = bIsFunc ? _q(tagNameTF) : tagName.toUpperCase();
 		const tagIdx = sel_info.MetaFind(tags[i]);
-		const tagNumber = (tagIdx !== -1) ? sel_info.MetaValueCount(tagIdx) : 0;
+		const tagNumber = (tagIdx === -1) ? 0 : sel_info.MetaValueCount(tagIdx);
 		if (tagNumber === 0 && !dynamicTags.has(tagName)) {
 			console.log('Track selected has no ' + tags[i] + ' tag');
 		} else { // For selected tag
@@ -172,15 +172,16 @@ function searchSameByCombs({
 				const valueLower = valueRange > tagValue ? 0 : tagValue - valueRange; // Safety check
 				ql = query.length;
 				query[ql] = '';
-				if (valueUpper !== valueLower) { query[ql] += queryTagNameTF + ' GREATER ' + valueLower + ' AND ' + queryTagNameTF + ' LESS ' + valueUpper; }
-				else { query[ql] += queryTagNameTF + ' EQUAL ' + tagValue; }
+				if (valueUpper === valueLower) { query[ql] += queryTagNameTF + ' EQUAL ' + tagValue; }
+				else { query[ql] += queryTagNameTF + ' GREATER ' + valueLower + ' AND ' + queryTagNameTF + ' LESS ' + valueUpper; }
 			} else if (cyclicTags.has(tagName)) { // A cyclic numeric tag
 				const tagValue = Number(sel_info.MetaValue(tagIdx, 0));
 				const valueRange = k_tagsCombs[i] > 0 ? Math.abs(k_tagsCombs[i]) : 0; //instead of k comb number, is a range!
 				const [valueLower, valueUpper, lowerLimit, upperLimit] = cyclicTagsDescriptor[tagName](tagValue, valueRange, true);
 				ql = query.length;
 				query[ql] = '';
-				if (valueUpper !== valueLower) {
+				if (valueUpper === valueLower) { query[ql] += queryTagNameTF + ' EQUAL ' + tagValue; }
+				else {
 					let tempQuery = [];
 					if (valueLower > tagValue) { // we reached the limits and swapped values (x - y ... upperLimit + 1 = lowerLimit ... x ... x + y ... upperLimit)
 						tempQuery[0] = queryTagNameTF + ' GREATER ' + lowerLimit + ' AND ' + queryTagNameTF + ' LESS ' + tagValue; // (lowerLimit , x)
@@ -190,7 +191,7 @@ function searchSameByCombs({
 						tempQuery[0] = queryTagNameTF + ' GREATER ' + valueLower + ' AND ' + queryTagNameTF + ' LESS ' + valueUpper; // (x - y , x + y)
 					}
 					query[ql] += queryJoin(tempQuery, 'OR');
-				} else { query[ql] += queryTagNameTF + ' EQUAL ' + tagValue; }
+				}
 			} else { // or a string one
 				let tagValues = [];
 				tagValues.length = tagNumber;
@@ -201,7 +202,8 @@ function searchSameByCombs({
 					j++;
 				}
 				let k;
-				if (k_tagsCombs[i] !== 0) { // Value may be !== 0
+				if (k_tagsCombs[i] === 0) { k = tagNumber; }  // 0 -> match all # of tags
+				else {
 					if (k_tagsCombs[i] < 0) {
 						let k_tagsNegativeCombs;
 						if (isFloat(k_tagsCombs[i])) { // negative Float number -> match (tagNumber - tagNumber * value) # of tags
@@ -221,10 +223,10 @@ function searchSameByCombs({
 							if (k === 0) { k = 1; } // rounded to nearest integer number, but minimum must be 1
 							if (tagNumber < k) { k = tagNumber; } // and maximum must be tagNumber
 						} else { // positive integer -> match value # of tags
-							k = (tagNumber > k_tagsCombs[i]) ? k_tagsCombs[i] : tagNumber; //on combinations of K or the maximum number possible
+							k = Math.min(tagNumber, k_tagsCombs[i]); //on combinations of K or the maximum number possible
 						}
 					}
-				} else { k = tagNumber; } // Or 0 -> match all # of tags
+				}
 				if (bAscii) { tagValues = tagValues.map((val) => { return _asciify(val); }); }
 				let tagQuery = k_combinations(tagValues, k);
 				query[ql] = '';
@@ -313,7 +315,7 @@ function searchSameByQueries({
 	sameBy.forEach((tagsArr, i) => {
 		tagsArr.forEach((tag) => {
 			let tagIdx = selInfo.MetaFind(tag);
-			let tagNumber = (tagIdx !== -1) ? selInfo.MetaValueCount(tagIdx) : 0;
+			let tagNumber = (tagIdx === -1) ? 0 : selInfo.MetaValueCount(tagIdx);
 			if (tagNumber === 0) { console.log('searchSameByQueries: Missing tag ' + tag); return; }
 			for (let j = 0; j < tagNumber; j++) {
 				tagVal[i].push(selInfo.MetaValue(tagIdx, j));

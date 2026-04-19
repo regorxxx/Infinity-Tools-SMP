@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//17/04/26
 
 /*
 	Top X Tracks From Date
@@ -101,7 +101,7 @@ function topTracksFromDate({
 	dataPool.forEach((item) => pool.push(outputHandleList[item.idx]));
 	outputHandleList = new FbMetadbHandleList(pool);
 	if (!playlistName)  {
-		playlistName = bUseLast ? 'Top ' + (playlistLength !== Infinity ? playlistLength + ' ' : '') + 'Tracks from last ' + timePeriod + ' ' + timeKey : 'Top ' + playlistLength + ' Tracks ' + year;
+		playlistName = bUseLast ? 'Top ' + (playlistLength === Infinity ? '' : playlistLength + ' ') + 'Tracks from last ' + timePeriod + ' ' + timeKey : 'Top ' + playlistLength + ' Tracks ' + year;
 	}
 	if (bSendToPls) { sendToPlaylist(outputHandleList, playlistName); }
 	if (bProfile) { test.Print('Task #1: Top tracks from date', false); }
@@ -191,7 +191,7 @@ async function topTracksFromDateV2({
 	dataPool.forEach((item) => pool.push(outputHandleList[item.idx]));
 	outputHandleList = new FbMetadbHandleList(pool);
 	if (!playlistName)  {
-		playlistName = bUseLast ? 'Top ' + (playlistLength !== Infinity ? playlistLength + ' ' : '') + 'Tracks from last ' + timePeriod + ' ' + timeKey : 'Top ' + playlistLength + ' Tracks ' + year;
+		playlistName = bUseLast ? 'Top ' + (playlistLength === Infinity ? '' : playlistLength + ' ') + 'Tracks from last ' + timePeriod + ' ' + timeKey : 'Top ' + playlistLength + ' Tracks ' + year;
 	}
 	if (bSendToPls) { sendToPlaylist(outputHandleList, playlistName); }
 	if (bProfile) { test.Print('Task #1: Top tracks from date', false); }
@@ -285,8 +285,7 @@ function fakeListens(firstListen, lastListen, total) {
 				for (let i = Math.round(total / 2) + 1; i <= total; i++) { listens.push(new Date(lastListen)); }
 			}
 		} else {
-			listens.push(firstListen);
-			listens.push(lastListen);
+			listens.push(firstListen, lastListen);
 		}
 		listens.sort((a, b) => a.getTime() - b.getTime());
 	} else {
@@ -335,13 +334,12 @@ function getPlayCount(handleList, timePeriod, timeKey = null, fromDate = new Dat
 			const jsDate = dateArray[i];
 			const date = dateArray[i] = new Date(jsDate);
 			const day = date.toDateString();
-			if (!dateMap[day]) { dateMap[day] = [jsDate]; }
-			else {
+			if (dateMap[day]) {
 				const dayArr = dateMap[day];
 				if (dayArr.every((listen) => Math.abs(jsDate - listen) >= 30000)) {
 					dayArr.push(jsDate);
 				} else { dateArray.splice(i, 1); }
-			}
+			} else { dateMap[day] = [jsDate]; }
 		}
 		return dateArray;
 	};
@@ -493,7 +491,7 @@ function getPlayCount(handleList, timePeriod, timeKey = null, fromDate = new Dat
  * @param {{user?: '', token:string, bOffline:boolean}} listenBrainz - [={user: '', token: '', bOffline: true}] ListenBrainz settings to retrieve playcounts. If no token provided, it's skipped. If no user is provided, it's retrieved from token
  * @returns {Promise.<{ idx: number; playCount: number; listens: Date[]; }[]>}
  */
-async function getPlayCountV2(handleList, timePeriod, timeKey = null, fromDate = new Date(), bFakeListens = true, listenBrainz = { user: '', token: '', bOffline: true }) {
+async function getPlayCountV2(handleList, timePeriod, timeKey = null, fromDate = new Date(), bFakeListens = true, listenBrainz = { user: '', token: '', bOffline: true }) { // NOSONAR
 	if (!isPlayCount2003 && !isEnhPlayCount) {
 		fb.ShowPopupMessage('getPlayCount: neither foo_enhanced_playcount nor foo_playcount_2003 is installed.');
 		return [];
@@ -529,24 +527,6 @@ async function getPlayCountV2(handleList, timePeriod, timeKey = null, fromDate =
 		lbData = (await ListenBrainz.retrieveListensForHandleList(handleList, listenBrainz.user, { max_ts, min_ts }, listenBrainz.token, true, listenBrainz.bOffline));
 	}
 	const dataLen = data.length;
-	/* 	const deDup = (dateArray) => { // Listens may be duplicated with some seconds offset (30s)
-		const dateMap = Object.create(null);
-		let i = dateArray.length;
-		while (i--) {
-			const jsDate = dateArray[i];
-			const date = dateArray[i] = new Date(jsDate);
-			const day = date.toDateString();
-			if (!dateMap[day]) { dateMap[day] = [jsDate]; }
-			else {
-				const dayArr = dateMap[day];
-				// https://github.com/phw/foo_listenbrainz2/issues/23
-				if (dayArr.every((listen) => Math.abs(jsDate - listen) >= (lbData ? 300000 : 30000))) {
-					dayArr.push(jsDate);
-				} else { dateArray.splice(i, 1); }
-			}
-		}
-		return dateArray;
-	}; */
 	const deDup = (dateArray) => { // Listens may be duplicated with some seconds offset (30s)
 		const dateMap = Object.create(null);
 		let i = dateArray.length;
@@ -562,14 +542,13 @@ async function getPlayCountV2(handleList, timePeriod, timeKey = null, fromDate =
 				const isNotFb = player && player !== 'foobar2000';
 				const date = dateArray[i] = new Date(jsDate);
 				const day = date.toDateString();
-				if (!dateMap[day]) { dateMap[day] = [jsDate]; }
-				else {
+				if (dateMap[day]) {
 					const dayArr = dateMap[day];
 					// https://github.com/phw/foo_listenbrainz2/issues/23
 					if (isNotFb || dayArr.every((listen) => Math.abs(jsDate - listen) >= (lbData ? 300000 : 30000))) {
 						dayArr.push(jsDate);
 					} else { dateArray.splice(i, 1); }
-				}
+				} else { dateMap[day] = [jsDate]; }
 			}
 		}
 		return dateArray;

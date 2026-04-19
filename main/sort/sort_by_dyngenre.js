@@ -1,5 +1,5 @@
 ﻿'use strict';
-//11/08/25
+//17/04/26
 
 /* exported sortByDyngenre */
 /* global globTags:readable */
@@ -22,7 +22,7 @@ const [, , genreStyleMap] = dynGenreMap();
 
 function sortByDyngenre({
 	playlistIdx = plman.ActivePlaylist,
-	styleGenreTag = typeof globTags !== 'undefined' ? [globTags.genre, globTags.style] : ['GENRE', 'STYLE'],
+	styleGenreTag = typeof globTags === 'undefined' ? ['GENRE', 'STYLE'] : [globTags.genre, globTags.style],
 	bSelection = true,
 	sortOrder = 1,
 	bAscii = true,

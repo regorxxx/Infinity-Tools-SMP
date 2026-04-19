@@ -1,5 +1,5 @@
 ﻿'use strict';
-//16/12/25
+//17/04/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, multipleSelectedFlags:readable, selectedFlags:readable, selectedFlags:readable, configMenu:readable, menu_panelProperties */
 
@@ -21,10 +21,10 @@
 					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\check_library_tags.txt';
 					const subMenuName = menu.newMenu(name, menuName);
 					// Delete unused properties
-					const toDelete = ['bUseDic'];
+					const toDelete = new Set(['bUseDic']);
 					let toMerge = {}; // Deep copy
 					Object.keys(checkTags_properties).forEach((key) => {
-						if (!toDelete.includes(key)) {
+						if (!toDelete.has(key)) {
 							toMerge[key] = [...checkTags_properties[key]];
 							toMerge[key][0] = '\'Other tools\\Check tags\' ' + toMerge[key][0];
 						}
@@ -208,7 +208,7 @@
 					menu_properties.bRunPopup = ['\'Other tools\\Tagger\' Ask confirmation before running', true, { func: isBoolean }, true];
 					const subMenuName = menu.newMenu(name, menuName);
 					const firedFlags = () => { return tAut.isRunning() ? MF_STRING : MF_GRAYED; };
-					const allFlags = () => { return (!tAut.isRunning() ? selectedFlags() : MF_GRAYED); };
+					const allFlags = () => { return (tAut.isRunning() ? MF_GRAYED : selectedFlags()); };
 					menu.newEntry({ menuName: subMenuName, entryText: 'Automatize tagging:', func: null, flags: MF_GRAYED });
 					menu.newSeparator(subMenuName);
 					menu.newEntry({
@@ -288,7 +288,7 @@
 					});
 					// -> Config menu
 					if (!Object.hasOwn(menusEnabled, configMenu) || menusEnabled[configMenu] === true) {
-						const subMenu = menu.newMenu('Batch tagger', configMenu, !tAut.isRunning() ? MF_STRING : MF_GRAYED);
+						const subMenu = menu.newMenu('Batch tagger', configMenu, tAut.isRunning() ? MF_GRAYED : MF_STRING);
 						{
 							const subMenuTwo = menu.newMenu('Quiet mode', subMenu);
 							menu.newEntry({ menuName: subMenuTwo, entryText: 'Disable user input and reports:', flags: MF_GRAYED });
@@ -443,7 +443,7 @@
 											const modeVal = mode === 'mode'
 												? Input.number('real', 1, 'How many values do you want to retrieve by frequency?\n\nBy default it outputs only the most frequent value.', 'Group tagging: mode values', 1) || (Input.isLastEqual ? Input.lastInput : null)
 												: 1;
-											aggregateTagger(handleList, source, destination, group, count, { round: 2, bAsk: true, mode, defaultVal, modeVal });
+											aggregateTagger(handleList, source, destination, group, count, { round: 2, bAsk: true, method: mode, defaultVal, modeVal });
 										}
 									}
 								});

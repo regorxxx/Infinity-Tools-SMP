@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/11/25
+//17/04/26
 
 /* exported scatterByTags, intercalateByTags, shuffleByTags */
 
@@ -37,7 +37,7 @@ include('..\\..\\helpers\\helpers_xxx_tags.js');
 function scatterByTags({
 	tagName = [globTags.genre, globTags.style].join(','),
 	tagValue = 'instrumental',
-	selItems = plman.ActivePlaylist !== -1 ? plman.GetPlaylistSelectedItems(plman.ActivePlaylist) : null,
+	selItems = plman.ActivePlaylist === -1 ? null : plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	bSendToActivePls = true
 } = {}) {
 	// Safety checks
@@ -129,7 +129,7 @@ function scatterByTags({
  */
 function intercalateByTags({
 	tagName = 'ALBUM ARTIST',
-	selItems = plman.ActivePlaylist !== -1 ? plman.GetPlaylistSelectedItems(plman.ActivePlaylist) : null,
+	selItems = plman.ActivePlaylist === -1 ? null : plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	bMultiple = false,
 	bSendToActivePls = true,
 } = {}) {
@@ -248,7 +248,7 @@ function intercalateByTags({
  */
 function shuffleByTags({
 	tagName = ['ALBUM ARTIST'],
-	selItems = plman.ActivePlaylist !== -1 ? plman.GetPlaylistSelectedItems(plman.ActivePlaylist) : null,
+	selItems = plman.ActivePlaylist === -1 ? null : plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	data = { handleArray: [], dataArray: [], tagsArray: [] },
 	bMultiple = false,
 	bSendToActivePls = true,
@@ -275,7 +275,15 @@ function shuffleByTags({
 	let tagsArray = dataTagsLen ? [...data.tagsArray] : null;
 	let selItemsArray;
 	const sortTF = shuffleBiasTf(sortBias);
-	if (sortTF !== null) { // If tags/data are already provided, sorting must be tracked...
+	if (sortTF === null) {
+		selItemsArray = dataHandleLen
+			? [...data.handleArray]
+			: selItems.Convert();
+		if (dataLen & dataTagsLen) { Array.shuffle(selItemsArray, dataArray, tagsArray); } // Shuffle all at the same time
+		else if (dataLen) { Array.shuffle(selItemsArray, dataArray); }
+		else if (dataTagsLen) { Array.shuffle(selItemsArray, tagsArray); }
+		else { selItemsArray.shuffle(); }
+	} else { // If tags/data are already provided, sorting must be tracked...
 		selItemsArray = dataHandleLen ? [...data.handleArray] : selItems.Clone();
 		if (sortTF.length) { // Picking is reversed later, so sort ascending
 			const dataMap = dataLen & dataTagsLen
@@ -298,14 +306,6 @@ function shuffleByTags({
 		} else if (!dataHandleLen) {
 			selItemsArray = selItemsArray.Convert();
 		}
-	} else {
-		selItemsArray = dataHandleLen
-			? [...data.handleArray]
-			: selItems.Convert();
-		if (dataLen & dataTagsLen) { Array.shuffle(selItemsArray, dataArray, tagsArray); } // Shuffle all at the same time
-		else if (dataLen) { Array.shuffle(selItemsArray, dataArray); }
-		else if (dataTagsLen) { Array.shuffle(selItemsArray, tagsArray); }
-		else { selItemsArray.shuffle(); }
 	}
 	// Get tag values and find tag value
 	// Split elements by equal value, by reverse order
@@ -368,7 +368,7 @@ function shuffleByTags({
 	let timeLine = [];
 	if (bSolved) {
 		const keys = [...tagValues].filter((key) => { return key !== solution; });
-		timeLine = Array(totalTracks).fill(null).map((val, i) => {
+		timeLine = new Array(totalTracks).fill(null).map((val, i) => {
 			return { pos: i, key: i % 2 === 0 ? solution : keys.splice(sortTF ? 0 : Math.floor(Math.random() * keys.length), 1)[0] };
 		});
 	} else {

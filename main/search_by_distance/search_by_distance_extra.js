@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/03/26
+//17/04/26
 
 /* exported calculateSimilarArtistsFromPls, addTracksRelation, calculateTrackSimilarity */
 
@@ -174,9 +174,9 @@ async function calculateSimilarArtistsFromPls({ items = plman.GetPlaylistSelecte
 }
 
 function addTracksRelation({
-	handleList = plman.ActivePlaylist !== -1
-		? plman.GetPlaylistSelectedItems(plman.ActivePlaylist)
-		: new FbMetadbHandleList(),
+	handleList = plman.ActivePlaylist === -1
+		? new FbMetadbHandleList()
+		: plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	mode = 'related',
 	tagsKeys = { related: [globTags.related], unrelated: [globTags.unrelated] },
 	idTags = ['MUSICBRAINZ_TRACKID', 'TITLE']
@@ -238,13 +238,13 @@ async function calculateTrackSimilarity({ sel = null, items = plman.GetPlaylistS
 	const newData = [];
 	const itemCount = items.Count;
 	for (let i = 0, handleList; i < itemCount; i++) {
-		if (!sel) {
+		if (sel) {
+			const idx = items.Find(sel);
+			handleList = idx === -1 ? items : items.Clone();
+			if (idx !== -1) { items.RemoveById(sel); }
+		} else {
 			handleList = items.Clone();
 			handleList.RemoveById(i);
-		} else {
-			const idx = items.Find(sel);
-			handleList = idx !== -1 ? items.Clone() : items;
-			if (idx !== -1) { items.RemoveById(sel); }
 		}
 		const output = await searchByDistance({
 			sel: sel || items[i],
@@ -252,9 +252,11 @@ async function calculateTrackSimilarity({ sel = null, items = plman.GetPlaylistS
 			properties, theme: null, recipe: properties.recipe[1], bCreatePlaylist: false, scoreFilter: 0, graphDistance: Infinity, bBasicLogging: false, bSearchDebug: false, bShowFinalSelection: false, bProfile: false, bShowQuery: false, bProgressiveListOrder: true, bSortRandom: false, bInverseListOrder: false, bSmartShuffle: false, bInKeyMixingPlaylist: false
 		});
 		if (output) {
-			newData.push(titles[i] + ':');
-			newData.push('\t' + output[1].map((score) => score.name + ' - ' + score.score).join('\n\t'));
-			newData.push('\n');
+			newData.push(
+				titles[i] + ':',
+				'\t' + output[1].map((score) => score.name + ' - ' + score.score).join('\n\t'),
+				'\n'
+			);
 		}
 		if (sel) { break; }
 	};

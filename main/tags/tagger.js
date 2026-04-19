@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//17/04/26
 
 /*
 	Automatic tagging...
@@ -63,7 +63,7 @@ function Tagger({
 		ffmpeg: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'ffmpeg\\ffmpeg' + (soFeat.x64 ? '' : '_32') + '.exe',
 		essentiaKey: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'essentia\\essentia_streaming_key.exe',
 		essentiaExtractor: (folders.JsPackageDirs ? folders.binaries : folders.xxx + 'helpers-external\\') + 'essentia\\streaming_extractor_music.exe',
-		...(paths || {})
+		...paths
 	};
 	this.notAllowedTools = new Set();
 	this.incompatibleTools = new BiMap({ ffmpegLRA: 'essentiaLRA', essentiaKey: 'essentiaFastKey', drMeter: 'dynamicRange', bpmAnaly: 'essentiaBPM' });
@@ -339,7 +339,7 @@ function Tagger({
 		} else {
 			// Check if there dsf files
 			const exts = this.selItems.Convert().map((handle) => handle.Path.split('.').slice(-1)[0]);
-			this.check.dsf = exts.some((ext) => ext === 'dsf');
+			this.check.dsf = exts.includes('dsf');
 			// Check if there are ISO/CUE/container files (which can not be piped to ffmpeg)
 			this.check.subSong = this.selItems.Convert().some((handle, i) => isSubsong(handle, exts[i]));
 			// Check if there are MP3 files (which have no MD5 tag)

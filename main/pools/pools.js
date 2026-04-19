@@ -1,5 +1,5 @@
-﻿'use strict';
-//03/12/25
+'use strict';
+//17/04/26
 
 /* exported _pools */
 
@@ -109,7 +109,7 @@ function _pools({
 		 * @returns {FbMetadbHandleList}
 		*/
 		random: (handleListFrom, num, count) => {
-			const numbers = range(0, count - 1, 1).shuffle().slice(0, count > num ? num : count); // n randomly sorted. sort + random, highly biased!!
+			const numbers = range(0, count - 1, 1).shuffle().slice(0, Math.min(count, num)); // n randomly sorted. sort + random, highly biased!!
 			const handleListFromClone = handleListFrom.Clone().Convert();
 			return new FbMetadbHandleList(numbers.flatMap((i) => handleListFromClone.slice(i, i + 1)));
 		},
@@ -246,8 +246,7 @@ function _pools({
 	 * @param {{toPls: boolean}} options - Settings.
 	 * @returns {FbMetadbHandleList}
 	*/
-	this.processPool = async (pool, properties, options = { toPls: true }) => {
-		options = { toPls: true, ...(options || {}) };
+	this.processPool = async (pool, properties, { toPls = true } =  {}) => {
 		const profiler = this.bProfile ? new FbProfiler('processPool') : null;
 		let bError = false;
 		// Checks
@@ -256,7 +255,7 @@ function _pools({
 			if (Object.hasOwn(pool, type)) {
 				const typeSources = Object.keys(pool[type]);
 				typeSources.forEach((checkSource) => {
-					const found = sources.some((source) => source === checkSource);
+					const found = sources.includes(checkSource);
 					if (!found) {
 						console.log(scriptName + ': ' + type + ' source not found -> ' + checkSource);
 						bError = true;
@@ -294,7 +293,7 @@ function _pools({
 					console.log(scriptName + ': source -> TF Group'); // DEBUG
 					// Pre-Filter with query
 					handleListFrom = libItems;
-					const query = typeof pool.query !== 'undefined' ? pool.query[plsName] : '';
+					const query = typeof pool.query === 'undefined' ? '' : pool.query[plsName];
 					if (query.length && query.toUpperCase() !== 'ALL') {
 						const queryNoSort = stripSort(query);
 						const sortedBy = query === queryNoSort
@@ -312,7 +311,7 @@ function _pools({
 						} else { fb.ShowPopupMessage('Query not valid. Check it and add it again:\n' + query + '\n->\n' + processedQuery, scriptName); return; }
 					}
 					// Retrieve all possible groups
-					const group = typeof pool.group !== 'undefined' ? pool.group[plsName] : '';
+					const group = typeof pool.group === 'undefined' ? '' : pool.group[plsName];
 					const tagSet = [
 						...new Set(getHandleListTagsV2(handleListFrom, [group], { splitBy: '|' })
 							.flat(Infinity)
@@ -321,7 +320,7 @@ function _pools({
 					].filter(Boolean).shuffle();
 					// Retrieve n random groups
 					const num = Math.min(pool.fromPls[plsName] || Infinity, tagSet.length) - 1;
-					const limit = typeof pool.limit !== 'undefined' ? pool.limit[plsName] : Infinity;
+					const limit = typeof pool.limit === 'undefined' ? Infinity : pool.limit[plsName];
 					const handleListsGroups = [];
 					for (let i = 0; i <= num; i++) {
 						const groupTF = group.includes('$') ? _q(group) : group;
@@ -488,8 +487,8 @@ function _pools({
 								});
 							});
 						}
-						if (!bDone) { console.log(scriptName + ': source -> Not found - ' + plsName); }
-						else { console.log(scriptName + ': source -> ' + plsName + ' (' + plsMatch.path + ')'); }
+						if (bDone) { console.log(scriptName + ': source -> ' + plsName + ' (' + plsMatch.path + ')'); }
+						else { console.log(scriptName + ': source -> Not found - ' + plsName); }
 					} else { // Loaded playlist
 						console.log(scriptName + ': source -> ' + plsName); // DEBUG
 						handleListFrom = plman.GetPlaylistItems(idxFrom);
@@ -500,7 +499,7 @@ function _pools({
 			// Only apply to non-classic pool
 			if (!plsName.startsWith('_GROUP_')) {
 				// Filter
-				const query = (typeof pool.query !== 'undefined' ? pool.query[plsName] : '') || '';
+				const query = (typeof pool.query === 'undefined' ? '' : pool.query[plsName]) || '';
 				if (query.length && query.toUpperCase() !== 'ALL') {
 					const queryNoSort = stripSort(query);
 					const sortedBy = query === queryNoSort
@@ -537,7 +536,9 @@ function _pools({
 			}
 			// Pick
 			const num = pool.fromPls[plsName] || Infinity;
-			if (!plsName.startsWith('_GROUP_')) {
+			if (plsName.startsWith('_GROUP_')) {
+				console.log(scriptName + ': pool size -> ' + handleListFrom.Count + ' tracks from ' + num + ' groups');
+			} else {
 				const count = handleListFrom.Count;
 				if (count !== 1) {
 					const pickMethod = (Object.hasOwn(pool, 'pickMethod')
@@ -547,7 +548,7 @@ function _pools({
 					handleListFrom = this.pickMethods[pickMethod](handleListFrom, num, count);
 				}
 				console.log(scriptName + ': pool size -> ' + handleListFrom.Count + ' tracks (from ' + count + ' deduplicated / ' + sourceCount + ' total)'); // DEBUG
-			} else { console.log(scriptName + ': pool size -> ' + handleListFrom.Count + ' tracks from ' + num + ' groups'); }
+			}
 			// Insert
 			if (Object.hasOwn(pool, 'insertMethod')) {
 				this.insertMethods[pool.insertMethod](handleListFrom, handleListTo, n);
@@ -609,7 +610,7 @@ function _pools({
 			}
 			console.log(scriptName + ': sorting ' + _p(pool.sort.length ? pool.sort : 'random')); // DEBUG
 		}
-		if (options.toPls) {
+		if (toPls) {
 			plman.InsertPlaylistItems(idxTo, 0, handleListTo, true);
 			plman.ActivePlaylist = idxTo;
 			console.log(scriptName + ': playlist -> ' + pool.toPls + ': ' + handleListTo.Count + ' tracks'); // DEBUG
@@ -617,7 +618,7 @@ function _pools({
 		if (this.bProfile) { profiler.Print(); }
 		return handleListTo;
 	};
-	this.inputPool = (last = { fromPls: { _LIBRARY_0: 15, _LIBRARY_1: 15, _LIBRARY_2: 15 } }) => {
+	this.inputPool = (last = { fromPls: { _LIBRARY_0: 15, _LIBRARY_1: 15, _LIBRARY_2: 15 } }) => { // NOSONAR
 		// Sources
 		const origKeys = Object.hasOwn(last, 'fromPls') ? Object.keys(last.fromPls) : [];
 		let fromPls;
@@ -640,7 +641,7 @@ function _pools({
 			pair = pair.split(',');
 			if (!pair[0].length) { pair[0] = '_LIBRARY'; }
 			if (pair[0].length) {
-				const [, id, idx] = RegExp(/(.*)_(\d+)$/).exec(pair[0]) || [null, pair[0], null];
+				const [, id, idx] = new RegExp(/(.*)_(\d+)$/).exec(pair[0]) || [null, pair[0], null];
 				const indexes = count.get(id) || new Set();
 				if (typeof idx !== 'undefined' && idx !== null) { indexes.add(Number(idx)); }
 				count.set(id, indexes);
@@ -651,8 +652,8 @@ function _pools({
 		if (fromPls.some((pair) => { return pair.length % 2 !== 0; })) { console.log('Input was not a list of pairs separated \';\''); return; }
 		if (fromPls.some((pair) => { return Number.isNaN(pair[1]); })) { console.log('# tracks was not a number'); return; }
 		fromPls = fromPls.map((pair) => {
-			if (!RegExp(/_\d+$/).test(pair[0])) {
-				const [, id] = RegExp(/(.*)_\d+$/).exec(pair[0]) || [null, pair[0]];
+			if (!new RegExp(/_\d+$/).test(pair[0])) {
+				const [, id] = new RegExp(/(.*)_\d+$/).exec(pair[0]) || [null, pair[0]];
 				const indexes = count.get(id);
 				for (let i = 0; i < 1000; i++) {
 					if (!indexes.has(i)) { pair[0] += (pair[0].endsWith('_') ? '' : '_') + i; indexes.add(i); break; }

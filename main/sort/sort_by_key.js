@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/24
+//17/04/26
 
 /* exported sortByKey */
 /* global globTags:readable */
@@ -15,7 +15,7 @@ include('..\\..\\helpers\\camelot_wheel_xxx.js');
 
 function sortByKey({
 	playlistIdx = plman.ActivePlaylist,
-	keyTag = typeof globTags !== 'undefined' ? globTags.key : 'KEY',
+	keyTag = typeof globTags === 'undefined' ? 'KEY' : globTags.key,
 	bSelection = true,
 	sortOrder = 1,
 	bDebug = false

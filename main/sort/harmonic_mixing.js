@@ -1,5 +1,5 @@
 ﻿'use strict';
-//23/12/25
+//17/04/26
 
 /* exported harmonicMixing, queryReplaceKeys, harmonicMixingCycle, harmonicMixingSort */
 /* global globTags:readable */
@@ -27,7 +27,7 @@ function harmonicMixing({
 	selItems = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	playlistLength = selItems.Count,
 	playlistName = 'Harmonic mix from ' + plman.GetPlaylistName(plman.ActivePlaylist),
-	keyTag = typeof globTags !== 'undefined' ? globTags.key : 'KEY',
+	keyTag = typeof globTags === 'undefined' ? 'KEY' : globTags.key,
 	patternOptions = {},
 	bShuffleInput = true,
 	bSendToActivePls = true,
@@ -62,7 +62,7 @@ function harmonicMixingCycle({
 	selItems = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	cycleLength = 30,
 	playlistName = 'Harmonic cycle from ' + plman.GetPlaylistName(plman.ActivePlaylist),
-	keyTag = typeof globTags !== 'undefined' ? globTags.key : 'KEY',
+	keyTag = typeof globTags === 'undefined' ? 'KEY' : globTags.key,
 	patternOptions = {},
 	bShuffleInput = true,
 	bSendToActivePls = true,
@@ -89,7 +89,7 @@ function harmonicMixingCycle({
 function harmonicMixingSort({
 	selItems = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	playlistName = 'Harmonic sort from ' + plman.GetPlaylistName(plman.ActivePlaylist),
-	keyTag = typeof globTags !== 'undefined' ? globTags.key : 'KEY',
+	keyTag = typeof globTags === 'undefined' ? 'KEY' : globTags.key,
 	bShuffleInput = true,
 	bSendToActivePls = true,
 	sortOrder = 1,
@@ -134,17 +134,18 @@ function findTracksWithPattern({ selItems, pattern, keyTag, playlistLength, bShu
 	let keySharpDebug = [];
 	let patternDebug = [];
 	let selectedHandlesArray = [];
-	let toCheck = new Set(Array(poolLength).fill().map((_, index) => index).sort(() => Math.random() - 0.5));
+	let toCheck = new Set(new Array(poolLength).fill().map((_, index) => index).sort(() => Math.random() - 0.5));
 	let nextIndex = 0; // Initial track, it will match most times the last reference track when using progressive playlists
 	let camelotKeyCurrent, camelotKeyNew;
 	for (let i = 0, j = 0; i < playlistLength - 1; i++) {
 		// Search key
 		const index = nextIndex;
-		if (!keyCache.has(index)) {
+		if (keyCache.has(index)) { camelotKeyCurrent = keyCache.get(index); }
+		else {
 			const keyCurrent = keyHandle[index][0];
 			camelotKeyCurrent = keyCurrent.length ? camelotWheel.getKeyNotationObjectCamelot(keyCurrent) : null;
 			if (camelotKeyCurrent) { keyCache.set(index, camelotKeyCurrent); }
-		} else { camelotKeyCurrent = keyCache.get(index); }
+		}
 		// Delete from check selection
 		toCheck.delete(index);
 		if (!toCheck.size) { break; }
@@ -153,12 +154,13 @@ function findTracksWithPattern({ selItems, pattern, keyTag, playlistLength, bShu
 		if (nextKeyObj) { // Finds next track, but traverse pool with random indexes...
 			let bFound = false;
 			for (const indexNew of toCheck) {
-				if (!keyCache.has(indexNew)) {
+				if (keyCache.has(indexNew)) { camelotKeyNew = keyCache.get(indexNew); }
+				else {
 					const keyNew = keyHandle[indexNew][0];
 					camelotKeyNew = keyNew.length ? camelotWheel.getKeyNotationObjectCamelot(keyNew) : null;
 					if (camelotKeyNew) { keyCache.set(indexNew, camelotKeyNew); }
 					else { toCheck.delete(indexNew); }
-				} else { camelotKeyNew = keyCache.get(indexNew); }
+				}
 				if (camelotKeyNew) {
 					if (nextKeyObj.hour === camelotKeyNew.hour && nextKeyObj.letter === camelotKeyNew.letter) {
 						selectedHandlesArray.push(selItems[index]);
@@ -169,7 +171,8 @@ function findTracksWithPattern({ selItems, pattern, keyTag, playlistLength, bShu
 					}
 				}
 			}
-			if (!bFound) { // If nothing is found, then continue next movement with current track
+			if (bFound) { j = 0; } // Reset retry counter if found
+			else { // If nothing is found, then continue next movement with current track
 				camelotKeyNew = camelotKeyCurrent; // For debug console on last item
 				if (j === 1) { j = 0; continue; }  // try once retrying this step with default movement
 				else {
@@ -177,7 +180,7 @@ function findTracksWithPattern({ selItems, pattern, keyTag, playlistLength, bShu
 					i--; // NOSONAR
 					j++;
 				}
-			} else { j = 0; } // Reset retry counter if found
+			}
 		} else { // No tag or bad tag
 			i--;  // NOSONAR
 			if (toCheck.size) { nextIndex = [...toCheck][0]; } // If tag was not found, then use next handle

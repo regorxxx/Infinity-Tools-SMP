@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/01/26
+//17/04/26
 
 /* exported getData, getDataAsync */
 
@@ -106,7 +106,7 @@ function getData({
 			const seriesTags = noSplitTags.has(z.toUpperCase())
 				? fb.TitleFormat(_bt(z)).EvalWithMetadbs(handleList).map((val) => [val])
 				: fb.TitleFormat(_bt(z)).EvalWithMetadbs(handleList).map((val) => val.split(splitter)); // Z
-			const bSingleY = !isNaN(y);
+			const bSingleY = !Number.isNaN(Number(y));
 			const seriesCounters = option === 'timeline playcount'
 				? optionArg && optionArg.timePeriod
 					? getPlayCount(handleList, optionArg.timePeriod, optionArg.timeKey, optionArg.fromDate).map((v) => v.playCount)
@@ -129,7 +129,7 @@ function getData({
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => [val])
 				: fb.TitleFormat(_bt(x)).EvalWithMetadbs(handleList).map((val) => val.split(splitter));
-			const bSingleY = !isNaN(y);
+			const bSingleY = !Number.isNaN(Number(y));
 			const seriesCounters = bSingleY
 				? Number(y)
 				: fb.TitleFormat(_bt(queryReplaceWithCurrent(y))).EvalWithMetadbs(handleList)
@@ -315,7 +315,7 @@ async function getDataAsync({
 			const seriesTags = noSplitTags.has(z.toUpperCase().replace(/\|.*/, ''))
 				? (await fb.TitleFormat(_bt(z)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
 				: (await fb.TitleFormat(_bt(z)).EvalWithMetadbsAsync(handleList)).map((val) => val.split(splitter)); //Z
-			const bSingleY = !isNaN(y);
+			const bSingleY = !Number.isNaN(Number(y));
 			const seriesCounters = option === 'timeline playcount'
 				? optionArg && optionArg.timePeriod
 					? (await getPlayCountV2(handleList, optionArg.timePeriod, optionArg.timeKey, optionArg.fromDate, true, listenBrainz)).map((v) => v.playCount)
@@ -338,7 +338,7 @@ async function getDataAsync({
 			const xTags = noSplitTags.has(x.toUpperCase().replace(/\|.*/, ''))
 				? (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => [val])
 				: (await fb.TitleFormat(_bt(x)).EvalWithMetadbsAsync(handleList)).map((val) => val.split(splitter));
-			const bSingleY = !isNaN(y);
+			const bSingleY = !Number.isNaN(Number(y));
 			const seriesCounters = bSingleY
 				? Number(y)
 				: (await fb.TitleFormat(_bt(queryReplaceWithCurrent(y))).EvalWithMetadbsAsync(handleList))
@@ -492,8 +492,8 @@ const getDataHelpers = {
 				});
 				if (bIncludeHandles) {
 					const handles = handlesMap.get(x);
-					if (!handles) { handlesMap.set(x, [handleList[i]]); }
-					else { handles.push(handleList[i]); }
+					if (handles) { handles.push(handleList[i]); }
+					else { handlesMap.set(x, [handleList[i]]); }
 				}
 			});
 		});
@@ -554,8 +554,8 @@ const getDataHelpers = {
 				});
 				if (bIncludeHandles) {
 					const handles = handlesMap.get(x);
-					if (!handles) { handlesMap.set(x, [handleList[i]]); }
-					else { handles.push(handleList[i]); }
+					if (handles) { handles.push(handleList[i]); }
+					else { handlesMap.set(x, [handleList[i]]); }
 				}
 			});
 		});
@@ -587,15 +587,15 @@ const getDataHelpers = {
 			arr.forEach((tag) => {
 				const count = bSingleY ? seriesCounters : seriesCounters[i];
 				const val = dic.get(tag);
-				if (!val) { dic.set(tag, { count, total: 1 }); }
-				else {
+				if (val) {
 					val.count += count;
 					val.total++;
 				}
+				else { dic.set(tag, { count, total: 1 }); }
 				if (bIncludeHandles) {
 					const handles = handlesMap.get(tag);
-					if (!handles) { handlesMap.set(tag, [handleList[i]]); }
-					else { handles.push(handleList[i]); }
+					if (handles) { handles.push(handleList[i]); }
+					else { handlesMap.set(tag, [handleList[i]]); }
 				}
 			});
 		});
@@ -623,15 +623,15 @@ const getDataHelpers = {
 					groupTags[i].forEach((group) => groupFound.add(group));
 				}
 				const val = dic.get(tag);
-				if (!val) { dic.set(tag, { count, total: 1 }); }
-				else {
+				if (val) {
 					val.count += count;
 					val.total++;
 				}
+				else { dic.set(tag, { count, total: 1 }); }
 				if (bIncludeHandles) {
 					const handles = handlesMap.get(tag);
-					if (!handles) { handlesMap.set(tag, [handleList[i]]); }
-					else { handles.push(handleList[i]); }
+					if (handles) { handles.push(handleList[i]); }
+					else { handlesMap.set(tag, [handleList[i]]); }
 				}
 			});
 		});
@@ -660,16 +660,16 @@ const getDataHelpers = {
 					}
 				}
 				const entry = tagCount.get(tag);
-				if (!entry) {
+				if (entry) {
+					entry.playCount += Number(playCount[i]);
+					if (bIncludeHandles) { entry.handles.push(handleList[i]); }
+					if (bIncludeSkip) { entry.skipCount += Number(skipCount[i]); }
+				} else {
 					tagCount.set(tag, {
 						playCount: Number(playCount[i]),
 						handles: bIncludeHandles ? [handleList[i]] : null,
 						skipCount: bIncludeSkip ? Number(skipCount[i]) : null,
 					});
-				} else {
-					entry.playCount += Number(playCount[i]);
-					if (bIncludeHandles) { entry.handles.push(handleList[i]); }
-					if (bIncludeSkip) { entry.skipCount += Number(skipCount[i]); }
 				}
 			});
 		});
@@ -698,14 +698,14 @@ const getDataHelpers = {
 					} else { id = ''; }
 					tag += id;
 				}
-				if (!tagCount.has(tag)) { tagCount.set(tag, Number(playCount[i])); }
-				else { tagCount.set(tag, tagCount.get(tag) + Number(playCount[i])); }
-				if (!keyCount.has(tag)) { keyCount.set(tag, 1); }
-				else { keyCount.set(tag, keyCount.get(tag) + 1); }
+				if (tagCount.has(tag)) { tagCount.set(tag, tagCount.get(tag) + Number(playCount[i])); }
+				else { tagCount.set(tag, Number(playCount[i])); }
+				if (keyCount.has(tag)) { keyCount.set(tag, keyCount.get(tag) + 1); }
+				else { keyCount.set(tag, 1); }
 				if (bIncludeHandles) {
 					const handles = handlesMap.get(tag);
-					if (!handles) { handlesMap.set(tag, [handleList[i]]); }
-					else { handles.push(handleList[i]); }
+					if (handles) { handles.push(handleList[i]); }
+					else { handlesMap.set(tag, [handleList[i]]); }
 				}
 			});
 		});
@@ -733,12 +733,12 @@ const getDataHelpers = {
 							? idData.country
 							: null;
 						if (!id) { return; }
-						if (!tagCount.has(id)) { tagCount.set(id, Number(playCount[i])); }
-						else { tagCount.set(id, tagCount.get(id) + Number(playCount[i])); }
+						if (tagCount.has(id)) { tagCount.set(id, tagCount.get(id) + Number(playCount[i])); }
+						else { tagCount.set(id, Number(playCount[i])); }
 						if (bIncludeHandles) {
 							const handles = handlesMap.get(tag);
-							if (!handles) { handlesMap.set(tag, [handleList[i]]); }
-							else { handles.push(handleList[i]); }
+							if (handles) { handles.push(handleList[i]); }
+							else { handlesMap.set(tag, [handleList[i]]); }
 						}
 					}
 				}
@@ -763,12 +763,12 @@ const getDataHelpers = {
 					if (isoCode) {
 						const id = music_graph_descriptors_countries.getFirstNodeRegion(isoCode);
 						if (!id) { return; }
-						if (!tagCount.has(id)) { tagCount.set(id, Number(playCount[i])); }
-						else { tagCount.set(id, tagCount.get(id) + Number(playCount[i])); }
+						if (tagCount.has(id)) { tagCount.set(id, tagCount.get(id) + Number(playCount[i])); }
+						else { tagCount.set(id, Number(playCount[i])); }
 						if (bIncludeHandles) {
 							const handles = handlesMap.get(tag);
-							if (!handles) { handlesMap.set(tag, [handleList[i]]); }
-							else { handles.push(handleList[i]); }
+							if (handles) { handles.push(handleList[i]); }
+							else { handlesMap.set(tag, [handleList[i]]); }
 						}
 					}
 				}
@@ -793,19 +793,19 @@ const getDataHelpers = {
 					const id = idData.city;
 					if (idData.country) {
 						const pointTags = cityMap.get(id);
-						if (!pointTags) {
-							cityMap.set(id, { country: idData.country, artists: new Map([[idData.id, Number(playCount[i])]]) });
-						} else {
+						if (pointTags) {
 							pointTags.artists.set(idData.id, (pointTags.artists.get(idData.id) || 0) + Number(playCount[i]));
+						} else {
+							cityMap.set(id, { country: idData.country, artists: new Map([[idData.id, Number(playCount[i])]]) });
 						}
 					}
 					if (!id) { return; }
-					if (!tagCount.has(id)) { tagCount.set(id, Number(playCount[i])); }
-					else { tagCount.set(id, tagCount.get(id) + Number(playCount[i])); }
+					if (tagCount.has(id)) { tagCount.set(id, tagCount.get(id) + Number(playCount[i])); }
+					else { tagCount.set(id, Number(playCount[i])); }
 					if (bIncludeHandles) {
 						const handles = handlesMap.get(tag);
-						if (!handles) { handlesMap.set(tag, [handleList[i]]); }
-						else { handles.push(handleList[i]); }
+						if (handles) { handles.push(handleList[i]); }
+						else { handlesMap.set(tag, [handleList[i]]); }
 					}
 				}
 			});
@@ -875,8 +875,8 @@ const getDataHelpers = {
 		if (!checkQuery(query)) { return new FbMetadbHandleList(); }
 		return (query.length && query !== 'ALL' ? fb.GetQueryItems(source, query) : source);
 	},
-	deduplicateSource: function (source, options = { checkKeys: globTags.remDupl, sortBias: globQuery.remDuplBias }) {
-		return removeDuplicates({ handleList: source, checkKeys: globTags.remDupl, sortBias: globQuery.remDuplBias, bPreserveSort: true, bAdvTitle: true, ...options });
+	deduplicateSource: function (source, { checkKeys = globTags.remDupl, sortBias = globQuery.remDuplBias } = {}) {
+		return removeDuplicates({ handleList: source, checkKeys, sortBias, bPreserveSort: true, bAdvTitle: true });
 	},
 	timeRange: function (tag, fromDate, toDate) {
 		switch (tag.toUpperCase()) {

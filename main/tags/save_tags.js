@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/11/25
+//17/04/26
 
 /*
 	Save tags
@@ -45,7 +45,7 @@ function saveTags({
 			? 'file://' + resolveTrackRelativePath(handle.RawPath.replace(fileRegex, ''))
 			: handle.RawPath;
 		handleInfo.subSong = handle.SubSong;
-		handleInfo.md5 = md5Idx !== -1 ? fileInfo.InfoValue(md5Idx) : -1;
+		handleInfo.md5 = md5Idx === -1 ? -1 : fileInfo.InfoValue(md5Idx);
 		for (let j = 0; j < metaCount; j++) {
 			const metaValueCount = fileInfo.MetaValueCount(j);
 			const name = fileInfo.MetaName(j).toLowerCase();
@@ -88,7 +88,7 @@ function compareTags({
 			? 'file://' + resolveTrackRelativePath(handle.RawPath.replace(fileRegex, ''))
 			: handle.RawPath;
 		handleInfo.subSong = handle.SubSong;
-		handleInfo.md5 = md5Idx !== -1 ? fileInfo.InfoValue(md5Idx) : -1;
+		handleInfo.md5 = md5Idx === -1 ? -1 : fileInfo.InfoValue(md5Idx);
 		for (let j = 0; j < metaCount; j++) {
 			const metaValueCount = fileInfo.MetaValueCount(j);
 			const name = fileInfo.MetaName(j).toLowerCase();
@@ -112,14 +112,14 @@ function compareTags({
 		const idx = toTags.findIndex((fileInfoRef) => {
 			return fileInfoRef.rawPath.replace(toTagsFolder, '') === fileInfo.rawPath.replace(selItemsFolder, '') && fileInfoRef.subSong === fileInfo.subSong && fileInfoRef.md5 === fileInfo.md5;
 		});
-		if (idx !== -1) {
+		if (idx === -1) {
+			toReportNoMatch.push(fileInfo.rawPath);
+		} else {
 			if (JSON.stringify(fileInfo.handleTags) !== JSON.stringify(toTags[idx].handleTags)) {
 				toReport.push(fileInfo.rawPath);
 				toEditHandles.push(selItemsArr[i]);
 				toEditTags.push(toTags[idx].handleTags);
 			}
-		} else {
-			toReportNoMatch.push(fileInfo.rawPath);
 		}
 	});
 	if (toReportNoMatch.length) {

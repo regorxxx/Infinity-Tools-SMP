@@ -1,5 +1,5 @@
 'use strict';
-//31/07/25
+//17/04/26
 
 /* exported spotify */
 
@@ -39,9 +39,8 @@ const spotify = {
 	*/
 	get: function get(URL) {
 		const token = this.getToken();
-		return !token
-			? Promise.reject(new Error('No token retrieved.'))
-			: send({
+		return token
+			? send({
 				method: 'GET',
 				bypassCache: true,
 				requestHeader: [
@@ -51,8 +50,9 @@ const spotify = {
 				URL
 			}).then(
 				(resolve) => resolve,
-				(reject) => { console.log('spotify.get: ' + reject.status + ' ' + reject.responseText + '\n\t ' + URL); return null; }
-			).catch((error) => { fb.ShowPopupMessage(JSON.stringify(error)); return null; });
+				(error) => { console.log('spotify.get: ' + error.status + ' ' + error.responseText + '\n\t ' + URL); return null; }
+			).catch((error) => { fb.ShowPopupMessage(JSON.stringify(error)); return null; })
+			: Promise.reject(new Error('No token retrieved.'));
 	},
 	/**
 	 * Returns information about an item from the Spotify API.
@@ -89,7 +89,7 @@ const spotify = {
 		return this.get('https://api.spotify.com/v1/search?type=' + type + '&q=' + encodeURIComponent(item) + meta + '&decorate_restrictions=false&best_match=true&include_external=audio')
 			.then(
 				(resolve) => resolve ? JSON.parse(resolve) : null,
-				(reject) => reject
+				(error) => error
 			).catch((error) => { fb.ShowPopupMessage(JSON.stringify(error)); return null; });
 	},
 	/**
@@ -153,7 +153,7 @@ const spotify = {
 		return this.get('https://api.spotify.com/v1/audio-features/' + id)
 			.then(
 				(resolve) => resolve ? JSON.parse(resolve) : null,
-				(reject) => reject
+				(error) => error
 			).catch((error) => { fb.ShowPopupMessage(JSON.stringify(error)); return null; });
 	}
 };

@@ -1,5 +1,5 @@
 'use strict';
-//09/08/25
+//17/04/26
 
 /* exported folksonomyUtils */
 
@@ -151,14 +151,14 @@ const folksonomyUtils = {
 			};
 			// Copy "good" values if already present
 			rules.substitutions.forEach((rule) => { // Using the substitutions final values
-				if (rule.to.every((tag) => tags.includes(tag.toLowerCase()))) { folksonomy.add.apply(folksonomy, rule.to); }
+				if (rule.to.every((tag) => tags.includes(tag.toLowerCase()))) { folksonomy.add(...rule.to); }
 			});
 			rules.clone.forEach((rule) => { // Or the cloning rules
-				if (rule.from.every((tag) => tags.includes(tag.toLowerCase()))) { folksonomy.add.apply(folksonomy, rule.from); }
+				if (rule.from.every((tag) => tags.includes(tag.toLowerCase()))) { folksonomy.add(...rule.from); }
 			});
 			// Substitute all terms
 			rules.substitutions.forEach((rule) => {
-				if (rule.from.some((tag) => tags.includes(tag.toLowerCase()))) { folksonomy.add.apply(folksonomy, rule.to); }
+				if (rule.from.some((tag) => tags.includes(tag.toLowerCase()))) { folksonomy.add(...rule.to); }
 			});
 		}
 		return [...folksonomy];

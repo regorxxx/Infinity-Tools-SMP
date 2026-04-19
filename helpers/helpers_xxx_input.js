@@ -1,5 +1,5 @@
-﻿'use strict';
-//15/04/26
+'use strict';
+//17/04/26
 
 /* exported Input */
 
@@ -242,7 +242,7 @@ const Input = Object.freeze({
 				}
 				case 'unicode': { // https://www.rapidtables.com/code/text/unicode-characters.html
 					if (bFilterEmpty && !newVal.length) { throw new Error('Empty'); }
-					newVal = newVal.split(' ').map((s) => s === '' ? '' : String.fromCharCode(Number.parseInt(s, 16))).join(' ');
+					newVal = newVal.split(' ').map((s) => s === '' ? '' : String.fromCodePoint(Number.parseInt(s, 16))).join(' ');
 					break;
 				}
 				case 'file|url':

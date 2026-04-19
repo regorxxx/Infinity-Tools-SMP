@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/11/25
+//17/04/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, menu_panelProperties:readable, configMenu:readable, createSubMenuEditEntries:readable, stripSort:readable, globTags:readable, createSmartShuffleMenu:readable, sbd:readable, entryMaxLength:readable */
 
@@ -29,7 +29,7 @@
 				menu_properties['smartShuffleTag'] = ['Smart shuffle tag', JSON.stringify([globTags.artist]), { func: isJSON }, JSON.stringify([globTags.artist])];
 			}
 			forcedQueryMenusEnabled[name] = true;
-			const musicMapMenu = name + ' (' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ')';
+			const musicMapMenu = name + ' (' + (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ')';
 			const bEnableSearchDistance = (!Object.hasOwn(menusEnabled, musicMapMenu) || menusEnabled[musicMapMenu]) && typeof sbd !== 'undefined';
 			const plsManHelper = folders.xxx + 'main\\playlist_manager\\playlist_manager_helpers.js';
 			if (_isFile(plsManHelper)) { include(plsManHelper.replace(folders.xxx + 'main\\', '..\\')); }
@@ -213,7 +213,7 @@
 						});
 				}
 				// Menus
-				menu.newEntry({ menuName, entryText: 'Use ' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ' mixes as pools:', func: null, flags: MF_GRAYED });
+				menu.newEntry({ menuName, entryText: 'Use ' + (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ' mixes as pools:', func: null, flags: MF_GRAYED });
 				menu.newSeparator(menuName);
 				menu.newCondEntry({
 					entryText: 'Pools (cond)', condFunc: () => {

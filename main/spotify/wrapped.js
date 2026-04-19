@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//06/04/26
+//17/04/26
 
 /* exported wrapped */
 
@@ -3139,10 +3139,6 @@ const wrapped = {
 		const fileName = 'Wrapped_' + (timePeriod || period);
 		const input = root + fileName + '.tex';
 		const output = root + fileName + '.pdf';
-		const parseCmd = (cmd) => cmd.replace(/%1/gi, _q(input))
-			.replace(/%2/gi, _q(output))
-			.replace(/%3/gi, _q(root.replace(/\\$/, '')))
-			.replace(/%4/gi, (timePeriod || period));
 		if (this.settings.logOpt.bBasic) { console.log('Wrapped: saving .tex file to\n\t ' + _foldPath(input)); }
 		_recycleFile(input, true);
 		_save(input, report, false);
@@ -3150,7 +3146,7 @@ const wrapped = {
 		if (!latexCmd || !latexCmd.length) {
 			latexCmd = 'lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1';
 		}
-		latexCmd = parseCmd(_resolvePath(latexCmd));
+		latexCmd = this.parseCmd(_resolvePath(latexCmd), input, output, root, timePeriod || period);
 		if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing latex\n\t ' + _foldPath(latexCmd.replace(/\w:\\.*\\(lualatex.exe)/i, '[...]\\$1'))); }
 		if (latexCmd.includes('lualatex')) {
 			console.log('Wrapped: double compilation required');
@@ -3159,7 +3155,9 @@ const wrapped = {
 		_runCmd(latexCmd, true);
 		if (_isFile(output)) { this.compressPDF(output); }
 		if (_isFile(output)) {
-			if (extraCmd && extraCmd.length) { extraCmd.filter(Boolean).forEach((cmd) => _runCmd(parseCmd(cmd), true)); }
+			if (extraCmd && extraCmd.length) {
+				extraCmd.filter(Boolean).forEach((cmd) => _runCmd(this.parseCmd(cmd, input, output, root, timePeriod || period), true));
+			}
 			_recycleFile(root + fileName + '.aux', true);
 			_recycleFile(root + fileName + '.log', true);
 			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .pdf file at\n\t ' + _foldPath(output)); }
@@ -3236,14 +3234,12 @@ const wrapped = {
 		const fileName = 'Wrapped_' + (timePeriod || period);
 		const data = root + fileName + '.js';
 		const output = root + fileName + '.html';
-		const parseCmd = (cmd) => cmd.replace(/%1/gi, _q(output))
-			.replace(/%2/gi, _q(output))
-			.replace(/%3/gi, _q(root.replace(/\\$/, '')))
-			.replace(/%4/gi, (timePeriod || period));
 		_save(data, JSON.stringify(report, null, '\t').replace(/\n/g, '\r\n'), false);
 		// Parse cmd
 		if (_isFile(output)) {
-			if (extraCmd && extraCmd.length) { extraCmd.filter(Boolean).forEach((cmd) => _runCmd(parseCmd(cmd), true)); }
+			if (extraCmd && extraCmd.length) {
+				extraCmd.filter(Boolean).forEach((cmd) => _runCmd(this.parseCmd(cmd, data, output, root, timePeriod || period), true));
+			}
 			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .html file at\n\t ' + _foldPath(output)); }
 			utils.ShowHtmlDialog(0, 'file://' + output);
 			return true;
@@ -3311,19 +3307,38 @@ const wrapped = {
 		// Save report
 		const fileName = 'Wrapped_' + (timePeriod || period);
 		const output = root + fileName + '.json';
-		const parseCmd = (cmd) => cmd.replace(/%1/gi, _q(output))
-			.replace(/%2/gi, _q(output))
-			.replace(/%3/gi, _q(root.replace(/\\$/, '')))
-			.replace(/%4/gi, (timePeriod || period));
 		_save(output, JSON.stringify(report, null, '\t').replace(/\n/g, '\r\n'), false);
 		// Parse cmd
 		if (_isFile(output)) {
-			if (extraCmd && extraCmd.length) { extraCmd.filter(Boolean).forEach((cmd) => _runCmd(parseCmd(cmd), true)); }
+			if (extraCmd && extraCmd.length) {
+				extraCmd.filter(Boolean).forEach((cmd) => _runCmd(this.parseCmd(cmd, '', output, root, timePeriod || period), true));
+			}
 			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .json file at\n\t ' + _foldPath(output)); }
 			_run(output);
 			return true;
 		}
 		return false;
+	},
+	/**
+	 * Copies all assets required to create the report to temp folder
+	 *
+	 * @property
+	 * @name parseCmd
+	 * @kind method
+	 * @memberof wrapped
+	 * @type {function}
+	 * @param {string} cmd - CMD expression containing %i arguments
+	 * @param {string} input - Input file (%1)
+	 * @param {string} input - output file (%2)
+	 * @param {string} input - Time period (%3)
+	 * @param {?string} root - Optional parameter that specifies the root directory for the report
+	 * @returns {string}
+	 */
+	parseCmd: function (cmd, input, output, time, root = this.basePath) {
+		return cmd.replace(/%1/gi, _q(input))
+			.replace(/%2/gi, _q(output))
+			.replace(/%3/gi, _q(root.replace(/\\$/, '')))
+			.replace(/%4/gi, time);
 	},
 	/**
 	 * Copies all assets required to create the report to temp folder

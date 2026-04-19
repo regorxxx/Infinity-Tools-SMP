@@ -1,5 +1,5 @@
-﻿'use strict';
-//08/03/26
+'use strict';
+//17/04/26
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -424,7 +424,7 @@ async function updateCache({ newCacheLink, newCacheLinkSet, bForce = false, prop
 				? Object.values(tags).filter((t) => t.type.includes('graph') && !t.type.includes('virtual'))
 					.map((t) => t.tf)
 					.flat(Infinity)
-					.map((tag) => !tag.includes('$') ? _t(tag) : tag).join('|')
+					.map((tag) => tag.includes('$') ? tag : _t(tag)).join('|')
 				: _t(globTags.genre) + '|' + _t(globTags.style);
 			console.log(sbd.name + ': tags used for cache - ' + genreStyleTags);
 			const tfo = fb.TitleFormat(genreStyleTags);
@@ -444,7 +444,7 @@ async function updateCache({ newCacheLink, newCacheLinkSet, bForce = false, prop
 							tagValues.push(...new Set(tfo.EvalWithMetadbs(items).join('|').split(/\| *|, */g)));
 							const progress = Math.floor(step / num * 4) * 25;
 							if (progress > prevProgress) {
-								console.log('Calculating tags ' + (progress <= 100 ? progress : 100) + '%.');
+								console.log('Calculating tags ' + Math.min(progress, 100) + '%.');
 								if (bBar) {
 									sbdButtons.forEach((key) => {
 										buttonsBar.buttons[key].switchAnimation('Link cache (tags)', false);
@@ -631,14 +631,14 @@ function testRecipe({ path = null, json = null, baseTags = null } = {}) {
 				recipe[key] = toAdd[key];
 			} else if (key === 'tags') {
 				for (let key in toAdd.tags) {
-					if (!Object.hasOwn(recipe.tags, key)) {
-						recipe.tags[key] = toAdd.tags[key];
-					} else {
+					if (Object.hasOwn(recipe.tags, key)) {
 						for (let subKey in toAdd.tags[key]) {
 							if (!Object.hasOwn(recipe.tags[key], subKey)) {
 								recipe.tags[key][subKey] = toAdd.tags[key][subKey];
 							}
 						}
+					} else {
+						recipe.tags[key] = toAdd.tags[key];
 					}
 				}
 			}
@@ -668,7 +668,7 @@ function testRecipe({ path = null, json = null, baseTags = null } = {}) {
 	const validVarTypes = ['string', 'number'];
 	const validValTypes = ['multiple', 'single'];
 	const checkKeys = ['weight', 'tf', 'baseScore', 'scoringDistribution'];
-	const validTagKeys = ['range', 'type', 'combs', ...checkKeys];
+	const validTagKeys = new Set(['range', 'type', 'combs', ...checkKeys]);
 	for (let key in tags) {
 		if (key === '*') { continue; }
 		const tag = Object.hasOwn(baseTags, key) ? { ...clone(baseTags[key]), ...tags[key] } : tags[key];
@@ -703,7 +703,7 @@ function testRecipe({ path = null, json = null, baseTags = null } = {}) {
 			}
 		}
 		for (let check in tag) {
-			if (!validTagKeys.includes(check)) {
+			if (!validTagKeys.has(check)) {
 				result.valid = false;
 				result.report.push('Tag contains non valid property ' + _p(check) + ': ' + key);
 			}
@@ -953,14 +953,14 @@ async function searchByDistance({
 					recipe[key] = toAdd[key];
 				} else if (key === 'tags') {
 					for (let key in toAdd.tags) {
-						if (!Object.hasOwn(recipe.tags, key)) {
-							recipe.tags[key] = toAdd.tags[key];
-						} else {
+						if (Object.hasOwn(recipe.tags, key)) {
 							for (let subKey in toAdd.tags[key]) {
 								if (!Object.hasOwn(recipe.tags[key], subKey)) {
 									recipe.tags[key][subKey] = toAdd.tags[key][subKey];
 								}
 							}
+						} else {
+							recipe.tags[key] = toAdd.tags[key];
 						}
 					}
 				}
@@ -969,7 +969,7 @@ async function searchByDistance({
 		if (bSearchDebug) { console.log(recipe); }
 		const globalArgs = new Set(['poolFilteringTag']);
 		Object.keys(recipe).forEach((key) => { // Process current recipe
-			const value = recipe[key] !== null ? recipe[key] : Infinity;
+			const value = recipe[key] === null ? Infinity : recipe[key];
 			if (recipeAllowedKeys.has(key)) {
 				if (key === 'name') {
 					return;
@@ -980,7 +980,7 @@ async function searchByDistance({
 					if (newProperties) {
 						Object.keys(newProperties).forEach((rKey) => {
 							if (!Object.hasOwn(properties, rKey)) { console.log('Recipe has a not recognized property key: ' + rKey); return; }
-							let newValue = newProperties[rKey] !== null ? newProperties[rKey] : Infinity;
+							let newValue = newProperties[rKey] === null ? Infinity : newProperties[rKey];
 							recipeProperties[rKey] = newValue;
 							if (globalArgs.has(rKey)) {
 								if (newValue !== Infinity) {
@@ -993,9 +993,9 @@ async function searchByDistance({
 				} else if (key === 'tags') { // Overrule current ones (but don't touch original object!)
 					recipeProperties.tags = recipe.tags;
 				} else {
-					const newValue = value !== Infinity
-						? JSON.stringify(value)
-						: value;
+					const newValue = value === Infinity
+						? value
+						: JSON.stringify(value);
 					eval(key + ' = ' + newValue);
 					if (key === 'theme') { bOverwriteTheme = true; }
 					if (bSearchDebug) { console.log(key, value, eval(key)); }
@@ -1082,7 +1082,7 @@ async function searchByDistance({
 	// May be more than one tag so we use split(). Use filter() to remove '' values. For ex:
 	// styleTag: 'tagName,, ,tagName2' => ['tagName','Tagname2']
 	// We check if weights are zero first
-	const calcTags = { genreStyle: { ...sbd.tagSchema, ...{ type: ['virtual'] } } };
+	const calcTags = { genreStyle: { ...sbd.tagSchema, type: ['virtual'] } };
 	for (let key in tags) {
 		const tag = tags[key];
 		// Set base values
@@ -1118,8 +1118,8 @@ async function searchByDistance({
 	});
 	if (bSearchDebug) { console.log(JSON.stringify(calcTags, void (0), '\t')); }
 	const smartShuffleTag = (recipeProperties.smartShuffleTag || (Object.hasOwn(properties, 'smartShuffleTag') ? JSON.parse(properties.smartShuffleTag[1]) : [])).filter(Boolean);
-	const genreStyleTag = Array.from(new Set(calcTags.genreStyle.tf), (tag) => (!tag.includes('$') ? _t(tag) : tag));
-	const genreStyleTagQuery = Array.from(new Set(calcTags.genreStyle.tf), (tag) => (!tag.includes('$') ? tag : _q(tag)));
+	const genreStyleTag = Array.from(new Set(calcTags.genreStyle.tf), (tag) => (tag.includes('$') ? tag : _t(tag)));
+	const genreStyleTagQuery = Array.from(new Set(calcTags.genreStyle.tf), (tag) => (tag.includes('$') ? _q(tag) : tag));
 
 	// Check input
 	playlistLength = (playlistLength >= 0)
@@ -1176,8 +1176,8 @@ async function searchByDistance({
 
 	if (method === 'WEIGHT' && Object.keys(calcTags).every((key) => calcTags[key].weight === 0)) {
 		if (bBasicLogging) {
-			if (calcTags.dynGenre.weight !== 0) { console.log('Check weight values, all are set to zero and \'dynGenre\' weight is not used for WEIGHT method.'); }
-			else { console.log('Check weight values, all are set to zero.'); }
+			if (calcTags.dynGenre.weight === 0) { console.log('Check weight values, all are set to zero.'); }
+			else { console.log('Check weight values, all are set to zero and \'dynGenre\' weight is not used for WEIGHT method.'); }
 		}
 		return;
 	}
@@ -1319,7 +1319,7 @@ async function searchByDistance({
 	const totalWeight = Object.keys(calcTags).filter((key) => !['related', 'unrelated'].includes(key))
 		.reduce((total, key) => total + calcTags[key].weight, 0); //100%
 	const countWeights = Object.keys(calcTags).filter((key) => !['related', 'unrelated'].includes(key))
-		.reduce((total, key) => total + (calcTags[key].weight !== 0 ? 1 : 0), 0);
+		.reduce((total, key) => total + (calcTags[key].weight === 0 ? 0 : 1), 0);
 	if (bSearchDebug) { console.log('Init Weights:', totalWeight, countWeights); }
 	let originalWeightValue = 0;
 	// Queries and ranges
@@ -1337,8 +1337,8 @@ async function searchByDistance({
 			if (tag.weight / totalWeight >= totalWeight / countWeights / 100) {
 				preQueryLength = query.length;
 				const tagNameTF = tag.bMultiple // May be a tag or a function...
-					? tag.tf.map((t) => !t.includes('$') ? t : _q(t))
-					: (!tag.tf[0].includes('$') ? tag.tf[0] : _q(tag.tf[0]));
+					? tag.tf.map((t) => t.includes('$') ? _q(t) : t)
+					: (tag.tf[0].includes('$') ? _q(tag.tf[0]) : tag.tf[0]);
 				if (tag.bKeyRange) {
 					const camelotKey = camelotWheel.getKeyNotationObjectCamelot(tag.reference);
 					if (camelotKey) {
@@ -1357,15 +1357,15 @@ async function searchByDistance({
 				} else if (tag.bPercentRange) {
 					const rangeUpper = round(tag.reference * (100 + tag.range) / 100, 0);
 					const rangeLower = round(tag.reference * (100 - tag.range) / 100, 0);
-					if (rangeUpper !== rangeLower) { query[preQueryLength] = tagNameTF + ' GREATER ' + rangeLower + ' AND ' + tagNameTF + ' LESS ' + rangeUpper; }
-					else { query[preQueryLength] += tagNameTF + ' EQUAL ' + tag.reference; }
+					if (rangeUpper === rangeLower) { query[preQueryLength] += tagNameTF + ' EQUAL ' + tag.reference; }
+					else { query[preQueryLength] = tagNameTF + ' GREATER ' + rangeLower + ' AND ' + tagNameTF + ' LESS ' + rangeUpper; }
 				} else if (tag.bAbsRange) {
 					const rangeUpper = tag.reference + tag.range;
 					const rangeLower = tag.reference - tag.range;
-					if (rangeUpper !== rangeLower) { query[preQueryLength] = tagNameTF + ' GREATER ' + rangeLower + ' AND ' + tagNameTF + ' LESS ' + rangeUpper; }
-					else { query[preQueryLength] += tagNameTF + ' EQUAL ' + tag.reference; }
+					if (rangeUpper === rangeLower) { query[preQueryLength] += tagNameTF + ' EQUAL ' + tag.reference; }
+					else { query[preQueryLength] = tagNameTF + ' GREATER ' + rangeLower + ' AND ' + tagNameTF + ' LESS ' + rangeUpper; }
 				} else if (tag.bCombinations) {
-					const k = tag.referenceNumber >= tag.combs ? tag.combs : tag.referenceNumber; //on combinations of k
+					const k = Math.min(tag.referenceNumber, tag.combs); //on combinations of k
 					const tagComb = k_combinations(tag.reference, k);
 					const match = tagNameTF.some((tag) => tag.includes('$')) ? 'HAS' : 'IS'; // Allow partial matches when using funcs
 					// Group as small as possible for query purposes
@@ -1414,8 +1414,8 @@ async function searchByDistance({
 			} else if (bNegativeWeighting && tag.weight * 2 / totalWeight >= totalWeight / countWeights / 100) {
 				preQueryLength = query.length;
 				const tagNameTF = tag.bMultiple // May be a tag or a function...
-					? tag.tf.map((t) => !t.includes('$') ? t : _q(t))
-					: (!tag.tf[0].includes('$') ? tag.tf[0] : _q(tag.tf[0]));
+					? tag.tf.map((t) => t.includes('$') ? _q(t) : t)
+					: (tag.tf[0].includes('$') ? _q(tag.tf[0]) : tag.tf[0]);
 				if (tag.bKeyRange) {
 					const camelotKey = camelotWheel.getKeyNotationObjectCamelot(tag.reference);
 					if (camelotKey) {
@@ -1434,13 +1434,13 @@ async function searchByDistance({
 				} else if (tag.bPercentRange) {
 					const rangeUpper = round(tag.reference * (100 + tag.range * 2) / 100, 0);
 					const rangeLower = round(tag.reference * (100 - tag.range * 2) / 100, 0);
-					if (rangeUpper !== rangeLower) { query[preQueryLength] = tagNameTF + ' GREATER ' + rangeLower + ' AND ' + tagNameTF + ' LESS ' + rangeUpper; }
-					else { query[preQueryLength] += tagNameTF + ' EQUAL ' + tag.reference; }
+					if (rangeUpper === rangeLower) { query[preQueryLength] += tagNameTF + ' EQUAL ' + tag.reference; }
+					else { query[preQueryLength] = tagNameTF + ' GREATER ' + rangeLower + ' AND ' + tagNameTF + ' LESS ' + rangeUpper; }
 				} else if (tag.bAbsRange) {
 					const rangeUpper = Math.ceil(tag.reference + tag.range * 2);
 					const rangeLower = Math.floor(tag.reference - tag.range * 2);
-					if (rangeUpper !== rangeLower) { query[preQueryLength] = tagNameTF + ' GREATER ' + rangeLower + ' AND ' + tagNameTF + ' LESS ' + rangeUpper; }
-					else { query[preQueryLength] += tagNameTF + ' EQUAL ' + tag.reference; }
+					if (rangeUpper === rangeLower) { query[preQueryLength] += tagNameTF + ' EQUAL ' + tag.reference; }
+					else { query[preQueryLength] = tagNameTF + ' GREATER ' + rangeLower + ' AND ' + tagNameTF + ' LESS ' + rangeUpper; }
 				}
 				if (bSearchDebug) { queryDebug[queryDebug.length - 1].query = query[preQueryLength]; }
 			}
@@ -1501,14 +1501,14 @@ async function searchByDistance({
 	if (calcTags.genreStyle.referenceNumber !== 0 && calcTags.genreStyleRegion.weight !== 0) {
 		calcTags.genreStyleRegion.reference.push(...calcTags.genreStyle.referenceSet);
 		calcTags.genreStyleRegion.referenceNumber = calcTags.genreStyleRegion.reference.length;
-		if (calcTags.genreStyleRegion.referenceNumber !== 0) {
-			if (bSearchDebug) { console.log('genreStyleRegion: ' + originalWeightValue + ' + ' + calcTags.genreStyleRegion.weight); }
-			originalWeightValue += calcTags.genreStyleRegion.weight;
-		} else {
+		if (calcTags.genreStyleRegion.referenceNumber === 0) {
 			if (bBasicLogging) {
 				console.log('Weight was not zero but selected track had no genre/style region tags for: ' + _b(calcTags.genreStyleRegion.tf));
 			}
 			calcTags.genreStyleRegion.weight = 0;
+		} else {
+			if (bSearchDebug) { console.log('genreStyleRegion: ' + originalWeightValue + ' + ' + calcTags.genreStyleRegion.weight); }
+			originalWeightValue += calcTags.genreStyleRegion.weight;
 		}
 	}
 	// Already calculated previously
@@ -1540,10 +1540,11 @@ async function searchByDistance({
 	// Also an input track missing some tags could break the pre-filter logic if not adjusted.
 	preQueryLength = query.length;
 	if (preQueryLength === 0) {
-		if (!originalScore) {
+		if (originalScore) { query[preQueryLength] = ''; } // Pre-Filter may not be relevant according to weights...
+		else {
 			console.log('No query available for selected track. Probably missing tags!');
 			return;
-		} else { query[preQueryLength] = ''; } // Pre-Filter may not be relevant according to weights...
+		}
 	}
 	const queryLength = query.length;
 	if (method === 'WEIGHT') { // Weight or Dyngenre method. Pre-filtering is really simple...
@@ -1634,7 +1635,7 @@ async function searchByDistance({
 			fb.TitleFormat(tagName).EvalWithMetadb(sel).split('|‎|').filter(Boolean)
 		)];
 		let querySimil = '';
-		if (!similTags.length && files.some(_isFile)) {
+		if (!similTags.length && files.some((f) => _isFile(f))) {
 			const data = mergeSimilarDataFromFiles(files);
 			const artist = fb.TitleFormat(globTags.artist).EvalWithMetadb(sel);
 			if (data) {
@@ -1720,7 +1721,7 @@ async function searchByDistance({
 				// Replace with tags set
 				let key = '';
 				if (new RegExp('\\b(' + validTags.join('|') + ')\\b', 'i').test(dynQuery)) {
-					const match = RegExp(new RegExp(regTag.source, 'i')).exec(dynQuery)[2];
+					const match = new RegExp(regTag.source, 'i').exec(dynQuery)[2];
 					if (match) {
 						key = validTags.find((tag) => tag.toLowerCase() === match.toLowerCase());
 						const expanded = getRemap(key).map((tag) => {
@@ -1783,7 +1784,7 @@ async function searchByDistance({
 	// Prefill tag Cache
 	if (bTagsCache) {
 		const missingOnCache = Object.values(calcTags).filter(t => !t.bVirtual).map(t => t.tf.filter(Boolean)).concat([['TITLE'], [globTags.title]])
-			.map((tagName) => tagName.map((subTagName) => (!subTagName.includes('$') ? '%' + subTagName + '%' : subTagName)))
+			.map((tagName) => tagName.map((subTagName) => (subTagName.includes('$') ? subTagName : '%' + subTagName + '%')))
 			.map((tagName) => tagName.join(', ')).filter(Boolean)
 			.filter((tagName) => !tagsCache.cache.has(tagName));
 		if (missingOnCache.length) {
@@ -2080,7 +2081,7 @@ async function searchByDistance({
 			bSortRandom = bProgressiveListOrder = bScatterInstrumentals = bSmartShuffle = bInverseListOrder = false;
 			if (calcTags.key.reference.length) {
 				// Instead of predefining a mixing pattern, create one randomly each time, with predefined proportions
-				const size = poolLength < playlistLength ? poolLength : playlistLength;
+				const size = Math.min(poolLength, playlistLength);
 				const pattern = camelotWheel.createHarmonicMixingPattern(size); // On camelot_wheel_xxx.js
 				if (bSearchDebug) { console.log(pattern); }
 				let nextKeyObj;
@@ -2088,7 +2089,7 @@ async function searchByDistance({
 				let keyDebug = [];
 				let keySharpDebug = [];
 				let patternDebug = [];
-				let toCheck = new Set(Array(poolLength).fill().map((_, index) => index).shuffle());
+				let toCheck = new Set(new Array(poolLength).fill().map((_, index) => index).shuffle());
 				let nextIndexScore = 0;
 				let nextIndex = scoreData[nextIndexScore].index; // Initial track, it will match most times the last reference track when using progressive playlists
 				let camelotKeyCurrent, camelotKeyNew;
@@ -2096,11 +2097,12 @@ async function searchByDistance({
 					// Search key
 					const indexScore = nextIndexScore;
 					const index = nextIndex;
-					if (!keyCache.has(index)) {
+					if (keyCache.has(index)) { camelotKeyCurrent = keyCache.get(index); }
+					else {
 						const keyCurrent = calcTags.key.handle[index][0];
 						camelotKeyCurrent = keyCurrent.length ? camelotWheel.getKeyNotationObjectCamelot(keyCurrent) : null;
 						if (camelotKeyCurrent) { keyCache.set(index, camelotKeyCurrent); }
-					} else { camelotKeyCurrent = keyCache.get(index); }
+					}
 					// Delete from check selection
 					toCheck.delete(indexScore);
 					if (!toCheck.size) { break; }
@@ -2110,12 +2112,13 @@ async function searchByDistance({
 						let bFound = false;
 						for (const indexNewScore of toCheck) {
 							const indexNew = scoreData[indexNewScore].index;
-							if (!keyCache.has(indexNew)) {
+							if (keyCache.has(indexNew)) { camelotKeyNew = keyCache.get(indexNew); }
+							else {
 								const keyNew = calcTags.key.handle[indexNew][0];
 								camelotKeyNew = keyNew.length ? camelotWheel.getKeyNotationObjectCamelot(keyNew) : null;
 								if (camelotKeyNew) { keyCache.set(indexNew, camelotKeyNew); }
 								else { toCheck.delete(indexNew); }
-							} else { camelotKeyNew = keyCache.get(indexNew); }
+							}
 							if (camelotKeyNew) {
 								if (nextKeyObj.hour === camelotKeyNew.hour && nextKeyObj.letter === camelotKeyNew.letter) {
 									selectedHandlesArray.push(handleList[index]);
@@ -2128,7 +2131,8 @@ async function searchByDistance({
 								}
 							}
 						}
-						if (!bFound) { // If nothing is found, then continue next movement with current track
+						if (bFound) { j = 0; } // Reset retry counter if found
+						else { // If nothing is found, then continue next movement with current track
 							camelotKeyNew = camelotKeyCurrent; // For debug console on last item
 							if (j === 1) { j = 0; continue; } // try once retrying this step with default movement
 							else {
@@ -2136,7 +2140,7 @@ async function searchByDistance({
 								i--; // NOSONAR [is intended]
 								j++;
 							}
-						} else { j = 0; } // Reset retry counter if found
+						}
 					} else { // No tag or bad tag
 						i--; // NOSONAR [is intended]
 						if (toCheck.size) { nextIndexScore = [...toCheck][0]; nextIndex = scoreData[nextIndexScore].index; } // If tag was not found, then use next handle
@@ -2199,7 +2203,7 @@ async function searchByDistance({
 			if (bInversePick) { scoreData.reverse(); } // Note this changes the most distant track output at the end
 			if (poolLength > playlistLength) {
 				if (bRandomPick) {	//Random from pool
-					const numbers = Array(poolLength).fill().map((_, index) => index).shuffle();
+					const numbers = new Array(poolLength).fill().map((_, index) => index).shuffle();
 					const randomSeed = numbers.slice(0, playlistLength); //random numbers from 0 to poolLength - 1
 					let i = 0;
 					while (i < playlistLength) {
@@ -2243,7 +2247,7 @@ async function searchByDistance({
 					selectedHandlesData.push(scoreData[i]);
 					i++;
 				}
-				if (isFinite(playlistLength) && playlistLength !== poolLength) {
+				if (Number.isFinite(playlistLength) && playlistLength !== poolLength) {
 					if (method === 'GRAPH') {
 						if (bBasicLogging) {
 							let propertyText = Object.hasOwn(properties, 'graphDistance') ? properties['graphDistance'][0] : SearchByDistance_properties['graphDistance'][0];
@@ -2396,7 +2400,7 @@ async function searchByDistance({
 			while (i--) {
 				conText += '\n                  ' + selectedHandlesData[i].name +
 					' - ' + selectedHandlesData[i].score + '/100 Simil.' +
-					(typeof selectedHandlesData[i].mapDistance !== 'undefined' ? ' - ' + selectedHandlesData[i].mapDistance + ' Graph' : '') +
+					(typeof selectedHandlesData[i].mapDistance === 'undefined' ? '' : ' - ' + selectedHandlesData[i].mapDistance + ' Graph') +
 					(bNoGraph ? ' [no genre/style tag]' : '') +
 					(selectedHandlesData[i].bRelated ? ' [related]' : '') +
 					(selectedHandlesData[i].bUnrelated ? ' [unrelated]' : '');
@@ -2739,7 +2743,8 @@ function calcDistance({ calcTags, handleTag }) {
 	if (!cacheLink) { cacheLink = new Map(); }
 	if (!cacheLinkSet) { cacheLinkSet = new Map(); }
 	// Weight filtering excludes most of the tracks before other calcs -> Much Faster than later! (40k tracks can be reduced to just ~1k)
-	if (calcTags.genreStyle.referenceNumber !== 0) {
+	if (calcTags.genreStyle.referenceNumber === 0) { mapDistance = 0; }
+	else {
 		if (handleTag.genreStyle.number !== 0) {
 			// Get the minimum distance of the entire set of tags (track B, i) to every style of the original track (A, j):
 			// Worst case is O(i*j*k*lg(n)) time, greatly reduced by caching results (since tracks may be unique but not their tag values)
@@ -2758,28 +2763,22 @@ function calcDistance({ calcTags, handleTag }) {
 					].sort(strNumCollator.compare)
 				].join(' -> ');
 				const mapValue = cacheLinkSet.get(mapKey); // Mean distance from entire set (A,B,C) to (X,Y,Z)
-				if (typeof mapValue !== 'undefined') {
-					mapDistance = mapValue;
-				} else { // Calculate it if not found
+				if (typeof mapValue === 'undefined') { // Calculate it if not found
 					mapDistance = calcMeanDistance(sbd.allMusicGraph, calcTags.genreStyle.referenceSet, handleTag.genreStyle.set, sbd.influenceMethod);
 					cacheLinkSet.set(mapKey, mapDistance); // Caches the mean distance from entire set (A,B,C) to (X,Y,Z)
+				} else {
+					mapDistance = mapValue;
 				}
 			} else { mapDistance = 0; } // One is superset of the other // One is superset of the other
 		}
-	} else { mapDistance = 0; } // Behaves like weight method
+	} // Behaves like weight method
 	return mapDistance;
 }
 
 function parseGraphDistance(graphDistance, descr = music_graph_descriptors, bBasicLogging = true) {
 	let output = graphDistance;
 	if (isString(output)) { // Safety check
-		if (!Number.isNaN(Number(output))) {
-			output = Number(output);
-			if (output.toString() !== graphDistance) {
-				fb.ShowPopupMessage('Error parsing graphDistance (not a valid number): ' + output, sbd.name);
-				return null;
-			}
-		} else {
+		if (Number.isNaN(Number(output))) {
 			if (output.length >= 50) {
 				fb.ShowPopupMessage('Error parsing graphDistance (length >= 50): ' + output, sbd.name);
 				return null;
@@ -2803,6 +2802,12 @@ function parseGraphDistance(graphDistance, descr = music_graph_descriptors, bBas
 			}
 			output = eval(output);
 			if (Number.isNaN(output)) { fb.ShowPopupMessage('Error parsing graphDistance (not a valid number): ' + output, sbd.name); }
+		} else {
+			output = Number(output);
+			if (output.toString() !== graphDistance) {
+				fb.ShowPopupMessage('Error parsing graphDistance (not a valid number): ' + output, sbd.name);
+				return null;
+			}
 		}
 		if (bBasicLogging) { console.log('Parsed graphDistance to: ' + output); }
 	}
@@ -2924,14 +2929,14 @@ function processRecipe(initialRecipe) {
 	const deepMergeTags = (newTags, toAddTags) => {
 		const tags = { ...newTags };
 		for (let key in toAddTags) {
-			if (!Object.hasOwn(tags, key)) {
-				tags[key] = toAddTags[key];
-			} else {
+			if (Object.hasOwn(tags, key)) {
 				for (let subKey in toAddTags[key]) {
 					if (!Object.hasOwn(tags[key], subKey)) {
 						tags[key][subKey] = toAddTags[key][subKey];
 					}
 				}
+			} else {
+				tags[key] = toAddTags[key];
 			}
 		}
 		return tags;
@@ -2975,7 +2980,7 @@ function processRecipe(initialRecipe) {
  * @param {number} newTagNumber - [=0] Number of tags from target (to shape distribution)
  * @returns {number}
  */
-const weightDistribution = memoize((/** @type {'LINEAR'|'LOGARITHMIC'|'LOGISTIC'|'NORMAL'} */ scoringDistribution, proportion /* Should never be zero! */, tagNumber = 0, newTagNumber = 0) => {
+const weightDistribution = memoize((scoringDistribution, proportion, tagNumber = 0, newTagNumber = 0) => {
 	if (proportion < 0) {
 		return - weightDistribution(scoringDistribution, - proportion, tagNumber, newTagNumber);
 	}
@@ -3008,13 +3013,15 @@ const weightDistribution = memoize((/** @type {'LINEAR'|'LOGARITHMIC'|'LOGISTIC'
  * @param {{graphDistance?:number, scoreFilter?:number, aggressiveness:number}} options - [={aggressiveness: 5}] Uses GRAPH method or WEIGHT method according to the key passed. Aggressiveness is only used on when mode is set to 0 (auto), and defaults to a medium value (5) if not provided.
  * @returns {number}
  */
-function nearGenresFilterDistribution(mode, options = { aggressiveness: 5 }) {
-	const maxDistance = mode || (options.graphDistance
-		? options.graphDistance * 2
-		: Math.max(
-			music_graph_descriptors.cluster * 5 / 4,
-			Math.round(music_graph_descriptors.intra_supergenre * 2 * weightDistribution('LOGISTIC', options.scoreFilter / 100, 5))
-		) * (100 - ((options.aggressiveness || 5) - 5) * 10) / 100
+function nearGenresFilterDistribution(mode, { aggressiveness = 5, graphDistance = void (0), scoreFilter = void (0) } = {}) {
+	const maxDistance = mode || (typeof graphDistance === 'undefined'
+		? typeof scoreFilter === 'undefined'
+			? 0
+			: Math.max(
+				music_graph_descriptors.cluster * 5 / 4,
+				Math.round(music_graph_descriptors.intra_supergenre * 2 * weightDistribution('LOGISTIC', (100 - scoreFilter) / 100, 5))
+			) * (100 - ((aggressiveness || 5) - 5) * 10) / 100
+		: graphDistance * 2
 	);
 	return round(maxDistance, 2);
 }

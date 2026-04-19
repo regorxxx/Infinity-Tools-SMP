@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/02/26
+//17/04/26
 
 /* exported createPoolPresets */
 
@@ -16,7 +16,7 @@ function createPoolPresets({ size = 50 } = {}) {
 	const eighth = Math.floor(size / 8) || 1;
 	const tenth = Math.floor(size / 10) || 1;
 	return [
-		...[	// Top tracks by rating
+		...[	// NOSONAR Top tracks by rating
 			{
 				folder: 'Top tracks (rating)',
 				name: 'Top tracks mix', pool: {
@@ -156,7 +156,7 @@ function createPoolPresets({ size = 50 } = {}) {
 				}
 			},
 		],
-		...[	// Top tracks by playcount
+		...[	// NOSONAR Top tracks by playcount
 			{
 				folder: 'Top tracks (playcount)',
 				name: 'Rec. played mix', pool: {
@@ -314,7 +314,7 @@ function createPoolPresets({ size = 50 } = {}) {
 			},
 		],
 		{ name: 'sep' },
-		...[	// Radio (Alistral) algorithms
+		...[	// NOSONAR Radio (Alistral) algorithms
 			{
 				folder: 'Radio (Alistral)',
 				name: 'Artist circles', pool: {
@@ -462,7 +462,7 @@ function createPoolPresets({ size = 50 } = {}) {
 			},
 		],
 		{ name: 'sep' },
-		...[	// From selection
+		...[	// NOSONAR From selection
 			{
 				folder: 'From current track',
 				name: 'Genre top tracks', pool: {
@@ -611,7 +611,7 @@ function createPoolPresets({ size = 50 } = {}) {
 			},
 		],
 		{ name: 'sep' },
-		...[	// Classic Pools
+		...[	// NOSONAR Classic Pools
 			{
 				folder: 'Classic Pools',
 				name: 'Classic Pools (' + size + ' artists current genre)', pool: {
@@ -669,7 +669,7 @@ function createPoolPresets({ size = 50 } = {}) {
 			},
 		],
 		{ name: 'sep' },
-		...[	// Genre mixes
+		...[	// NOSONAR Genre mixes
 			{	//Dark Metal
 				name: 'Dark Metal',
 				folder: 'Genre mixes',

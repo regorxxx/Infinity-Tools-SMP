@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/12/25
+//17/04/26
 
 /*
 	Check Library Tags
@@ -184,8 +184,8 @@ function checkTags({
 		console.log('Retrieving tags.');
 		tagsToCompare.forEach((arr) => {
 			arr.forEach((tag, _, thisArr) => {
-				if (!tagsToCompareMap.has(tag)) { tagsToCompareMap.set(tag, new Set(thisArr)); }
-				else { tagsToCompareMap.set(tag, tagsToCompareMap.get(tag).union(new Set(thisArr))); }
+				if (tagsToCompareMap.has(tag)) { tagsToCompareMap.set(tag, tagsToCompareMap.get(tag).union(new Set(thisArr))); }
+				else { tagsToCompareMap.set(tag, new Set(thisArr)); }
 			});
 		});
 	}
@@ -420,7 +420,7 @@ function checkTagsFilter(tagsToCheck, count, freqThreshold, tagValuesExcluded, m
 				if (bError) { countArrayFiltered[index].push(tagValue); }
 			});
 			// Then all tags according to freq. filter (excluding previously added ones)
-			if (freqThreshold === 1 && !isFinite(maxSizePerTag)) { // When forced to check all tags, just push them all
+			if (freqThreshold === 1 && !Number.isFinite(maxSizePerTag)) { // When forced to check all tags, just push them all
 				countArrayPre[index].forEach((tagValue) => {
 					if (!countArrayFiltered[index].includes(tagValue)) { countArrayFiltered[index].push(tagValue); }
 				});
@@ -672,8 +672,8 @@ function pairsToObj(inputStr, bSet = false) { // A,x;A,y;B,z;... -> {A:[x,y],B:[
 		let [key, value] = pair.split(',');
 		key = key.toLowerCase();
 		if (!Object.hasOwn(outputObj, key)) { outputObj[key] = bSet ? new Set() : []; }
-		if (!bSet) { outputObj[key].push(value); }
-		else { outputObj[key].add(value); }
+		if (bSet) { outputObj[key].add(value); }
+		else { outputObj[key].push(value); }
 	});
 	if (!bSet) { for (const key in outputObj) { outputObj[key].sort(strNumCollator.compare); } }
 	return outputObj;

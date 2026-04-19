@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/11/25
+//17/04/26
 
 /* exported groupByTags */
 
@@ -21,7 +21,7 @@ include('..\\..\\helpers\\helpers_xxx_tags.js');
 
 function groupByTags({
 	tagName = ['ALBUM'],
-	selItems = plman.ActivePlaylist !== -1 ? plman.GetPlaylistSelectedItems(plman.ActivePlaylist) : null,
+	selItems = plman.ActivePlaylist === -1 ? null : plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	bSendToActivePls = true
 } = {}) {
 	// Safety checks
