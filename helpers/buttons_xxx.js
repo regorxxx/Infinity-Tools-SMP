@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/03/26
+//22/04/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -196,7 +196,7 @@ function ThemedButton({
 			: 13 * buttonsBar.config.iconScale;
 	} else {
 		// if using the default font, then it has probably failed to load the right one, skip icon
-		this.icon = this.gFontIcon.Name !== 'Microsoft Sans Serif' ? icon : null;
+		this.icon = this.gFontIcon.Name === 'Microsoft Sans Serif' ? null : icon;
 		this.iconWidth = isFunction(this.icon)
 			? (parent) => _textWidth(this.icon(parent), gFontIcon)
 			: _textWidth(this.icon, gFontIcon);
@@ -206,8 +206,9 @@ function ThemedButton({
 	}
 	this.func = func;
 	this.prefix = prefix; // This let us identify properties later for different instances of the same button, like an unique ID
-	this.descriptionWithID = this.description !== null ?
-		isFunction(this.description) // Adds prefix to description, whether it's a func or a string
+	this.descriptionWithID = this.description === null ?
+		null
+		: isFunction(this.description) // Adds prefix to description, whether it's a func or a string
 			? (parent) => this.prefix
 				? this.prefix.replace('_', '') + ': '
 				+ '\n-----------------------------------------------------\n' + this.description(parent)
@@ -215,8 +216,7 @@ function ThemedButton({
 			: () => this.prefix
 				? this.prefix.replace('_', '') + ': ' +
 				'\n-----------------------------------------------------\n' + this.description
-				: this.description
-		: null;
+				: this.description;
 	this.buttonsProperties = { ...buttonsProperties }; // Clone properties for later use
 	this.bIconMode = false; // This property may be deleted by addButton()
 	this.bIconModeExpand = false;
@@ -238,14 +238,14 @@ function ThemedButton({
 	};
 
 	this.switchActive = function (bActive = null) {
-		if (bActive !== null) {
+		if (bActive === null) {
+			this.active = !this.active;
+			this.repaint();
+		} else {
 			if (this.active !== bActive) {
 				this.active = bActive;
 				this.repaint();
 			}
-		} else {
-			this.active = !this.active;
-			this.repaint();
 		}
 	};
 
@@ -254,27 +254,27 @@ function ThemedButton({
 			obj.bActive = false;
 			obj.condition = null;
 			obj.animStep = -1;
-			obj.date =  -1;
+			obj.date = -1;
 		});
 		throttledRepaint(this);
 	};
 
 	this.switchAnimation = function (name, bActive, condition = null, animationColors = buttonsBar.config.animationColors) {
 		const idx = this.animation.findIndex((obj) => obj.name === name);
-		if (idx !== -1) { // Deactivated ones must be removed using this.cleanAnimation() afterwards
+		if (idx === -1) {
+			this.animation.push({ name, bActive, condition, animStep: bActive ? 0 : -1, date: bActive ? Date.now() : -1, colors: animationColors });
+		} else { // Deactivated ones must be removed using this.cleanAnimation() afterwards
 			this.animation[idx].bActive = bActive;
 			this.animation[idx].condition = bActive ? condition : null;
 			this.animation[idx].animStep = bActive ? 0 : -1;
 			this.animation[idx].date = bActive ? Date.now() : -1;
 			this.animation[idx].colors = animationColors;
-		} else {
-			this.animation.push({ name, bActive, condition, animStep: bActive ? 0 : -1, date: bActive ? Date.now() : -1, colors: animationColors });
 		}
 		throttledRepaint(this);
 	};
 
 	this.switchHighlight = function (bActive = null) {
-		this.highlight = bActive !== null ? bActive : !this.highlight;
+		this.highlight = bActive === null ? !this.highlight : bActive;
 		this.repaint();
 	};
 
@@ -337,9 +337,9 @@ function ThemedButton({
 			const textColor = isFunction(this.colors[type])
 				? this.colors[type](this, state)
 				: this.colors[type];
-			return typeof textColor !== 'undefined'
-				? textColor
-				: null;
+			return typeof textColor === 'undefined'
+				? null
+				: textColor;
 		}
 		return null;
 	};
@@ -351,19 +351,19 @@ function ThemedButton({
 			? Object.hasOwn(window, 'IsDark') ? window.IsDark : false
 			: buttonsBar.config.darkMode === 1;
 		return buttonsBar.config.bDynHoverColor
-			? buttonsBar.config.buttonColor !== -1
-				? invert(buttonsBar.config.buttonColor, true)
-				: buttonsBar.config.bToolbar
+			? buttonsBar.config.buttonColor === -1
+				? buttonsBar.config.bToolbar
 					? invert(buttonsBar.config.toolbarColor, true)
-					: buttonsBar.config.hoverColor !== -1
-						? buttonsBar.config.hoverColor
-						: window.InstanceType === 1
+					: buttonsBar.config.hoverColor === -1
+						? window.InstanceType === 1
 							? state === buttonStates.down
 								? window.GetColourDUI(ColourTypeDUI.highlight)
 								: window.GetColourDUI(ColourTypeDUI.highlight)
 							: state === buttonStates.down
 								? darkTheme ? RGB(33, 33, 33) : RGB(204, 232, 255)
 								: darkTheme ? RGB(64, 64, 64) : RGB(229, 243, 255)
+						: buttonsBar.config.hoverColor
+				: invert(buttonsBar.config.buttonColor, true)
 			: buttonsBar.config.hoverColor;
 	};
 
@@ -376,11 +376,11 @@ function ThemedButton({
 		return state === buttonStates.normal
 			? buttonsBar.config.buttonColor
 			: buttonsBar.config.bDynHoverColor
-				? buttonsBar.config.buttonColor !== -1
-					? invert(buttonsBar.config.buttonColor, true)
-					: window.InstanceType === 1
+				? buttonsBar.config.buttonColor === -1
+					? window.InstanceType === 1
 						? darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
 						: darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
+					: invert(buttonsBar.config.buttonColor, true)
 				: RGB(243, 243, 243);
 	};
 
@@ -395,11 +395,11 @@ function ThemedButton({
 				? invert(text, true)
 				: text;
 		} else {
-			return buttonsBar.config.textColor !== -1
-				? buttonsBar.config.textColor
-				: buttonsBar.useThemeManager() && bDrawBackground
+			return buttonsBar.config.textColor === -1
+				? buttonsBar.useThemeManager() && bDrawBackground
 					? RGB(0, 0, 0)
-					: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text);
+					: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text)
+				: buttonsBar.config.textColor;
 		}
 	};
 
@@ -626,20 +626,20 @@ function ThemedButton({
 			w: 0,
 			h: 0
 		};
-		const iconCalculated = this.icon !== null
-			? isFunction(this.icon) ? this.icon(this) : this.icon
-			: null;
+		const iconCalculated = this.icon === null
+			? null
+			: isFunction(this.icon) ? this.icon(this) : this.icon;
 		let iconImage;
 		if (iconCalculated) {
 			const textWidthCalculated = bIconMode
 				? 0
 				: isFunction(this.text) ? this.textWidth(this) : this.textWidth;
-			const iconWidthCalculated = isFunction(this.icon) ? this.iconWidth(this) : this.iconWidth;
-			const iconHeightCalculated = isFunction(this.icon) ? this.iconHeight(this) : this.iconHeight;
+			const iconWidthCalculated = Math.max(isFunction(this.icon) ? this.iconWidth(this) : this.iconWidth, 1);
+			const iconHeightCalculated = Math.max(isFunction(this.icon) ? this.iconHeight(this) : this.iconHeight, 1);
 			if (this.iconImage) { // Icon image
-				const iconCalculatedDarkMode = !isDark(...toRGB(textColor))
-					? iconCalculated.replace(/(icons\\.*)(\..*$)/i, '$1_dark$2')
-					: null;
+				const iconCalculatedDarkMode = isDark(...toRGB(textColor))
+					? null
+					: iconCalculated.replace(/(icons\\.*)(\..*$)/i, '$1_dark$2');
 				const iconColor = this.active
 					? buttonsBar.config.activeColor
 					: textColor;
@@ -672,15 +672,15 @@ function ThemedButton({
 						if (textPos === 'top') { iconCoords.y += iconHeightCalculated - _scale(1.5); }
 						else { iconCoords.y += _scale(1); }
 					} else {
-						if (!bAlign) {
+						if (bAlign) {
+							if (textPos === 'right') { iconCoords.x += textWidthCalculated / 2 - iconImage.Width * 7 / 10; }
+							else if (textPos === 'left') { iconCoords.x += textWidthCalculated / 2; }
+						} else {
 							iconCoords.x += wCalc / 2 - (
 								bIconMode
 									? iconImage.Width * 1 / 2
 									: iconImage.Width * 7 / 10
 							) - textWidthCalculated / 2;
-						} else {
-							if (textPos === 'right') { iconCoords.x += textWidthCalculated / 2 - iconImage.Width * 7 / 10; }
-							else if (textPos === 'left') { iconCoords.x += textWidthCalculated / 2; }
 						}
 						if (textPos === 'left') { iconCoords.x += textWidthCalculated + iconImage.Width / 2; }
 					}
@@ -703,11 +703,11 @@ function ThemedButton({
 						if (buttonsBar.config.orientation.toLowerCase() === 'x' && !bAlign) {
 							iconCoordsBg.x += wCalc / 2 - iconWidthCalculated;
 						} else { iconCoordsBg.x += iconImage.Width * 3 / 5; }
-						if (!bIconMode) {
+						if (bIconMode) {
+							iconCoordsBg.x += iconWidthCalculated * 1 / 3;
+						} else {
 							if (textPos === 'right') { iconCoordsBg.x -= textWidthCalculated / 2 - iconWidthCalculated / 7; }
 							else { iconCoordsBg.x += textWidthCalculated / 2 + iconWidthCalculated - _scale(2); }
-						} else {
-							iconCoordsBg.x += iconWidthCalculated * 1 / 3;
 						}
 						if (textPos === 'right') { textCoords.x += _scale(2); }
 					}
@@ -839,7 +839,11 @@ function ThemedButton({
 	this.changeIconScale = function (scale) {
 		this.clearIconCache();
 		const newScale = scale / buttonsBar.config.iconScale;
-		if (!this.iconImage) {
+		if (this.iconImage) {
+			this.iconWidth = this.iconHeight = isFunction(this.icon)
+				? () => 12.25 * scale
+				: 12.25 * scale;
+		} else {
 			this.gFontIcon = _gdiFont(this.gFontIcon.Name, this.gFontIcon.Size * newScale);
 			this.iconWidth = isFunction(this.icon)
 				? (parent) => _textWidth(this.icon(parent), this.gFontIcon)
@@ -847,10 +851,6 @@ function ThemedButton({
 			this.iconHeight = isFunction(this.icon)
 				? (parent) => _textHeight(this.icon(parent), gFontIcon)
 				: _textHeight(this.icon, gFontIcon);
-		} else {
-			this.iconWidth = this.iconHeight = isFunction(this.icon)
-				? () => 12.25 * scale
-				: 12.25 * scale;
 		}
 	};
 
@@ -1111,10 +1111,11 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 							forEachButton((button) => {
 								oldBtn = button;
 								if (oldBtn.state === buttonStates.hide) { return; }
-								if (oldBtn !== curBtn) {
+								if (oldBtn === curBtn) { bContract = true; }
+								else {
 									if (!bContract) { return; }
 									oldBtn.bIconModeExpand = false;
-								} else { bContract = true; }
+								}
 							});
 						}
 						window.Repaint();
@@ -1168,7 +1169,7 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 						const lKey = toBtn[toBtn.length - 1];
 						buttonsBar.move.rec.x = buttons[fKey].currX;
 						buttonsBar.move.rec.y = buttons[fKey].currY;
-						buttonsBar.move.rec.w = fKey !== lKey ? buttons[lKey].currX + buttons[lKey].currW - buttonsBar.move.rec.x : buttons[fKey].currW;
+						buttonsBar.move.rec.w = fKey === lKey ? buttons[fKey].currW : buttons[lKey].currX + buttons[lKey].currW - buttonsBar.move.rec.x;
 						buttonsBar.move.rec.h = buttons[fKey].currH;
 					} else {
 						buttonsBar.move.bIsMoving = true;
@@ -1214,13 +1215,14 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 			const checkMove = () => {
 				setTimeout(() => {
 					if (Date.now() - buttonsBar.move.last > 250) {
-						if (!utils.IsKeyPressed(0x02)) {
+						if (utils.IsKeyPressed(0x02)) { checkMove(); }
+						else {
 							// Disable drag n drop
 							on_mouse_move(x, y);
 							// Force state on current hovered button
 							buttonsBar.curBtn = null;
 							on_mouse_move(x, y);
-						} else { checkMove(); } // Repeat if nothing has changed
+						} // Repeat if nothing has changed
 					}
 				}, 500);
 			};
