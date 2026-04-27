@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/12/25
+//27/04/26
 
 /* exported graphInfoMenu */
 
@@ -460,6 +460,6 @@ function graphInfoMenu() {
 	menu.newSeparator();
 	menu.newEntry({ entryText: 'Settings...', func: () => this.onClick(MK_SHIFT) });
 	menu.newSeparator();
-	menu.newEntry({ entryText: 'Open readme...', func: () => showButtonReadme('buttons_search_by_distance_genre_explorer.js') });
+	menu.newEntry({ entryText: 'Open help...', func: () => showButtonReadme('buttons_search_by_distance_genre_explorer.js') });
 	return menu;
 }

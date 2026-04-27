@@ -144,7 +144,7 @@ function settingsMenu(parent, bShowValues = false, readmeFiles = [], entrySettin
 				}
 			});
 		} else {
-			menu.newEntry({ entryText: 'Open readme...', func: () => showButtonReadme(readmeFiles[0]) });
+			menu.newEntry({ entryText: 'Open help...', func: () => showButtonReadme(readmeFiles[0]) });
 		}
 	}
 	return menu;

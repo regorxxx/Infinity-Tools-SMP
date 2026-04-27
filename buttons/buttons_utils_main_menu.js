@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//27/04/26
 
 /*
 	Main Menu shortcut
@@ -277,7 +277,7 @@ buttonsBar.list.push(newButtonsProperties);
 						}
 					});
 					menu.newSeparator();
-					menu.newEntry({ entryText: 'Open readme...', func: () => showButtonReadme('buttons_utils_main_menu.js') });
+					menu.newEntry({ entryText: 'Open help...', func: () => showButtonReadme('buttons_utils_main_menu.js') });
 					menu.btn_up(this.currX, this.currY + this.currH);
 				} else {
 					const bValidState = indicator.menuCheck ? this.stateCheck().bValid : true;

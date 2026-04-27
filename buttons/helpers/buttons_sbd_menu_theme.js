@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//27/04/26
 
 /* exported createThemeMenu */
 
@@ -105,7 +105,7 @@ function createThemeMenu(parent) {
 	themeMenu.newSeparator();
 	{	// Theme tools
 		const menuName = themeMenu.newMenu('Additional options');
-		themeMenu.newEntry({ menuName, entryText: 'Open readme...', func: () => showButtonReadme(sbd.readmes.recipes) });
+		themeMenu.newEntry({ menuName, entryText: 'Open help...', func: () => showButtonReadme(sbd.readmes.recipes) });
 		themeMenu.newEntry({
 			menuName, entryText: 'Themes folder...', func: () => {
 				if (_isFile(properties.theme[1])) { _explorer(properties.theme[1]); } // Open current file

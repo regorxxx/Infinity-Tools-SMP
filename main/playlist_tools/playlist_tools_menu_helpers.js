@@ -528,7 +528,7 @@ const createTagMenu = (menuName, options, flag = [], hook = null, entryNames = [
 					? menu_properties[key][3]
 					: JSON.stringify(input);
 				if (hook) { hook(key, i, menu_properties); }
-				overwriteMenuProperties; // Updates panel
+				overwriteMenuProperties(); // Updates panel
 			}, flags: (flag[i] === void (0) ? false : flag[i]) ? MF_GRAYED : MF_STRING
 		});
 	});

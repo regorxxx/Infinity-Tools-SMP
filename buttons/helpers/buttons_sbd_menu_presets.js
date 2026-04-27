@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/10/25
+//27/04/26
 
 include('..\\..\\helpers\\menu_xxx.js');
 include('..\\..\\helpers\\helpers_xxx.js');
@@ -99,7 +99,7 @@ function choosePresetMenu(parent) {
 			menuName, entryText: 'Open recipes folder...', func: () => _explorer(sbd.recipesPath)
 		});
 		presetMenu.newSeparator(menuName);
-		presetMenu.newEntry({ menuName, entryText: 'Open readme...', func: () => showButtonReadme(sbd.readmes.recipes) });
+		presetMenu.newEntry({ menuName, entryText: 'Open help...', func: () => showButtonReadme(sbd.readmes.recipes) });
 	}
 	return presetMenu;
 }

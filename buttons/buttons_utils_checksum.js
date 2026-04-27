@@ -1,5 +1,5 @@
 ﻿'use strict';
-//12/04/26
+//27/04/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -119,7 +119,7 @@ addButton({
 				menu.newSeparator();
 				menu.newEntry({ entryText: 'Settings...', func: () => this.onClick(MK_SHIFT) });
 				menu.newSeparator();
-				menu.newEntry({ entryText: 'Open readme...', func: () => showButtonReadme('buttons_utils_checksum.js') });
+				menu.newEntry({ entryText: 'Open help...', func: () => showButtonReadme('buttons_utils_checksum.js') });
 				menu.btn_up(this.currX, this.currY + this.currH);
 			}
 		},
