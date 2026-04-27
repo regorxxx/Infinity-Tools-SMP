@@ -1,11 +1,11 @@
 ﻿'use strict';
-//22/04/26
+//27/04/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
 /* global buttonsPath:readable, barProperties:readable */
 include('helpers_xxx.js');
-/* global globFonts:readable, InterpolationMode:readable, DT_CENTER:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_LEFT:readable, DT_RIGHT:readable, DT_TOP:readable, DT_NOCLIP:readable, IDC_SIZEALL:readable, IDC_NO:readable, IDC_HAND:readable, IDC_ARROW:readable, MK_RBUTTON:readable, MK_SHIFT:readable, folders:readable, _save:readable, globSettings:readable, ColourTypeCUI:readable, ColourTypeDUI:readable, SmoothingMode:readable */
+/* global globFonts:readable, InterpolationMode:readable, DT_CENTER:readable, DT_VCENTER:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, DT_LEFT:readable, DT_RIGHT:readable, DT_TOP:readable, DT_NOCLIP:readable, IDC_SIZEALL:readable, IDC_NO:readable, IDC_HAND:readable, IDC_ARROW:readable, MK_RBUTTON:readable, MK_SHIFT:readable, folders:readable, _save:readable, globSettings:readable, ColourTypeCUI:readable, ColourTypeDUI:readable, SmoothingMode:readable, TTDT_INITIAL:readable */
 include('helpers_xxx_basic_js.js');
 /* global doOnce:readable, throttle:readable */
 include('helpers_xxx_file.js');
@@ -1092,8 +1092,8 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 		// This forces redraw even if buttons have the same text! Updates position but tooltip becomes slower since it sets delay time to initial...
 		else if (old !== buttonsBar.curBtn && old.description === buttonsBar.curBtn.description) {
 			buttonsBar.tooltipButton.Deactivate();
-			buttonsBar.tooltipButton.SetDelayTime(3, 0); //TTDT_INITIAL
-		} else { buttonsBar.tooltipButton.SetDelayTime(3, buttonsBar.tooltipButton.oldDelay); }
+			buttonsBar.tooltipButton.SetDelayTime(TTDT_INITIAL, 0);
+		} else { buttonsBar.tooltipButton.SetDelayTime(TTDT_INITIAL, buttonsBar.tooltipButton.oldDelay); }
 	}
 	// Change button states when not moving them
 	old && old.changeState(buttonStates.normal);
@@ -1135,7 +1135,7 @@ addEventListener('on_mouse_move', (x, y, mask) => {
 	// Disable on drag n drop
 	if (buttonsBar.tooltipButton.bActive && buttonsBar.move.bIsMoving) {
 		buttonsBar.tooltipButton.Deactivate();
-		buttonsBar.tooltipButton.SetDelayTime(3, 0); //TTDT_INITIAL
+		buttonsBar.tooltipButton.SetDelayTime(TTDT_INITIAL, 0);
 	}
 	// Move buttons
 	let bInvalidMove = false;
