@@ -32,8 +32,10 @@ function graphInfoMenu() {
 	const sel = this.sel || plman.ActivePlaylist !== -1 ? fb.GetFocusItem(true) : null;
 	const info = sel ? sel.GetFileInfo() : null;
 	const entries = JSON.parse(this.buttonsProperties.entries[1]);
-	entries.push({ name: 'sep' });
-	entries.push({ name: 'By value...', tf: entries.map((tag) => tag.tf || []).flat(Infinity).filter(Boolean), bInput: true });
+	entries.push(
+		{ name: 'sep' },
+		{ name: 'By value...', tf: entries.map((tag) => tag.tf || []).flat(Infinity).filter(Boolean), bInput: true }
+	);
 	entries.forEach((tag) => {
 		if (menu.isNotSeparator(tag)) {
 			tag.val = [];
@@ -104,9 +106,11 @@ function graphInfoMenu() {
 							const report = [];
 							const header = (title) => {
 								const len = title.length;
-								report.push('-'.repeat(len));
-								report.push(title);
-								report.push('-'.repeat(len));
+								report.push(
+									'-'.repeat(len),
+									title,
+									'-'.repeat(len)
+								);
 							};
 							header('-------------------------------- ' + tagVal + ' --------------------------------');
 							report.push('');
@@ -127,8 +131,10 @@ function graphInfoMenu() {
 									const uniqLibArtistsCount = uniqLibArtists.size;
 									const stats = calcStatistics(artists);
 									if (!trackCount) { stats.max10Points = []; } // Add missing stats for wrong input
-									report.push('Artists: ' + uniqArtistsCount + ' ' + _p(round(uniqArtistsCount / uniqLibArtistsCount * 100, 2) + '% from ' + uniqLibArtistsCount + ' total library artists'));
-									report.push('');
+									report.push(
+										'Artists: ' + uniqArtistsCount + ' ' + _p(round(uniqArtistsCount / uniqLibArtistsCount * 100, 2) + '% from ' + uniqLibArtistsCount + ' total library artists'),
+										''
+									);
 									const totalTop5 = stats.max10Points.slice(0, 5).reduce((acc, p) => acc + p.val, 0);
 									report.push('Top artists (by # tracks): ' + totalTop5 + ' ' + _p(round(totalTop5 / trackCount * 100, 2) || 0 + '% of tracks'));
 									stats.max10Points.slice(0, 5).forEach((p) => {
@@ -155,12 +161,14 @@ function graphInfoMenu() {
 								{ // Dates
 									const date = getHandleListTagsTyped(handleList, [{ name: globTags.date, type: 'number' }]).flat(Infinity).filter(Boolean);
 									const stats = calcStatistics(date);
-									report.push('Min/Max date: ' + (trackCount ? stats.min + '/' + stats.max : '-/-'));
-									report.push('Most frequent date: ' + (trackCount ? Math.round(stats.mode.value) + ' ' + _p(stats.mode.frequency + ' times') : '-'));
-									report.push('Average date: ' + (trackCount ? Math.round(stats.mean) : '-'));
-									report.push('Median date: ' + (trackCount ? Math.round(stats.median) : '-'));
-									report.push('Standard deviation: ' + (trackCount ? Math.round(stats.sigma) + ' years' : ''));
-									report.push('Range date (75%-95%): ' + (trackCount ? stats.popRange.universal['75%'].map(Math.round).join(' - ') : '-'));
+									report.push(
+										'Min/Max date: ' + (trackCount ? stats.min + '/' + stats.max : '-/-'),
+										'Most frequent date: ' + (trackCount ? Math.round(stats.mode.value) + ' ' + _p(stats.mode.frequency + ' times') : '-'),
+										'Average date: ' + (trackCount ? Math.round(stats.mean) : '-'),
+										'Median date: ' + (trackCount ? Math.round(stats.median) : '-'),
+										'Standard deviation: ' + (trackCount ? Math.round(stats.sigma) + ' years' : ''),
+										'Range date (75%-95%): ' + (trackCount ? stats.popRange.universal['75%'].map(Math.round).join(' - ') : '-')
+									);
 								}
 							}
 							report.push('');
@@ -450,7 +458,7 @@ function graphInfoMenu() {
 									console.log('Query: ' + query);
 									sendToPlaylist(fb.GetQueryItems(fb.GetLibraryItems(), query), playlistName);
 								}
-							} else { fb.ShowPopupMessage('Genre/style not found on graph.', 'Genre explorer');}
+							} else { fb.ShowPopupMessage('Genre/style not found on graph.', 'Genre explorer'); }
 						}, flags: (tagVal || entry.bInput ? MF_STRING : MF_GRAYED) | (!bSingle && i % 8 === 0 && i ? MF_MENUBREAK : MF_STRING), data: { bDynamicMenu: true }
 					});
 				});

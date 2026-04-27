@@ -69,7 +69,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 	// Menus
 	if (bChromaprint) {	// Execute comparison Chromaprint
 		menu.newEntry({
-			entryText: 'Compare selection by ChromaPrint' + (!bFlagsSel ? '\t(no selection)' : !bFlagsMaxSel ? '\t(selection > ' + maxSel + ')' : ''), func: () => {
+			entryText: 'Compare selection by ChromaPrint' + (bFlagsSel ? bFlagsMaxSel ? '' : '\t(selection > ' + maxSel + ')' : '\t(no selection)'), func: () => {
 				this.switchAnimation('ChromaPrint comparison', true);
 				const bDone = chromaPrintUtils.compareFingerprints({ fromHandleList, toHandleList: fromHandleList, tagName: chromaTag, threshold: 0, bSendToPls: false, bPopup: true, bReadFiles: ppt.bReadFiles[1] });
 				this.selItems = null;
@@ -80,7 +80,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 	}
 	if (bFooId) {	// Execute comparison FooID
 		menu.newEntry({
-			entryText: 'Compare selection by FooID' + (!bFlagsSel ? '\t(no selection)' : !bFlagsMaxSel ? '\t(selection > ' + maxSel + ')' : ''), func: () => {
+			entryText: 'Compare selection by FooID' + (bFlagsSel ? bFlagsMaxSel ? '' : '\t(selection > ' + maxSel + ')' : '\t(no selection)'), func: () => {
 				this.switchAnimation('FooID comparison', true);
 				const bDone = fooidUtils.compareFingerprints({ fromHandleList, toHandleList: fromHandleList, tagName: fooidTag, threshold: 0, bSendToPls: false, bPopup: true });
 				this.selItems = null;
@@ -94,7 +94,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 		// Execute comparison ChromaPrint
 		if (!ppt.bReadFiles[1]) {
 			menu.newEntry({
-				entryText: 'Search by similar ChromaPrint' + (!bFlagsSel ? '\t(no selection)' : !bFlagsMaxSel ? '\t(selection > ' + maxSel + ')' : ''), func: () => {
+				entryText: 'Search by similar ChromaPrint' + (bFlagsSel ? bFlagsMaxSel ? '' : '\t(selection > ' + maxSel + ')' : '\t(no selection)'), func: () => {
 					this.switchAnimation('ChromaPrint search', true);
 					const bDone = chromaPrintUtils.compareFingerprints({ fromHandleList, toHandleList: fb.GetLibraryItems(), tagName: chromaTag, threshold: ppt.thresholdC[1], playlistName });
 					this.selItems = null;
@@ -105,7 +105,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 		}
 		// Execute comparison ChromaPrint + database
 		menu.newEntry({
-			entryText: 'Search by similar ChromaPrint' + (ppt.bReadFiles[1] ? '' : ' (fast)') + (!bFlagsDb ? '\t(no database)' : (!bFlagsSel ? '\t(no selection)' : !bFlagsMaxSel ? '\t(selection > ' + maxSel + ')' : '')), func: () => {
+			entryText: 'Search by similar ChromaPrint' + (ppt.bReadFiles[1] ? '' : ' (fast)') + (bFlagsDb ? (bFlagsSel ? bFlagsMaxSel ? '' : '\t(selection > ' + maxSel + ')' : '\t(no selection)') : '\t(no database)'), func: () => {
 				this.switchAnimation('ChromaPrint search', true);
 				const bDone = chromaPrintUtils.compareFingerprintsFilter({
 					fromHandleList,
@@ -125,7 +125,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 	}
 	if (bFooId) {	// Execute comparison FooId
 		menu.newEntry({
-			entryText: 'Search by similar FooID' + (!bFlagsSel ? '\t(no selection)' : !bFlagsMaxSel ? '\t(selection > ' + maxSel + ')' : ''), func: () => {
+			entryText: 'Search by similar FooID' + (bFlagsSel ? bFlagsMaxSel ? '' : '\t(selection > ' + maxSel + ')' : '\t(no selection)'), func: () => {
 				this.switchAnimation('FooID search', true);
 				const bDone = fooidUtils.compareFingerprints({ fromHandleList, toHandleList: fb.GetLibraryItems(), tagName: fooidTag, threshold: ppt.thresholdF[1], playlistName });
 				this.selItems = null;
@@ -139,7 +139,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 		const menuName = menu.newMenu('Tagging');
 		{	// Tag ChromaPrint
 			menu.newEntry({
-				menuName, entryText: 'Tag with ChromaPrint' + (!bChromaprint ? '\t(not installed)' : (!bFlagsSel ? '\t(no selection)' : '')), func: () => {
+				menuName, entryText: 'Tag with ChromaPrint' + (bChromaprint ? (bFlagsSel ? '' : '\t(no selection)') : '\t(not installed)'), func: () => {
 					this.switchAnimation('ChromaPrint tagging', true);
 					// Rough estimation of processing time based on total duration... bitrate? Sample rate?
 					const t = fromHandleList.CalcTotalDuration() / 3600 * 0.0029, h = Math.floor(t), m = Math.round((t - h) * 60);
@@ -160,7 +160,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 		}
 		{	// Tag FooId
 			menu.newEntry({
-				menuName, entryText: 'Tag with FooID' + (!bFlagsFooid ? '\t(not installed)' : (!bFlagsSel ? '\t(no selection)' : '')), func: () => {
+				menuName, entryText: 'Tag with FooID' + (bFlagsFooid ? (bFlagsSel ? '' : '\t(no selection)') : '\t(not installed)'), func: () => {
 					this.switchAnimation('FooID tagging', true);
 					// Tag
 					if (bFlagsFooid) { fb.ShowConsole(); }
@@ -175,7 +175,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 		menu.newSeparator(menuName);
 		{	// ChromaPrint database
 			menu.newEntry({
-				menuName, entryText: (databaseHash !== -1 ? '(Re)c' : 'C') + 'reate ChromaPrint database...', func: async (bOmmit = false) => {
+				menuName, entryText: (databaseHash === -1 ? 'C' : '(Re)c') + 'reate ChromaPrint database...', func: async (bOmmit = false) => {
 					this.switchAnimation('ChromaPrint database', true);
 					const toHandleList = fb.GetLibraryItems();
 					const newhash = chromaprintDatabaseHash(toHandleList);
@@ -294,7 +294,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 			menu.newCheckMenu(menuName, 'Enable ChromaPrint tools', void (0), () => ppt.bChromaprint[1]);
 			// Enable FFprobe
 			menu.newEntry({
-				menuName, entryText: 'Read directly from files' + (!bChromaprint ? '\t(not installed)' : ''), func: () => {
+				menuName, entryText: 'Read directly from files' + (bChromaprint ? '' : '\t(not installed)'), func: () => {
 					ppt.bReadFiles[1] = !ppt.bReadFiles[1];
 					overwriteProperties(ppt);
 					if (ppt.bReadFiles[1]) {

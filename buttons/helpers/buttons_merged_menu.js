@@ -41,7 +41,7 @@ function createButtonsMenu(name) {
 	const buttonsPathNames = new Set(buttonsPath.map((path) => { return path.split('\\').pop(); }));
 	function isAllowed(fileName) { return !notAllowedDup.has(fileName) || !buttonsPathNames.has(fileName); }
 	function isAllowedV2(fileName) { return !requirePlaylistTools.has(fileName) || buttonsPathNames.has('buttons_playlist_tools.js'); }
-	function parseSubMenuFolder(s) {
+	function parseSubMenuFolder(s) { // NOSONAR
 		switch (s) {
 			case '_device_': return 'Output devices';
 			case '_display_': return 'Display && TF';
@@ -53,7 +53,7 @@ function createButtonsMenu(name) {
 			case '_playlist_tools': return 'Playlist Tools';
 			case '_others_': return 'Other tools';
 			case '_search_': return '(Quick)Search';
-			case '_music_map': return typeof sbd !== 'undefined' ? sbd.name : 'Music Map';
+			case '_music_map': return typeof sbd === 'undefined' ? 'Music Map' : sbd.name;
 			case '_stats_': return 'Library statistics';
 			case '_tags_': return 'Tagging tools';
 			case 'Settings, Tags and Queries': return s;
@@ -145,7 +145,7 @@ function createButtonsMenu(name) {
 					const keys = properties ? Object.keys(properties) : [];
 					if (keys.length) {
 						const prefix = properties[Object.keys(properties)[0]][0].split('_')[0];
-						const currentId = prefix.slice(0, prefix.length - 1);
+						const currentId = prefix.slice(0, - 1);
 						let currentIdNumber = Number(prefix[prefix.length - 1]);
 						buttonsBar.list.splice(idx, 1); // Deletes from the list
 						// Rewrite other Ids starting at the current number
@@ -154,7 +154,7 @@ function createButtonsMenu(name) {
 								const oldKeys = oldProperties ? Object.keys(oldProperties) : [];
 								if (oldKeys.length) {
 									const oldPrefix = oldProperties[oldKeys[0]][0].split('_')[0];
-									const oldId = oldPrefix.slice(0, oldPrefix.length - 1);
+									const oldId = oldPrefix.slice(0, - 1);
 									if (oldId === currentId) {
 										const backup = getPropertiesPairs(oldProperties, '', 0, false); // First refresh from panel
 										deleteProperties(oldProperties); // Delete it at panel
@@ -248,7 +248,7 @@ function createButtonsMenu(name) {
 				}
 				overwriteProperties(barProperties);
 				window.Repaint();
-			}, flags: !barProperties.bBgButtons[1] ? MF_STRING : MF_GRAYED
+			}, flags: barProperties.bBgButtons[1] ? MF_GRAYED : MF_STRING
 		});
 		menu.newEntry({
 			menuName, entryText: 'Set custom text color...' + '\t[' + getColorName(barProperties.textColor[1]) + ']', func: () => {
@@ -301,7 +301,7 @@ function createButtonsMenu(name) {
 				buttonsBar.config.bBorders = barProperties.bBorders[1] = !barProperties.bBorders[1];
 				overwriteProperties(barProperties);
 				window.Repaint();
-			}, flags: !barProperties.bBgButtons[1] ? MF_STRING : MF_GRAYED
+			}, flags: barProperties.bBgButtons[1] ? MF_GRAYED : MF_STRING
 		});
 		menu.newCheckMenuLast(() => barProperties.bBorders[1]);
 		menu.newSeparator(menuName);
@@ -404,9 +404,9 @@ function createButtonsMenu(name) {
 						// Ensure it's applied with compatible settings
 						background.changeConfig({
 							bRepaint: false, callbackArgs: { bSaveProperties: true },
-							config: !background.useCover
-								? { coverMode: background.getDefaultCoverMode(), coverModeOptions: { alpha: 0, bProcessColors: true } }
-								: { coverModeOptions: { bProcessColors: true } },
+							config: background.useCover
+								? { coverModeOptions: { bProcessColors: true } }
+								: { coverMode: background.getDefaultCoverMode(), coverModeOptions: { alpha: 0, bProcessColors: true } },
 						});
 						background.updateImageBg(true);
 					} else {
@@ -456,9 +456,9 @@ function createButtonsMenu(name) {
 						else if (!background.useCoverColors) {
 							background.changeConfig({
 								bRepaint: false, callbackArgs: { bSaveProperties: true },
-								config: !background.useCover
-									? { coverMode: background.getDefaultCoverMode(), coverModeOptions: { alpha: 0, bProcessColors: true } }
-									: { coverModeOptions: { bProcessColors: true } },
+								config: background.useCover
+									? { coverModeOptions: { bProcessColors: true } }
+									: { coverMode: background.getDefaultCoverMode(), coverModeOptions: { alpha: 0, bProcessColors: true } },
 							});
 						}
 					}
@@ -646,7 +646,7 @@ function createButtonsMenu(name) {
 			const options = ['left', 'center'];
 			options.forEach((o, i) => {
 				menu.newEntry({
-					menuName: subMenuName, entryText: capitalize(o) + (i !== 0 ? '\t (experimental)' : ''), func: () => {
+					menuName: subMenuName, entryText: capitalize(o) + (i === 0 ? '' : '\t (experimental)'), func: () => {
 						buttonsBar.config.xButtonPosition = barProperties.xButtonPosition[1] = o;
 						overwriteProperties(barProperties);
 						window.Reload();
@@ -663,7 +663,7 @@ function createButtonsMenu(name) {
 			const options = ['top', 'center', 'bottom'];
 			options.forEach((o, i) => {
 				menu.newEntry({
-					menuName: subMenuName, entryText: capitalize(o) + (i !== 0 ? '\t (experimental)' : ''), func: () => {
+					menuName: subMenuName, entryText: capitalize(o) + (i === 0 ? '' : '\t (experimental)'), func: () => {
 						buttonsBar.config.yButtonPosition = barProperties.yButtonPosition[1] = o;
 						overwriteProperties(barProperties);
 						window.Reload();
@@ -976,9 +976,9 @@ function onRbtnUpImportSettings(properties = this.properties || {}) {
 					Object.hasOwn(buttonsBar.buttons, 'ListenBrainz Tools') ? 'listenbrainz_*.json' : '',
 					...(Object.hasOwn(buttonsBar.buttons, 'Playlist Tools') ? ['playlistTools_*.json', 'check_library_tags_exclusion.json'] : ['']),
 					/* global sbd:readable */
-					typeof sbd !== 'undefined'
-						? Object.keys(buttonsBar.buttons).some((key) => key.startsWith(sbd.name)) ? 'musicmap_*.json' : ''
-						: '',
+					typeof sbd === 'undefined'
+						? ''
+						: Object.keys(buttonsBar.buttons).some((key) => key.startsWith(sbd.name)) ? 'musicmap_*.json' : '',
 					Object.hasOwn(buttonsBar.buttons, 'Output device priority') ? 'devices*.json' : '',
 					Object.hasOwn(buttonsBar.buttons, 'Fingerprint Tools') ? 'fpChromaprintReverseMap*.json' : '',
 				],

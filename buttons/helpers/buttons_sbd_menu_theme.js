@@ -67,14 +67,14 @@ function createThemeMenu(parent) {
 			// Force data type
 			themeTagsKeys.forEach((key, i) => {
 				if (tags[key].type.includes('number')) {
-					themeTagsValues[i] = themeTagsValues[i].map((val) => Number(val));
+					themeTagsValues[i] = themeTagsValues[i].map(Number);
 				}
 			});
 			// Tags obj
 			const themeTags = {};
 			themeTagsKeys.forEach((key, i) => { themeTags[key] = themeTagsValues[i]; });
 			// artistRegion Iso
-			const localeTags = getHandleListTags(selHandleList, [globTags.locale]).flat().map((tag) => tag.filter(Boolean).pop());
+			const localeTags = getHandleListTags(selHandleList, [globTags.locale]).flat().map((tag) => tag.findLast(Boolean));
 			const worldMapData = _jsonParseFileCheck(filePaths.worldMapArtists, 'Tags json', window.FullPanelName, utf8);
 			localeTags.forEach((localeTag) => {
 				if (localeTag) { themeTags.artistRegion.push(getCountryISO(localeTag)); }
@@ -98,8 +98,8 @@ function createThemeMenu(parent) {
 			const filePath = sbd.themesPath + input + '.json';
 			if (_isFile(filePath) && WshShell.Popup('Already exists a file with such name, overwrite?', 0, window.FullPanelName, popup.question + popup.yes_no) === popup.no) { return; }
 			const bDone = _save(filePath, JSON.stringify(theme, null, '\t').replace(/\n/g, '\r\n'));
-			if (!bDone) { fb.ShowPopupMessage('Error saving theme file:' + filePath, sbd.name); }
-			else { _explorer(filePath); }
+			if (bDone) { _explorer(filePath); }
+			else { fb.ShowPopupMessage('Error saving theme file:' + filePath, sbd.name); }
 		}, flags: fb.GetFocusItem(true) ? MF_STRING : MF_GRAYED
 	});
 	themeMenu.newSeparator();
@@ -131,7 +131,7 @@ function createThemeMenu(parent) {
 			data.theme = 'None';
 			properties.data[1] = JSON.stringify(data);
 			overwriteProperties(properties);
-		}, flags: !bHasForcedTheme ? MF_STRING : MF_GRAYED
+		}, flags: bHasForcedTheme ? MF_GRAYED : MF_STRING
 	});
 	themeMenu.newSeparator();
 	// All entries
@@ -190,7 +190,7 @@ function createThemeMenu(parent) {
 						properties.data[1] = JSON.stringify(data);
 						overwriteProperties(properties);
 					}
-				}, flags: !bHasForcedTheme ? MF_STRING : MF_GRAYED
+				}, flags: bHasForcedTheme ? MF_GRAYED : MF_STRING
 			});
 		});
 	} else {
@@ -199,7 +199,7 @@ function createThemeMenu(parent) {
 	}
 	themeMenu.newCheckMenuLast(() => {
 		const idx = options.indexOf(forcedTheme ? forcedThemePath : properties.theme[1]);
-		return idx !== -1 ? idx + 1 : 0;
+		return idx === -1 ? 0 : idx + 1;
 	}, menus.length + 2);
 	return themeMenu;
 }

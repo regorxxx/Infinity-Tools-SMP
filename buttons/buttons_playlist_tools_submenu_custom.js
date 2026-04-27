@@ -181,7 +181,7 @@ addButton({
 					case 'batch tagger':
 					case 'group tagger': icon = chars.tags; break;
 					case 'pools':
-					case 'pools (' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ')': icon = chars.music; break;
+					case 'pools (' + (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ')': icon = chars.music; break;
 					case 'macros': icon = chars.hourglassHalf; break;
 					case 'script integration':
 					case 'configuration': icon = chars.cogs; break;

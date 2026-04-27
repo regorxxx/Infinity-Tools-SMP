@@ -83,8 +83,8 @@ function createRecipeMenu(parent) {
 			});
 		}
 		const bDone = _save(filePath, JSON.stringify(recipe, null, '\t').replace(/\n/g, '\r\n'));
-		if (!bDone) { fb.ShowPopupMessage('Error saving recipe file:' + filePath, sbd.name); }
-		else { _explorer(filePath); }
+		if (bDone) { _explorer(filePath); }
+		else { fb.ShowPopupMessage('Error saving recipe file:' + filePath, sbd.name); }
 	};
 	const unsetRecipe = (file) => {
 		if (_resolvePath(properties.recipe[1]) === _resolvePath(file)) { // Set to none when hiding current recipe
@@ -150,9 +150,7 @@ function createRecipeMenu(parent) {
 					if (utils.IsKeyPressed(VK_CONTROL)) {
 						_runCmd('attrib +H ' + _q(_resolvePath(file)), false);
 						unsetRecipe(file); // Set to none when hiding current recipe
-					} else if (!result.valid) { // Don't allow to use a recipe with errors, show report instead
-						console.popup(result.report.join('\n\t- '), 'Recipe error');
-					} else {
+					} else if (result.valid) {
 						properties.recipe[1] = file;
 						data.recipe = name;
 						data.forcedTheme = themeName;
@@ -162,6 +160,8 @@ function createRecipeMenu(parent) {
 						forEachNested(recipe, (value, key, obj) => {
 							if (value === null) { obj[key] = Infinity; }
 						});
+					} else { // Don't allow to use a recipe with errors, show report instead
+						console.popup(result.report.join('\n\t- '), 'Recipe error');
 					}
 				}
 			});
@@ -172,7 +172,7 @@ function createRecipeMenu(parent) {
 	}
 	recipeMenu.newCheckMenuLast(() => {
 		const idx = options.indexOf(currRecipeFile);
-		return idx !== -1 ? idx + 1 : 0;
+		return idx === -1 ? 0 : idx + 1;
 	}, menus.length + 2);
 	{	// Edit entries
 		const menuName = 'Edit recipes';
@@ -268,10 +268,10 @@ function createRecipeMenu(parent) {
 				});
 			});
 		const hiddenFilesNum = files.reduce((total, file) => {
-			if (!testRegex.test(file.split('\\').pop())) {
+			if (testRegex.test(file.split('\\').pop())) { return total; } else {
 				const attr = _parseAttrFile(file);
 				return attr && attr.Hidden ? total + 1 : total;
-			} else { return total; }
+			}
 		}, 0);
 		recipeMenu.newEntry({
 			menuName, entryText: 'Show hidden recipes\t' + _b(hiddenFilesNum + ' files'), func: () => {

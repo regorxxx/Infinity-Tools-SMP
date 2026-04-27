@@ -91,9 +91,9 @@ function createConfigMenu(parent) {
 				: JSON.parse(properties[key][1]).join(',');
 			const entryText = (
 				entryNames[i] ||
-				properties[key][0].substring(properties[key][0].indexOf('.') + 1, idxEnd !== -1
-					? idxEnd - 1
-					: Infinity
+				properties[key][0].substring(properties[key][0].indexOf('.') + 1, idxEnd === -1
+					? Infinity
+					: idxEnd - 1
 				)
 			) + '...' + '\t[' +
 				(
@@ -116,7 +116,7 @@ function createConfigMenu(parent) {
 						: JSON.stringify(input);
 					if (hook) { hook(key, i, properties); }
 					overwriteProperties(properties); // Updates panel
-				}, flags: bProperties && Object.hasOwn(recipe.properties, key) || (flag[i] !== void (0) ? flag[i] : false) ? MF_GRAYED : MF_STRING
+				}, flags: bProperties && Object.hasOwn(recipe.properties, key) || (flag[i] === void (0) ? false : flag[i]) ? MF_GRAYED : MF_STRING
 			});
 		});
 	};
@@ -129,7 +129,7 @@ function createConfigMenu(parent) {
 					properties[option][1] = key;
 					if (hook) { hook(key, i, properties); }
 					overwriteProperties(properties); // Updates panel
-				}, flags: Object.hasOwn(recipe, option) || (flag[i] !== void (0) ? flag[i] : false) ? MF_GRAYED : MF_STRING
+				}, flags: Object.hasOwn(recipe, option) || (flag[i] === void (0) ? false : flag[i]) ? MF_GRAYED : MF_STRING
 			});
 		});
 		menu.newCheckMenuLast((options) => options.indexOf(getSetting(option)), values);
@@ -144,7 +144,7 @@ function createConfigMenu(parent) {
 					props[key][1] = !props[key][1];
 					if (hook) { hook(key, i, props); }
 					overwriteProperties(props);
-				}, flags: Object.hasOwn(recipe, key) || (flag[i] !== void (0) ? flag[i] : false) ? MF_GRAYED : MF_STRING
+				}, flags: Object.hasOwn(recipe, key) || (flag[i] === void (0) ? false : flag[i]) ? MF_GRAYED : MF_STRING
 			});
 			menu.newCheckMenuLast(() => getSetting(key));
 		});
@@ -168,7 +168,7 @@ function createConfigMenu(parent) {
 			const flags = Object.hasOwn(recipe, key) ? MF_GRAYED : MF_STRING;
 			const val = properties[key][1];
 			let displayedVal = Object.hasOwn(recipe, key) ? recipe[key] : val;
-			displayedVal = isNaN(displayedVal)
+			displayedVal = Number.isNaN(Number(displayedVal))
 				? displayedVal.split('.').pop() + ' --> ' + graphDistance
 				: Number.isFinite(displayedVal) ? displayedVal : '\u221E';
 			const entryText = 'Genre/styles variation lower than...' + (Object.hasOwn(recipe, key) ? '\t[' + displayedVal + '] (forced by recipe)' : '\t[' + displayedVal + ']');
@@ -265,7 +265,7 @@ function createConfigMenu(parent) {
 			.filter((tag) => !bLiteMode || !['related', 'unrelated'].includes(tag))
 			.filter((tag) => getSetting('method') === 'DYNGENRE' || !['dynGenre'].includes(tag))
 			.filter((tag) => getSetting('method') === 'GRAPH' || !['genreStyleRegion'].includes(tag));
-		const nonDeletable = ['genre', 'style', 'mood', 'key', 'bpm', 'date', 'folksonomy'];
+		const nonDeletable = new Set(['genre', 'style', 'mood', 'key', 'bpm', 'date', 'folksonomy']);
 		const weights = options.map((key) => {
 			const bIsDyngenreMethodRecipe = Object.hasOwn(recipe, 'method') && recipe.method !== 'DYNGENRE';
 			const bIsDyngenreMethodProp = !Object.hasOwn(recipe, 'method') && properties.method[1] !== 'DYNGENRE';
@@ -432,7 +432,7 @@ function createConfigMenu(parent) {
 			}
 			{	// Restore
 				const bRecipe = bRecipeTags && Object.hasOwn(recipe.tags, key) && !Object.hasOwn(tags, key);
-				const bDefTag = !bRecipe && (nonDeletable.includes(key) || tags[key].type.includes('virtual'));
+				const bDefTag = !bRecipe && (nonDeletable.has(key) || tags[key].type.includes('virtual'));
 				menu.newEntry({
 					menuName: subMenuName, entryText: 'Restore defaults...' + (bRecipe ? '\t(forced by recipe)' : bDefTag ? '\t(default tag)' : ''), func: () => {
 						if (WshShell.Popup('Restore tag\'s settings to default?', 0, window.FullPanelName, popup.question + popup.yes_no) === popup.yes) {
@@ -462,7 +462,7 @@ function createConfigMenu(parent) {
 			}
 			{	// Delete
 				const bRecipe = bRecipeTags && Object.hasOwn(recipe.tags, key) && !Object.hasOwn(tags, key);
-				const bDefTag = !bRecipe && (nonDeletable.includes(key) || tags[key].type.includes('virtual'));
+				const bDefTag = !bRecipe && (nonDeletable.has(key) || tags[key].type.includes('virtual'));
 				menu.newEntry({
 					menuName: subMenuName, entryText: 'Delete tag...' + (bRecipe ? '\t(forced by recipe)' : bDefTag ? '\t(default tag)' : ''), func: () => {
 						delete tags[key];
@@ -657,7 +657,7 @@ function createConfigMenu(parent) {
 		});
 		menu.newCheckMenuLast(() => {
 			const idx = options.findIndex((opt) => opt.sourceType === trackSource.sourceType);
-			return (idx !== -1 ? idx : 0);
+			return (idx === -1 ? 0 : idx);
 		}, options);
 		menu.newSeparator(menuName);
 		{
@@ -785,7 +785,7 @@ function createConfigMenu(parent) {
 			};
 			const filterCount = options.map(hasQuery).filter(Boolean).length;
 			const menuFlags = filterCount ? MF_CHECKED : void (0);
-			const subMenuName = menu.newMenu('Additional pre-defined filters' + '\t[' + (!filterCount ? 'none' : filterCount + ' filter' + (filterCount > 1 ? 's' : '')) + ']', menuName, menuFlags);
+			const subMenuName = menu.newMenu('Additional pre-defined filters' + '\t[' + (filterCount ? filterCount + ' filter' + (filterCount > 1 ? 's' : '') : 'none') + ']', menuName, menuFlags);
 			menu.newEntry({ menuName: subMenuName, entryText: 'Appended to Global Forced Query:', flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
 			const switchQuery = (input, query) => {
@@ -878,7 +878,7 @@ function createConfigMenu(parent) {
 			const found = filterState.reduce((acc, state) => acc + (state ? 1 : 0), 0);
 			const notFound = filterCount - found;
 			const menuFlags = filterCount ? MF_CHECKED : void (0);
-			const subMenuName = menu.newMenu('Dynamic query filters' + '\t[' + (!filterCount ? 'none' : filterCount + ' filter' + (filterCount > 1 ? 's' : '')) + ']', menuName, menuFlags);
+			const subMenuName = menu.newMenu('Dynamic query filters' + '\t[' + (filterCount ? filterCount + ' filter' + (filterCount > 1 ? 's' : '') : 'none') + ']', menuName, menuFlags);
 			menu.newEntry({ menuName: subMenuName, entryText: 'Evaluated with reference: ' + _p(isTheme ? 'theme' : 'selection'), flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
 			options.forEach((obj) => {
@@ -887,8 +887,8 @@ function createConfigMenu(parent) {
 				menu.newEntry({
 					menuName: subMenuName, entryText, func: () => {
 						const idx = currentPropFilters.indexOf(obj.query);
-						if (idx !== -1) { currentPropFilters.splice(idx, 1); }
-						else { currentPropFilters.push(obj.query); }
+						if (idx === -1) { currentPropFilters.push(obj.query); }
+						else { currentPropFilters.splice(idx, 1); }
 						properties['dynQueries'][1] = JSON.stringify(currentPropFilters);
 						overwriteProperties(properties); // Updates panel
 					}, flags: Object.hasOwn(recipe, 'dynQueries') ? MF_GRAYED : MF_STRING
@@ -953,7 +953,7 @@ function createConfigMenu(parent) {
 				{ name: 'sep' },
 				{ name: 'Disabled', val: -1 },
 			];
-			const menuFlags = keyVal !== -1 ? MF_CHECKED : void (0);
+			const menuFlags = keyVal === -1 ? void (0) : MF_CHECKED;
 			const subMenuName = menu.newMenu('Nearest genres filter' + '\t[' + (keyVal === -1 ? '-disabled-' : (keyVal || ('auto: ' + (Number.isFinite(autoVal) ? autoVal : '\u221E')))) + ']', menuName, menuFlags);
 			menu.newEntry({ menuName: subMenuName, entryText: 'With guessed nearest genres:', func: null, flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
@@ -1063,7 +1063,7 @@ function createConfigMenu(parent) {
 				{ name: 'sep' },
 				{ name: 'Disabled', val: -1 }
 			];
-			const menuFlags = keyVal !== -1 ? MF_CHECKED : void (0);
+			const menuFlags = keyVal === -1 ? void (0) : MF_CHECKED;
 			const subMenuName = menu.newMenu('Artist cultural filter' + (keyVal === -1 ? '\t[-disabled-]' : '\t[enabled]'), menuName, menuFlags);
 			menu.newEntry({ menuName: subMenuName, entryText: 'Based on artist locale:', func: null, flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
@@ -1092,7 +1092,7 @@ function createConfigMenu(parent) {
 				{ name: 'sep' },
 				{ name: 'Disabled', val: -1 }
 			];
-			const menuFlags = keyVal !== -1 ? MF_CHECKED : void (0);
+			const menuFlags = keyVal === -1 ? void (0) : MF_CHECKED;
 			const subMenuName = menu.newMenu('Genre cultural filter' + (keyVal === -1 ? '\t[-disabled-]' : '\t[enabled]'), menuName, menuFlags);
 			menu.newEntry({ menuName: subMenuName, entryText: 'Based on genre origin:', func: null, flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
@@ -1129,7 +1129,7 @@ function createConfigMenu(parent) {
 				const val = Object.hasOwn(recipe, key)
 					? '\t[' + (recipe[key] === -1 ? '-disabled-' : recipe[key]) + '] (forced by recipe)'
 					: '\t[' + (properties[key][1] === -1 ? '-disabled-' : properties[key][1]) + ']';
-				const entryText = properties[key][0].substring(properties[key][0].indexOf('.') + 1, idxEnd !== -1 ? idxEnd - 1 : Infinity) + '...' + val;
+				const entryText = properties[key][0].substring(properties[key][0].indexOf('.') + 1, idxEnd === -1 ? Infinity : idxEnd - 1) + '...' + val;
 				menu.newEntry({
 					menuName, entryText, func: () => {
 						const input = Input.number('int', properties[key][1], 'Enter number:\n(integer number ≥0)\n(-1 to disable)', sbd.name + ': ' + entryText.replace(/\t.*/, ''), properties[key][3], [(input) => input >= -1]);
@@ -1176,7 +1176,7 @@ function createConfigMenu(parent) {
 			{
 				const key = 'probPick';
 				const idxEnd = properties[key][0].indexOf('(');
-				const entryText = properties[key][0].substring(properties[key][0].indexOf('.') + 1, idxEnd !== -1 ? idxEnd - 1 : Infinity) + '...' + (Object.hasOwn(recipe, key) ? '\t[' + recipe[key] + '] (forced by recipe)' : '\t[' + properties[key][1] + ']');
+				const entryText = properties[key][0].substring(properties[key][0].indexOf('.') + 1, idxEnd === -1 ? Infinity : idxEnd - 1) + '...' + (Object.hasOwn(recipe, key) ? '\t[' + recipe[key] + '] (forced by recipe)' : '\t[' + properties[key][1] + ']');
 				menu.newEntry({
 					menuName, entryText, func: () => {
 						const input = Input.number('int positive', properties[key][1], 'Enter number: (between 0 and 100)', sbd.name + ': ' + entryText.replace(/\t.*/, ''), properties[key][3], [(input) => input <= 100]);
@@ -1273,7 +1273,7 @@ function createConfigMenu(parent) {
 				menu.newSeparator(subMenuNameTwo);
 				menu.newEntry({
 					menuName: subMenuNameTwo, entryText: 'Custom TF...', func: () => {
-						const currValue = options.find((opt) => opt.tf === properties.smartShuffleSortBias[1])
+						const currValue = options.some((opt) => opt.tf === properties.smartShuffleSortBias[1])
 							? shuffleBiasTf(properties.smartShuffleSortBias[1])
 							: properties.smartShuffleSortBias[1];
 						const input = Input.string('string', currValue, 'Enter TF expression:\n\n\'DEFAULT\' restores default setting.', sbd.name + ': Smart Shuffle sorting bias', shuffleBiasTf('rating'));
@@ -1286,7 +1286,7 @@ function createConfigMenu(parent) {
 				});
 				menu.newCheckMenuLast(() => {
 					const idx = options.findIndex((opt) => opt.key.replace(/ /g, '').toLowerCase() === properties.smartShuffleSortBias[1]);
-					return idx !== -1 ? idx : options.length;
+					return idx === -1 ? options.length : idx;
 				}, options.length + 2);
 			}
 			createBoolMenu(subMenuName, ['bSmartShuffleAdvc'],
@@ -1371,7 +1371,7 @@ function createConfigMenu(parent) {
 			options.forEach((key) => {
 				if (menu.isSeparator(key)) { menu.newSeparator(menuName); return; }
 				const idxEnd = properties[key][0].indexOf('(');
-				const entryText = properties[key][0].substring(properties[key][0].indexOf('.') + 1, idxEnd !== -1 ? idxEnd - 1 : Infinity) + '...' + (Object.hasOwn(recipe, key) ? '\t[' + recipe[key] + '] (forced by recipe)' : '\t[' + properties[key][1] + ']');
+				const entryText = properties[key][0].substring(properties[key][0].indexOf('.') + 1, idxEnd === -1 ? Infinity : idxEnd - 1) + '...' + (Object.hasOwn(recipe, key) ? '\t[' + recipe[key] + '] (forced by recipe)' : '\t[' + properties[key][1] + ']');
 				menu.newEntry({
 					menuName, entryText, func: () => {
 						const input = Input.string('string', properties[key][1], 'Enter TF expression for playlist name:\n\n%, $, [ and ] must be enclosed in \' chars. \'\' results in single quote.\nFor ex: ' + globTags.artist + '\'\'s Mix   ->   ACDC\'s Mix\n\nAs special tag, %SBD_THEME% is also available when using themes. When a theme is not being used, it\'s evaluated as usual.\nFor ex: $if2(%SBD_THEME%,' + globTags.artist + ')\'\'s Mix   ->   Test\'s Mix', sbd.name + ': ' + entryText.replace(/\t.*/, ''), globTags.artist + '\'\'s Mix', void (0), true);
@@ -1474,9 +1474,9 @@ function createConfigMenu(parent) {
 			}
 			menu.newSeparator(subMenu);
 			{
-				const sel = plman.ActivePlaylist !== -1
-					? plman.GetPlaylistSelectedItems(plman.ActivePlaylist)
-					: null;
+				const sel = plman.ActivePlaylist === -1
+					? null
+					: plman.GetPlaylistSelectedItems(plman.ActivePlaylist);
 				const flags = sel && sel.Count > 0 && sbd.lastSearch.handle && !(sel.Count === 1 && sel[0].RawPath === sbd.lastSearch.handle.RawPath)
 					? MF_STRING
 					: MF_GRAYED;
@@ -1633,7 +1633,7 @@ function createConfigMenu(parent) {
 						cacheLink = void (0); // NOSONAR [global]
 						cacheLinkSet = void (0); // NOSONAR [global]
 						updateCache({ bForce: true, properties }); // Creates new one and also notifies other panels to discard their cache
-					}, flags: !sbd.isCalculatingCache ? MF_STRING : MF_GRAYED
+					}, flags: sbd.isCalculatingCache ? MF_GRAYED : MF_STRING
 				});
 			}
 		}

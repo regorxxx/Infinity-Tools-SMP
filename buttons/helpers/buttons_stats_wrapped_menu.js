@@ -105,9 +105,9 @@ function wrappedMenu({ bSimulate = false } = {}) {
 					menu.newEntry({ menuName, entryText: opt.descr, flags: MF_GRAYED });
 					menu.newSeparator(menuName);
 				}
-				const subMenuName = opt.mode !== 'recommendations'
-					? menu.findOrNewMenu(reportType.menu, menuName)
-					: menuName;
+				const subMenuName = opt.mode === 'recommendations'
+					? menuName
+					: menu.findOrNewMenu(reportType.menu, menuName);
 				if (opt.mode === 'recommendations') {
 					if (i !== 0) { return; }
 				} else {
