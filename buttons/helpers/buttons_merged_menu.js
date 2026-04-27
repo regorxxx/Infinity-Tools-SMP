@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/03/26
+//27/04/26
 
 /* exported createButtonsMenu, onRbtnUpImportSettings */
 
@@ -912,7 +912,7 @@ function createButtonsMenu(name) {
 	}
 	menu.newSeparator();
 	{
-		const subMenu = menu.newMenu('Readmes');
+		const subMenu = menu.newMenu('Help');
 		menu.newEntry({
 			menuName: subMenu, entryText: 'Toolbar', func: () => {
 				const readmePath = folders.xxx + 'helpers\\readme\\toolbar.txt';

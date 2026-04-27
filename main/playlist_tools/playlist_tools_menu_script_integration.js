@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//27/04/26
 
 /* exported mainMenuSMP, executeByName */
 
@@ -45,7 +45,7 @@
 						// Separators are not globally filtered to be able to redraw -at least partially- the tree
 						const tree = {};
 						let menuList = [];
-						const toSkip = new Set(['Add new entry to list...', 'Remove entry from list', 'From year...', 'By... (pairs of tags)', 'By... (query)', 'Filter playlist by... (query)', 'Configuration', 'Menu 1', 'Menu 2', 'Menu 3', 'Menu 4', 'Menu 5', 'Menu 6', 'Menu 7', 'Menu 8', 'Menu 9', 'Find track(s) in', 'Check tags', 'Tagger', 'Playlist History', 'Custom pool...', 'Start recording a macro', 'Stop recording and Save macro', 'Playlist Names Commands', 'Include scripts', typeof sbd !== 'undefined' ? sbd.name : 'Music Map', 'Set Global Forced Query...', 'Readmes', 'SMP Main menu', 'Script integration', 'Split playlist list submenus at', 'Show locked playlist (autoplaylists, etc.)?', 'Show current playlist?', 'Selection manipulation', 'Close playlist', 'Go to playlist', 'Send playlist\'s tracks to', 'Remove track(s) from', 'Find now playing track in', 'Other tools', 'Configure dictionary', 'By halves', 'By quarters', 'By thirds', 'Send selection to', 'Don\'t try to find tracks if selecting more than', 'Filter playlist by... (tags)', 'Set tags (for duplicates)...', 'Set tags (for filtering)...', 'Set number allowed (for filtering)...', 'Sets similarity threshold...', 'From last...', 'UI', 'Logging', 'Asynchronous processing', 'Tag remapping', 'SMP Dynamic menu', 'Import track list', 'Report all from', 'Check only', 'Difference with playlist', 'Intersect with playlist', 'Merge with playlist', 'Tags...', 'By... (tags)', 'Available tools', 'Enable double pass to match more tracks', 'By... (expression)', 'Find or create playlist...', 'To specified position', 'Select next # tracks...', 'Available tools', 'Harmonic mixing', 'Additional pre-defined filters', 'Set menus']);
+						const toSkip = new Set(['Add new entry to list...', 'Remove entry from list', 'From year...', 'By... (pairs of tags)', 'By... (query)', 'Filter playlist by... (query)', 'Configuration', 'Menu 1', 'Menu 2', 'Menu 3', 'Menu 4', 'Menu 5', 'Menu 6', 'Menu 7', 'Menu 8', 'Menu 9', 'Find track(s) in', 'Check tags', 'Tagger', 'Playlist History', 'Custom pool...', 'Start recording a macro', 'Stop recording and Save macro', 'Playlist Names Commands', 'Include scripts', typeof sbd === 'undefined' ? 'Music Map' : sbd.name, 'Set Global Forced Query...', 'Help', 'SMP Main menu', 'Script integration', 'Split playlist list submenus at', 'Show locked playlist (autoplaylists, etc.)?', 'Show current playlist?', 'Selection manipulation', 'Close playlist', 'Go to playlist', 'Send playlist\'s tracks to', 'Remove track(s) from', 'Find now playing track in', 'Other tools', 'Configure dictionary', 'By halves', 'By quarters', 'By thirds', 'Send selection to', 'Don\'t try to find tracks if selecting more than', 'Filter playlist by... (tags)', 'Set tags (for duplicates)...', 'Set tags (for filtering)...', 'Set number allowed (for filtering)...', 'Sets similarity threshold...', 'From last...', 'UI', 'Logging', 'Asynchronous processing', 'Tag remapping', 'SMP Dynamic menu', 'Import track list', 'Report all from', 'Check only', 'Difference with playlist', 'Intersect with playlist', 'Merge with playlist', 'Tags...', 'By... (tags)', 'Available tools', 'Enable double pass to match more tracks', 'By... (expression)', 'Find or create playlist...', 'To specified position', 'Select next # tracks...', 'Available tools', 'Harmonic mixing', 'Additional pre-defined filters', 'Set menus']);
 						const toSkipStarts = ['(Send sel. to)', '(Close) Playlists', '(Go to) Playlists', '(Send all to) Playlists', '(Lock) Playlists', '(Unlock) Playlists'];
 						allEntries.filter((entry) => { return Object.hasOwn(entry, 'entryText') && Object.hasOwn(entry, 'menuName'); }).forEach((entry) => {
 							const entryText = (isFunction(entry.entryText) ? entry.entryText() : entry.entryText).replace(/\t.*/g, '');
@@ -55,7 +55,7 @@
 							if (toSkipStarts.some((title) => { return entryText.startsWith(title); }) || toSkipStarts.some((title) => { return menuName.startsWith(title); })) { return; }
 							// Save
 							if (!Object.hasOwn(tree, menuName)) { tree[menuName] = []; }
-							tree[menuName].push({ name: (menuName !== mainMenu ? menuName + '\\' + entryText : entryText), flags: isFinite(entry.flags) ? entry.flags : 0 });
+							tree[menuName].push({ name: (menuName === mainMenu ? entryText : menuName + '\\' + entryText), flags: Number.isFinite(entry.flags) ? entry.flags : 0 });
 							if (menuName !== mainMenu && entryText !== (menuName + '\\sep') && entry.flags === MF_GRAYED) {
 								menuList.push({ name: menuName + '\\sep', flags: 1 });
 							}

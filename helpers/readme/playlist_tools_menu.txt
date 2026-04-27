@@ -19,7 +19,7 @@ Tools info:
 Most menus have a small description at the top; further descriptions may
 be found at their readme. Their configuration (except presets) may usually
 be  found at the global 'Settings' submenu, which also contains the
-'Readmes' submenu.
+'Help' submenu.
 
 Usage:
 ------

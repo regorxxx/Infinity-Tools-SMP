@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/03/26
+//27/04/26
 
 /* exported createConfigMenu */
 
@@ -1696,7 +1696,7 @@ function createConfigMenu(parent) {
 	}
 	menu.newSeparator();
 	{	// Readmes
-		const subMenuName = menu.newMenu('Readmes');
+		const subMenuName = menu.newMenu('Help');
 		menu.newEntry({ menuName: subMenuName, entryText: 'Open popup with readme:', func: null, flags: MF_GRAYED });
 		menu.newSeparator(subMenuName);
 		let iCount = 0;

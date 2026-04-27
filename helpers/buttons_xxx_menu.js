@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/04/26
+//27/04/26
 
 /* exported settingsMenu */
 
@@ -137,7 +137,7 @@ function settingsMenu(parent, bShowValues = false, readmeFiles = [], entrySettin
 	if (buttonsBar.readmeList) {
 		menu.newSeparator();
 		if (readmeFiles.length > 1) {
-			const menuName = menu.newMenu('Readmes');
+			const menuName = menu.newMenu('Help');
 			readmeFiles.forEach((name) => {
 				if (Object.hasOwn(buttonsBar.readmeList, name)) {
 					menu.newEntry({ menuName, entryText: name.replace('buttons_', ''), func: () => showButtonReadme(name) });

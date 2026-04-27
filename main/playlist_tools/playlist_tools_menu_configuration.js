@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//27/04/26
 
 /* global menusEnabled:readable, configMenu:readable, readmes:readable, menu:readable, newReadmeSep:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, menu_propertiesBack:readable, menu_panelProperties:readable, overwritePanelProperties:readable, shortcutsPath:readable, importPreset:readable, presets:writable, menu_panelPropertiesBack:readable, loadProperties:readable, overwriteDefaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, specialMenu:readable, sbd:readable */
 
@@ -171,7 +171,7 @@
 						let input = [];
 						try { input = JSON.parse(utils.InputBox(window.ID, 'Enter tag(s) or TF expression(s):\n(sep by comma)', scriptName + ': ' + configMenu, JSON.stringify(defaultArgs.checkDuplicatesBy), true)); }
 						catch (e) { return; } // eslint-disable-line no-unused-vars
-						if (input) { input = input.filter((n) => n); }
+						if (input) { input = input.filter(Boolean); }
 						if (isArrayEqual(defaultArgs.checkDuplicatesBy, input)) { return; }
 						defaultArgs.checkDuplicatesBy = input;
 						menu_properties.checkDuplicatesBy[1] = JSON.stringify(input);
@@ -237,7 +237,7 @@
 							let input;
 							try { input = JSON.parse(utils.InputBox(window.ID, 'Enter tag(s) or TF expression(s):\n(In some cases merging multiple tags is allowed, check the readme)\n(JSON)', scriptName + ': ' + configMenu, menu_properties[key][1], true)); }
 							catch (e) { return; } // eslint-disable-line no-unused-vars
-							if (input) { input = input.filter((n) => n); }
+							if (input) { input = input.filter(Boolean); }
 							if (isArrayEqual(JSON.parse(menu_properties[key][1]), input)) { return; }
 							menu_properties[key][1] = JSON.stringify(input);
 							overwriteMenuProperties(); // Updates panel
@@ -269,10 +269,10 @@
 					entryText: 'async', condFunc: () => {
 						const async = JSON.parse(menu_properties.async[1]);
 						const options = Object.keys(async);
-						const notAvailable = ['Tagger', typeof sbd !== 'undefined' ? sbd.name : 'Music Map'];
+						const notAvailable = new Set(['Tagger', typeof sbd === 'undefined' ? 'Music Map' : sbd.name]);
 						options.forEach((key) => {
 							if (key === 'Music Map' && (Object.hasOwn(menusEnabled, specialMenu) && !menusEnabled[specialMenu] || typeof sbd === 'undefined')) { return; }
-							const bNotAvailable = notAvailable.includes(key);
+							const bNotAvailable = notAvailable.has(key);
 							menu.newEntry({
 								menuName: subMenuName, entryText: key + (bNotAvailable ? '\t forced' : ''), func: () => {
 									if (!async[key]) {
@@ -408,7 +408,7 @@
 		}
 		menu.newSeparator(configMenu);
 		{	// Readmes
-			const subMenuName = menu.newMenu('Readmes', configMenu);
+			const subMenuName = menu.newMenu('Help', configMenu);
 			if (window.ScriptInfo.Name === 'Playlist Tools: Buttons Bar') {
 				readmes[newReadmeSep()] = 'sep';
 				readmes['Toolbar'] = folders.xxx + 'helpers\\readme\\toolbar.txt';

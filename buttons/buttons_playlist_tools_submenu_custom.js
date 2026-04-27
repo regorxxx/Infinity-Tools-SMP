@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//27/04/26
 
 /*
 	Playlist Tools Submenu Custom
@@ -185,7 +185,7 @@ addButton({
 					case 'macros': icon = chars.hourglassHalf; break;
 					case 'script integration':
 					case 'configuration': icon = chars.cogs; break;
-					case 'readmes': icon = chars.question; break;
+					case 'help': icon = chars.question; break;
 					default: icon = chars.wrench; break;
 				}
 				if (icon !== this.icon) {

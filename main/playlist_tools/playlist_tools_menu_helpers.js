@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/12/25
+//27/04/26
 
 /* exported overwritePanelProperties, loadProperties, createSubMenuEditEntries, lastActionEntry, focusFlags, playlistCountFlags, playlistCountFlagsRem, playlistCountFlagsAddRem, multipleSelectedFlags, multipleSelectedFlagsReorder, selectedFlags, selectedFlagsReorder, selectedFlagsRem, selectedFlagsAddRem, closeLock, createTagMenu, createSmartShuffleMenu */
 
@@ -46,7 +46,7 @@ function updateMenuProperties(propObject, menuFunc = deferFunc) {
 	try { fb.GetQueryItems(new FbMetadbHandleList(), propObject['forcedQuery'][1]); }
 	catch (e) { fb.ShowPopupMessage('Query not valid. Check it and add it again:\n' + propObject['forcedQuery'], scriptName); } // eslint-disable-line no-unused-vars
 	// Info Popup
-	let panelPropObject = (typeof buttonsBar !== 'undefined') ? getPropertiesPairs(menu_panelProperties, menu_prefix_panel, 0) : propObject;
+	let panelPropObject = (typeof buttonsBar === 'undefined') ? propObject : getPropertiesPairs(menu_panelProperties, menu_prefix_panel, 0);
 	if (!panelPropObject['firstPopup'][1]) {
 		panelPropObject['firstPopup'][1] = true;
 		overwriteProperties(panelPropObject); // Updates panel
@@ -65,8 +65,8 @@ function updateMenuProperties(propObject, menuFunc = deferFunc) {
 		const defKeys = new Set(Object.keys(def));
 		if (!currKeys.isEqual(defKeys)) {
 			defKeys.forEach((key) => {
-				if (!Object.hasOwn(curr, key)) { curr[key] = def[key]; }
-				else { currKeys.delete(key); }
+				if (Object.hasOwn(curr, key)) { currKeys.delete(key); }
+				else { curr[key] = def[key]; }
 			});
 			currKeys.forEach((key) => delete curr[key]);
 			propObject[prop][1] = JSON.stringify(curr);
@@ -165,9 +165,9 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 		const presetIdxName = presetIdxJSON === -1
 			? presets[options.propName].findIndex((obj) => obj.name === name)
 			: -1;
-		return presetIdxJSON !== -1 // Harden against manual changes since name is unique
-			? presetIdxJSON
-			: presetIdxName;
+		return presetIdxJSON === -1 // Harden against manual changes since name is unique
+			? presetIdxName
+			: presetIdxJSON;
 	};
 	options.list.forEach((entry, index) => {
 		let parentMenu = subMenuSecondName;
@@ -192,7 +192,7 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 				if (!newEntry || !newEntry.length) { fb.ShowPopupMessage('Input: ' + newEntry + '\n\nNon valid entry.', 'JSON error'); return; }
 				try { newEntry = JSON.parse(newEntry); } catch (e) { fb.ShowPopupMessage('Input: ' + newEntry.toString() + '\n\n' + e, 'JSON error'); return; }
 				if (!newEntry) { return; }
-				if (options.list.filter((otherEntry) => otherEntry !== entry).findIndex((otherEntry) => otherEntry.name === newEntry.name) !== -1) {
+				if (options.list.filter((otherEntry) => otherEntry !== entry).some((otherEntry) => otherEntry.name === newEntry.name) ) {
 					fb.ShowPopupMessage('There is another entry with same name.\nRetry with another name.', scriptName);
 					return;
 				}
@@ -236,7 +236,7 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 						if (!entryName.length) { return; }
 						if (menu.isSeparator({ name: entryName })) { return; } // Add separator
 						else { // or new entry
-							if (options.list.findIndex((entry) => entry.name === entryName) !== -1) {
+							if (options.list.some((entry) => entry.name === entryName) ) {
 								fb.ShowPopupMessage('There is another entry with same name.\nRetry with another name.', scriptName);
 								return;
 							}
@@ -311,7 +311,7 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 						_explorer(path);
 						console.log('Playlist tools: presets backup saved at ' + path);
 					}
-				}, flags: presetIdx !== -1 ? MF_STRING : MF_GRAYED
+				}, flags: presetIdx === -1 ? MF_GRAYED : MF_STRING
 			});
 		}
 	});
@@ -328,7 +328,7 @@ function createSubMenuEditEntries(menuName, options /*{name, list, propName, def
 				if (!entryName.length) { return; }
 				if (menu.isSeparator({ name: entryName })) { input = { name: entryName }; } // Add separator
 				else { // or new entry
-					if (options.list.findIndex((entry) => entry.name === entryName) !== -1) {
+					if (options.list.some((entry) => entry.name === entryName) ) {
 						fb.ShowPopupMessage('There is another entry with same name.\nRetry with another name.', scriptName);
 						return;
 					}
@@ -406,7 +406,7 @@ function importPreset(path = folders.data + 'playlistTools_presets.json') {
 		fb.ShowPopupMessage(
 			readme +
 			'Some keys are not recognized:\n\n' +
-			keys.map((key) => !Object.hasOwn(menu_properties, key) ? key : null).filter(Boolean).join('\n'),
+			keys.map((key) => Object.hasOwn(menu_properties, key) ? null : key).filter(Boolean).join('\n'),
 			scriptName + ': Presets (' + file.split('\\').pop() + ')'
 		);
 		return false;
@@ -441,16 +441,16 @@ function lastActionEntry() {
 	const fullName = menu.lastCall.length ? menu.lastCall : null;
 	let entryText = fullName ? fullName.replace(/.*\\/, '') : null;
 	let flags = MF_STRING;
-	if (entryText !== null) {
+	if (entryText === null) {
+		entryText = '- No last action -';
+		flags = MF_GRAYED;
+	} else {
 		// Reuse original flags
 		const entry = menu.getEntries().find((entry) => entry.entryText === entryText.replace(/.*\\/, ''));
 		if (entry) { flags = entry.flags; }
 		// Prefer the full name if entry name is not clear enough
 		if (/^by/i.test(entryText)) { entryText = fullName; }
 		entryText = 'Last: ' + entryText;
-	} else {
-		entryText = '- No last action -';
-		flags = MF_GRAYED;
 	}
 	return { entryText, fullName, flags };
 }
@@ -509,11 +509,11 @@ const createTagMenu = (menuName, options, flag = [], hook = null, entryNames = [
 		const value = JSON.parse(menu_properties[key][1]).join(',');
 		const entryText = (
 			entryNames[i] ||
-			menu_properties[key][0].substring(menu_properties[key][0].indexOf('.') + 1, idxEnd !== -1
-				? idxEnd - 1
-				: Infinity
+			menu_properties[key][0].substring(menu_properties[key][0].indexOf('.') + 1, idxEnd === -1
+				? Infinity
+				: idxEnd - 1
 			)
-		).replace('\'' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + '\' ', '') + '...' + '\t[' +
+		).replace('\'' + (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + '\' ', '') + '...' + '\t[' +
 			(
 				typeof value === 'string'
 					? value.length ? value.cut(10) : '-disabled-'
@@ -529,7 +529,7 @@ const createTagMenu = (menuName, options, flag = [], hook = null, entryNames = [
 					: JSON.stringify(input);
 				if (hook) { hook(key, i, menu_properties); }
 				overwriteMenuProperties; // Updates panel
-			}, flags: (flag[i] !== void (0) ? flag[i] : false) ? MF_GRAYED : MF_STRING
+			}, flags: (flag[i] === void (0) ? false : flag[i]) ? MF_GRAYED : MF_STRING
 		});
 	});
 };
@@ -592,7 +592,7 @@ function createSmartShuffleMenu(menu) {
 				});
 				menu.newCheckMenu(subMenuNameSecond, options[0].key, 'Custom TF...', () => {
 					const idx = options.findIndex((opt) => opt.key.replace(/ /g, '').toLowerCase() === menu_properties.smartShuffleSortBias[1]);
-					return idx !== -1 ? idx : options.length;
+					return idx === -1 ? options.length : idx;
 				});
 			}
 			createTagMenu(subMenuName, ['smartShuffleTag'],
