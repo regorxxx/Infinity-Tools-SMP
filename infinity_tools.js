@@ -1,5 +1,5 @@
 ﻿'use strict';
-//13/04/26
+//28/04/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -16,12 +16,12 @@ if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { 
 window.DrawMode = Math.max(Math.min(window.GetProperty('bar.Draw mode: GDI (0), D2D (1)', 0), 1), 0);
 
 {
-	const dependencies = [
+	[
 		'helpers\\buttons_xxx.js',
 		/* global buttonsBar:readable, addButtonSeparator:readable, VK_CONTROL:readable, VK_LWIN:readable, forEachButton:readable, ColourTypeDUI:readable, ColourTypeCUI:readable, addButtonSpacer:readable, addButtonNewLine:readable, VK_ALT:readable, VK_SHIFT:readable */
 		/* global moveEventListener:readable */
 		'helpers\\helpers_xxx.js',
-		/* global globSettings:readable, folders:readable, globFonts:readable, DT_VCENTER:readable, DT_CENTER:readable, DT_END_ELLIPSIS:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, checkUpdate:readable , globProfiler:readable, debounce:readable */
+		/* global globSettings:readable, folders:readable, globFonts:readable, DT_VCENTER:readable, DT_CENTER:readable, DT_END_ELLIPSIS:readable, DT_CALCRECT:readable, DT_NOPREFIX:readable, globProfiler:readable, debounce:readable */
 		'helpers\\helpers_xxx_foobar.js',
 		'helpers\\helpers_xxx_properties.js',
 		/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable, checkJsonProperties:readable, getPropertiesValues:readable, deleteProperties:readable */
@@ -37,21 +37,13 @@ window.DrawMode = Math.max(Math.min(window.GetProperty('bar.Draw mode: GDI (0), 
 		/* global _background:readable */
 		'main\\window\\window_xxx_dynamic_colors.js' // Requires Chroma
 		/* global dynamicColors:readable, mostContrastColor:readable */
-	];
-	let bIncludeRel = true;
-	try { include('..\\..\\helpers\\helpers_xxx_dummy.js'); } catch (e) { bIncludeRel = false; } // eslint-disable-line no-unused-vars
-	if (bIncludeRel) { dependencies.forEach((file) => { include('..\\..\\' + file); }); }
-	else { dependencies.forEach((file) => { include(file); }); }
+	].forEach((file) => include(file));
 }
 {
-	const dependencies = [
+	[
 		'helpers\\buttons_merged_menu.js' // Loads Chroma
 		/* global createButtonsMenu:readable, onRbtnUpImportSettings:readable, Chroma:readable */
-	];
-	let bIncludeRel = true;
-	try { include('..\\helpers\\buttons_dummy.js'); } catch (e) { bIncludeRel = false; } // eslint-disable-line no-unused-vars
-	if (bIncludeRel) { dependencies.forEach((file) => { include('..\\' + file); }); }
-	else { dependencies.forEach((file) => { include('buttons\\' + file); }); }
+	].forEach((file) => include('buttons\\' + file));
 }
 
 globProfiler.Print('helpers');
@@ -577,15 +569,8 @@ if (barProperties.bLoadAsync[1]) {
 
 // Update check
 if (barProperties.bAutoUpdateCheck[1]) {
-	{
-		const dependencies = [
-			'helpers\\helpers_xxx_web_update.js',
-		];
-		let bIncludeRel = true;
-		try { include('..\\..\\helpers\\helpers_xxx_dummy.js'); } catch (e) { bIncludeRel = false; } // eslint-disable-line no-unused-vars
-		if (bIncludeRel) { dependencies.forEach((file) => { include('..\\..\\' + file); }); }
-		else { dependencies.forEach((file) => { include(file); }); }
-	}
+	include('helpers\\helpers_xxx_web_update.js');
+	/* global checkUpdate:readable */
 	setTimeout(checkUpdate, 120000, { bDownload: globSettings.bAutoUpdateDownload, bOpenWeb: globSettings.bAutoUpdateOpenWeb });
 }
 
