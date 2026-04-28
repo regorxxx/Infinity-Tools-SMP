@@ -2,9 +2,7 @@
 
 # Infinity-Tools-SMP
 [![version][version_badge]][changelog]
-[![CodeFactor][codefactor_badge]](https://www.codefactor.io/repository/github/regorxxx/Infinity-Tools-SMP/overview/main)
-[![CodacyBadge][codacy_badge]](https://www.codacy.com/gh/regorxxx/Infinity-Tools-SMP/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=regorxxx/Playlist-Tools-SMP&amp;utm_campaign=Badge_Grade)
-![GitHub](https://img.shields.io/github/license/regorxxx/Infinity-Tools-SMP)  
+![GitHub](https://img.shields.io/badge/license-NON--AI_AGPL--3.0-blue)  
 A collection of [Spider Monkey Panel](https://theqwertiest.github.io/foo_spider_monkey_panel)/[JSplitter](https://foobar2000.ru/forum/viewtopic.php?t=6378) Tools for [foobar2000](https://www.foobar2000.org): playback controls, removing duplicates, wrapped, statistics report, advanced playlist manipulation, dynamic queries, genre analysis, "spotify-like" playlist creation, ... Infinite possibilities. Previous users of my scripts will notice this is a merge of all the previous toolbar scripts, for simplicity, into a new package format.
 
 <p align="center">
