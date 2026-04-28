@@ -10,7 +10,7 @@
 // eslint-disable-next-line no-unused-vars
 var bLoadTags = true; // NOSONAR
 
-if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '1.4.0-beta', features: { drag_n_drop: false } }); }
+if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '2.0.0', features: { drag_n_drop: false } }); }
 
 // GDI/D2D draw mode
 window.DrawMode = Math.max(Math.min(window.GetProperty('bar.Draw mode: GDI (0), D2D (1)', 0), 1), 0);

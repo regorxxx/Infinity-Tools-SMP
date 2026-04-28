@@ -2,6 +2,7 @@
 
 ## [Table of Contents]
 - [Unreleased](#unreleased)
+- [2.0.0](#200---2026-04-28)
 - [1.4.0](#140---2026-01-12)
 - [1.3.0](#130---2026-01-01)
 - [1.2.0](#120---2025-12-23)
@@ -9,6 +10,12 @@
 - [1.0.0](#100---2025-11-19)
 
 ## [Unreleased][]
+### Added
+### Changed
+### Removed
+### Fixed
+
+## [2.0.0] - 2026-04-28
 ### Added
 - ListenBrainz Tools: added Discover releases feature: to discover latest releases not on your library or upcoming ones. It's fully based on [ListenBrainz fresh releases](https://listenbrainz.org/explore/fresh-releases/) and will display results as a formatted text table.
 - Buttons: new button "Utils\Checksum" which is meant to greatly help with backup and integrity checks. Tool scans current selection and checks for checksum file for every parent directory (this is usually a folder per album) or creates a new one for every dir. Binary paths and arguments are customizable, by default it uses fsum (already bundled). Results are sent to console and/or popups. The main advantage of this tool over batch files and other scripts is path de-duplication, you can easily select 200 tracks and run it while ensuring the actual code only process every parent path once; while it works across libraries scattered at multiple disks, etc.
@@ -188,7 +195,8 @@
 - Multiple foobar v2.25 file-relative fixes.
 
 
-[Unreleased]: ../../compare/v1.4.0...HEAD
+[Unreleased]: ../../compare/v2.0.0...HEAD
+[2.0.0]: ../../compare/v.1.4.0...v2.0.0
 [1.4.0]: ../../compare/v.1.3.0...v1.4.0
 [1.3.0]: ../../compare/v.1.2.0...v1.3.0
 [1.2.0]: ../../compare/v.1.1.0...v1.2.0
