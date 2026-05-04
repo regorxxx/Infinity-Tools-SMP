@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//04/05/26
 
 /*
 	Playlist Tools Menu
@@ -21,10 +21,9 @@ if (!window.ScriptInfo.Name) { window.DefineScript('Playlist Tools: Button', { a
 	const dependencies = [
 		'helpers\\helpers_xxx_properties.js',
 		/* global setProperties:readable, getPropertiesPairs:readable */
-		'helpers\\helpers_xxx_clipboard.js',
-		/* global _setClipboardData:readable*/
 		'main\\playlist_tools\\playlist_tools_menu.js'];
 	/* global menu_prefix:writable, menu:readable, menuAlt:readable, defaultArgs:readable, menu_prefix_panel:readable, updateMenuProperties:readable, menu_properties:readable , menuTooltip:readable */
+	/* global _setClipboardData:readable */
 	/* global isBoolean:readable */
 	/* global _textWidth:readable, chars:readable, _scale:readable */
 	/* global updateCache:readable */
