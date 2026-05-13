@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/08/25
+//07/05/26
 
 /* exported fooidUtils */
 
@@ -87,9 +87,9 @@ const fooidUtils = {
 		const {fits: fitSource, doms: domsSource, length} = this.decodeFrom(aBuffer);
 		const {fits: fitTarget, doms: domsTarget} = this.decodeFrom(bBuffer);
 		// sample rate / FFT size
-		const ratio = 8000.0 / 8192.0;
+		const ratio = 8000 / 8192;
 		// frames in this fingerprint
-		const frames = Math.min(this.FRAMES_PER_FP, Math.round((length * ratio) / 100.0));
+		const frames = Math.min(this.FRAMES_PER_FP, Math.round((length * ratio) / 100));
 		// maximum error possible given length
 		const maxError = frames * ((9 * 16) + (0.25 * 63));
 		let errorFit = 0, errorDom = 0;
@@ -99,10 +99,10 @@ const fooidUtils = {
 		for (let i = 0; i < domsSource.length; i++) {
 			errorDom += Math.abs(domsSource[i] - domsTarget[i]);
 		}
-		const error = errorFit + (errorDom / 4.0);
+		const error = errorFit + (errorDom / 4);
 		const perc = 1 - (error / maxError);
 		let corr = (perc - 0.5) * 2;
-		corr = round(Math.max(corr, 0.0000), 4);
+		corr = round(Math.max(corr, 0), 4);
 		return corr;
 	},
 	// Return index of maximum value in list

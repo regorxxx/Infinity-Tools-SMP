@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/09/25
+//07/05/26
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global folders:readable, globTags:readable,  */
@@ -46,13 +46,13 @@ chromaPrintUtils.compareFingerprints = async function compareFingerprints({
 	const fromTags = (bReadFiles
 		? await ffprobeUtils.getTags(fromHandleList, tagName).then((tags) => { return tags.map((obj) => [obj[tagName]]); })
 		: getHandleListTagsV2(fromHandleList, [tagName], { bMerged: true, splitBy: null })
-	).map((array) => { return array.map((item) => { return item.split(','); }).flat(1).map((item) => { return item ? Number(item) : void (0); }).filter(Boolean); });
+	).map((array) => array.flatMap((item) => item.split(',')).map((item) => item ? Number(item) : void (0)).filter(Boolean));
 	const toTags = bSameList
 		? fromTags
 		: (bReadFiles
 			? await ffprobeUtils.getTags(toHandleList, tagName).then((tags) => { return tags.map((obj) => [obj[tagName]]); })
 			: getHandleListTagsV2(toHandleList, [tagName], { bMerged: true, splitBy: null })
-		).map((array) => { return array.map((item) => { return item.split(','); }).flat(1).map((item) => { return item ? Number(item) : void (0); }).filter(Boolean); });
+		).map((array) => array.flatMap((item) => item.split(',')).map((item) => item ? Number(item) : void (0)).filter(Boolean));
 	// Safecheck for improper set Library
 	if (fromTags.every((val) => !val.length) || !bSameList && toTags.every((val) => !val.length)) {
 		fb.ShowPopupMessage('Selection has no ChromaPrint fingerprint tags or Foobar2000 has not be configured to read the full tag (on v1.6.X).\n\nEither configure \'LargeFieldsConfig.txt\' properly or use \'Read directly from files\' option.', 'Fingerprint Tagger');
@@ -180,7 +180,7 @@ chromaPrintUtils.compareFingerprintsFilter = async function compareFingerprints(
 	const fromTags = (bReadFiles
 		? await ffprobeUtils.getTags(fromHandleList, tagName).then((tags) => { return tags.map((obj) => [obj[tagName]]); })
 		: getHandleListTagsV2(fromHandleList, [tagName], { bMerged: true, splitBy: null })
-	).map((array) => { return array.map((item) => { return item.split(','); }).flat(1).map((item) => { return item ? Number(item) : void (0); }).filter(Boolean); });
+	).map((array) => array.flatMap((item) => item.split(',')).map((item) => item ? Number(item) : void (0)).filter(Boolean));
 	// Get reverse map of tags
 	let data = null;
 	if (_isFile(reverseDbPath) || _isFile(reverseDbPath.replace('.json', '0.json'))) {
@@ -215,7 +215,7 @@ chromaPrintUtils.compareFingerprintsFilter = async function compareFingerprints(
 				const toTag = (bReadFiles
 					? await ffprobeUtils.getTags(new FbMetadbHandleList(toHandleList[idx]), tagName).then((tags) => { return tags.map((obj) => [obj[tagName]]); })
 					: getHandleListTagsV2(new FbMetadbHandleList(toHandleList[idx]), [tagName], { bMerged: true, splitBy: null })
-				)[0].map((item) => { return item.split(','); }).flat(1).map((item) => { return item ? Number(item) : void (0); }).filter(Boolean);
+				)[0].flatMap((item) => item.split(',')).map((item) => item ? Number(item) : void (0)).filter(Boolean);
 				let toTagLen = toTag ? toTag.length : null;
 				if (toTagLen) {
 					const similarity = round(this.correlate(toTagLen > tagLen ? toTag.slice(0, tagLen) : toTag, fromTagLen > tagLen ? fromTag.slice(0, tagLen) : fromTag) * 100, 1);
@@ -429,18 +429,18 @@ chromaPrintUtils.reverseIndexing = function reverseIndexing({
 	// Split original tags in arrays of ints if they are joined with comma, etc.
 	let splitTags = toTags.map((array) => array.filter(Boolean))
 		|| toSplitTags
-			.map((array) => { return array.map((item) => { return item.split(','); }).flat(1).map((item) => { return item ? Number(item) : void (0); }).filter(Boolean); });
+			.map((array) => array.flatMap((item) => item.split(',')).map((item) => item ? Number(item) : void (0)).filter(Boolean));
 	// Create inverse map with every fp tag pointing to every handle which features it
 	// Position doesn't matter
 	const reverseMap = bFastMap ? (prevMap || new FastMap()) : (prevMap || new Map()); // [[integer, set([idx])], ...]
 	let prevProgress = -1, iSteps = splitTags.length;
 	splitTags.forEach((array, idx) => {
 		if (array[0]) {
-			let splitArr = array.map((item) => { return item.split(','); }).flat(1).slice(0, tagLen).map((item) => { return item ? Number(item) : void (0); }).filter(Boolean);
+			let splitArr = array.flatMap((item) => item.split(',')).slice(0, tagLen).map((item) => item ? Number(item) : void (0)).filter(Boolean);
 			splitArr.forEach((tag) => {
 				const truncate = tag.toString().slice(0, reverseIdxLen);
-				if (!reverseMap.has(truncate)) { reverseMap.set(truncate, new Set([idx + currOffset])); } // When a number appears multiple times, it's only counted once
-				else { reverseMap.set(truncate, reverseMap.get(truncate).add(idx + currOffset)); }
+				if (reverseMap.has(truncate)) { reverseMap.set(truncate, reverseMap.get(truncate).add(idx + currOffset)); }
+				else { reverseMap.set(truncate, new Set([idx + currOffset])); } // When a number appears multiple times, it's only counted once
 			});
 			if (bConsole) {
 				const progress = Math.round((idx + 1) / iSteps * 10) * 10;
