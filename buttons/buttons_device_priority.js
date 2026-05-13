@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//07/05/26
 
 /*
 	Output device priority
@@ -91,10 +91,10 @@ addButton({
 						fb.ShowPopupMessage('File is exported at:\n' + devicesFile + '\n\nAdds any device currently attached to the list if it\'s not present (no duplicates). Option is only available after exporting the list at least once.', 'Output device priority');
 						if (!options) { return; }
 						toAdd.forEach((newDev) => { options.push(newDev); });
-						if (!_save(devicesFile, JSON.stringify(options, null, '\t').replace(/\n/g, '\r\n'))) {
+						if (_save(devicesFile, JSON.stringify(options, null, '\t').replace(/\n/g, '\r\n'))) { console.log('Output device priority: no new devices added.'); }
+						else {
 							console.log('Output device priority: file saving failed (' + devicesFile + ')');
 						}
-						else { console.log('Output device priority: no new devices added.'); }
 					}, flags: toAdd.length && bFile ? MF_ENABLED : MF_GRAYED
 				});
 			}
@@ -207,10 +207,10 @@ addButton({
 				{	// Volume
 					const currVol = currDev && Object.hasOwn(currEntry, 'volume') ? currEntry.volume : null;
 					menu.newEntry({
-						menuName: currMenu, entryText: 'Set default volume' + '\t' + _b(currVol !== null ? 100 + currVol : 'default'), func: () => {
+						menuName: currMenu, entryText: 'Set default volume' + '\t' + _b(currVol === null ? 'default' : 100 + currVol), func: () => {
 							let input;
 							try {
-								input = utils.InputBox(window.ID, 'Input volume value (from 0 to 100):\n(Empty to not change volume)', 'Output device priority', currVol !== null ? 100 + currVol : '', true);
+								input = utils.InputBox(window.ID, 'Input volume value (from 0 to 100):\n(Empty to not change volume)', 'Output device priority', currVol === null ? '' : 100 + currVol, true);
 								if (input === '') { input = null; }
 								if (input !== null) { input = -100 + Math.abs(Number(input)); }
 							} catch (e) { return; } // eslint-disable-line no-unused-vars
@@ -255,9 +255,9 @@ addButton({
 							optionsName.push(deviceName);
 							menu.newEntry({
 								menuName: currMenu, entryText: deviceName, func: () => {
-									priorityList[idx - 1] = entry.name !== 'None'
-										? { name: entry.name, device_id: entry.device_id, output_id: entry.output_id }
-										: { name: null, device_id: null, output_id: null };
+									priorityList[idx - 1] = entry.name === 'None'
+										? { name: null, device_id: null, output_id: null }
+										: { name: entry.name, device_id: entry.device_id, output_id: entry.output_id };
 									if (!_save(devicesPriorityFile, JSON.stringify(priorityList, null, '\t').replace(/\n/g, '\r\n'))) {
 										console.log('Output device priority: file saving failed (' + devicesPriorityFile + ')');
 									}
@@ -268,7 +268,7 @@ addButton({
 					menu.newCheckMenu(currMenu, optionsName[0], optionsName[optionsName.length - 1], () => {
 						const currOption = Object.hasOwn(currEntry, 'name') ? currEntry.name : null;
 						const id = currOption && currOption.length ? options.findIndex((item) => { return item.name === currOption; }) : 0;
-						return (id !== -1 ? (id !== 0 ? id + 2 : 0) : 1);
+						return (id === -1 ? 1 : (id === 0 ? 0 : id + 2));
 					});
 				}
 			});

@@ -1,5 +1,5 @@
 'use strict';
-//27/03/26
+//07/05/26
 
 /* exported listenBrainzMenu */
 
@@ -97,14 +97,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				const idx = info.MetaFind(tf);
 				tag.val.push([]);
 				// File tags
-				if (idx !== -1) {
-					let count = info.MetaValueCount(idx);
-					while (count--) {
-						const val = info.MetaValue(idx, count).trim().toLowerCase();
-						tag.val[i].push(val);
-						if (i === 0 || i !== 0 && !/TITLE|ALBUM_TRACKS/i.test(tag.type)) { tag.valSet.add(val); }
-					}
-				} else {
+				if (idx === -1) {
 					// foo_uie_biography
 					if (tf === 'LASTFM_SIMILAR_ARTIST') { // NOSONAR
 						fb.TitleFormat('[%' + tf + '%]')
@@ -117,6 +110,13 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 								tag.val[i].push(val);
 								tag.valSet.add(val);
 							});
+					}
+				} else {
+					let count = info.MetaValueCount(idx);
+					while (count--) {
+						const val = info.MetaValue(idx, count).trim().toLowerCase();
+						tag.val[i].push(val);
+						if (i === 0 || i !== 0 && !/TITLE|ALBUM_TRACKS/i.test(tag.type)) { tag.valSet.add(val); }
 					}
 				}
 				// Bio tags
@@ -155,8 +155,8 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 						});
 					}
 					if (lbData.size) {
-						const lbTag = tags.find((tag) => tag.tf.some((tf) => tf === dataTag));
-						const idx = lbTag ? lbTag.tf.findIndex((tf) => tf === dataTag) : -1;
+						const lbTag = tags.find((tag) => tag.tf.includes(dataTag));
+						const idx = lbTag ? lbTag.tf.indexOf(dataTag) : -1;
 						if (idx !== -1) {
 							lbTag.val[idx].push(...lbData);
 							lbTag.valSet = lbTag.valSet.union(lbData);
@@ -180,8 +180,8 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 					});
 				}
 				if (worldMapData.size) {
-					const localeTag = tags.find((tag) => tag.tf.some((tf) => tf === 'LOCALE WORLD MAP'));
-					const idx = localeTag ? localeTag.tf.findIndex((tf) => tf === 'LOCALE WORLD MAP') : -1;
+					const localeTag = tags.find((tag) => tag.tf.includes('LOCALE WORLD MAP'));
+					const idx = localeTag ? localeTag.tf.indexOf('LOCALE WORLD MAP') : -1;
 					if (idx !== -1) {
 						localeTag.val[idx].push(...worldMapData);
 						localeTag.valSet = localeTag.valSet.union(worldMapData);
@@ -261,18 +261,18 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 		return (idx = plman.ActivePlaylist) => {
 			const count = this.selItems
 				? (this.selItems.Count || 0)
-				: idx !== -1
-					? plman.GetPlaylistSelectedItems(idx).Count
-					: 0;
+				: idx === -1
+					? 0
+					: plman.GetPlaylistSelectedItems(idx).Count;
 			return (count && count <= maxCount ? MF_STRING : MF_GRAYED);
 		};
 	};
 	const selectedCountTitle = (maxCount, idx = plman.ActivePlaylist) => {
 		const count = this.selItems
 			? (this.selItems.Count || 0)
-			: idx !== -1
-				? plman.GetPlaylistSelectedItems(idx).Count
-				: 0;
+			: idx === -1
+				? 0
+				: plman.GetPlaylistSelectedItems(idx).Count;
 		return (count
 			? count <= maxCount ? '' : ' (< ' + maxCount + ' tracks)'
 			: ''
@@ -321,12 +321,12 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 								console.log('ListenBrainz: Error connecting to server. Data has been cached and will be sent later...');
 								const date = Date.now();
 								const data = lb.cache.feedback.get(user || properties.userCache[1]) || {};
-								if (!response) {
-									sendMBIDs.forEach((mbid) => data[mbid] = { feedback: entry.key, date });
-								} else {
+								if (response) {
 									response.forEach((bUpdate, i) => {
 										if (!bUpdate) { data[sendMBIDs[i]] = { feedback: entry.key, date }; }
 									});
+								} else {
+									sendMBIDs.forEach((mbid) => data[mbid] = { feedback: entry.key, date });
 								}
 								lb.cache.feedback.set(user || properties.userCache[1], data);
 								setTimeout(this.saveCache, 0, user || properties.userCache[1]);
@@ -338,7 +338,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 					if (properties.bTagFeedback[1]) {
 						console.log('Tagging files...');
 						const feedback = entry.key === 'love' ? 1 : entry.key === 'hate' ? -1 : '';
-						const tags = Array(handleList.Count).fill('').map(() => { return { [feedbackTag]: feedback }; });
+						const tags = new Array(handleList.Count).fill('').map(() => { return { [feedbackTag]: feedback }; });
 						handleList.UpdateFileInfoFromJSON(JSON.stringify(tags));
 					}
 				}, flags: bListenBrainz ? selectedFlagsCount(25) : MF_GRAYED, data: { bDynamicMenu: true }
@@ -370,9 +370,9 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 					table.cell('Title', title);
 					table.cell('Online', score);
 					table.cell('Tag', bMismatch
-						? feedback !== '-none-'
-							? feedback
-							: '  \u2715  '
+						? feedback === '-none-'
+							? '  \u2715  '
+							: feedback
 						: '  \u2713  ');
 					table.newRow();
 				});
@@ -1068,7 +1068,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 							last = playlists[Math.min(count - 1, lastIdx - 1)].title[0].toUpperCase();
 					}
 					const suffix = first !== null || last !== null
-						? '   ' + _b(first + (last !== first ? ' - ' + last : ''))
+						? '   ' + _b(first + (last === first ? '' : ' - ' + last))
 						: '';
 					return firstIdx.toString().padStart(padding, '0') + ' - ' + lastIdx.toString().padStart(padding, '0') + suffix;
 				});
@@ -1382,12 +1382,12 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 								console.log('ListenBrainz: Error connecting to server. Data has been cached and will be sent later...');
 								const date = Date.now();
 								const data = lb.cache.feedback.get(user || properties.userCache[1]) || {};
-								if (!response) {
-									sendMBIDs.forEach((mbid) => data[mbid] = { feedback: 'love', date });
-								} else {
+								if (response) {
 									response.forEach((bUpdate, i) => {
 										if (!bUpdate) { data[sendMBIDs[i]] = { feedback: 'love', date }; }
 									});
+								} else {
+									sendMBIDs.forEach((mbid) => data[mbid] = { feedback: 'love', date });
 								}
 								lb.cache.feedback.set(user || properties.userCache[1], data);
 								setTimeout(this.saveCache, 0, user || properties.userCache[1]);
@@ -1473,12 +1473,13 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				menuName: subMenuName, entryText: 'Create Daily jams', func: () => {
 					const token = bListenBrainz ? getToken() : null;
 					if (!token) { return; }
-					if (!lb.isFollowing('troi-bot', token)) {
+					if (lb.isFollowing('troi-bot', token)) { lb.unFollowUser('troi-bot', getToken()); }
+					else {
 						if (properties.bPlsMatchMBID[1]) {
 							fb.ShowPopupMessage('Daily jams are playlist automatically created by the ListenBrainz recommendation backend (troi) every day if you have enough listens data available. The feature is enabled by following a bot user named \'troi-bot\'.');
 						}
 						lb.followUser('troi-bot', getToken());
-					} else { lb.unFollowUser('troi-bot', getToken()); }
+					}
 				}, flags: bListenBrainz ? MF_STRING : MF_GRAYED
 			});
 			menu.newCheckMenuLast(() => lb.isFollowing('troi-bot', getToken()));

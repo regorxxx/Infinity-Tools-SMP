@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/03/26
+//07/05/26
 
 /*
 	Volume controls and display
@@ -125,8 +125,8 @@ addButton({
 					},
 					void (0), { parentName: 'Volume display: ' }
 				).btn_up(this.currX, this.currY + this.currH);
-			} else if (!this.isInput) { this.startInput(); }
-			else { this.applyInput(); }
+			} else if (this.isInput) { this.applyInput(); }
+			else { this.startInput(); }
 		},
 		gFont: _gdiFont(globFonts.button.name, globFonts.button.size * 1.2 * buttonsBar.config.textScale, FontStyle.Bold),
 		description: function () {
@@ -205,7 +205,7 @@ addButton({
 			},
 			on_char: function (parent, code) {
 				if (this.isInput) {
-					const char = String.fromCharCode(code);
+					const char = String.fromCodePoint(code);
 					if (/\d/.test(char)) {
 						if (isFunction(this.text)) { this.text = ''; }
 						const volume = this.getVolume(this.text + '' + char);

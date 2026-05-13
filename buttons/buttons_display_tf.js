@@ -1,5 +1,5 @@
 ﻿'use strict';
-//13/12/25
+//07/05/26
 
 /*
 	Volume controls and display
@@ -163,7 +163,7 @@ addButton({
 							});
 							menu.newCheckMenuLast(() => { // It fails for DT_LEFT === 0
 								const idx = options.findIndex((o) => this.textFlags.has(o.flag));
-								return idx !== -1 ? idx : 0;
+								return idx === -1 ? 0 : idx;
 							}, options);
 						}
 						{
@@ -187,7 +187,7 @@ addButton({
 							});
 							menu.newCheckMenuLast(() => { // It fails for none
 								const idx = options.findIndex((o) => this.textFlags.has(o.flag));
-								return idx !== -1 ? idx : 0;
+								return idx === -1 ? 0 : idx;
 							}, options);
 							menu.newSeparator();
 							{
@@ -373,7 +373,7 @@ addButton({
 				};
 			})(),
 			hasDynamicQueries: function () {
-				return this.tfSource().includes('#') || this.tfSource().includes('#');
+				return this.tfSource().includes('#') && this.tfSource().count('#') >= 2;
 			},
 			displayFunc: function () {
 				const val = String(this.tfEval());
@@ -533,8 +533,8 @@ addButton({
 					},
 					{
 						text: 'Edit TF expression', func: () => {
-							if (!this.isInput) { this.startInput(); }
-							else { this.applyInput(); }
+							if (this.isInput) { this.applyInput(); }
+							else { this.startInput(); }
 						}, bAvailable: true
 					}
 				];
@@ -576,7 +576,7 @@ addButton({
 			},
 			on_char: function (parent, code) {
 				if (this.isInput) {
-					const char = String.fromCharCode(code);
+					const char = String.fromCodePoint(code);
 					if (isFunction(this.text)) { this.text = this.tfSource(); }
 					if (code === VK_BACK) {
 						this.text = this.text.replace(this.sep, '').slice(0, -1) + this.sep;

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//07/05/26
 
 include('..\\..\\helpers\\menu_xxx.js');
 include('..\\..\\helpers\\helpers_xxx.js');
@@ -143,7 +143,7 @@ function createRecipeMenu(parent) {
 			if (Object.hasOwn(names, key)) { names[key]++; }
 			else { names[key] = 1; }
 			const result = testRecipe({ json: recipe, baseTags: tags });
-			const entryText = (names[key] === 1 ? name : name + ' ' + _p(names[key])) + (!result.valid ? '\t(error)' : '\t' + _p(recipe.method));
+			const entryText = (names[key] === 1 ? name : name + ' ' + _p(names[key])) + (result.valid ? '\t' + _p(recipe.method) : '\t(error)');
 			menus.push(entryText);
 			recipeMenu.newEntry({
 				entryText, func: () => {

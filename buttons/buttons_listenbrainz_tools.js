@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/03/26
+//07/05/26
 
 /*
 	Integrates ListenBrainz feedback and recommendations statistics within foobar2000 library.
@@ -150,7 +150,7 @@ addButton({
 			const user = ListenBrainz.cache.user.get(token) || '';
 			const bShift = utils.IsKeyPressed(VK_SHIFT);
 			const bInfo = typeof barProperties === 'undefined' || barProperties.bTooltipInfo[1];
-			const selMul = plman.ActivePlaylist !== -1 ? plman.GetPlaylistSelectedItems(plman.ActivePlaylist) : null;
+			const selMul = plman.ActivePlaylist === -1 ? null : plman.GetPlaylistSelectedItems(plman.ActivePlaylist);
 			const data = (ListenBrainz.cache.feedback ? [...ListenBrainz.cache.feedback] : [['', {}]]).filter((userData) => userData[0] === user);
 			let infoMul = '';
 			if (selMul && selMul.Count > 1) {
@@ -165,7 +165,7 @@ addButton({
 					'Current track:	$ifgreater($len($get(info)),50,$cut($get(info),50)...,$get(info))' +
 					'[$and(%' + feedbackTag + '%)$crlf()Feedback:	$select($add(%' + feedbackTag + '%,2),' + sanitizeTagTfo(chars.sadEmoji) + ' Hated...,-,' + sanitizeTagTfo(chars.loveEmojiCycle(2000)) + ' Loved!)]' // Only show if tag is present
 				);
-				info = 'Playlist:		' + (plman.ActivePlaylist !== -1 ? plman.GetPlaylistName(plman.ActivePlaylist) : '-none-') + infoMul + '\n';
+				info = 'Playlist:		' + (plman.ActivePlaylist === -1 ? '-none-' : plman.GetPlaylistName(plman.ActivePlaylist)) + infoMul + '\n';
 				info += tfo.EvalWithMetadb(sel);
 			}
 			info += '\nToken:\t\t' + (bListenBrainz ? 'Ok' : ' -missing token-');
@@ -296,10 +296,10 @@ addButton({
 					const oldData = _jsonParseFile(cacheFile, utf8);
 					_recycleFile(cacheFile, true);
 					const idx = oldData.findIndex((userData) => userData.name === user);
-					if (idx !== -1) {
-						oldData[idx] = data[0];
-					} else {
+					if (idx === -1) {
 						oldData.push(data[0]);
+					} else {
+						oldData[idx] = data[0];
 					}
 					oldData.forEach((userData) => newData.push(userData));
 				} else {
