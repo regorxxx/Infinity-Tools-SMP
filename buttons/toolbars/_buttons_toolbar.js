@@ -1,5 +1,5 @@
 ﻿'use strict';
-//06/04/26
+//07/05/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -151,11 +151,11 @@ function loadButtonsFile(bStartup = false) {
 			},
 			/* global sbd:readable */
 			{
-				name: (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ' (basic)', files:
+				name: (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ' (basic)', files:
 					['buttons_music_map_basic.js', 'buttons_music_map_genre_explorer.js']
 			},
 			{
-				name: (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ' (customizable)', files:
+				name: (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ' (customizable)', files:
 					['buttons_music_map_customizable.js', 'buttons_music_map_customizable.js', 'buttons_music_map_genre_explorer.js']
 			},
 			{
@@ -191,7 +191,7 @@ function loadButtonsFile(bStartup = false) {
 					['buttons_playlist_tools.js', 'buttons_playlist_tools_submenu_custom.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_remove_duplicates.js', 'buttons_search_quicksearch.js']
 			},
 			{
-				name: 'Full' + (typeof sbd !== 'undefined' ? ' (with ' + sbd.name + ')' : ' (with Music Map)'), files:
+				name: 'Full' + (typeof sbd === 'undefined' ? ' (with Music Map)' : ' (with ' + sbd.name + ')'), files:
 					['buttons_playlist_tools.js', 'buttons_playlist_tools_submenu_custom.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_remove_duplicates.js', 'buttons_music_map_customizable.js', 'buttons_search_quicksearch.js']
 			},
 			{
@@ -224,13 +224,13 @@ function loadButtonsFile(bStartup = false) {
 			}
 		}
 	};
-	if (!_isFile(file)) {
-		presetPopup();
-	} else {
+	if (_isFile(file)) {
 		const data = _jsonParseFileCheck(file, 'Buttons bar', window.Name, utf8);
 		// Strip full path
 		if (data) { names = data.map((path) => path.split('\\').pop()); }
 		if (!names.length) { presetPopup(); }
+	} else {
+		presetPopup();
 	}
 	const remap = new Map([
 		['buttons_lastfm_list.js', 'buttons_lastfm_tools.js'],
@@ -385,7 +385,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 		case window.ScriptInfo.Name + ': set color scheme': { // Needs an array of at least 6 colors to automatically adjust dynamic colors
 			if (info && barProperties.bOnNotifyColors[1]) {
 				const bar = buttonsBar.config;
-				const { main, sec, note, mainAlt, secAlt } = dynamicColors( // eslint-disable-line no-unused-vars
+				const { main, sec, note, mainAlt } = dynamicColors( // eslint-disable-line no-unused-vars
 					clone(info),
 					bar.bToolbar
 						? bar.toolbarColor
