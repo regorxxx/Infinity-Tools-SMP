@@ -1,5 +1,5 @@
 'use strict';
-//06/08/25
+//07/05/26
 
 /*
 	Slightly modified version of https://github.com/L3v3L/foo-last-list-smp
@@ -52,23 +52,23 @@ class LastList {
 
 			let startPage = 1;
 			if (matches.length > 0) {
-				startPage = parseInt(matches[0][2]);
-				if (isNaN(startPage) || startPage < 1) {
+				startPage = Number.parseInt(matches[0][2]);
+				if (Number.isNaN(startPage) || startPage < 1) {
 					startPage = 1;
 				}
 
 				url = url.replace(matches[0][1], '');
 			}
 
-			if (!pages || isNaN(pages) || pages < 1) {
+			if (!pages || Number.isNaN(pages) || pages < 1) {
 				try {
 					pages = utils.InputBox(0, 'Enter the number of pages:', 'Download', this.pages, true);
 				} catch (e) { // eslint-disable-line no-unused-vars
 					throw new InputError('Canceled Input');
 				}
 
-				pages = parseInt(pages);
-				if (isNaN(pages) || pages < 1) {
+				pages = Number.parseInt(pages);
+				if (Number.isNaN(pages) || pages < 1) {
 					pages = 1;
 				}
 			}
@@ -135,7 +135,7 @@ class LastList {
 		plman.ClearPlaylist(playlist);
 		let itemsToAdd = [];
 
-		let hasYoutubeComponent = typeof isYouTube !== 'undefined' ? isYouTube : utils.CheckComponent('foo_youtube', true);
+		let hasYoutubeComponent = typeof isYouTube === 'undefined' ? utils.CheckComponent('foo_youtube', true) : isYouTube;
 
 		let promises = [];
 
@@ -259,7 +259,7 @@ class LastList {
 							let jsonString = JSON.stringify(LastListCache.compressCache({
 								ver: 1,
 								url: url,
-								created_at: new Date().getTime(),
+								created_at: Date.now(),
 								trackItems: trackItems
 							}));
 							try {

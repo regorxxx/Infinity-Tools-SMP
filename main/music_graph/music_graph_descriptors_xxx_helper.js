@@ -1,5 +1,5 @@
 ﻿'use strict';
-//06/08/25
+//07/05/26
 
 /* global music_graph_descriptors:readable */
 
@@ -60,11 +60,11 @@ music_graph_descriptors.replaceWithAlternativeTerms = function replaceWithAltern
 	const copy = Array.from(genreStyleArr, (tag) => this.asciify(tag))
 		.map((tag) => {
 			const pair = this.style_substitutions.find((pair) => pair[1].includes(tag) || pair[0] === tag);
-			return !pair
-				? [tag]
-				: bOmitNonNode
+			return pair
+				? bOmitNonNode
 					? [...new Set([tag, pair[0], ...pair[1]])].filter((tag) => !nodeRegEx.test(tag))
-					: [...new Set([tag, pair[0], ...pair[1]])];
+					: [...new Set([tag, pair[0], ...pair[1]])]
+				: [tag];
 		});
 	return bFlat
 		? [...new Set(copy.flat(Infinity))] // ['House', 'House_supergenre', 'Folk', 'Folk-Rock', 'Folk Music_supercluster',]
@@ -90,19 +90,19 @@ music_graph_descriptors.filterDuplicatedSubstitutions = function filterDuplicate
 
 music_graph_descriptors.getAntiInfluences = function getAntiInfluences(genreStyle) {
 	const doubleIdx = this.style_anti_influence.flat().indexOf(this.getSubstitution(genreStyle));
-	const idx = !(doubleIdx & 1) ? doubleIdx / 2 : -1; // -1 for odd indexes, halved for even values
-	return idx !== -1 ? [...this.style_anti_influence[idx][1]] : [];
+	const idx = (doubleIdx & 1) ? -1 : doubleIdx / 2; // -1 for odd indexes, halved for even values
+	return idx === -1 ? [] : [...this.style_anti_influence[idx][1]];
 };
 
 music_graph_descriptors.getConditionalAntiInfluences = function getConditionalAntiInfluences(genreStyle) {
 	const idx = this.style_anti_influences_conditional.indexOf(this.getSubstitution(genreStyle));
-	return idx !== -1 ? this.getAntiInfluences(this.style_anti_influences_conditional[idx]) : [];
+	return idx === -1 ? [] : this.getAntiInfluences(this.style_anti_influences_conditional[idx]);
 };
 
 music_graph_descriptors.getInfluences = function getInfluences(genreStyle) {
 	const doubleIdx = this.style_primary_origin.flat().indexOf(this.getSubstitution(genreStyle));
-	const idx = !(doubleIdx & 1) ? doubleIdx / 2 : -1; // -1 for odd indexes, halved for even values
-	return idx !== -1 ? [...this.style_primary_origin[idx][1]] : [];
+	const idx = (doubleIdx & 1) ? -1 : doubleIdx / 2; // -1 for odd indexes, halved for even values
+	return idx === -1 ? [] : [...this.style_primary_origin[idx][1]];
 };
 
 music_graph_descriptors.nodeSet = null;

@@ -1,5 +1,5 @@
 'use strict';
-//27/12/23
+//07/05/26
 
 /* exported LastListCache */
 
@@ -54,7 +54,7 @@ class LastListCache {
 		});
 
 		// replace artist names with artist position in artistCounts array
-		cacheObject.trackItems = trackItems.map((track) => {
+		cacheObject.trackItems = trackItems.flatMap((track) => {
 			let artistIndex = artists.indexOf(track[2]);
 			if (artistIndex > -1) {
 				track[2] = artistIndex;
@@ -68,7 +68,7 @@ class LastListCache {
 			}
 
 			return track;
-		}).flat();
+		});
 
 		cacheObject.artists = artists;
 		cacheObject.coverArts = coverArts;
@@ -86,17 +86,17 @@ class LastListCache {
 		let coverArts = cacheObject.coverArts;
 
 		cacheObject.trackItems = trackItems.map((track) => {
-			if (!isNaN(track[2])) {
+			if (!Number.isNaN(track[2])) {
 				track[2] = artists[track[2]];
 			}
 
-			if (track[3] !== null) {
-				if (!isNaN(track[3])) {
+			if (track[3] === null) {
+				track[3] = null;
+			} else {
+				if (!Number.isNaN(track[3])) {
 					track[3] = coverArts[track[3]];
 				}
 				track[3] = track[3].replace(/^-/, 'https://lastfm.freetls.fastly.net/i/u/64s/').replace(/-$/g, '.jpg');
-			} else {
-				track[3] = null;
 			}
 
 			return {
