@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//17/04/26
+//07/05/26
 
 /* exported wrapped */
 
@@ -2012,7 +2012,7 @@ const wrapped = {
 				if (_isFile(imgPath)) {
 					data.artistImg = bRelative ? imgPath.replace(root, '') : imgPath;
 				} else if (data.artistImg && _isFile(data.artistImg)) {
-					imgPath = imgPath.replace(/\.jpg$/i, '.' + data.artistImg.split('.').pop().toLowerCase());
+					imgPath = imgPath.replace(/\.jpg$/i, () => '.' + data.artistImg.split('.').pop().toLowerCase());
 					if (_copyFile(data.artistImg, imgPath)) {
 						data.artistImg = bRelative ? imgPath.replace(root, '') : imgPath;
 					} else { bFallback = true; }
@@ -3335,10 +3335,10 @@ const wrapped = {
 	 * @returns {string}
 	 */
 	parseCmd: function (cmd, input, output, time, root = this.basePath) {
-		return cmd.replace(/%1/gi, _q(input))
-			.replace(/%2/gi, _q(output))
-			.replace(/%3/gi, _q(root.replace(/\\$/, '')))
-			.replace(/%4/gi, time);
+		return cmd.replace(/%1/gi, () => _q(input))
+			.replace(/%2/gi, () => _q(output))
+			.replace(/%3/gi, () => _q(root.replace(/\\$/, '')))
+			.replace(/%4/gi, () => time);
 	},
 	/**
 	 * Copies all assets required to create the report to temp folder

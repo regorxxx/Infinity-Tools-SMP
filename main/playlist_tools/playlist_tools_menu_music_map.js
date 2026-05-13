@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/03/26
+//07/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, configMenu:readable, specialMenu:readable, deferFunc:readable, menu_propertiesBack:readable, createSmartShuffleMenu:readable */
 
@@ -10,7 +10,7 @@
 	const scriptPath = folders.xxx + 'main\\search_by_distance\\search_by_distance.js';
 	/* global SearchByDistance_properties:readable, updateCache:readable, sbd:readable, findStyleGenresMissingGraphCheck:readable, searchByDistance:readable, findStyleGenresMissingGraph:readable, music_graph_descriptors_culture:readable, graphDebug:readable, testGraphNodes:readable, testGraphNodeSets:readable, testGraphNodeSetsWithPath:readable, testGraphCulture:readable, cacheLink:writable, cacheLinkSet:writable, tagsCache:readable, calculateSimilarArtistsFromPls:readable, writeSimilarArtistsTags:readable, SearchByDistance_panelProperties:readable */ // eslint-disable-line no-unused-vars
 	if (_isFile(scriptPath)) {
-		if (!Object.hasOwn(menusEnabled, specialMenu) || menusEnabled[specialMenu] || !Object.hasOwn(menusEnabled, 'Pools (' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ')') || menusEnabled['Pools (' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ')']) {
+		if (!Object.hasOwn(menusEnabled, specialMenu) || menusEnabled[specialMenu] || !Object.hasOwn(menusEnabled, 'Pools (' + (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ')') || menusEnabled['Pools (' + (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ')']) {
 			if (!Object.hasOwn(menu_properties, 'bHarmonicMixDoublePass')) { menu_properties['bHarmonicMixDoublePass'] = ['Harmonic mixing double pass to match more tracks', true]; }
 			include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
 			readmes[newReadmeSep()] = 'sep';
@@ -170,9 +170,9 @@
 							const value = JSON.parse(menu_properties[key][1]).join(',');
 							const entryText = (
 								entryNames[i] ||
-								menu_properties[key][0].substring(menu_properties[key][0].indexOf('.') + 1, idxEnd !== -1
-									? idxEnd - 1
-									: Infinity
+								menu_properties[key][0].substring(menu_properties[key][0].indexOf('.') + 1, idxEnd === -1
+									? Infinity
+									: idxEnd - 1
 								)
 							).replace('\'' + sbd.name + '\' ', '') + '...' + '\t[' +
 								(
@@ -189,8 +189,8 @@
 										? menu_properties[key][3]
 										: JSON.stringify(input);
 									if (hook) { hook(key, i, menu_properties); }
-									overwriteMenuProperties; // Updates panel
-								}, flags: (flag[i] !== void (0) ? flag[i] : false) ? MF_GRAYED : MF_STRING
+									overwriteMenuProperties(); // Updates panel
+								}, flags: (flag[i] === void (0) ? false : flag[i]) ? MF_GRAYED : MF_STRING
 							});
 						});
 					};
@@ -204,7 +204,7 @@
 								menu.newCondEntry({
 									entryText: 'Tags (cond)', condFunc: () => {
 										const tags = JSON.parse(menu_properties.tags[1]);
-										const options = [...Object.keys(tags)];
+										const options = Object.keys(tags);
 										// Create menu on 2 places: tool config submenu and global tag submenu
 										const configMenuTag = menu.findOrNewMenu('Tag remapping', configMenu);
 										menu.newSeparator(configMenuTag);
@@ -364,7 +364,7 @@
 			}
 		}
 	} else {
-		menu.newEntry({ menuName: specialMenu, entryText: 'Based on ' + (typeof sbd !== 'undefined' ? sbd.name : 'Music Map') + ':', func: null, flags: MF_GRAYED });
+		menu.newEntry({ menuName: specialMenu, entryText: 'Based on ' + (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ':', func: null, flags: MF_GRAYED });
 		menu.newSeparator(specialMenu);
 		menu.newEntry({ menuName: specialMenu, entryText: '-Not installed-', func: null, flags: MF_GRAYED });
 	}
