@@ -1,5 +1,5 @@
 'use strict';
-//25/11/25
+//07/05/26
 
 /* exported writeSimilarArtistsTags, updateSimilarDataFile, mergeSimilarDataFromFiles */
 
@@ -10,8 +10,7 @@ include('helpers_xxx_prototypes.js');
 
 function writeSimilarArtistsTags({ file = folders.data + 'listenbrainz_artists.json', iNum = 10, tagName = globTags.lbSimilarArtist, windowName = window.FullPanelName } = {}) {
 	if (WshShell.Popup('Write similar artist tags from JSON database to files?\nOnly first ' + iNum + ' artists with highest score will be used.', 0, windowName, popup.question + popup.yes_no) === popup.no) { return false; }
-	if (!_isFile(file)) { return false; }
-	else {
+	if (_isFile(file)) {
 		const data = _jsonParseFile(file, utf8);
 		if (data) { return updateTrackSimilarTags({ data, tagName, iNum, windowName }); }
 	}
@@ -54,13 +53,13 @@ function updateTrackSimilarTags({ data, iNum = 10, tagName = globTags.lbSimilarA
 }
 
 function updateSimilarDataFile(file, newData, iNum = Infinity) {
-	if (!_isFile(file)) {
-		newData.forEach((obj) => { console.log(obj.artist + ' --> ' + JSON.stringify(obj.val.slice(0, iNum))); }); // DEBUG
-		_save(file, JSON.stringify(newData, null, '\t').replace(/\n/g, '\r\n'));
-	} else {
+	if (_isFile(file)) {
 		const data = getSimilarDataFromFile(file, newData, iNum);
 		_deleteFile(file);
 		_save(file, JSON.stringify(data, null, '\t').replace(/\n/g, '\r\n'));
+	} else {
+		newData.forEach((obj) => { console.log(obj.artist + ' --> ' + JSON.stringify(obj.val.slice(0, iNum))); }); // DEBUG
+		_save(file, JSON.stringify(newData, null, '\t').replace(/\n/g, '\r\n'));
 	}
 }
 
