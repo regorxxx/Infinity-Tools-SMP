@@ -11,7 +11,9 @@
 
 ## [Unreleased][]
 ### Added
+- Playlist Tools\Playlist manipulation: new submenu with playlists sorting features.
 ### Changed
+- Playlist Tools\Playlist manipulation: menu cleanup and minor reordering.
 ### Removed
 ### Fixed
 

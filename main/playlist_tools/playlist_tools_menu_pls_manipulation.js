@@ -1,9 +1,9 @@
 ﻿'use strict';
-//21/11/25
+//16/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable, entryMaxLength:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable, VK_SHIFT:readable, range:readable */
 
 // Playlist manipulation...
 {
@@ -419,20 +419,6 @@
 					} else { menuDisabled.push({ menuName: configMenu, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 				} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 			}
-		}
-		{	// Find / New Playlist
-			const name = 'Find or create playlist...';
-			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
-				menu.newEntry({
-					menuName, entryText: name, func: () => {
-						let input;
-						try { input = utils.InputBox(window.ID, 'Enter name:', scriptName + ': ' + name, 'New playlist', true); }
-						catch (e) { return; } // eslint-disable-line no-unused-vars
-						if (!input.length) { return; }
-						plman.ActivePlaylist = plman.FindOrCreatePlaylist(input, false);
-					}
-				});
-			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 		}
 		{	// Crop playlist length (for use with macros!!)
 			const name = 'Cut playlist length to';
@@ -1041,6 +1027,27 @@
 				} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 			}
 		}
+		{	// Sort Playlists
+			const name = 'Playlist Sorting';
+			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
+				{	// Submenu
+					const subMenuName = menu.newMenu(name, menuName);
+					menu.newEntry({ menuName: subMenuName, entryText: 'Press Shift to invert order:', flags: MF_GRAYED });
+					menu.newSeparator(subMenuName);
+					menu.newEntry({
+						menuName: subMenuName, entryText: 'Alphabetically sort all playlists', func: () => {
+							const bShift = utils.IsKeyPressed(VK_SHIFT);
+							plman.SortPlaylistsByName(bShift ? -1 : 1);
+							console.log(
+								scriptName + ': sorted playlist tabs in UI. By name ' + _p(bShift ? 'Za' : 'Az') + '.\n\t ' +
+								range(0, plman.PlaylistCount - 1).map((i) => _b(i) + ' ' + plman.GetPlaylistName(i)).join(', ')
+							);
+						}, flags: plman.PlaylistCount ? MF_STRING : MF_GRAYED
+					});
+				}
+				menu.newSeparator(menuName);
+			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+		}
 		{	// Playlist History
 			const scriptPath = folders.xxx + 'helpers\\playlist_history.js';
 			/* global PlsHistory:readable, getPlaylistIndexArray:readable,  */
@@ -1076,6 +1083,20 @@
 					});
 				} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 			}
+		}
+		{	// Find / New Playlist
+			const name = 'Find or create playlist...';
+			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
+				menu.newEntry({
+					menuName, entryText: name, func: () => {
+						let input;
+						try { input = utils.InputBox(window.ID, 'Enter name:', scriptName + ': ' + name, 'New playlist', true); }
+						catch (e) { return; } // eslint-disable-line no-unused-vars
+						if (!input.length) { return; }
+						plman.ActivePlaylist = plman.FindOrCreatePlaylist(input, false);
+					}
+				});
+			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 		}
 	} else { menuDisabled.push({ menuName: name, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 }
