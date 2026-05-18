@@ -15,6 +15,7 @@
 - Playlist Tools\Playlist manipulation: new submenu with playlists creation features.
 ### Changed
 - Playlist Tools\Playlist manipulation: menu cleanup and minor reordering.
+- Quickmatch: added %INVOLVEDPEOPLE% to artist tags on new setups.
 ### Removed
 ### Fixed
 

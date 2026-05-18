@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//17/05/26
 
 /*
 	Quickmatch same....
@@ -56,7 +56,7 @@ var newButtonsProperties = { // NOSONAR[global]
 		},
 		{
 			name: 'By Artist',
-			tf: [...new Set([globTags.artistRaw, 'ARTIST', 'ALBUM ARTIST'])]
+			tf: [...new Set([globTags.artistRaw, 'ARTIST', 'ALBUM ARTIST', 'INVOLVEDPEOPLE'])]
 		},
 		{
 			name: 'By Similar artist',
