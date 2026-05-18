@@ -1,9 +1,9 @@
-﻿'use strict';
-//16/05/26
+'use strict';
+//18/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable, entryMaxLength:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable, VK_SHIFT:readable, range:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable, VK_SHIFT:readable, range:readable, createAutoplaylistPresets:readable */
 
 // Playlist manipulation...
 {
@@ -75,7 +75,7 @@
 									try { tags = utils.InputBox(window.ID, 'Enter list of tags separated by comma', scriptName + ': ' + name, sortInputDuplic.join('|'), true); }
 									catch (e) { return; } // eslint-disable-line no-unused-vars
 									if (!tags.length) { return; }
-									tags = tags.split(',').filter((val) => val);
+									tags = tags.split(',').filter(Boolean);
 									let n;
 									try { n = Number(utils.InputBox(window.ID, 'Number of duplicates allowed (n + 1)', scriptName + ': ' + name, nAllowed, true)); }
 									catch (e) { return; } // eslint-disable-line no-unused-vars
@@ -89,7 +89,7 @@
 									const input = utils.InputBox(window.ID, 'Enter list of tags separated by comma', scriptName + ': ' + name, sortInputDuplic.join('|'));
 									if (sortInputDuplic.join('|') === input) { return; }
 									if (!input.length) { return; }
-									sortInputDuplic = input.split('|').filter((n) => n);
+									sortInputDuplic = input.split('|').filter(Boolean);
 									menu_properties['sortInputDuplic'][1] = sortInputDuplic.join('|');
 									overwriteMenuProperties(); // Updates panel
 									updateShortcutsNames({ sortInputDuplic: menu_properties['sortInputDuplic'][1] });
@@ -100,7 +100,7 @@
 									const input = utils.InputBox(window.ID, 'Enter list of tags separated by comma', scriptName + ': ' + name, sortInputFilter.join('|'));
 									if (sortInputFilter.join('|') === input) { return; }
 									if (!input.length) { return; }
-									sortInputFilter = input.split(',').filter((n) => n);
+									sortInputFilter = input.split(',').filter(Boolean);
 									menu_properties['sortInputFilter'][1] = sortInputFilter.join('|');
 									overwriteMenuProperties(); // Updates panel
 									updateShortcutsNames({ sortInputFilter: menu_properties['sortInputFilter'][1], nAllowed });
@@ -169,8 +169,10 @@
 					menu_properties['queryFilter'] = [menuName + '\\' + name + ' queries', JSON.stringify(queryFilter)];
 					menu_properties['queryFilterCustomArg'] = [menuName + '\\' + name + ' Dynamic menu custom args', selArg.query];
 					// Check
-					menu_properties['queryFilter'].push({ func: isJSON }, menu_properties['queryFilter'][1]);
-					menu_properties['queryFilter'].push({ func: (query) => { return checkQuery(query, true); } }, menu_properties['queryFilter'][1]);
+					menu_properties['queryFilter'].push(
+						{ func: isJSON }, menu_properties['queryFilter'][1],
+						{ func: (query) => { return checkQuery(query, true); } }, menu_properties['queryFilter'][1]
+					);
 					// Helpers
 					const inputPlsQuery = (bCopyCurrent = false) => {
 						let query = '';
@@ -677,17 +679,19 @@
 								}
 							}
 						} else {
-							if (bMerge) { menu.newEntry({ menuName: subMenuNameMerge, entryText: !bAddLock ? 'No items.' : 'Playlist is locked for adding items.', func: null, flags: MF_GRAYED }); }
-							if (bInter) { menu.newEntry({ menuName: subMenuNameInter, entryText: !bAddRemLock ? 'No items.' : 'Playlist is locked for adding\\removing items.', func: null, flags: MF_GRAYED }); }
-							if (bDiff) { menu.newEntry({ menuName: subMenuNameDiff, entryText: !bAddRemLock ? 'No items.' : 'Playlist is locked for adding\\removing items.', func: null, flags: MF_GRAYED }); }
+							if (bMerge) { menu.newEntry({ menuName: subMenuNameMerge, entryText: bAddLock ? 'Playlist is locked for adding items.' : 'No items.', func: null, flags: MF_GRAYED }); }
+							if (bInter) { menu.newEntry({ menuName: subMenuNameInter, entryText: bAddRemLock ? 'Playlist is locked for adding\\removing items.' : 'No items.', func: null, flags: MF_GRAYED }); }
+							if (bDiff) { menu.newEntry({ menuName: subMenuNameDiff, entryText: bAddRemLock ? 'Playlist is locked for adding\\removing items.' : 'No items.', func: null, flags: MF_GRAYED }); }
 						}
 						if (defaultArgs.bProfile) { profiler.Print(); }
 					}
 				});
 			} else {
-				menuDisabled.push({ menuName: nameMerge, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
-				menuDisabled.push({ menuName: nameInter, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
-				menuDisabled.push({ menuName: nameDiff, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
+				menuDisabled.push(
+					{ menuName: nameMerge, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true },
+					{ menuName: nameInter, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true },
+					{ menuName: nameDiff, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }
+				);
 			}
 		}
 		{	// Send Playlist to Playlist / Close playlist / Go to Playlist
@@ -820,9 +824,11 @@
 				});
 				menu.newSeparator(menuName);
 			} else {
-				menuDisabled.push({ menuName: nameSend, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
-				menuDisabled.push({ menuName: nameGo, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
-				menuDisabled.push({ menuName: nameClose, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
+				menuDisabled.push(
+					{ menuName: nameSend, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true },
+					{ menuName: nameGo, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true },
+					{ menuName: nameClose, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }
+				);
 			}
 		}
 		{	// Lock / Unlock / Switch lock playlist
@@ -881,11 +887,11 @@
 								const bSMPLock = lockName === window.Parent || !lockName;
 								const bLocked = !bSMPLock || playlistLockTypes.isSuperset(new Set(lockTypes));
 								const flags = bSMPLock ? MF_STRING : MF_GRAYED;
-								const entryText = playlist.name.cut(entryMaxLength) + (!bSMPLock
-									? ' ' + _p(lockName)
-									: playlistLockTypes.size !== 0
-										? ' (partially locked)'
-										: ''
+								const entryText = playlist.name.cut(entryMaxLength) + (bSMPLock
+									? playlistLockTypes.size === 0
+										? ''
+										: ' (partially locked)'
+									: ' ' + _p(lockName)
 								);
 								if (!bLocked || obj.action === 'unlock' || obj.action === 'switch') {
 									menu.newEntry({
@@ -926,8 +932,8 @@
 										) + ' Playlists ' + bottomIdx + ' - ' + topIdx;
 										const subMenu_i = menu.newMenu(idx, obj.subMenuName);
 										for (let j = bottomIdx + skipped; j <= topIdx + skipped && j < playlistsNum; j++) {
-											if (!lockUnlockMenu(j, subMenu_i, obj)) { skipped++; }
-											else { bSomeEntry = true; }
+											if (lockUnlockMenu(j, subMenu_i, obj)) { bSomeEntry = true; }
+											else { skipped++; }
 										}
 									}
 								} else { // Or just show all
@@ -965,9 +971,11 @@
 				});
 				menu.newSeparator(menuName);
 			} else {
-				menuDisabled.push({ menuName: nameLock, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
-				menuDisabled.push({ menuName: nameUnlock, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
-				menuDisabled.push({ menuName: nameSwitch, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
+				menuDisabled.push(
+					{ menuName: nameLock, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true },
+					{ menuName: nameUnlock, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true },
+					{ menuName: nameSwitch, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }
+				);
 			}
 		}
 		{	// Playlist revive
@@ -981,7 +989,7 @@
 					{	// Submenu
 						const subMenuName = menu.newMenu(name, menuName);
 						// Create new properties with previous args
-						menu_properties['simThreshold'] = ['\'Other tools\\Playlist Revive\' similarity', 0.50];
+						menu_properties['simThreshold'] = ['\'Other tools\\Playlist Revive\' similarity', 0.5];
 						// Checks
 						menu_properties['simThreshold'].push({ range: [[0, 1]], func: !Number.isNaN }, menu_properties['simThreshold'][1]);
 						// Menus
@@ -1046,6 +1054,56 @@
 					});
 				}
 				menu.newSeparator(menuName);
+			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+		}
+		{	// Create playlist
+			const name = 'Create playlists';
+			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
+				const subMenuName = menu.newMenu(name, menuName);
+				menu.newEntry({
+					menuName: subMenuName,
+					entryText: 'New Playlist',
+					func: () => plman.ActivePlaylist = plman.CreatePlaylist(plman.ActivePlaylist, '')
+				});
+				menu.newEntry({
+					menuName: subMenuName,
+					entryText: 'Load Playlist...',
+					func: () => fb.LoadPlaylist()
+				});
+				menu.newSeparator(subMenuName);
+				menu.newEntry({
+					menuName: subMenuName,
+					entryText: 'New AutoPlaylist...',
+					func: () => {
+						plman.ActivePlaylist = plman.CreateAutoPlaylist(plman.ActivePlaylist, '', '');
+						plman.ShowAutoPlaylistUI(plman.ActivePlaylist);
+					}
+				});
+				{	// Preset AutoPlaylists
+					const subMenuNameTwo = menu.newMenu('AutoPlaylists presets', subMenuName);
+					menu.newCondEntry({
+						entryText: 'AutoPlaylists presets (cond)', condFunc: () => {
+							createAutoplaylistPresets().forEach((opt) => {
+								const subMenuNameThree = opt.menu ? menu.findOrNewMenu(opt.menu, subMenuNameTwo) : subMenuNameTwo;
+								if (menu.isSeparator(opt)) { menu.newSeparator(subMenuNameTwo); return; }
+								menu.newEntry({
+									menuName: subMenuNameThree,
+									entryText: opt.name,
+									func: () => {
+										let plsName = opt.plsName;
+										let i = 0;
+										while (plman.FindPlaylist(plsName)) {
+											plsName = plsName.replace(/ \((\n\))/, '') + ' ' + _p(++i);
+											if (i > 10) { fb.ShowPopupMessage('There are more than 10 playlists with same name: ' + opt.name, window.FullPanelName); return; }
+										}
+										plman.ActivePlaylist = plman.CreateAutoPlaylist(plman.ActivePlaylist, plsName, opt.query);
+									},
+									flags: opt.flags
+								});
+							});
+						}
+					});
+				}
 			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 		}
 		{	// Playlist History
