@@ -16,6 +16,7 @@
 ### Changed
 - Playlist Tools\Playlist manipulation: menu cleanup and minor reordering.
 - Quickmatch: added %INVOLVEDPEOPLE% to artist tags on new setups.
+- UI: support for dark themed popups if JS host allows it.
 ### Removed
 ### Fixed
 
