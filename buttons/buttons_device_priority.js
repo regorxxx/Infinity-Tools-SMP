@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/05/26
+//22/05/26
 
 /*
 	Output device priority
@@ -29,8 +29,7 @@ var prefix = 'dp_'; // NOSONAR[global]
 
 if (!window.ScriptInfo.Name) { window.DefineScript('Output device priority button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
-checkCompatible('1.6.1', 'smp');
-checkCompatible('1.4.0', 'fb');
+checkCompatible();
 
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 var newButtonsProperties = { // NOSONAR[global]

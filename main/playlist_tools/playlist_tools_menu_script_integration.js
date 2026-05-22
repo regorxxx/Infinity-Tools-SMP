@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//22/05/26
 
 /* exported mainMenuSMP, executeByName */
 
@@ -110,7 +110,7 @@
 						}
 					});
 					//  Menus
-					const flags = isCompatible('1.6.1', 'smp') || isCompatible('3.6.1', 'jsplitter') ? MF_STRING : MF_GRAYED;
+					const flags = isCompatible('1.6.1', 'foo_spider_monkey_panel') || isCompatible('3.6.1', 'foo_uie_jsplitter') ? MF_STRING : MF_GRAYED;
 					menu.newEntry({ menuName: subMenuName, entryText: 'File\\Spider Monkey Panel\\Script commands:', flags: MF_GRAYED });
 					menu.newSeparator(subMenuName);
 					menu.newCondEntry({

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/04/26
+//22/05/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -27,6 +27,8 @@ window.DrawMode = Math.max(Math.min(window.GetProperty('bar.Draw mode: GDI (0), 
 		/* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, getPropertiesPairs:readable, checkJsonProperties:readable, getPropertiesValues:readable, deleteProperties:readable */
 		'helpers\\helpers_xxx_prototypes.js',
 		/* global randomString:readable, isString:readable, isInt:readable, isBoolean:readable, isReal:readable, isJSON:readable, _b:readable, isJSON:readable, clone:readable */
+		'helpers\\helpers_xxx_prototypes_smp.js',
+		/* global checkCompatible:readable */
 		'helpers\\helpers_xxx_UI.js',
 		/* global _scale:readable, _gdiFont:readable */
 		'helpers\\helpers_xxx_file.js',
@@ -47,6 +49,7 @@ window.DrawMode = Math.max(Math.min(window.GetProperty('bar.Draw mode: GDI (0), 
 }
 
 globProfiler.Print('helpers');
+checkCompatible();
 
 let barProperties = {
 	drawMode: ['Draw mode: GDI (0), D2D (1)', 0, { func: isInt, range: [[0,1]] }],

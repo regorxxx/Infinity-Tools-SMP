@@ -1,5 +1,5 @@
 'use strict';
-//17/04/26
+//22/05/26
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -89,7 +89,7 @@ include('search_by_distance_culture.js');
 /* global getCountryISO:readable, getLocaleFromId:readable, getZoneArtistFilter:readable, getZoneGraphFilter:readable, music_graph_descriptors_countries:readable, music_graph_descriptors_culture:readable */
 include('search_by_distance_extra.js');
 
-checkCompatible('1.6.1', 'smp');
+checkCompatible();
 
 /*
 	Properties

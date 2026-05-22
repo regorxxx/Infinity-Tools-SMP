@@ -1,5 +1,5 @@
 ﻿'use strict';
-//03/12/25
+//22/05/26
 
 /*
 	Playback controls
@@ -14,8 +14,7 @@ include('..\\helpers\\helpers_xxx_UI.js');
 
 if (!window.ScriptInfo.Name) { window.DefineScript('Playback Stop button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
-checkCompatible('1.6.1', 'smp');
-checkCompatible('1.4.0', 'fb');
+checkCompatible();
 
 buttonsBar.list.push({});
 

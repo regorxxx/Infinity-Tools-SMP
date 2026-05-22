@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//22/05/26
 
 /*
 	Playlist Tools Menu
@@ -49,7 +49,7 @@ include('playlist_tools_menu_helpers.js');
 
 /* global exportDevices:readable, exportDSP:readable, deleteMainMenuDynamic:readable, onMainMenuDynamicEntries:readable, mainMenuSMP:readable , lastActionEntry:readable, barProperties:readable, sbd:readable */
 
-checkCompatible('1.6.1', 'smp');
+checkCompatible();
 
 if (!_isFolder(folders.data)) { _createFolder(folders.data); }
 

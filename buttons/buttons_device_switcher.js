@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//22/05/26
 
 /*
 	Output device selector
@@ -23,8 +23,8 @@ include('..\\helpers\\helpers_xxx_properties.js');
 var prefix = 'ds'; // NOSONAR[global]
 
 if (!window.ScriptInfo.Name) { window.DefineScript('Output device switcher button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
-checkCompatible('1.6.1', 'smp');
-checkCompatible('1.4.0', 'fb');
+
+checkCompatible();
 
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 var newButtonsProperties = { // NOSONAR[global]

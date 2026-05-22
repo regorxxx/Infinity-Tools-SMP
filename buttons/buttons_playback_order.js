@@ -1,5 +1,5 @@
 ﻿'use strict';
-//05/12/25
+//22/05/26
 
 /*
 	Playback controls
@@ -20,8 +20,7 @@ var prefix = 'pre'; // NOSONAR[global]
 
 if (!window.ScriptInfo.Name) { window.DefineScript('Playback Order button', { author: 'regorxxx', features: { drag_n_drop: false } }); }
 
-checkCompatible('1.6.1', 'smp');
-checkCompatible('1.4.0', 'fb');
+checkCompatible();
 
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 var newButtonsProperties = { // NOSONAR[global]
