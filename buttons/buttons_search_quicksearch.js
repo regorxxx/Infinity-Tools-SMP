@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//27/05/26
 
 /*
 	Quicksearch for same....
@@ -19,7 +19,7 @@ include('..\\helpers\\menu_xxx_extras.js');
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, _qCond:readable */
+/* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, _qCond:readable, isInt:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -38,6 +38,7 @@ prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
 	bEvalSel: ['Evaluate multiple tracks', true, { func: isBoolean }, true],
+	trackLimit: ['Max. track limit (0 = no limit)', 1000, { func: isInt, range: [[0, Infinity]] }, 1000],
 	lastQuery: ['Last query used', '', { func: isStringWeak }, ''],
 	playlistName: ['Playlist name', 'Search...', { func: isString }, 'Search...'],
 	bDynamicMenus: ['Menus at  \'File\\Spider Monkey Panel\\...\'', false, { func: isBoolean }, false],
@@ -217,8 +218,8 @@ function quickSearchMenu({ bSimulate = false } = {}) {
 		bPlsSel = fb.GetSelectionType() === 1;
 		if (!this.selItems || !this.selItems.Count) { this.selItems = null; console.log('Quicksearch: No selected items.'); }
 	}
-	if (this.selItems && this.selItems instanceof FbMetadbHandleList && this.selItems.Count > 1000 && this.buttonsProperties.bEvalSel[1]) {
-		this.selItems.RemoveRange(1000, this.selItems.Count - 1);
+	if (this.selItems && this.selItems instanceof FbMetadbHandleList && this.selItems.Count > this.buttonsProperties.trackLimit[1] && this.buttonsProperties.bEvalSel[1]) {
+		if (this.buttonsProperties.trackLimit[1] > 0) { this.selItems.RemoveRange(this.buttonsProperties.trackLimit[1], this.selItems.Count - 1); }
 	}
 	const multiTags = ['artist', 'genre', 'style', globTags.artistRaw, globTags.genre, globTags.style]
 		.map((t) => t.toLowerCase());

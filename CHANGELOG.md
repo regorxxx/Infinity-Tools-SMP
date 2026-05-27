@@ -13,6 +13,8 @@
 ### Added
 - Playlist Tools\Playlist manipulation: new submenu with playlists sorting features.
 - Playlist Tools\Playlist manipulation: new submenu with playlists creation features.
+- Playlist Tools\Playlist manipulation: new submenu with playlists creation features.
+- Quicksearch: added new setting for max tracks from selection processed by dynamic queries. Previously value was hardcoded (default 1000).
 ### Changed
 - Playlist Tools\Playlist manipulation: menu cleanup and minor reordering.
 - Quickmatch: added %INVOLVEDPEOPLE% to artist tags on new setups.
