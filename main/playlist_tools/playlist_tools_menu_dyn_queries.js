@@ -1,9 +1,9 @@
 ﻿'use strict';
-//25/11/25
+//28/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, selectedFlags:readable, createSubMenuEditEntries:readable, libSearchMenu:readable, entryMaxLength:readable */
 
-/* global MF_GRAYED:readable, MF_STRING:readable, folders:readable, _isFile:readable, globQuery:readable, globTags:readable, _qCond:readable, checkQuery:readable, isJSON:readable, WshShell:readable, popup:readable, queryJoin:readable */
+/* global MF_GRAYED:readable, MF_STRING:readable, folders:readable, _isFile:readable, globQuery:readable, globTags:readable, _qCond:readable, checkDynQuery:readable, isJSON:readable, WshShell:readable, popup:readable, queryJoin:readable */
 
 // Dynamic queries
 {
@@ -115,7 +115,7 @@
 						menu_properties['dynamicQueriesCustomArg'] = [name + ' Dynamic menu custom args', selArg.query];
 						// Checks
 						menu_properties['dynamicQueries'].push({ func: isJSON }, menu_properties['dynamicQueries'][1]);
-						menu_properties['dynamicQueriesCustomArg'].push({ func: (query) => { return checkQuery(query, true); } }, menu_properties['dynamicQueriesCustomArg'][1]);
+						menu_properties['dynamicQueriesCustomArg'].push({ func: (query) => checkDynQuery(query, true) }, menu_properties['dynamicQueriesCustomArg'][1]);
 						// Helper
 						const inputDynQuery = (bCopyCurrent = false) => {
 							if (bCopyCurrent) { // NOSONAR
@@ -131,12 +131,12 @@
 								let direction = 1;
 								try { direction = Number(utils.InputBox(window.ID, 'Direction:\n(-1 or 1)', scriptName + ': ' + name, 1, true)); }
 								catch (e) { return; } // eslint-disable-line no-unused-vars
-								if (isNaN(direction)) { return; }
+								if (Number.isNaN(direction)) { return; }
 								direction = direction > 0 ? 1 : -1;
 								const bStatic = WshShell.Popup('Force evaluation even when no selection is available?', 0, window.FullPanelName, popup.question + popup.yes_no) === popup.yes;
 								// Final check
-								try { if (!dynamicQuery({ query, bSendToPls: false, bForceStatic: bStatic })) { throw new Error(); } }
-								catch (e) { fb.ShowPopupMessage('query not valid, check it and try again:\n' + query, scriptName); return; } // eslint-disable-line no-unused-vars
+								try { if (!dynamicQuery({ query, bSendToPls: false, bForceStatic: bStatic })) { throw new Error('query not valid, check it and try again:\n' + query); } }
+								catch (e) { fb.ShowPopupMessage(e.message, scriptName); return; }
 								return { query, sort: { tfo, direction }, bStatic };
 							}
 						};
@@ -194,7 +194,7 @@
 												catch (e) { return; } // eslint-disable-line no-unused-vars
 												if (input.includes('#') && !fb.GetFocusItem(true)) { fb.ShowPopupMessage('Can not evaluate query without a selection:\n' + input, scriptName); return; }
 												// Playlist
-												const query = forcedQueryMenusEnabled[name] && defaultArgs.forcedQuery.length ? (input.length && input.toUpperCase() !== 'ALL' ? '(' + input + ') AND (' + defaultArgs.forcedQuery + ')' : input) : (!input.length ? 'ALL' : input);
+												const query = forcedQueryMenusEnabled[name] && defaultArgs.forcedQuery.length ? (input.length && input.toUpperCase() !== 'ALL' ? '(' + input + ') AND (' + defaultArgs.forcedQuery + ')' : input) : (input.length ? input : 'ALL');
 												const handleList = bEvalSel ? dynamicQuery({ query, handleList: plman.GetPlaylistSelectedItems(plman.ActivePlaylist) }) : dynamicQuery({ query });
 												if (!handleList) { fb.ShowPopupMessage('Query failed:\n' + query, scriptName); return; }
 												// For internal use original object
@@ -205,7 +205,7 @@
 												try { input = utils.InputBox(window.ID, 'Enter query:\n\nAlso allowed dynamic variables (which don\'t require a selection), like #NOW#, which will be replaced before execution.\n(see \'Dynamic queries\' readme for more info)', scriptName + ': ' + name, '"$year(%DATE%)" IS #YEAR#', true); }
 												catch (e) { return; } // eslint-disable-line no-unused-vars
 												// Playlist
-												const query = forcedQueryMenusEnabled[name] && defaultArgs.forcedQuery.length ? (input.length && input.toUpperCase() !== 'ALL' ? '(' + input + ') AND (' + defaultArgs.forcedQuery + ')' : input) : (!input.length ? 'ALL' : input);
+												const query = forcedQueryMenusEnabled[name] && defaultArgs.forcedQuery.length ? (input.length && input.toUpperCase() !== 'ALL' ? '(' + input + ') AND (' + defaultArgs.forcedQuery + ')' : input) : (input.length ? input : 'ALL');
 												const handleList = dynamicQuery({ query, bForceStatic: true });
 												if (!handleList) { fb.ShowPopupMessage('Query failed:\n' + query, scriptName); return; }
 											}

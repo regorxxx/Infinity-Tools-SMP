@@ -1,5 +1,5 @@
 ﻿'use strict';
-//22/05/26
+//28/05/26
 
 /*
 	Playlist Tools Menu
@@ -93,9 +93,9 @@ let menu_panelPropertiesBack = JSON.parse(JSON.stringify(menu_panelProperties));
 
 // Checks
 menu_properties.playlistLength.push({ greater: 0, func: isInt }, menu_properties.playlistLength[1]);
-menu_properties.forcedQuery.push({ func: (query) => { return checkQuery(query, true); } }, menu_properties.forcedQuery[1]);
+menu_properties.forcedQuery.push({ func: (query) => checkQuery(query, true) }, menu_properties.forcedQuery[1]);
 menu_properties.forcedQueryMenusEnabled.push({ func: isJSON }, menu_properties.forcedQueryMenusEnabled[1]);
-menu_properties.ratingLimits.push({ func: (str) => { return (isString(str) && str.length === 3 && str.indexOf(',') === 1); } }, menu_properties.ratingLimits[1]);
+menu_properties.ratingLimits.push({ func: (str) => (isString(str) && str.length === 3 && str.indexOf(',') === 1) }, menu_properties.ratingLimits[1]);
 menu_properties.bShortcuts.push({ func: isBoolean }, menu_properties.bShortcuts[1]);
 menu_properties.bPlaylistNameCommands.push({ func: isBoolean }, menu_properties.bPlaylistNameCommands[1]);
 menu_properties.presets.push({ func: isJSON }, menu_properties.presets[1]);
