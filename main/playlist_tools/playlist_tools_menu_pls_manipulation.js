@@ -1,9 +1,9 @@
 'use strict';
-//25/05/26
+//28/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable, entryMaxLength:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable, VK_SHIFT:readable, range:readable, createAutoplaylistPresets:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkDynQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable, VK_SHIFT:readable, range:readable, createAutoplaylistPresets:readable, _setClipboardData:readable */
 
 // Playlist manipulation...
 {
@@ -169,10 +169,8 @@
 					menu_properties['queryFilter'] = [menuName + '\\' + name + ' queries', JSON.stringify(queryFilter)];
 					menu_properties['queryFilterCustomArg'] = [menuName + '\\' + name + ' Dynamic menu custom args', selArg.query];
 					// Check
-					menu_properties['queryFilter'].push(
-						{ func: isJSON }, menu_properties['queryFilter'][1],
-						{ func: (query) => { return checkQuery(query, true); } }, menu_properties['queryFilter'][1]
-					);
+					menu_properties['queryFilter'].push({ func: isJSON }, menu_properties['queryFilter'][1]);
+					menu_properties['queryFilterCustomArg'].push({ func: (query) => checkDynQuery(query, true) }, menu_properties['queryFilter'][1]);
 					// Helpers
 					const inputPlsQuery = (bCopyCurrent = false) => {
 						let query = '';
@@ -286,8 +284,142 @@
 							});
 						}
 					});
-					menu.newSeparator(menuName);
 				} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+			}
+		}
+		{	// Query search
+			const name = 'Query search';
+			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name] === true) {
+				const scriptPath = folders.xxx + 'main\\filter_and_query\\dynamic_query.js';
+				/* global dynamicQueryProcess:readable, dynamicQuery:readable */
+				if (_isFile(scriptPath)) {
+					include(folders.xxx + 'helpers\\helpers_xxx_playlists.js');
+					/* global removeLock:readable */
+					if (!Object.hasOwn(menu_properties, 'playlistSplitSize')) {
+						menu_properties['playlistSplitSize'] = ['Playlist lists submenu size', 20];
+						// Checks
+						menu_properties['playlistSplitSize'].push({ greater: 1, func: isInt }, menu_properties['playlistSplitSize'][1]);
+					}
+					forcedQueryMenusEnabled[name] = false;
+					let selArg = { name: 'Custom', query: 'TITLE IS #TITLE#' };
+					// Create new properties with previous args
+					menu_properties['selQuerySearchCustomArg'] = [menuName + '\\' + name + ' Dynamic menu custom args', selArg.query];
+					// Check
+					menu_properties['selQuerySearchCustomArg'].push({ func: (query) => checkDynQuery(query, true) }, menu_properties['selQuerySearchCustomArg'][1]);
+					// helpers
+					const lookup = (playlist) => {
+						// Input
+						selArg.query = menu_properties['selQuerySearchCustomArg'][1];
+						let input = '';
+						try { input = utils.InputBox(window.ID, 'Enter query:\n\nAlso allowed dynamic variables, like #ARTIST#, which will be replaced with selected items\' values.\n(see \'Dynamic queries\' readme for more info)' + '\n\nPressing Shift while clicking on \'OK\' will open the search window (and copy the query to clipboard ready to be pasted).', window.FullPanelName, selArg.query, true); }
+						catch (e) { return; } // eslint-disable-line no-unused-vars
+						if (!input.length) { return; }
+						// Selection
+						const selItems = fb.GetSelections(1);
+						const bPlsSel = fb.GetSelectionType() === 1;
+						if (input.includes('#') && bPlsSel && (!selItems || !selItems.Count)) { fb.ShowPopupMessage('Can not evaluate query without a selection:\n' + input, window.FullPanelName); return; }
+						// Playlist
+						let query = input;
+						const bShift = utils.IsKeyPressed(VK_SHIFT);
+						if (bShift) {
+							const options = JSON.parse(menu_properties.dynQueryEvalSel[1]);
+							query = options['Dynamic queries']
+								? dynamicQueryProcess({ query, handleList: selItems })
+								: dynamicQueryProcess({ query });
+							if (query) {
+								_setClipboardData(query);
+								fb.ShowPlaylistSearchUI();
+							}
+						} else {
+							const playlistName = 'Search...';
+							const handleList = dynamicQuery({ query, handleList: selItems, playlistName, source: plman.GetPlaylistItems(playlist.index) });
+							if (!handleList) { fb.ShowPopupMessage('Query failed:\n' + query, window.FullPanelName); return; }
+						}
+						// For internal use original object
+						selArg.query = input;
+						menu_properties['selQuerySearchCustomArg'][1] = input; // And update property with new value
+						overwriteMenuProperties(); // Updates panel
+					};
+					// Menus
+					const subMenuName = menu.newMenu(name, menuName);
+					menu.newEntry({ menuName: subMenuName, entryText: 'Query lookup at playlist:', func: null, flags: MF_GRAYED });
+					menu.newSeparator(subMenuName);
+					menu.newSeparator(menuName);
+					// Build submenus
+					menu.newCondEntry({
+						entryText: name, condFunc: () => {
+							const profiler = defaultArgs.bProfile ? new FbProfiler(name) : null;
+							const ap = plman.ActivePlaylist;
+							const bPlaylist = ap !== -1;
+							const playlistsNum = plman.PlaylistCount;
+							const bTracks = bPlaylist ? plman.PlaylistItemCount(ap) !== 0 : false;
+							const bAddLock = bPlaylist ? addLock() : false;
+							const bAddRemLock = bAddLock || (bPlaylist ? removeLock() : false);
+							if (playlistsNum && bTracks && !bAddRemLock) {
+								// Split entries in sub-menus if there are too many playlists...
+								let ss = menu_properties['playlistSplitSize'][1];
+								const splitBy = playlistsNum < ss * 5 ? ss : ss * 2; // Double split size when total exceeds 5 times the value (good enough for really high # of playlists)
+								if (playlistsNum > splitBy) {
+									const subMenusCount = Math.ceil(playlistsNum / splitBy);
+									let skipped = 0; // Only used on bMerge, to account for locked playlists
+									for (let i = 0; i < subMenusCount; i++) {
+										const bottomIdx = i * splitBy;
+										const topIdx = (i + 1) * splitBy - 1;
+										// Prefix ID is required to avoid collisions with same sub menu names
+										// Otherwise both menus would be called 'Playlist X-Y', leading to bugs (entries duplicated on both places)
+										const idxInter = '(' + name + ') Playlists ' + bottomIdx + ' - ' + topIdx;
+										const subMenu_i_inter = menu.newMenu(idxInter, subMenuName);
+										for (let j = bottomIdx; j <= topIdx + skipped && j < playlistsNum; j++) {
+											const playlist = { name: plman.GetPlaylistName(j), index: j };
+											const entryText = (playlist.name + '...').cut(entryMaxLength) +
+												(plman.PlayingPlaylist === playlist.index && ap === playlist.index
+													? ' (current | playing)'
+													: ap === playlist.index
+														? ' (current)'
+														: plman.PlayingPlaylist === playlist.index
+															? ' (playing)'
+															: '');
+											menu.newEntry({
+												menuName: subMenu_i_inter, entryText, func: () => {
+													lookup(playlist);
+												}
+											});
+											// Add radio check on current playlist
+											if (playlist.index === ap) { menu.newCheckMenu(subMenu_i_inter, entryText, entryText, () => 0); }
+										}
+									}
+								} else { // Or just show all
+									for (let i = 0; i < playlistsNum; i++) {
+										const playlist = { name: plman.GetPlaylistName(i), index: i };
+										const entryText = (playlist.name + '...').cut(entryMaxLength) +
+											(plman.PlayingPlaylist === playlist.index && ap === playlist.index
+												? ' (current | playing)'
+												: ap === playlist.index
+													? ' (current)'
+													: plman.PlayingPlaylist === playlist.index
+														? ' (playing)'
+														: '');
+										menu.newEntry({
+											menuName: subMenuName, entryText, func: () => {
+												lookup(playlist);
+											}
+										});
+										// Add radio check on current playlist
+										if (playlist.index === ap) { menu.newCheckMenu(subMenuName, entryText, entryText, () => 0); }
+									}
+								}
+							} else {
+								menu.newEntry({ menuName: subMenuName, entryText: bAddRemLock ? 'Playlist is locked for adding\\removing items.' : 'No items.', func: null, flags: MF_GRAYED });
+							}
+							if (defaultArgs.bProfile) { profiler.Print(); }
+						}
+					});
+				}
+			} else {
+				menuDisabled.push(
+					{ menuName: name, subMenuFrom: name, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true },
+				);
+				if (!menu.isLastEntrySep) { menu.newSeparator(menuName); }
 			}
 		}
 		{	// Create harmonic mix from playlist
@@ -464,7 +596,7 @@
 			const nameDiff = 'Difference with playlist';
 			if (!Object.hasOwn(menusEnabled, nameMerge) || !Object.hasOwn(menusEnabled, nameInter) || !Object.hasOwn(menusEnabled, nameDiff) || menusEnabled[nameMerge] === true || menusEnabled[nameInter] === true || menusEnabled[nameDiff] === true) {
 				include(folders.xxx + 'helpers\\helpers_xxx_playlists.js');
-				/* global closeLock:readable, removeLock:readable */
+				/* global closeLock:readable */
 				if (!Object.hasOwn(menu_properties, 'playlistSplitSize')) {
 					menu_properties['playlistSplitSize'] = ['Playlist lists submenu size', 20];
 					// Checks
@@ -516,13 +648,13 @@
 									const topIdx = (i + 1) * splitBy - 1;
 									// Prefix ID is required to avoid collisions with same sub menu names
 									// Otherwise both menus would be called 'Playlist X-Y', leading to bugs (entries duplicated on both places)
-									// Send
+									// Merge
 									const idxMerge = bMerge ? '(Merge with) Playlists ' + bottomIdx + ' - ' + topIdx : null;
 									const subMenu_i_merge = bMerge ? menu.newMenu(idxMerge, subMenuNameMerge) : null;
-									// Go to
+									// Intersect
 									const idxInter = bInter ? '(Intersect with) Playlists ' + bottomIdx + ' - ' + topIdx : null;
 									const subMenu_i_inter = bInter ? menu.newMenu(idxInter, subMenuNameInter) : null;
-									// Close
+									// Difference
 									const idxDiff = bDiff ? '(Difference with) Playlists ' + bottomIdx + ' - ' + topIdx : null;
 									const subMenu_i_diff = bDiff ? menu.newMenu(idxDiff, subMenuNameDiff) : null;
 									for (let j = bottomIdx; j <= topIdx + skipped && j < playlistsNum; j++) {
