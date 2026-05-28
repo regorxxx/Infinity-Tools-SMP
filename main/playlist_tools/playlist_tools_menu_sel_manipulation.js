@@ -1,5 +1,5 @@
 ﻿'use strict';
-//18/12/25
+//28/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable, entryMaxLength:readable */
 
@@ -215,36 +215,38 @@
 							if (defaultArgs.bProfile) { profiler.Print(); }
 						};
 						if (selArgs.length) { selArgs.push({ name: 'sep' }); }
-						selArgs.push({
-							name: 'Harmonic mix (Camelot Wheel)', func: applyHarmonicMix, args: {
-								bSendToActivePls: false,
-								patternOptions: {
-									bRandomize: true,
-									bFillPerfectMatch: true
+						selArgs.push(
+							{
+								name: 'Harmonic mix (Camelot Wheel)', func: applyHarmonicMix, args: {
+									bSendToActivePls: false,
+									patternOptions: {
+										bRandomize: true,
+										bFillPerfectMatch: true
+									}
+								}
+							},
+							{
+								name: 'Harmonic cycle (Camelot Wheel)', func: applyHarmonicMix, args: {
+									bSendToActivePls: false,
+									isCycle: true,
+									patternOptions: {
+										movements: { // Values are percentages of the total sum
+											perfectMatch: 20, // perfectMatch (=)
+											energyBoost: 14, // energyBoost (+1)
+											energyDrop: 14, // energyDrop (-1)
+											energySwitch: 15, // energySwitch (B/A)
+											moodBoost: 5, // moodBoost (+3)
+											moodDrop: 4, // moodDrop (-3)
+											energyRaise: 3, // energyRaise (+7)
+											domKey: 12, // domKey (+1 & B/A) = energyBoost & energySwitch
+											subDomKey: 13, // subDomKey (-1 & B/A) = energyDrop & energySwitch
+										},
+										bRandomize: true,
+										bFillPerfectMatch: true
+									}
 								}
 							}
-						});
-						selArgs.push({
-							name: 'Harmonic cycle (Camelot Wheel)', func: applyHarmonicMix, args: {
-								bSendToActivePls: false,
-								isCycle: true,
-								patternOptions: {
-									movements: { // Values are percentages of the total sum
-										perfectMatch: 20, // perfectMatch (=)
-										energyBoost: 14, // energyBoost (+1)
-										energyDrop: 14, // energyDrop (-1)
-										energySwitch: 15, // energySwitch (B/A)
-										moodBoost: 5, // moodBoost (+3)
-										moodDrop: 4, // moodDrop (-3)
-										energyRaise: 3, // energyRaise (+7)
-										domKey: 12, // domKey (+1 & B/A) = energyBoost & energySwitch
-										subDomKey: 13, // subDomKey (-1 & B/A) = energyDrop & energySwitch
-									},
-									bRandomize: true,
-									bFillPerfectMatch: true
-								}
-							}
-						});
+						);
 						if (!Object.hasOwn(menusEnabled, configMenu) || menusEnabled[configMenu] === true) {
 							const subMenuName = 'Harmonic mixing';
 							if (!menu.hasMenu(subMenuName, configMenu)) {
@@ -351,7 +353,7 @@
 									// Entries
 									menu.newEntry({
 										menuName: subMenuName, entryText, func: (args = { ...defaultArgs, ...obj.args }) => {
-											if (args.tagValue !== null) { scatterByTags(args); } else { intercalateByTags(args); }
+											if (args.tagValue === null) { intercalateByTags(args); } else { scatterByTags(args); }
 										}, flags: multipleSelectedFlagsReorder
 									});
 								}
@@ -368,13 +370,13 @@
 										const input = inputScatter();
 										if (!input) { return; }
 										// Execute
-										if (input.args.tagValue !== null) {
-											scatterByTags({
+										if (input.args.tagValue === null) {
+											intercalateByTags({
 												...defaultArgs,
 												...input.args
 											});
 										} else {
-											intercalateByTags({
+											scatterByTags({
 												...defaultArgs,
 												...input.args
 											});
@@ -460,7 +462,7 @@
 									// Entries
 									menu.newEntry({
 										menuName: subMenuName, entryText, func: (args = { ...defaultArgs, ...obj.args }) => {
-											if (args.tagValue !== null) { scatterByTags(args); } else { intercalateByTags(args); }
+											if (args.tagValue === null) { intercalateByTags(args); } else { scatterByTags(args); }
 										}, flags: multipleSelectedFlagsReorder
 									});
 								}
@@ -477,13 +479,13 @@
 										const input = inputIntercalate();
 										if (!input) { return; }
 										// Execute
-										if (input.args.tagValue !== null) {
-											scatterByTags({
+										if (input.args.tagValue === null) {
+											intercalateByTags({
 												...defaultArgs,
 												...input.args
 											});
 										} else {
-											intercalateByTags({
+											scatterByTags({
 												...defaultArgs,
 												...input.args
 											});
@@ -660,7 +662,7 @@
 					menu_properties['group'].push({ func: isJSON }, menu_properties['group'][1]);
 					menu_properties['groupCustomArg'].push({ func: isJSON }, menu_properties['groupCustomArg'][1]);
 					// Helpers
-					const inputGroup = (bCopyCurrent = false) => {
+					const inputGroup = (bCopyCurrent = false) => { // NOSONAR
 						let tagName = '';
 						if (bCopyCurrent) {
 							tagName = selArg.args.tagName;
@@ -1068,14 +1070,7 @@
 										menu.newSeparator(subMenuSecondName);
 									}
 									optionsIdx[index] = val; // For later use
-									if (index !== options.length - 1) { // Predefined sizes
-										menu.newEntry({
-											menuName: subMenuSecondName, entryText: val, func: () => {
-												menu_properties['findRemoveSplitSize'][1] = val;
-												overwriteMenuProperties(); // Updates panel
-											}
-										});
-									} else { // Last one is user configurable
+									if (index === options.length - 1) { // Last one is user configurable
 										menu.newSeparator(subMenuSecondName);
 										menu.newEntry({
 											menuName: subMenuSecondName, entryText: val, func: () => {
@@ -1086,11 +1081,18 @@
 												overwriteMenuProperties(); // Updates panel
 											}
 										});
+									} else { // Predefined sizes
+										menu.newEntry({
+											menuName: subMenuSecondName, entryText: val, func: () => {
+												menu_properties['findRemoveSplitSize'][1] = val;
+												overwriteMenuProperties(); // Updates panel
+											}
+										});
 									}
 								});
 								menu.newCheckMenu(subMenuSecondName, optionsIdx[0], optionsIdx[optionsIdx.length - 1], () => {
 									const size = options.indexOf(menu_properties['findRemoveSplitSize'][1]);
-									return (size !== -1 ? size : options.length - 1);
+									return (size === -1 ? options.length - 1 : size);
 								});
 							}
 							{	// maxSelCount ( Find in / Remove from Playlists)
@@ -1103,14 +1105,7 @@
 										menu.newSeparator(subMenuSecondName);
 									}
 									optionsIdx[index] = val; // For later use
-									if (index !== options.length - 1) { // Predefined sizes
-										menu.newEntry({
-											menuName: subMenuSecondName, entryText: val, func: () => {
-												menu_properties['maxSelCount'][1] = val;
-												overwriteMenuProperties(); // Updates panel
-											}
-										});
-									} else { // Last one is user configurable
+									if (index === options.length - 1) { // Last one is user configurable
 										menu.newSeparator(subMenuSecondName);
 										menu.newEntry({
 											menuName: subMenuSecondName, entryText: val, func: () => {
@@ -1121,20 +1116,29 @@
 												overwriteMenuProperties(); // Updates panel
 											}
 										});
+									} else { // Predefined sizes
+										menu.newEntry({
+											menuName: subMenuSecondName, entryText: val, func: () => {
+												menu_properties['maxSelCount'][1] = val;
+												overwriteMenuProperties(); // Updates panel
+											}
+										});
 									}
 								});
 								menu.newCheckMenu(subMenuSecondName, optionsIdx[0], optionsIdx[optionsIdx.length - 1], () => {
 									const size = options.indexOf(menu_properties['maxSelCount'][1]);
-									return (size !== -1 ? size : options.length - 1);
+									return (size === -1 ? options.length - 1 : size);
 								});
 							}
 							menu.newSeparator(configMenu);
 						} else { menuDisabled.push({ menuName: configMenu, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 					}
 				} else {
-					menuDisabled.push({ menuName: nameNowFind, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
-					menuDisabled.push({ menuName: nameFind, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
-					menuDisabled.push({ menuName: nameRemove, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true });
+					menuDisabled.push(
+						{ menuName: nameNowFind, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true },
+						{ menuName: nameFind, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true },
+						{ menuName: nameRemove, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }
+					);
 				}
 			}
 		}
@@ -1176,7 +1180,8 @@
 									const idxSend = '(Send sel. to) Playlists ' + bottomIdx + ' - ' + topIdx;
 									const subMenu_i_send = menu.newMenu(idxSend, subMenuNameSend);
 									for (let j = bottomIdx + skipped; j <= topIdx + skipped && j < playlistsNum; j++) {
-										if (!addLock(j)) {
+										if (addLock(j)) { skipped++; }
+										else {
 											const playlist = { name: plman.GetPlaylistName(j), index: j };
 											const entryText = playlist.name.cut(entryMaxLength) +
 												(pp === playlist.index && ap === playlist.index
@@ -1196,7 +1201,7 @@
 											});
 											// Add radio check on current playlist
 											if (playlist.index === ap) { menu.newCheckMenu(subMenu_i_send, entryText, entryText, () => 0); }
-										} else { skipped++; }
+										}
 									}
 								}
 							} else { // Or just show all
@@ -1283,12 +1288,12 @@
 						const selItems = plman.GetPlaylistSelectedItems(ap);
 						plman.UndoBackup(ap);
 						plman.RemovePlaylistSelection(ap);
-						if (pp !== ap) {
-							plman.ActivePlaylist = pp;
-							plman.UndoBackup(pp);
-						} else {
+						if (pp === ap) {
 							playingItemLocation = plman.GetPlayingItemLocation();
 							if (!playingItemLocation.IsValid) { plman.Redo(ap); return; }
+						} else {
+							plman.ActivePlaylist = pp;
+							plman.UndoBackup(pp);
 						}
 						const pos = playingItemLocation.PlaylistItemIndex + 1;
 						plman.InsertPlaylistItems(pp, pos, selItems, true);
@@ -1334,7 +1339,7 @@
 		}
 		{	// Select by query
 			const scriptPath = folders.xxx + 'main\\filter_and_query\\filter_by_query.js';
-			/* global queryReplaceWithCurrent:readable, globQuery:readable, checkQuery:readable, queryJoin:readable, selectByQuery:readable */
+			/* global queryReplaceWithCurrent:readable, globQuery:readable, checkDynQuery:readable, queryJoin:readable, selectByQuery:readable */
 			if (_isFile(scriptPath)) {
 				const name = 'Select by query';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
@@ -1380,7 +1385,7 @@
 					menu_properties['selQueryFilterCustomArg'] = [menuName + '\\' + name + ' Dynamic menu custom args', selArg.query];
 					// Check
 					menu_properties['selQueryFilter'].push({ func: isJSON }, menu_properties['selQueryFilter'][1]);
-					menu_properties['selQueryFilter'].push({ func: (query) => { return checkQuery(query, true); } }, menu_properties['selQueryFilter'][1]);
+					menu_properties['selQueryFilterCustomArg'].push({ func: (query) => checkDynQuery(query, true) }, menu_properties['selQueryFilterCustomArg'][1]);
 					// Helpers
 					const inputPlsQuery = (bCopyCurrent = false) => {
 						let query = '';
@@ -1590,7 +1595,7 @@
 						let start = plman.GetPlaylistFocusItemIndex(ap);
 						if (start !== -1 && !plman.IsPlaylistItemSelected(ap, start)) { start = -1; }
 						const end = plman.PlaylistItemCount(ap);
-						const numbers = input < 0 ? (start !== -1 ? range(0, start, 1) : range(0, end, 1)) : range(start !== -1 ? start : 0, end, 1);
+						const numbers = input < 0 ? (start === -1 ? range(0, end, 1) : range(0, start, 1)) : range(start === -1 ? 0 : start, end, 1);
 						plman.ClearPlaylistSelection(ap);
 						plman.SetPlaylistSelection(ap, input < 0 ? numbers.slice(input) : numbers.slice(0, input), true); // Take n first ones
 					}, flags: playlistCountFlags
@@ -1691,7 +1696,7 @@
 						let acc = 0;
 						timeArr.forEach((trackTime, i) => {
 							if (acc === time) { return; }
-							const newTime = trackTime - (i !== 0 ? crossfade : 0);
+							const newTime = trackTime - (i === 0 ? 0 : crossfade);
 							if (acc + newTime <= time) { acc += newTime; sel.push((idxArr[i])); }
 						});
 						console.log('Playlist Tools: Selected time ' + utils.FormatDuration(acc) + ' (+' + crossfade * Math.max(sel.length - 1, 0) + 's crossfade)');
@@ -1720,7 +1725,7 @@
 							? timeArr.slice(start)
 							: timeArr.slice(0, start).reverse()
 						).findIndex((trackTime, i) => {
-							const newTime = trackTime - (i !== 0 ? crossfade : 0);
+							const newTime = trackTime - (i === 0 ? 0 : crossfade);
 							acc += newTime;
 							if (acc > endTime) {
 								console.log('Playlist Tools: Selected time ' + utils.FormatDuration(acc - newTime) + ' (+' + crossfade * Math.max((i - 1), 0) + 's crossfade)');
@@ -1774,7 +1779,7 @@
 								[{ name: 'LENGTH_SECONDS', type: 'number' }],
 								{ bMerged: true }
 							).flat();
-							timeArr.forEach((curr, i) => timeArr[i] += (i !== 0 ? timeArr[i - 1] : 0));
+							timeArr.forEach((curr, i) => timeArr[i] += (i === 0 ? 0 : timeArr[i - 1]));
 							const limits = range(0, args.group)
 								.map((() => {
 									const left = timeArr[0];
@@ -1790,7 +1795,7 @@
 							limits.forEach((limit, i) => {
 								if (limit.idx !== -1) { return; }
 								let diff = Infinity;
-								let j = i !== 0 ? limits[i - 1].idx + 1 : 0;
+								let j = i === 0 ? 0 : limits[i - 1].idx + 1;
 								for (let time of timeArr.slice(j)) {
 									if (!diff) { break; }
 									const newDiff = Math.abs(time - limit.time);
@@ -1802,7 +1807,7 @@
 								}
 								limit.time = timeArr[limit.idx];
 							});
-							const start = limits[args.n].idx + (args.n !== 0 ? 1 : 0);
+							const start = limits[args.n].idx + (args.n === 0 ? 0 : 1);
 							const end = limits[args.n + 1].idx;
 							plman.ClearPlaylistSelection(ap);
 							plman.SetPlaylistSelection(ap, range(start, end, 1), true);

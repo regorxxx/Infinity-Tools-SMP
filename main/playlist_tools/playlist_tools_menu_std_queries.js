@@ -66,7 +66,7 @@
 							let direction = 1;
 							try { direction = Number(utils.InputBox(window.ID, 'Direction:\n(-1 or 1)', scriptName + ': ' + name, 1, true)); }
 							catch (e) { return; } // eslint-disable-line no-unused-vars
-							if (isNaN(direction)) { return; }
+							if (Number.isNaN(direction)) { return; }
 							direction = direction > 0 ? 1 : -1;
 							return { query, sort: { tfo, direction } };
 						}
@@ -121,7 +121,7 @@
 												? (query.length && query.toUpperCase() !== 'ALL'
 													? '(' + query + ') AND (' + defaultArgs.forcedQuery + ')'
 													: query	)
-												: (!query.length ? 'ALL' : query)
+												: (query.length ? query : 'ALL')
 										});
 										if (!handleList) { fb.ShowPopupMessage('Query failed:\n' + query, scriptName); return; }
 										// For internal use original object

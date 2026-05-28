@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/11/25
+//28/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, specialMenu:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, focusFlags:readable, entryMaxLength:readable */
 
@@ -69,8 +69,8 @@
 							if (sel) {
 								const selInfo = sel.GetFileInfo();
 								if (!Object.keys(input.args.sameBy).every((key) => { return selInfo.MetaFind(key) === -1; })) {
-									try { if (!searchSameByCombs({ ...input.args, bSendToPls: false })) { throw new Error(); } }
-									catch (e) { fb.ShowPopupMessage('Arguments not valid, check them and try again:\n' + JSON.stringify(input), scriptName); return; } // eslint-disable-line no-unused-vars
+									try { if (!searchSameByCombs({ ...input.args, bSendToPls: false })) { throw new Error('Arguments not valid, check them and try again:\n' + JSON.stringify(input)); } }
+									catch (e) { fb.ShowPopupMessage(e.message, scriptName); return; }
 								}
 							}
 							return input;
@@ -97,7 +97,7 @@
 											// Reuse the original key if tag matches a global tag
 											const keyLc = key.toLocaleLowerCase();
 											const keyText = (Object.entries(globTags).find((pair) => isString(pair[1]) && pair[1].toLowerCase() === keyLc) || [key])[0];
-											queryName += (!queryName.length ? '' : index !== array.length - 1 ? ', ' : ' and ');
+											queryName += (queryName.length ? index === array.length - 1 ? ' and ' : ', ' : '');
 											queryName += capitalize(keyText) + (queryObj.args.sameBy[key] > 1 ? 's' : '') + ' (=' + queryObj.args.sameBy[key] + ')';
 										});
 									}
@@ -191,12 +191,13 @@
 								menu.newSeparator(entryMenuName);
 							} else {
 								let entryText = '';
-								if (!Object.hasOwn(selArg, 'title')) {
+								if (Object.hasOwn(selArg, 'title')) { entryText = selArg.title; }
+								else {
 									Object.keys(selArg.args.sameBy).forEach((key, index, array) => {
-										entryText += (!entryText.length ? '' : index !== array.length - 1 ? ', ' : ' and ');
+										entryText += (entryText.length ? index === array.length - 1 ? ' and ' : ', ' : '');
 										entryText += capitalize(key) + (selArg.args.sameBy[key] > 1 ? 's' : '') + ' (=' + selArg.args.sameBy[key] + ')';
 									});
-								} else { entryText = selArg.title; }
+								}
 								let entryMenuName = Object.hasOwn(selArg, 'menu') ? selArg.menu : subMenuName;
 								menu.newEntry({ menuName: entryMenuName, entryText, func: (args = { ...defaultArgs, ...selArg.args }) => { searchSameByCombs(args); }, flags: focusFlags });
 							}

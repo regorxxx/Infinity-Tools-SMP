@@ -1,5 +1,5 @@
 ﻿'use strict';
-//23/12/25
+//28/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, libSearchMenu:readable */
 
@@ -27,7 +27,7 @@
 						// Checks
 						menu_properties['importPlaylistPath'].push({ func: isString, portable: true }, menu_properties['importPlaylistPath'][1]);
 						menu_properties['importPlaylistMask'].push({ func: isJSON }, menu_properties['importPlaylistMask'][1]);
-						menu_properties['importPlaylistFilters'].push({ func: (x) => { return isJSON(x) && JSON.parse(x).every((query) => { return checkQuery(query, true); }); } }, menu_properties['importPlaylistFilters'][1]);
+						menu_properties['importPlaylistFilters'].push({ func: (x) => isJSON(x) && JSON.parse(x).every((query) => checkQuery(query, true)) }, menu_properties['importPlaylistFilters'][1]);
 						// Presets
 						const maskPresets = [
 							{ name: 'Numbered Track list', val: JSON.stringify(['. ', '%TITLE%', ' - ', globTags.artist]), discard: '#' },
