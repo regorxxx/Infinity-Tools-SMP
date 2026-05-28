@@ -1,5 +1,5 @@
 'use strict';
-//22/05/26
+//28/05/26
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -50,8 +50,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 /* global debounce:readable, doOnce:readable, clone:readable , memoize:readable */
 /* global _isFile:readable, _deleteFile:readable, utf8:readable, _open:readable, _save:readable, _jsonParseFileCheck:readable, WshShell:readable, popup:readable, findRecursiveFile:readable, _copyFile:readable, _foldPath:readable */
 /* global memoryPrint:readable */
-include('..\\..\\helpers\\helpers_xxx_crc.js');
-/* global crc32:readable */
+if (!utils.CRC32) { include('..\\..\\helpers\\helpers_xxx_checksum.js'); }
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global isInt:readable, isJSON:readable, isBoolean:readable, regExBool:readable, isString:readable, isStringWeak:readable, _t:readable, _p:readable, isArrayStrings:readable, round:readable, _q:readable, _b:readable, _bt:readable, _qCond:readable, range:readable, checkJsonProperties:readable, strNumCollator:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
@@ -367,7 +366,7 @@ if (sbd.panelProperties.bTagsCache[1]) {
 */
 // Only use file cache related to current descriptors, otherwise delete it
 if (sbd.panelProperties.bProfile[1]) { sbd.profiler = new FbProfiler('descriptorCRC'); }
-const descriptorCRC = crc32(JSON.stringify(music_graph_descriptors) + musicGraph.toString() + calcGraphDistance.toString() + calcMeanDistance.toString() + sbd.influenceMethod + 'v1.2.0');
+const descriptorCRC = utils.CRC32(JSON.stringify(music_graph_descriptors) + musicGraph.toString() + calcGraphDistance.toString() + calcMeanDistance.toString() + sbd.influenceMethod + 'v1.2.0');
 const bMismatchCRC = sbd.panelProperties.descriptorCRC[1] !== descriptorCRC;
 if (bMismatchCRC) {
 	if (sbd.panelProperties.descriptorCRC[1] !== -1) { // There may be multiple panels, don't nuke it on first init on a new panel
