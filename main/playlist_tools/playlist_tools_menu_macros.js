@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/11/25
+//28/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, createSubMenuEditEntries:readable, newReadmeSep:readable, presets:readable, entryMaxLength:readable */
 
@@ -61,12 +61,12 @@
 						'Pools\\Top tracks mix',
 						'Macros\\Report library tags errors',
 						/* global sbd:readable */
-						typeof sbd !== 'undefined'
-							? [
+						typeof sbd === 'undefined'
+							? []
+							: [
 								sbd.name + '\\Find genres/styles not on Graph',
 								sbd.name + '\\Debug Graph (check console)'
 							]
-							: []
 					].filter(Boolean), bAsync: false
 				},
 				{
@@ -160,7 +160,7 @@
 							} else if (defaultArgs.parent) { // Apply animation on registered parent button...
 								defaultArgs.parent.switchAnimation(menuName + '\\Recording...', true, () => { return !Macros.isRecording(); });
 							}
-						}, flags: !Macros.isRecording() ? MF_STRING : MF_GRAYED
+						}, flags: Macros.isRecording() ? MF_GRAYED : MF_STRING
 					});
 					menu.newEntry({
 						menuName, entryText: 'Stop recording and Save macro', func: () => {
