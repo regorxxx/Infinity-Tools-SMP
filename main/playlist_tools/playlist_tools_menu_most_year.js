@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/05/26
+//29/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, forcedQueryMenusEnabled:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable */
 
@@ -31,7 +31,7 @@
 						selYearArr.forEach((selYear) => {
 							let selArgs = { year: selYear, bUseLast: false };
 							menu.newEntry({
-								menuName: subMenuName, entryText: 'Most played at ' + selYear, func: (args = { ...defaultArgs, ...selArgs }) => {
+								menuName: subMenuName, entryText: 'Most played at ' + selYear, func: (args = { ...defaultArgs, ...selArgs }) => { // NOSONAR
 									if (!forcedQueryMenusEnabled[name]) { args.forcedQuery = ''; }
 									topTracksFromDate(args);
 								}
@@ -39,7 +39,7 @@
 						});
 						menu.newSeparator(subMenuName);
 						menu.newEntry({
-							menuName: subMenuName, entryText: 'Most played today', func: (args = { ...defaultArgs }) => {
+							menuName: subMenuName, entryText: 'Most played today', func: (args = { ...defaultArgs }) => { // NOSONAR
 								if (!forcedQueryMenusEnabled[name]) { args.forcedQuery = ''; }
 								const todayQuery = globQuery.lastPlayedFunc.replaceAll('#QUERYEXPRESSION#', 'DURING ' + new Date().toISOString().split('T')[0]);
 								topTracksFromDate({
@@ -52,7 +52,7 @@
 							}
 						});
 						menu.newEntry({
-							menuName: subMenuName, entryText: 'Most played yesterday', func: (args = { ...defaultArgs }) => {
+							menuName: subMenuName, entryText: 'Most played yesterday', func: (args = { ...defaultArgs }) => { // NOSONAR
 								if (!forcedQueryMenusEnabled[name]) { args.forcedQuery = ''; }
 								const now = new Date();
 								now.setDate(now.getDate() - 1);
@@ -76,7 +76,7 @@
 						options.forEach((option) => {
 							let selArgs = { last: option.arg, bUseLast: true };
 							menu.newEntry({
-								menuName: subMenuName, entryText: 'Most played last ' + option.name, func: (args = { ...defaultArgs, ...selArgs }) => {
+								menuName: subMenuName, entryText: 'Most played last ' + option.name, func: (args = { ...defaultArgs, ...selArgs }) => { // NOSONAR
 									if (!forcedQueryMenusEnabled[name]) { args.forcedQuery = ''; }
 									topTracksFromDate(args);
 								}
@@ -88,7 +88,7 @@
 						// All years
 						include(scriptPathElse);
 						menu.newEntry({
-							menuName: subMenuName, entryText: 'Most played (all years)', func: (args = { ...defaultArgs }) => {
+							menuName: subMenuName, entryText: 'Most played (all years)', func: (args = { ...defaultArgs }) => { // NOSONAR
 								if (!forcedQueryMenusEnabled[name]) { args.forcedQuery = ''; }
 								topTracks(args);
 							}
@@ -131,7 +131,7 @@
 					// All years
 					include(scriptPathElse);
 					menu.newEntry({
-						entryText: name, func: (args = { ...defaultArgs }) => {
+						entryText: name, func: (args = { ...defaultArgs }) => { // NOSONAR
 							if (!forcedQueryMenusEnabled[name]) { args.forcedQuery = ''; }
 							topTracks(args);
 						}
@@ -185,7 +185,7 @@
 									selYear.sort(); // Invariant to order
 									const dateName = (selYear.length === 2 && selYear[0] === 0 ? ' before ' + selYear[1] : ' from ' + selYear.join('-'));
 									menu.newEntry({
-										menuName: subMenuName, entryText: 'Top played' + dateName, func: (args = { ...defaultArgs }) => {
+										menuName: subMenuName, entryText: 'Top played' + dateName, func: (args = { ...defaultArgs }) => { // NOSONAR
 											if (utils.IsKeyPressed(VK_SHIFT)) { args.sortBy = ''; } // Random on shift
 											[args.forcedQuery, args.playlistName] = queryDateAndName(args, selYear);
 											topTracks(args);
@@ -254,7 +254,7 @@
 									selYear.sort(); // Invariant to order
 									const dateName = (selYear.length === 2 && selYear[0] === 0 ? ' before ' + selYear[1] : ' from ' + selYear.join('-'));
 									menu.newEntry({
-										menuName: subMenuName, entryText: 'Top rated' + dateName, func: (args = { ...defaultArgs }) => {
+										menuName: subMenuName, entryText: 'Top rated' + dateName, func: (args = { ...defaultArgs }) => { // NOSONAR
 											if (utils.IsKeyPressed(VK_SHIFT)) { args.sortBy = ''; } // Random on shift
 											[args.forcedQuery, args.playlistName] = queryDateAndName(args, selYear);
 											topRatedTracks(args);

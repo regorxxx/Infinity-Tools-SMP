@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/05/26
+//29/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, configMenu:readable, specialMenu:readable, deferFunc:readable, menu_propertiesBack:readable, createSmartShuffleMenu:readable */
 
@@ -62,7 +62,7 @@
 							const entryArg = entryArgs.find((item) => { return item.name === selArg.name; }) || {};
 							let entryText = selArg.name;
 							menu.newEntry({
-								menuName, entryText, func: (args = { ...scriptDefaultArgs, ...defaultArgs, ...selArg.args, ...entryArg.args }) => {
+								menuName, entryText, func: (args = { ...scriptDefaultArgs, ...defaultArgs, ...selArg.args, ...entryArg.args }) => { // NOSONAR
 									const globQuery = args.properties['forcedQuery'][1];
 									if (Object.hasOwn(args, 'forcedQuery') && globQuery.length && args['forcedQuery'] !== globQuery) { // Join queries if needed
 										args['forcedQuery'] = globQuery + ' AND ' + args['forcedQuery'];

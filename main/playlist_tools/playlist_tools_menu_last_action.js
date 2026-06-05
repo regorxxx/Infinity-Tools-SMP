@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/08/25
+//29/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, lastActionEntry:readable , newReadmeSep:readable */
 
@@ -16,7 +16,7 @@
 			const {entryText, fullName, flags} = lastActionEntry();
 			menu.newEntry({entryText, func: () => {
 				menu.btn_up(void(0), void(0), void(0), fullName); // Don't clear menu on last call
-			}, flags: entryText !== null ? flags : MF_GRAYED});
+			}, flags: entryText === null ? MF_GRAYED : flags});
 		}});
 	// This part changes compared to the other files due to being a cond entry...
 	} else {menuDisabled.push({entryText: name, condFunc: true, subMenuFrom: menu.getMainMenuName(), index: menu.getEntries().filter((entry) => {

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/03/26
+//29/05/26
 
 /* global youTube:readable */
 include('..\\..\\helpers\\helpers_xxx.js');
@@ -324,7 +324,7 @@ ListenBrainz.processPayload = async function processPayload(payload, token, even
 			break;
 		}
 	}
-	return Promise.resolve(processed);
+	return processed;
 };
 /**
  * Submits a listens payload in chunks according to the max listens per request API limit. Note duplicates are handled automatically by the server.
@@ -485,7 +485,7 @@ ListenBrainz.updateSimilarDataFile = updateSimilarDataFile.bind(ListenBrainz);
  * @param {string} token
  * @returns {Promise.<{artist_credit_name: string, artist_mbids: string[], caa_id: number|null, caa_release_mbid: string|null, confidence: number, listen_count: 0, release_date: string, release_group_mbid: string, release_group_primary_type: string, release_group_secondary_type: string|null, release_mbid: string, release_name: string, release_tags: string[] }[]>}
  */
-ListenBrainz.getFreshReleases = function (user, type = { include: new Set(['Album']), exclude: new Set(['Compilation', 'Live', 'Soundtrack']) }, params = { sort: 'release_date', past: true, future: true, days: 90 }, token = '') {
+ListenBrainz.getFreshReleases = function (user, type = { include: new Set(['Album']), exclude: new Set(['Compilation', 'Live', 'Soundtrack']) }, params = { sort: 'release_date', past: true, future: true, days: 90 }, token = '') { // NOSONAR
 	if (!user) { console.log('getFreshReleases: no user provided'); return Promise.resolve([]); }
 	return send({
 		method: 'GET',

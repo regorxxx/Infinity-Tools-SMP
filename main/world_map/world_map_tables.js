@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/04/26
+//29/05/26
 
 /* exported findCountryCoords,isNearCountry, findCountry, getCountryName, alpha3toAlpha2, nameReplacersRev, nameShortRev */
 
@@ -47,7 +47,7 @@ function isNearCountry({ id, x, y, mapWidth, mapHeight, factorX, factorY, precis
 		.every((coordProx) => coordProx >= precision);
 }
 
-function findCountry({ x, y, mapWidth, mapHeight, factorX, factorY, precision = 0.94, minPrecision = 0.75, bForceOutput = true, bSingle = false } = {}) { // Mercator projection
+function findCountry({ x, y, mapWidth, mapHeight, factorX, factorY, precision = 0.94, minPrecision = 0.75, bForceOutput = true, bSingle = false } = {}) { // NOSONAR Mercator projection
 	if (bSingle) { bForceOutput = true; }
 	let countries = [];
 	// Force at least a country by lowering the precision. Note some countries are really big (compared to the point)! So this is needed

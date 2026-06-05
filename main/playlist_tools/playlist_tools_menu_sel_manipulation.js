@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/05/26
+//29/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable, entryMaxLength:readable */
 
@@ -282,7 +282,7 @@
 				}
 				// Menus
 				selArgs.forEach((selArg) => {
-					menu.newEntry({ menuName: subMenuName, entryText: selArg.name, func: (args = { ...defaultArgsClean(), ...selArg.args }) => { selArg.func(args); }, flags: multipleSelectedFlagsReorder });
+					menu.newEntry({ menuName: subMenuName, entryText: selArg.name, func: (args = { ...defaultArgsClean(), ...selArg.args }) => { selArg.func(args); }, flags: multipleSelectedFlagsReorder }); // NOSONAR
 				});
 			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 		}
@@ -352,7 +352,7 @@
 									} else { entryNames.add(entryText); }
 									// Entries
 									menu.newEntry({
-										menuName: subMenuName, entryText, func: (args = { ...defaultArgs, ...obj.args }) => {
+										menuName: subMenuName, entryText, func: (args = { ...defaultArgs, ...obj.args }) => { // NOSONAR
 											if (args.tagValue === null) { intercalateByTags(args); } else { scatterByTags(args); }
 										}, flags: multipleSelectedFlagsReorder
 									});
@@ -461,7 +461,7 @@
 									} else { entryNames.add(entryText); }
 									// Entries
 									menu.newEntry({
-										menuName: subMenuName, entryText, func: (args = { ...defaultArgs, ...obj.args }) => {
+										menuName: subMenuName, entryText, func: (args = { ...defaultArgs, ...obj.args }) => { // NOSONAR
 											if (args.tagValue === null) { intercalateByTags(args); } else { scatterByTags(args); }
 										}, flags: multipleSelectedFlagsReorder
 									});

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/05/26
+//29/05/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, specialMenu:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, focusFlags:readable, entryMaxLength:readable */
 
@@ -199,7 +199,7 @@
 									});
 								}
 								let entryMenuName = Object.hasOwn(selArg, 'menu') ? selArg.menu : subMenuName;
-								menu.newEntry({ menuName: entryMenuName, entryText, func: (args = { ...defaultArgs, ...selArg.args }) => { searchSameByCombs(args); }, flags: focusFlags });
+								menu.newEntry({ menuName: entryMenuName, entryText, func: (args = { ...defaultArgs, ...selArg.args }) => { searchSameByCombs(args); }, flags: focusFlags }); // NOSONAR
 							}
 						});
 					}
