@@ -21,6 +21,7 @@
 - Quickmatch: added %INVOLVEDPEOPLE% to artist tags on new setups.
 - UI: support for dark themed popups if JS host allows it.
 - UI: improved blend color mode to use a mix of CUI/DUI colors when no art is available (like Biograhpy and Library-Tree-SMP do).
+- Autobackup: added some default paths related to foobar v2 and third party components.
 ### Removed
 ### Fixed
 

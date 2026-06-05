@@ -1,5 +1,5 @@
 'use strict';
-//20/03/26
+//03/06/26
 
 /* exported AutoBackup */
 
@@ -34,8 +34,8 @@ function AutoBackup({
 	this.addEventListeners = () => {
 		this.listeners = [
 			addEventListener('on_playback_new_track', () => {
-				if (!this.counter.timePlaying) { this.counter.timePlaying = Date.now(); }
-				else { this.increaseTrackCounter(); }
+				if (this.counter.timePlaying) { this.increaseTrackCounter(); }
+				else { this.counter.timePlaying = Date.now(); }
 			}),
 			addEventListener('on_playback_stop', (reason) => {
 				if (reason === 0 || reason === 1) {
@@ -233,7 +233,7 @@ function AutoBackup({
 
 	this.backup = ({ iBackups = this.iBackups, backupsMaxSize = this.backupsMaxSize, bAsync = this.bAsync, outputPath = this.outputPath, reason = '', timeout = 0 } = {}) => {
 		if (timeout) { bAsync = true; }
-		let test = !bAsync ? new FbProfiler('AutoBackup') : null;
+		let test = bAsync ? null : new FbProfiler('AutoBackup');
 		const folderPath = outputPath.split('\\').slice(0, -1).join('\\') + '\\' || '';
 		_createFolder(folderPath);
 		this.deleteOldFiles(iBackups, backupsMaxSize, folderPath);
@@ -266,9 +266,9 @@ function AutoBackup({
 			this.deleteTempFiles(fileMask);
 			test.Print(reason);
 			if (_isFile(outputPath + zipName + '.zip')) {
-				console.log(this.name + ' (' + reason + '): Backed up items to\n\t ' + outputPath + zipName); // DEBUG
+				console.log(this.name + ' (' + reason + '): Backed up items to\n\t ' +_foldPath(outputPath) + zipName); // DEBUG
 			} else {
-				console.log(this.name + ' (' + reason + '): Failed creating backup at\n\t ' + outputPath + zipName); // DEBUG
+				console.log(this.name + ' (' + reason + '): Failed creating backup at\n\t ' + _foldPath(outputPath) + zipName); // DEBUG
 			}
 		} else if (reason !== 'unload') {
 			const now = Date.now();
@@ -276,10 +276,10 @@ function AutoBackup({
 				if (_isFile(outputPath + zipName + '.zip')) {
 					this.deleteTempFiles(fileMask);
 					clearInterval(id);
-					console.log(this.name + ' (' + reason + '): Backed up items to\n\t ' + outputPath + zipName); // DEBUG
+					console.log(this.name + ' (' + reason + '): Backed up items to\n\t ' + _foldPath(outputPath) + zipName); // DEBUG
 				} else if (Date.now() - now >= this.backupMinInterval) {
 					clearInterval(id);
-					console.log(this.name + ' (' + reason + '): Failed creating backup at\n\t ' + outputPath + zipName); // DEBUG
+					console.log(this.name + ' (' + reason + '): Failed creating backup at\n\t ' + _foldPath(outputPath) + zipName); // DEBUG
 				}
 			}, 1000);
 		}
