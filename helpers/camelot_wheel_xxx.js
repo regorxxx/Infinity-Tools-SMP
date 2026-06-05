@@ -1,5 +1,5 @@
 ﻿'use strict';
-//04/12/25
+//29/05/26
 
 /* exported camelotWheel */
 
@@ -260,7 +260,7 @@ const camelotWheel = function () {
 	 */
 	return {
 		getKeyNotationTable(bMap = true) {
-			return bMap ? new Map([...keyNotation.entries()]) : [...keyNotation.entries()];
+			return bMap ? new Map(keyNotation.entries()) : [...keyNotation.entries()];
 		},
 		getKeyNotationObjectTable(bMap = true) {
 			const entries = Array.from(keyNotationObject.entries(), (entry) => { return [entry[0], this.clone(entry[1])]; });
@@ -459,7 +459,7 @@ const camelotWheel = function () {
 				bRandomize: false,
 				bFillPerfectMatch: true
 			};
-			options = { ...defaults, ...(options || {}) };
+			options = { ...defaults, ...options };
 			// Instead of predefining a mixing pattern, create one randomly each time, with predefined proportions
 			const movements = options.movements;
 			// It may also be randomized a bit more
@@ -478,7 +478,7 @@ const camelotWheel = function () {
 			const totalWeight = Object.values(movements).reduce((total, curr) => total + curr, 0);
 			let pattern = [];
 			Object.keys(movements).forEach((key) => {
-				pattern = pattern.concat(Array(Math.ceil(playlistLength * movements[key] / totalWeight)).fill(key));
+				pattern = pattern.concat(new Array(Math.ceil(playlistLength * movements[key] / totalWeight)).fill(key));
 			});
 			// Sort randomly
 			let last = pattern.length;

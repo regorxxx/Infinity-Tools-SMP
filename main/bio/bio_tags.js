@@ -1,5 +1,5 @@
 'use strict';
-//30/12/23
+//29/05/26
 
 /* exported lastfmListeners */
 
@@ -33,7 +33,7 @@ const lastfmListeners = {
 						? new FbMetadbHandleList(fb.GetNowPlaying())
 						: fb.GetFocusItem()
 					: fb.GetFocusItem();
-				const sel = plman.ActivePlaylist !== -1 ? fb.GetFocusItem(true) : null;
+				const sel = plman.ActivePlaylist === -1 ? null : fb.GetFocusItem(true);
 				if (sel && bioSel && sel.RawPath === bioSel.RawPath) {
 					parent.bioTags = JSON.parse(JSON.stringify(info.tags));
 				}

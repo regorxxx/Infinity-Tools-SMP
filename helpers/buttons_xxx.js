@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//29/05/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -356,9 +356,7 @@ function ThemedButton({
 					? invert(buttonsBar.config.toolbarColor, true)
 					: buttonsBar.config.hoverColor === -1
 						? window.InstanceType === 1
-							? state === buttonStates.down
-								? window.GetColourDUI(ColourTypeDUI.highlight)
-								: window.GetColourDUI(ColourTypeDUI.highlight)
+							? window.GetColourDUI(ColourTypeDUI.highlight)
 							: state === buttonStates.down
 								? darkTheme ? RGB(33, 33, 33) : RGB(204, 232, 255)
 								: darkTheme ? RGB(64, 64, 64) : RGB(229, 243, 255)
@@ -377,9 +375,7 @@ function ThemedButton({
 			? buttonsBar.config.buttonColor
 			: buttonsBar.config.bDynHoverColor
 				? buttonsBar.config.buttonColor === -1
-					? window.InstanceType === 1
-						? darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
-						: darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
+					? darkTheme ? RGB(0, 0, 0) : RGB(153, 209, 255)
 					: invert(buttonsBar.config.buttonColor, true)
 				: RGB(243, 243, 243);
 	};

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//03/04/26
+//29/05/26
 
 /* exported checksumUtils */
 
@@ -33,7 +33,7 @@ const checksumUtils = {
 	},
 	getChecksumPath: function getChecksumPath(handlePath, fileMask) {
 		const idx = handlePath.lastIndexOf('\\');
-		const parentName = idx !== -1 ? handlePath.slice(idx + 1) : '_';
+		const parentName = idx === -1 ? '_' : handlePath.slice(idx + 1);
 		const fileName = fileMask.replaceAll('%1', parentName);
 		const filePath = handlePath + '\\' + fileName;
 		return { parentName, fileName, filePath };
@@ -169,7 +169,7 @@ const checksumUtils = {
 				const animId = 'Checksum Tools verifying folder ' + (i + 1) + '/' + paths.length;
 				if (bAnimation) { parent.switchAnimation(animId, true); }
 				const idx = path.lastIndexOf('\\');
-				const parentName = idx !== -1 ? path.slice(idx + 1) : '_';
+				const parentName = idx === -1 ? '_' : path.slice(idx + 1);
 				const file = fileMask.replaceAll('%1', parentName);
 				const filePath = path + '\\' + file;
 				if (this.bAbort) { return { path, file, pass: false, errors: null }; }
