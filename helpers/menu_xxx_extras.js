@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//29/05/26
 
 /* exported _createSubMenuEditEntries */
 
@@ -65,7 +65,7 @@ function _createSubMenuEditEntries(parent, menuName, options) { // NOSONAR
 				if (!newEntry || !newEntry.length) { fb.ShowPopupMessage('Input: ' + newEntry + '\n\nNon valid entry.', 'JSON error'); return; }
 				try { newEntry = JSON.parse(newEntry); } catch (e) { fb.ShowPopupMessage('Input: ' + newEntry.toString() + '\n\n' + e, 'JSON error'); return; }
 				if (!newEntry) { return; }
-				if (!options.bDuplicate && options.list.filter((otherEntry) => otherEntry !== entry).findIndex((otherEntry) => otherEntry.name === newEntry.name) !== -1) {
+				if (!options.bDuplicate && options.list.filter((otherEntry) => otherEntry !== entry).some((otherEntry) => otherEntry.name === newEntry.name) ) {
 					fb.ShowPopupMessage('There is another entry with same name.\nRetry with another name.', window.FullPanelName || (window.Name + ' (' + window.ScriptInfo.Name + ')'));
 					return parent.retry({ args: newEntry });
 				}
@@ -103,7 +103,7 @@ function _createSubMenuEditEntries(parent, menuName, options) { // NOSONAR
 						if (!entryName.length) { return; }
 						if (parent.isSeparator({ name: entryName })) { return; }
 						else { // or new entry
-							if (!options.bDuplicate && options.list.findIndex((entry) => entry.name === entryName) !== -1) {
+							if (!options.bDuplicate && options.list.some((entry) => entry.name === entryName) ) {
 								fb.ShowPopupMessage('There is another entry with same name.\nRetry with another name.', window.Name + ' (' + window.ScriptInfo.Name + ')');
 								return parent.retry({ args: entryName });
 							}
@@ -165,7 +165,7 @@ function _createSubMenuEditEntries(parent, menuName, options) { // NOSONAR
 				if (!entryName.length) { return; }
 				if (parent.isSeparator({ name: entryName })) { input = { name: entryName }; } // Add separator
 				else { // or new entry
-					if (!options.bDuplicate && options.list.findIndex((entry) => entry.name === entryName) !== -1) {
+					if (!options.bDuplicate && options.list.some((entry) => entry.name === entryName) ) {
 						fb.ShowPopupMessage('There is another entry with same name.\nRetry with another name.', window.Name + ' (' + window.ScriptInfo.Name + ')');
 						return parent.retry({ args: entryName });
 					}

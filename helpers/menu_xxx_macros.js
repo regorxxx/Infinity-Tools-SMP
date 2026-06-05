@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/11/25
+//29/05/26
 
 /* exported _Macros */
 
@@ -18,7 +18,7 @@ function _Macros(
 	const stack = [];
 	const queue = { stack: [], processed: [], stackCalls: 0 };
 	let currListener = null;
-	this.options = { listenerRate: 100, runRate: 50, maxRecursion: 10, ...(options || {}) };
+	this.options = { listenerRate: 100, runRate: 50, maxRecursion: 10, ...options };
 	this.get = () => [...stack];
 	this.set = (newStack) => {
 		stack.length = 0;
@@ -32,11 +32,11 @@ function _Macros(
 		let name;
 		let entry = [];
 		let bAsync = false;
-		while (!name || stack.findIndex((macro) => { return macro.name === name; }) !== -1) {
+		while (!name || stack.some((macro) => { return macro.name === name; }) ) {
 			try { name = utils.InputBox(window.ID, 'Enter name', window.FullPanelName + ': Macros', 'My macro', true); }
 			catch (e) { return; } // eslint-disable-line no-unused-vars
 			if (!name.length) { return; }
-			if (stack.findIndex((macro) => { return macro.name === name; }) !== -1) { fb.ShowPopupMessage('Already exists a macro with same name', window.FullPanelName + ': Macros'); }
+			if (stack.some((macro) => { return macro.name === name; }) ) { fb.ShowPopupMessage('Already exists a macro with same name', window.FullPanelName + ': Macros'); }
 		}
 		bAsync = WshShell.Popup('Execute entries asynchronously?\ni.e. Don\'t wait for entry\'s completion to call the next one.\nOnly for those entries that support it.\nCheck \'Configuration\\Asynchronous processing\' for more info.', 0, window.FullPanelName + ': Macros', popup.question + popup.yes_no) === popup.yes;
 		stack.push({ name, entry, bAsync });
