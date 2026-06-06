@@ -1,5 +1,5 @@
 'use strict';
-//28/05/26
+//06/06/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable, entryMaxLength:readable */
 
@@ -290,10 +290,11 @@
 		{	// Query search
 			const name = 'Query search';
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name] === true) {
-				const scriptPath = folders.xxx + 'main\\filter_and_query\\dynamic_query.js';
+				const scriptPath = [folders.xxx + 'main\\filter_and_query\\dynamic_query.js', folders.xxx + 'main\\filter_and_query\\filter_by_query.js'];
+				/* global selectByQuery:readable */
 				/* global dynamicQueryProcess:readable, dynamicQuery:readable */
-				if (_isFile(scriptPath)) {
-					include(folders.xxx + 'helpers\\helpers_xxx_playlists.js');
+				if (scriptPath.every((file) => _isFile(file))) {
+					scriptPath.forEach((file) => include(file.replace(folders.xxx + 'main\\', '..\\')));
 					/* global removeLock:readable */
 					if (!Object.hasOwn(menu_properties, 'playlistSplitSize')) {
 						menu_properties['playlistSplitSize'] = ['Playlist lists submenu size', 20];
@@ -311,7 +312,7 @@
 						// Input
 						selArg.query = menu_properties['selQuerySearchCustomArg'][1];
 						let input = '';
-						try { input = utils.InputBox(window.ID, 'Enter query:\n\nAlso allowed dynamic variables, like #ARTIST#, which will be replaced with selected items\' values.\n(see \'Dynamic queries\' readme for more info)' + '\n\nPressing Shift while clicking on \'OK\' will open the search window (and copy the query to clipboard ready to be pasted).', window.FullPanelName, selArg.query, true); }
+						try { input = utils.InputBox(window.ID, 'Enter query:\n\nAlso allowed dynamic variables, like #ARTIST#, which will be replaced with selected items\' values.\n(see \'Dynamic queries\' readme for more info)' + '\n\nPressing Shift while clicking on \'OK\' will open the search window (and copy the query to clipboard ready to be pasted).\nPressing Ctrl will select matched items.', window.FullPanelName, selArg.query, true); }
 						catch (e) { return; } // eslint-disable-line no-unused-vars
 						if (!input.length) { return; }
 						// Selection
@@ -321,14 +322,22 @@
 						// Playlist
 						let query = input;
 						const bShift = utils.IsKeyPressed(VK_SHIFT);
-						if (bShift) {
+						const bCtrl = utils.IsKeyPressed(VK_CONTROL);
+						if (bShift || bCtrl) {
 							const options = JSON.parse(menu_properties.dynQueryEvalSel[1]);
 							query = options['Dynamic queries']
 								? dynamicQueryProcess({ query, handleList: selItems })
 								: dynamicQueryProcess({ query });
-							if (query) {
-								_setClipboardData(query);
-								fb.ShowPlaylistSearchUI();
+							plman.ActivePlaylist = playlist.index;
+							if (bShift) {
+								if (query) {
+									_setClipboardData(query);
+									if (fb.ShowPlaylistSearchUI) { fb.ShowPlaylistSearchUI(); }
+									else { fb.RunMainMenuCommand('Edit/Search'); }
+								}
+							} else if (bCtrl) {
+								if (query) { selectByQuery(null, query); }
+								else { plman.ClearPlaylistSelection(plman.ActivePlaylist); }
 							}
 						} else {
 							const playlistName = 'Search...';
