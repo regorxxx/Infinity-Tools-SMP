@@ -1,5 +1,5 @@
 ﻿'use strict';
-//17/05/26
+//06/06/26
 
 /*
 	Quickmatch same....
@@ -134,10 +134,10 @@ addButton({
 			const bInfo = typeof barProperties === 'undefined' || barProperties.bTooltipInfo[1];
 			let sel = fb.GetSelectionType() > 1
 				? fb.GetSelections(1)
-				: plman.ActivePlaylist !== -1 ? fb.GetFocusItem(true) : null;
+				: plman.ActivePlaylist === -1 ? null : fb.GetFocusItem(true);
 			if (!sel || sel instanceof FbMetadbHandleList) {
 				if (!sel || !sel.Count) {
-					sel = plman.ActivePlaylist !== -1 ? fb.GetFocusItem(true) : null;
+					sel = plman.ActivePlaylist === -1 ? null : fb.GetFocusItem(true);
 				} else {
 					sel = sel[0];
 				}
@@ -182,10 +182,10 @@ function quickmatchMenu() {
 	// Get current selection and metadata
 	let sel = fb.GetSelectionType() > 1
 		? fb.GetSelections(1)
-		: plman.ActivePlaylist !== -1 ? fb.GetFocusItem(true) : null;
+		: plman.ActivePlaylist === -1 ? null : fb.GetFocusItem(true);
 	if (!sel || sel instanceof FbMetadbHandleList) {
 		if (!sel || !sel.Count) {
-			sel = plman.ActivePlaylist !== -1 ? fb.GetFocusItem(true) : null;
+			sel = plman.ActivePlaylist === -1 ? null : fb.GetFocusItem(true);
 		} else {
 			sel = sel[0];
 		}
@@ -204,14 +204,7 @@ function quickmatchMenu() {
 				const idx = info.MetaFind(tf);
 				tag.val.push([]);
 				// File tags
-				if (idx !== -1) {
-					let count = info.MetaValueCount(idx);
-					while (count--) {
-						const val = info.MetaValue(idx, count).trim().toLowerCase();
-						tag.val[i].push(val);
-						if (i === 0 || i !== 0 && !/TITLE|ALBUM_TRACKS/i.test(tag.type)) { tag.valSet.add(val); }
-					}
-				} else {
+				if (idx === -1) {
 					// foo_uie_biography
 					if (tf === 'LASTFM_SIMILAR_ARTIST') {
 						fb.TitleFormat('[%' + tf + '%]')
@@ -224,6 +217,13 @@ function quickmatchMenu() {
 								tag.val[i].push(val);
 								tag.valSet.add(val);
 							});
+					}
+				} else {
+					let count = info.MetaValueCount(idx);
+					while (count--) {
+						const val = info.MetaValue(idx, count).trim().toLowerCase();
+						tag.val[i].push(val);
+						if (i === 0 || i !== 0 && !/TITLE|ALBUM_TRACKS/i.test(tag.type)) { tag.valSet.add(val); }
 					}
 				}
 				// Bio tags
@@ -262,8 +262,8 @@ function quickmatchMenu() {
 						});
 					}
 					if (sdbData.size) {
-						const sbdTag = entries.find((tag) => tag.tf.some((tf) => tf === dataTag));
-						const idx = sbdTag ? sbdTag.tf.findIndex((tf) => tf === dataTag) : -1;
+						const sbdTag = entries.find((tag) => tag.tf.includes(dataTag));
+						const idx = sbdTag ? sbdTag.tf.indexOf(dataTag) : -1;
 						if (idx !== -1) {
 							sbdTag.val[idx].push(...sdbData);
 							sbdTag.valSet = sbdTag.valSet.union(sdbData);
@@ -287,8 +287,8 @@ function quickmatchMenu() {
 					});
 				}
 				if (worldMapData.size) {
-					const localeTag = entries.find((tag) => tag.tf.some((tf) => tf === 'LOCALE WORLD MAP'));
-					const idx = localeTag ? localeTag.tf.findIndex((tf) => tf === 'LOCALE WORLD MAP') : -1;
+					const localeTag = entries.find((tag) => tag.tf.includes('LOCALE WORLD MAP'));
+					const idx = localeTag ? localeTag.tf.indexOf('LOCALE WORLD MAP') : -1;
 					if (idx !== -1) {
 						localeTag.val[idx].push(...worldMapData);
 						localeTag.valSet = localeTag.valSet.union(worldMapData);
