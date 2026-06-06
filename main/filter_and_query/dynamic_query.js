@@ -1,5 +1,5 @@
 ﻿'use strict';
-//16/06/25
+//06/06/26
 
 /* exported dynamicQuery */
 
@@ -11,7 +11,7 @@
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
-/* global queryReplaceWithCurrent:readable, queryJoin:readable */
+/* global queryReplaceWithCurrent:readable, queryJoin:readable, checkQuery:readable */
 include('..\\sort\\harmonic_mixing.js');
 /* global queryReplaceKeys:readable */
 
@@ -49,7 +49,7 @@ function dynamicQueryProcess({ query = 'ARTIST IS #ARTIST#', handle = fb.GetFocu
 	if (!query || !query.length) { return null; }
 	if (Array.isArray(query)) {
 		query = query.map((q) => dynamicQueryProcess(
-			{query: q, handle, handleList, bToLowerCase, bOmitChecks: true, bForceStatic}
+			{ query: q, handle, handleList, bToLowerCase, bOmitChecks: true, bForceStatic }
 		)).join('');
 	} else if (query.includes('#')) {
 		if (!handle && !handleList) { // May pass a standard query which doesn't need a handle to evaluate
@@ -68,9 +68,7 @@ function dynamicQueryProcess({ query = 'ARTIST IS #ARTIST#', handle = fb.GetFocu
 			query = queryReplaceWithCurrent(query, handle, null, { bToLowerCase });
 		}
 	}
-	if (!bOmitChecks) {
-		try { fb.GetQueryItems(new FbMetadbHandleList(), query); }
-		catch (e) { fb.ShowPopupMessage('Query not valid. Check it and add it again:\n' + query, 'dynamicQuery'); return null; } // eslint-disable-line no-unused-vars
-	}
+	if (query.length > 212796) { fb.ShowPopupMessage('Query too long to be processed. Use less tracks as reference.', 'dynamicQuery'); return null; } // BUG: Foobar2000 crash due to too long queris https://hydrogenaudio.org/index.php/topic,126743.msg1082511.html#msg1082511
+	if (!bOmitChecks && !checkQuery(query, true)) { fb.ShowPopupMessage('Query not valid. Check it and add it again:\n' + query, 'dynamicQuery'); return null; }
 	return query;
 }
