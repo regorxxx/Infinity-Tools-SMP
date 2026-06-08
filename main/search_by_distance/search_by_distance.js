@@ -1,5 +1,5 @@
 'use strict';
-//28/05/26
+//06/06/26
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -1037,7 +1037,7 @@ async function searchByDistance({
 		const tagsToCheck = Object.keys(tags).filter((k) => !tags[k].type.includes('virtual') || tags[k].type.includes('tfRemap'));
 		// Theme tags must contain at least all the user tags
 		const tagCheck = Object.hasOwn(theme, 'tags')
-			? theme.tags.findIndex((tagArr) => !new Set(Object.keys(tagArr)).isSuperset(new Set(tagsToCheck)))
+			? theme.tags.findIndex((tagArr) => !new Set(Object.keys(tagArr)).isSupersetOf(new Set(tagsToCheck)))
 			: 0;
 		const bCheck = Object.hasOwn(theme, 'name') && tagCheck === -1;
 		if (!bCheck) {

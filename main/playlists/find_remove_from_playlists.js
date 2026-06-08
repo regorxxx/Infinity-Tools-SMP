@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/11/25
+//06/06/26
 
 /*
 	Find/Remove From Playlist(s)
@@ -45,7 +45,7 @@ function findInPlaylists(selList = fb.GetFocusItem(), lockType = []) {
 				if (!playlists[i]) { playlists[i] = plman.GetPlaylistItems(i); playlists[i].Sort(); }
 				if (playlists[i].BSearch(sel) !== -1) {
 					const lockActions = plman.GetPlaylistLockedActions(i);
-					const bLocked = bAll ? lockActions.length : new Set(lockActions).isSuperset(new Set(lockType));
+					const bLocked = bAll ? lockActions.length : new Set(lockActions).isSupersetOf(new Set(lockType));
 					inPlaylist.push({ index: i, name: plman.GetPlaylistName(i), GUID: plman.GetGUID(i), bLocked });
 					inPlaylistSet.add(i);
 				}
