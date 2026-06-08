@@ -10,6 +10,7 @@
 
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
+/* global isFunction:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global queryReplaceWithCurrent:readable, queryJoin:readable, checkQuery:readable */
 include('..\\sort\\harmonic_mixing.js');
@@ -27,7 +28,7 @@ include('..\\sort\\harmonic_mixing.js');
 function dynamicQuery({ query = 'ARTIST IS #ARTIST#', sort = { tfo: null, direction: 1 }, handle = fb.GetFocusItem(true), handleList = null, playlistName = 'Search...', bSendToPls = true, source = null, bToLowerCase = false, bForceStatic = false } = {}) {
 	query = dynamicQueryProcess({ query, handle, handleList, bToLowerCase, bForceStatic });
 	if (!query) { return null; }
-	let outputHandleList = fb.GetQueryItems(source || fb.GetLibraryItems(), query);
+	let outputHandleList = fb.GetQueryItems((isFunction(source) ? source() : source) || fb.GetLibraryItems(), query);
 	if (sort && sort.tfo !== null && sort.tfo.length) { outputHandleList.OrderByFormat(fb.TitleFormat(sort.tfo), sort.direction || 1); }
 	if (bSendToPls) {
 		console.log('Query: ' + query);

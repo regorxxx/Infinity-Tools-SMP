@@ -350,7 +350,7 @@ function quickmatchMenu() {
 								if (query) {
 									if (bShift && !bCtrl) { fb.ShowLibrarySearchUI(query); }
 									else if (!bShift && bCtrl) { plman.ActivePlaylist = plman.CreateAutoPlaylist(plman.PlaylistCount, playlistName, query); }
-									else { dynamicQuery({ query, sort: (bOmitSortPls ? null : queryObj.sort || { tfo: sortTF }), handleList: this.selItems, playlistName, source: plman.GetPlaylistItems(plman.ActivePlaylist) }); }
+									else { dynamicQuery({ query, sort: (bOmitSortPls ? null : queryObj.sort || { tfo: sortTF }), playlistName, source: plman.GetPlaylistItems(plman.ActivePlaylist) }); }
 								}
 							} else {
 								dynamicQuery({ query, sort: queryObj.sort || { tfo: sortTF }, playlistName });
