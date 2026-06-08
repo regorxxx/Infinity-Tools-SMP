@@ -19,6 +19,7 @@
 ### Changed
 - Playlist Tools\Playlist manipulation: menu cleanup and minor reordering.
 - Quickmatch: added %INVOLVEDPEOPLE% to artist tags on new setups.
+- Quickmatch: added 'Same album release' preset on new setups.
 - UI: support for dark themed popups if JS host allows it.
 - UI: improved blend color mode to use a mix of CUI/DUI colors when no art is available (like Biograhpy and Library-Tree-SMP do).
 - Autobackup: improved logging in some cases.

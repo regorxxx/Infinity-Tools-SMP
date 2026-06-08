@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/05/26
+//08/06/26
 
 /*
 	Quicksearch for same....
@@ -51,6 +51,10 @@ var newButtonsProperties = { // NOSONAR[global]
 		{
 			name: 'Same Album',
 			query: 'ALBUM IS #ALBUM#'
+		},
+		{
+			name: 'Same Album Release',
+			query: 'ALBUM IS #ALBUM# AND COMMENT IS #COMMENT#'
 		},
 		{
 			name: 'Same Genre(s)',
