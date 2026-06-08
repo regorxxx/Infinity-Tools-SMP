@@ -21,7 +21,9 @@
 - Quickmatch: added %INVOLVEDPEOPLE% to artist tags on new setups.
 - UI: support for dark themed popups if JS host allows it.
 - UI: improved blend color mode to use a mix of CUI/DUI colors when no art is available (like Biograhpy and Library-Tree-SMP do).
-- Autobackup: added some default paths related to foobar v2 and third party components.
+- Autobackup: improved logging in some cases.
+- Helpers: updated curl.exe to v8.20.0-slim. See [here](https://github.com/lordmulder/cURL-build-win32).
+- Helpers: updated 7za.exe to v26.01. See [here](https://www.7-zip.org/download.html).
 ### Removed
 ### Fixed
 
