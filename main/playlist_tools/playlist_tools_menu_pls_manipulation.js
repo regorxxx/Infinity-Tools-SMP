@@ -1026,7 +1026,7 @@
 								const playlistLockTypes = new Set(plman.GetPlaylistLockedActions(index));
 								const lockName = plman.GetPlaylistLockName(index);
 								const bSMPLock = lockName === window.Parent || !lockName;
-								const bLocked = !bSMPLock || playlistLockTypes.isSuperset(new Set(lockTypes));
+								const bLocked = !bSMPLock || playlistLockTypes.isSupersetOf(new Set(lockTypes));
 								const flags = bSMPLock ? MF_STRING : MF_GRAYED;
 								const entryText = playlist.name.cut(entryMaxLength) + (bSMPLock
 									? playlistLockTypes.size === 0
@@ -1087,7 +1087,7 @@
 									const playlistLockTypes = new Set(plman.GetPlaylistLockedActions(plman.ActivePlaylist));
 									const lockName = plman.GetPlaylistLockName(plman.ActivePlaylist);
 									const bSMPLock = lockName === window.Parent || !lockName;
-									const bLocked = !bSMPLock || playlistLockTypes.isSuperset(new Set(lockTypes));
+									const bLocked = !bSMPLock || playlistLockTypes.isSupersetOf(new Set(lockTypes));
 									const flags = obj.action === 'lock' && bLocked
 										? MF_GRAYED
 										: obj.action === 'unlock' && !bLocked
