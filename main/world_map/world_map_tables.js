@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/05/26
+//06/06/26
 
 /* exported findCountryCoords,isNearCountry, findCountry, getCountryName, alpha3toAlpha2, nameReplacersRev, nameShortRev */
 
@@ -175,8 +175,17 @@ if (typeof music_graph_descriptors_countries !== 'undefined' && typeof music_gra
 	// Check all region names match
 	let bMatch = true;
 	if (typeof include === 'undefined') {
-		const isSuperset = (parent, subset) => { for (let elem of subset) { if (!parent.has(elem)) { return false; } } return true; };
-		const isEqual = (parent, subset) => { return (parent.size === subset.size && isSuperset(parent, subset)); };
+		const isEqual = (parent, subset) => {
+			if (parent.size > subset.size) { return false; }
+			let bSome = false;
+			for (const elem of parent) {
+				if (!subset.has(elem)) {
+					return false;
+				}
+				bSome = true;
+			}
+			return bSome;
+		};
 		if (!(isEqual(new Set(music_graph_descriptors_culture.getRegionNames()), new Set(parent.getRegionNames())))) { bMatch = false; }
 	} else {
 		include('..\\..\\helpers\\helpers_xxx_prototypes.js');

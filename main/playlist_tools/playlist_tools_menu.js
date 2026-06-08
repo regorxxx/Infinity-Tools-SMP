@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/05/26
+//06/06/26
 
 /*
 	Playlist Tools Menu
@@ -215,7 +215,7 @@ addEventListener('on_notify_data', (name, info) => {
 				const playlistPath = JSON.parse(menu_panelProperties.playlistPath[1]);
 				let bDone = false;
 				if (isArrayStrings(info)) {
-					if (!new Set(playlistPath).isSuperset(new Set(info))) {
+					if (!new Set(playlistPath).isSupersetOf(new Set(info))) {
 						playlistPath.concat([...new Set(info).difference(new Set(playlistPath))]);
 						bDone = true;
 					}
