@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//07/05/26
+//08/06/26
 
 /* exported wrapped */
 
@@ -3146,7 +3146,7 @@ const wrapped = {
 		if (!latexCmd || !latexCmd.length) {
 			latexCmd = 'lualatex --enable-installer --interaction=nonstopmode --jobname=Wrapped_%4 --output-directory=%3 %1';
 		}
-		latexCmd = this.parseCmd(_resolvePath(latexCmd), input, output, root, timePeriod || period);
+		latexCmd = this.parseCmd(_resolvePath(latexCmd), input, output, timePeriod || period, root);
 		if (this.settings.logOpt.bBasic) { console.log('Wrapped: processing latex\n\t ' + _foldPath(latexCmd.replace(/\w:\\.*\\(lualatex.exe)/i, '[...]\\$1'))); }
 		if (latexCmd.includes('lualatex')) {
 			console.log('Wrapped: double compilation required');
@@ -3156,7 +3156,7 @@ const wrapped = {
 		if (_isFile(output)) { this.compressPDF(output); }
 		if (_isFile(output)) {
 			if (extraCmd && extraCmd.length) {
-				extraCmd.filter(Boolean).forEach((cmd) => _runCmd(this.parseCmd(cmd, input, output, root, timePeriod || period), true));
+				extraCmd.filter(Boolean).forEach((cmd) => _runCmd(this.parseCmd(cmd, input, output, timePeriod || period, root), true));
 			}
 			_recycleFile(root + fileName + '.aux', true);
 			_recycleFile(root + fileName + '.log', true);
@@ -3238,7 +3238,7 @@ const wrapped = {
 		// Parse cmd
 		if (_isFile(output)) {
 			if (extraCmd && extraCmd.length) {
-				extraCmd.filter(Boolean).forEach((cmd) => _runCmd(this.parseCmd(cmd, data, output, root, timePeriod || period), true));
+				extraCmd.filter(Boolean).forEach((cmd) => _runCmd(this.parseCmd(cmd, data, output, timePeriod || period, root), true));
 			}
 			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .html file at\n\t ' + _foldPath(output)); }
 			utils.ShowHtmlDialog(0, 'file://' + output);
@@ -3311,7 +3311,7 @@ const wrapped = {
 		// Parse cmd
 		if (_isFile(output)) {
 			if (extraCmd && extraCmd.length) {
-				extraCmd.filter(Boolean).forEach((cmd) => _runCmd(this.parseCmd(cmd, '', output, root, timePeriod || period), true));
+				extraCmd.filter(Boolean).forEach((cmd) => _runCmd(this.parseCmd(cmd, '', output, timePeriod || period, root), true));
 			}
 			if (this.settings.logOpt.bBasic) { console.log('Wrapped: opening .json file at\n\t ' + _foldPath(output)); }
 			_run(output);

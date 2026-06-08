@@ -26,6 +26,7 @@
 - Helpers: updated 7za.exe to v26.01. See [here](https://www.7-zip.org/download.html).
 ### Removed
 ### Fixed
+- Wrapped: fix crash due to code cleanup typo introduced at [2.0.0](#200---2026-04-28).
 
 ## [2.0.0] - 2026-04-28
 ### Added
