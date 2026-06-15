@@ -19,6 +19,7 @@
 - Configuration: added new "userAgent" (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36) and "curlImpersonate" (curl_chrome146.bat) at global settings (globSettings.json) for arbitrary downloads using curl and/or JS-host methods.
 - Helpers: added curl-impersonate.exe v1.5.6. See [here](https://github.com/lexiforest/curl-impersonate).
 ### Changed
+- ListenBrainz Tools: deduplicate Discover releases in case there are multiple ids with same name (usually an error at server).
 - Playlist Tools\Playlist manipulation: menu cleanup and minor reordering.
 - Quickmatch: added %INVOLVEDPEOPLE% to artist tags on new setups.
 - Quickmatch: added 'Same album release' preset on new setups.

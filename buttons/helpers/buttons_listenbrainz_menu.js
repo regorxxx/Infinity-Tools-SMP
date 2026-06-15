@@ -1,5 +1,5 @@
 'use strict';
-//07/05/26
+//13/06/26
 
 /* exported listenBrainzMenu */
 
@@ -1167,11 +1167,13 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				if (!response) { return; }
 				const library = fb.GetLibraryItems();
 				const table = new Table;
+				const shown = new Set(); // Deduplicate albums with multiple links
 				const blacklist = (_jsonParseFile(folders.data + 'listenbrainz_discover.json') || { skip: { artists: [], releases: [] } }).skip;
 				blacklist.artists = new Set(blacklist.artists);
 				blacklist.releases = new Set(blacklist.releases);
 				response.reverse().forEach((r) => {
 					if (blacklist.artists.has(r.artist_credit_name) || r.artist_mbids.some((m) => blacklist.artists.has(m)) || blacklist.releases.has(r.release_group_mbid)) { return; }
+					if (shown.has(r.artist_credit_name + ' - ' + r.release_name)) { return ;} else { shown.add(r.artist_credit_name + ' - ' + r.release_name); }
 					if ((fb.GetQueryItemsCheck(library, 'ALBUM IS ' + r.release_name + ' OR MUSICBRAINZ_RELEASEGROUPID IS ' + r.release_group_mbid + ' OR MUSICBRAINZ_ALBUMID IS ' + r.release_mbid) || new FbMetadbHandleList()).Count === 0) {
 						table.cell('Artist - Album', r.artist_credit_name.cut(30) + ' - ' + r.release_name.cut(50));
 						table.cell('Date', r.release_date);
@@ -1196,12 +1198,14 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				const response = await lb.getFreshReleases(user, void (0), { sort: 'release_date', past: false, future: true, days: 90 }, token);
 				this.switchAnimation('ListenBrainz data retrieval', false);
 				if (!response) { return; }
+				const shown = new Set(); // Deduplicate albums with multiple links
 				const blacklist = (_jsonParseFile(folders.data + 'listenbrainz_discover.json') || { skip: { artists: [], releases: [] } }).skip;
 				blacklist.artists = new Set(blacklist.artists);
 				blacklist.releases = new Set(blacklist.releases);
 				const table = new Table;
 				response.forEach((r) => {
 					if (blacklist.artists.has(r.artist_credit_name) || r.artist_mbids.some((m) => blacklist.artists.has(m)) || blacklist.releases.has(r.release_group_mbid)) { return; }
+					if (shown.has(r.artist_credit_name + ' - ' + r.release_name)) { return ;} else { shown.add(r.artist_credit_name + ' - ' + r.release_name); }
 					table.cell('Artist - Album', r.artist_credit_name.cut(50) + ' - ' + r.release_name.cut(100));
 					table.cell('Date', r.release_date);
 					table.cell('URL', 'https://listenbrainz.org/album/' + r.release_group_mbid);
@@ -1231,11 +1235,13 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				this.switchAnimation('ListenBrainz data retrieval', false);
 				if (!response) { return; }
 				const table = new Table;
+				const shown = new Set(); // Deduplicate albums with multiple links
 				const blacklist = (_jsonParseFile(folders.data + 'listenbrainz_discover.json') || { skip: { artists: [], releases: [] } }).skip;
 				blacklist.artists = new Set(blacklist.artists);
 				blacklist.releases = new Set(blacklist.releases);
 				response.reverse().forEach((r) => {
 					if (blacklist.artists.has(r.artist_credit_name) || r.artist_mbids.some((m) => blacklist.artists.has(m)) || blacklist.releases.has(r.release_group_mbid)) { return; }
+					if (shown.has(r.artist_credit_name + ' - ' + r.release_name)) { return ;} else { shown.add(r.artist_credit_name + ' - ' + r.release_name); }
 					table.cell('Artist - Album', r.artist_credit_name.cut(50) + ' - ' + r.release_name.cut(100));
 					table.cell('Date', r.release_date);
 					table.cell('URL', 'https://listenbrainz.org/album/' + r.release_group_mbid);
