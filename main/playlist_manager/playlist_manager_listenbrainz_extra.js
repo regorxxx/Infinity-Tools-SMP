@@ -1,9 +1,9 @@
 ﻿'use strict';
-//29/05/26
+//12/06/26
 
 /* global youTube:readable */
 include('..\\..\\helpers\\helpers_xxx.js');
-/* global globQuery:readable, globTags:readable, memoize:readable, folders:readable */
+/* global globQuery:readable, globTags:readable, memoize:readable, folders:readable, globSettings:readable */
 include('playlist_manager_listenbrainz.js');
 /* global ListenBrainz:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
@@ -524,7 +524,7 @@ ListenBrainz.getArtFromReleaseGroup = function (mbid) {
 	return sendV2({
 		method: 'GET',
 		URL: 'https://coverartarchive.org/release-group/' + mbid,
-		requestHeader: [['Content-Type', 'application/json'], ['referer', 'https://listenbrainz.org/'], ['origin', 'https://listenbrainz.org/'], ['user-agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36']],
+		requestHeader: [['Content-Type', 'application/json'], ['referer', 'https://listenbrainz.org/'], ['origin', 'https://listenbrainz.org/'], ['user-agent', globSettings.userAgent]],
 		bypassCache: true
 	}).then(
 		(resolve) => {

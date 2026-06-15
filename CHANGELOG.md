@@ -16,6 +16,8 @@
 - Playlist Tools\Playlist manipulation: new submenu with playlists creation features.
 - Playlist Tools\Playlist manipulation: new submenu to perform a query search on specific playlists (which also works with dynamic queries based on current selection).
 - Quicksearch: added new setting for max tracks from selection processed by dynamic queries. Previously value was hardcoded (default 1000).
+- Configuration: added new "userAgent" (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36) and "curlImpersonate" (curl_chrome146.bat) at global settings (globSettings.json) for arbitrary downloads using curl and/or JS-host methods.
+- Helpers: added curl-impersonate.exe v1.5.6. See [here](https://github.com/lexiforest/curl-impersonate).
 ### Changed
 - Playlist Tools\Playlist manipulation: menu cleanup and minor reordering.
 - Quickmatch: added %INVOLVEDPEOPLE% to artist tags on new setups.
@@ -25,6 +27,7 @@
 - Autobackup: improved logging in some cases.
 - Helpers: updated curl.exe to v8.20.0-slim. See [here](https://github.com/lordmulder/cURL-build-win32).
 - Helpers: updated 7za.exe to v26.01. See [here](https://www.7-zip.org/download.html).
+- Helpers: code cleanup.
 ### Removed
 ### Fixed
 - Wrapped: fix crash due to code cleanup typo introduced at [2.0.0](#200---2026-04-28).

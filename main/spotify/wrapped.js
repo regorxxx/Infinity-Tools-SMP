@@ -1,11 +1,11 @@
 ﻿
 'use strict';
-//08/06/26
+//12/06/26
 
 /* exported wrapped */
 
 include('..\\..\\helpers\\helpers_xxx.js');
-/* global folders:readable, globQuery:readable, globTags:readable, isSkipCount:readable */
+/* global folders:readable, globQuery:readable, globTags:readable, isSkipCount:readable, globSettings:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global forEachNested:readable, _bt:readable, _q:readable, round:readable, _asciify:readable, _p:readable, _t:readable, isFbMetadbHandle:readable, range:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
@@ -2159,7 +2159,7 @@ const wrapped = {
 			method: 'GET',
 			bypassCache: true,
 			requestHeader: [
-				['user-agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36']
+				['user-agent', globSettings.userAgent]
 			],
 			URL: url
 		})
@@ -2170,7 +2170,7 @@ const wrapped = {
 						method: 'GET',
 						bypassCache: true,
 						requestHeader: [
-							['user-agent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36']
+							['user-agent', globSettings.userAgent]
 						],
 						URL: match
 					});

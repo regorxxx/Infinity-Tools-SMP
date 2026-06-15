@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/05/26
+//12/06/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -411,7 +411,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 if (barProperties.bAutoUpdateCheck[1]) {
 	{
 		const dependencies = [
-			'helpers\\helpers_xxx_web_update.js',
+			'helpers\\helpers_xxx_web.js',
 		];
 		let bIncludeRel = true;
 		try { include('..\\..\\helpers\\helpers_xxx_dummy.js'); } catch (e) { bIncludeRel = false; } // eslint-disable-line no-unused-vars

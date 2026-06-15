@@ -1,5 +1,5 @@
 ﻿'use strict';
-//22/05/26
+//12/06/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -572,7 +572,7 @@ if (barProperties.bLoadAsync[1]) {
 
 // Update check
 if (barProperties.bAutoUpdateCheck[1]) {
-	include('helpers\\helpers_xxx_web_update.js');
+	include('helpers\\helpers_xxx_web.js');
 	/* global checkUpdate:readable */
 	setTimeout(checkUpdate, 120000, { bDownload: globSettings.bAutoUpdateDownload, bOpenWeb: globSettings.bAutoUpdateOpenWeb });
 }
