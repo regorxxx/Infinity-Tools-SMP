@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/01/24
+//16/06/26
 
 /* exported chromaPrintUtils */
 
@@ -42,19 +42,19 @@ const chromaPrintUtils = {
 	},
 	// Cross correlate a and b with offsets from -span to span
 	compare: function compare(a, b, span, step, maxThreshold, minThreshold) {
-		if (span > Math.min(a.length, b.length)) {return [];}
+		if (span > Math.min(a.length, b.length)) { return []; }
 		const corrXY = [];
 		// Add zero offset first to optimize comparison
 		corrXY.push(this.crossCorrelation(a, b, 0));
 		// Then the rest if there is no exact match
 		if (corrXY[0] !== 1 && corrXY[0] >= minThreshold) {
 			for (let offset = -span; offset <= span; offset += step) {
-				if (!offset) {continue;}
+				if (!offset) { continue; }
 				const val = this.crossCorrelation(a, b, offset);
 				// Stop looking in a given direction if correlation decreases
-				if (corrXY.slice(-10).reduce((acc, curr) => acc + (curr < val ? 0 : 1), 0) > 5) {break;}
+				if (corrXY.slice(-10).reduce((acc, curr) => acc + (curr < val ? 0 : 1), 0) > 5) { break; }
 				corrXY.push(val);
-				if (val === 1 || val > maxThreshold || val < minThreshold) {break;}
+				if (val === 1 || val > maxThreshold || val < minThreshold) { break; }
 			}
 		}
 		return corrXY;
@@ -69,7 +69,7 @@ const chromaPrintUtils = {
 			b = b.slice(offset);
 			a = a.slice(0, b.length);
 		}
-		if (Math.min(a.length, b.length) < this.minOverlap) {return;}
+		if (Math.min(a.length, b.length) < this.minOverlap) { return; }
 		return this.correlation(a, b);
 	},
 	// Returns correlation between lists at given position
@@ -81,15 +81,15 @@ const chromaPrintUtils = {
 		if (aLen !== bLen) {
 			const shortest = Math.min(aLen, bLen);
 			const longest = Math.max(aLen, bLen);
-			if (aLen > shortest) {a = a.slice(0, shortest);}
-			if (bLen > shortest) {b = b.slice(0, shortest);}
+			if (aLen > shortest) { a = a.slice(0, shortest); }
+			if (bLen > shortest) { b = b.slice(0, shortest); }
 			aLen = bLen = shortest;
 			// Extra bits count as different
 			totalBits = longest;
 		}
 		let covariance = 0;
-		const meanA = a.reduce((total, current) => {return total + current;}, 0) / aLen;
-		const meanB = b.reduce((total, current) => {return total + current;}, 0) / bLen;
+		const meanA = a.reduce((total, current) => { return total + current; }, 0) / aLen;
+		const meanB = b.reduce((total, current) => { return total + current; }, 0) / bLen;
 		for (let i = 0; i < aLen; i++) {
 			covariance += Math.abs((a[i] - meanA) * (b[i] - meanB));
 		}
@@ -98,10 +98,10 @@ const chromaPrintUtils = {
 		return covariance;
 	},
 	// returns variance of list
-	variance: function variance(a, aLen = a.length, meanA = a.reduce((total, current) => {return total + current;}, 0) / aLen) {
+	variance: function variance(a, aLen = a.length, meanA = a.reduce((total, current) => { return total + current; }, 0) / aLen) {
 		// # get mean of x^2
 		let meanA_sqr = 0;
-		a.forEach((x) => {meanA_sqr += x ** 2;});
+		a.forEach((x) => { meanA_sqr += x ** 2; });
 		meanA_sqr = meanA_sqr / aLen;
 		return meanA_sqr - meanA ** 2;
 	},
@@ -121,12 +121,12 @@ const chromaPrintUtils = {
 
 // Helpers
 if (typeof round === 'undefined') {
-	var round = function round(floatNum, decimals){ // NOSONAR [global]
-		let result;
-		if (decimals > 0) {
-			if (decimals === 15) {result = floatNum;}
-			else {result = Math.round(floatNum * Math.pow(10, decimals)) / Math.pow(10, decimals);}
-		} else {result =  Math.round(floatNum);}
-		return result;
+	var round = function round(floatNum, decimals, eps = 10 ** -14) { // NOSONAR [global]
+		return (decimals > 0
+			? decimals === 15
+				? floatNum
+				: Math.round(floatNum * Math.pow(10, decimals) + eps) / Math.pow(10, decimals)
+			: Math.round(floatNum)
+		);
 	};
 }
