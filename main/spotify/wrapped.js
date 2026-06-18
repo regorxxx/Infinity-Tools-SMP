@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//12/06/26
+//17/06/26
 
 /* exported wrapped */
 
@@ -17,7 +17,7 @@ include('..\\..\\helpers\\helpers_xxx_statistics.js');
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global queryCombinations:readable, queryJoin:readable, sanitizeQueryVal:readable, sanitizeTagIds:readable, sanitizeTagValIds:readable, sanitizeTagTfo:readable */
 include('..\\..\\helpers\\helpers_xxx_web.js');
-/* global send:readable */
+/* global send:readable, downloadFile:readable */
 include('..\\..\\helpers\\camelot_wheel_xxx.js');
 /* global camelotWheel:readable */
 include('..\\timeline\\timeline_helpers.js');
@@ -2017,7 +2017,7 @@ const wrapped = {
 						data.artistImg = bRelative ? imgPath.replace(root, '') : imgPath;
 					} else { bFallback = true; }
 				} else if (data.artistImg && !this.settings.bOffline) {
-					_runCmd('CMD /C ' + folders.xxx + '\\helpers-external\\curl\\curl.exe --connect-timeout 5 --max-time 5 --retry 3 --retry-max-time 5 -L -o ' + _q(imgPath) + ' ' + data.artistImg, false);
+					downloadFile(data.artistImg, imgPath, { timeout: 5, retry: 1 });
 					data.artistImg = bRelative ? imgPath.replace(root, '') : imgPath;
 				} else { bFallback = true; }
 				if (bFallback) { data.artistImg = (bRelative ? '' : root) + 'img\\fallback\\nocover.png'; }
@@ -2164,26 +2164,12 @@ const wrapped = {
 			URL: url
 		})
 			.then((response) => {
-				const match = (response.match(/href="([\w/:().%]*\.jpg)"/mi) || [null, null])[1];
+				const match = (response.match(/data-src="(https:\/\/upload\.wikimedia\.org\/wikipedia\/commons\/thumb\/.+?\.(?:jpg|png|webp))"/mi) || [null, null])[1];
 				if (match) {
-					return send({
-						method: 'GET',
-						bypassCache: true,
-						requestHeader: [
-							['user-agent', globSettings.userAgent]
-						],
-						URL: match
-					});
+					cityData.img = match.replace('thumb/', '').split('/').slice(0, -1).join('/');
+					return cityData.img;
 				}
 				throw new Error('No image match');
-			})
-			.then((response) => {
-				const match = (response.match(/<a href="([\w/:().%-]+?\.jpg)" class="mw-thumbnail-link">1,024/mi) || [null, null])[1];
-				if (match) {
-					cityData.img = match;
-					return match;
-				}
-				throw new Error('No image source');
 			})
 			.catch(() => null);
 	},
@@ -2206,7 +2192,7 @@ const wrapped = {
 			(data) => {
 				if (data.img && !this.settings.bOffline) {
 					const imgPath = path + _asciify(sanitize(data.name)).replace(/ /g, '').slice(0, 10).toLowerCase() + '.jpg';
-					_runCmd('CMD /C ' + folders.xxx + '\\helpers-external\\curl\\curl.exe --connect-timeout 10 --max-time 10 --retry 3 --retry-max-time 10 -L -o ' + _q(imgPath) + ' ' + data.img, false);
+					downloadFile(data.img, imgPath, { timeout: 5, retry: 1 });
 					data.img = bRelative ? imgPath.replace(root, '') : imgPath;
 				} else {
 					data.img = (bRelative ? '' : root) + 'img\\fallback\\city.jpg';
