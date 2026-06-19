@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//17/06/26
+//19/06/26
 
 /* exported wrapped */
 
@@ -63,7 +63,7 @@ const wrapped = {
 		highBpmHalveFactor: 30, // [0, 100]
 		bServicesListens: false,
 		tokens: { listenBrainz: '', listenBrainzUser: '' },
-		imageStubPath: '.\\yttm\\art_img\\$lower($cut(%1,1))\\$cut(%1,40)\\',
+		imageStubPath: folders.getBioArtistArtPath({artist: '%1'}),
 		filePaths: {
 			worldMapArtists: _foldPath(folders.data + 'worldMap.json')
 		},
@@ -1897,10 +1897,7 @@ const wrapped = {
 	*/
 	getArtistImg: function (artist) {
 		const stubPath = fb.TitleFormat(
-			(this.settings.imageStubPath.startsWith('.\\')
-				? fb.ProfilePath + this.settings.imageStubPath.replace(/\.\\/, '')
-				: this.settings.imageStubPath
-			).replace(/%1/gi, sanitizeTagTfo(artist.replace(/,.*$/, '')))
+			_resolvePath(this.settings.imageStubPath).replace(/%1/gi, sanitizeTagTfo(artist.replace(/,.*$/, '')))
 		).Eval(true);
 		const files = getFiles(stubPath, new Set(['.jpg', '.png']));
 		if (files && files.length) { return Promise.resolve(files.shuffle()[0]); }
