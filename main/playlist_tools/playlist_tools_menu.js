@@ -1,5 +1,5 @@
 ﻿'use strict';
-//06/06/26
+//23/06/26
 
 /*
 	Playlist Tools Menu
@@ -531,7 +531,7 @@ menu.newCondEntry({
 					const count = plman.PlaylistCount;
 					if (ap !== -1) {
 						if (plman.PlaylistItemCount(ap) > 0) {
-							const input = Input.number('real positive', 69, 'Choose how many seconds should be played per track:\n(real number > 0)', 'Simulate playback', 69, [(n) => n > 0 && n <= Infinity]) || (Input.isLastEqual ? Input.lastInput : null);;
+							const input = Input.number('real positive inf', 69, 'Choose how many seconds should be played per track:\n(real number > 0)', 'Simulate playback', 69, [(n) => n > 0 && n <= Infinity]) || (Input.isLastEqual ? Input.lastInput : null);;
 							if (input == null) { return false; }
 							let elapsed = 0;
 							const idx = plman.GetPlaylistFocusItemIndex(ap);
