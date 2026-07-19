@@ -17,7 +17,8 @@
 - Playlist Tools\Playlist manipulation: new submenu to perform a query search on specific playlists (which also works with dynamic queries based on current selection).
 - Quicksearch: added new setting for max tracks from selection processed by dynamic queries. Previously value was hardcoded (default 1000).
 - ListenBrainz Tools: added blacklist settings for releases and artists.
-- UI: added fallback to front art setting for Art by TF, if no file was found.
+- UI: added fallback to front art setting for Art by TF (background setting), if no file was found.
+- UI: added new mask effect setting to background. See [here](https://hydrogenaudio.org/index.php/topic,112914.msg1084108.html#msg1084108).
 - Configuration: added new "userAgent" (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36) and "curlImpersonate" (curl_firefox147.bat) at global settings (globSettings.json) for arbitrary downloads using curl and/or JS-host methods.
 - Helpers: added curl-impersonate.exe v1.5.6. See [here](https://github.com/lexiforest/curl-impersonate).
 ### Changed
@@ -32,6 +33,7 @@
 - Helpers: updated curl.exe to v8.20.0-slim. See [here](https://github.com/lordmulder/cURL-build-win32).
 - Helpers: updated 7za.exe to v26.01. See [here](https://www.7-zip.org/download.html).
 - Helpers: code cleanup.
+- Helpers: updated helpers.
 ### Removed
 ### Fixed
 - Wrapped: fix crash due to code cleanup typo introduced at [2.0.0](#200---2026-04-28).
