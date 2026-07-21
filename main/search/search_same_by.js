@@ -1,5 +1,5 @@
 ﻿'use strict';
-//17/04/26
+//21/07/26
 
 /*
 	Search same by
@@ -140,7 +140,7 @@ function searchSameByCombs({
 	try { fb.GetQueryItems(new FbMetadbHandleList(), forcedQuery); } // Sanity check
 	catch (e) { fb.ShowPopupMessage('Query not valid. Check forced query:\n' + forcedQuery); return null; } // eslint-disable-line no-unused-vars
 	logic = (logic || '').toUpperCase();
-	if (!logicDic.includes(logic)) {
+	if (!logicDic.has(logic)) {
 		console.log('searchSameByCombs(): logic (' + logic + ') is wrong');
 		return null;
 	}

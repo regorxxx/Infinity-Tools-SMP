@@ -566,7 +566,7 @@ XSP.queryJoin = typeof queryJoin === 'undefined'
 	? function (queryArray, setLogic = 'AND') {
 		const logicDic = ['AND', 'OR', 'AND NOT', 'OR NOT'];
 		setLogic = (setLogic || '').toUpperCase();
-		if (!logicDic.includes(setLogic)) {
+		if (!logicDic.has(setLogic)) {
 			console.log('queryJoin(): setLogic (' + setLogic + ') is wrong.');
 			return '';
 		}
