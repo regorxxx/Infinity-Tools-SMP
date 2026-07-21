@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/05/26
+//21/07/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -635,7 +635,7 @@ function ThemedButton({
 			if (this.iconImage) { // Icon image
 				const iconCalculatedDarkMode = isDark(...toRGB(textColor))
 					? null
-					: iconCalculated.replace(/(icons\\.*)(\..*$)/i, '$1_dark$2');
+					: iconCalculated.replace(/(icons\\.{1,255})\.png$/i, '$1_dark.$2');
 				const iconColor = this.active
 					? buttonsBar.config.activeColor
 					: textColor;
@@ -652,7 +652,7 @@ function ThemedButton({
 							const iconGr = iconImage.GetGraphics();
 							iconGr.FillSolidRect(0, 0, iconImage.Width, iconImage.Height, iconColor);
 							iconImage.ReleaseGraphics(iconGr);
-							let iconMask = gdi.Image(iconCalculated.replace(/(icons\\.*)(\..*$)/i, '$1_mask$2'));
+							let iconMask = gdi.Image(iconCalculated.replace(/(icons\\.{1,255})\.png$/i, '$1_mask.$2'));
 							if (iconMask) {
 								iconMask = iconMask.Resize(iconWidthCalculated, iconHeightCalculated, InterpolationMode.NearestNeighbor);
 								iconImage.ApplyMask(iconMask);
@@ -1396,7 +1396,9 @@ function moveButton(fromKey, toKey) {
 	const properties = buttonsBar.list[toPos];
 	const keys = properties ? Object.keys(properties) : [];
 	if (keys.length) {
-		const prefix = properties[Object.keys(properties)[0]][0].match(/([A-z]*\d*)(_*\d*\.)/)[1]; // plto3_01. or plt3. -> plto3
+		const prefixRe = /([a-z]{1,5}\d{0,3})(?:_?\d{0,3}\.)/i;
+		const prefix = properties[Object.keys(properties)[0]][0].match(prefixRe)[1]; // plto3_01. or plt3. -> plto3
+		// If it fails at this point, script should be fixed, so a crash is fine
 		const currentId = prefix.match(/([A-z]*)(?:\d*)/)[1]; // plto
 		let currentIdNumber = 0;
 		// Backup all properties
@@ -1405,7 +1407,7 @@ function moveButton(fromKey, toKey) {
 		buttonsBar.list.forEach((oldProperties, newIdx) => {
 			const oldKeys = oldProperties ? Object.keys(oldProperties) : [];
 			if (oldKeys.length) {
-				const oldPrefix = oldProperties[oldKeys[0]][0].match(/([A-z]*\d*)(_*\d*\.)/)[1];
+				const oldPrefix = oldProperties[oldKeys[0]][0].match(prefixRe)[1];
 				const oldId = oldPrefix.match(/([a-zA-Z]*)(?:\d*)/)[1];
 				if (oldId === currentId) {
 					const backup = propertiesBack[newIdx];

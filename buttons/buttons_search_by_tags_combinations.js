@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//21/07/26
 
 /*
 	Search same by v 1.0 24/08/22
@@ -277,7 +277,7 @@ addButton({
 								bAdvTitle: this.buttonsProperties.bAdvTitle[1],
 								playlistLength: Number(this.buttonsProperties.playlistLength[1]),
 								...preset.settings,
-								bProfile: typeof menu_panelProperties !== 'undefined' ? menu_panelProperties.bProfile[1] : false
+								bProfile: typeof menu_panelProperties === 'undefined' ? false : menu_panelProperties.bProfile[1]
 							});
 						}
 					});
@@ -297,7 +297,7 @@ addButton({
 					bAdvTitle: this.buttonsProperties.bAdvTitle[1],
 					playlistLength: Number(this.buttonsProperties.playlistLength[1]),
 					...((preset || { settings: { sameBy: JSON.parse(this.buttonsProperties.sameBy[1]) } }).settings),
-					bProfile: typeof menu_panelProperties !== 'undefined' ? menu_panelProperties.bProfile[1] : false
+					bProfile: typeof menu_panelProperties === 'undefined' ? false : menu_panelProperties.bProfile[1]
 				});
 			}
 		},
