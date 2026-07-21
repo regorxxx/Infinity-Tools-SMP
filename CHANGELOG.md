@@ -19,6 +19,7 @@
 - ListenBrainz Tools: added blacklist settings for releases and artists.
 - UI: added fallback to front art setting for Art by TF (background setting), if no file was found.
 - UI: added new mask effect setting to background. See [here](https://hydrogenaudio.org/index.php/topic,112914.msg1084108.html#msg1084108).
+- UI: added new img counter setting to background while using Art by TF mode. See [here]https://hydrogenaudio.org/index.php/topic,116669.msg1083339.html#msg1083339).
 - Configuration: added new "userAgent" (Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36) and "curlImpersonate" (curl_firefox147.bat) at global settings (globSettings.json) for arbitrary downloads using curl and/or JS-host methods.
 - Helpers: added curl-impersonate.exe v1.5.6. See [here](https://github.com/lexiforest/curl-impersonate).
 ### Changed
