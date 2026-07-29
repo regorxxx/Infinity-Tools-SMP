@@ -38,6 +38,7 @@
 ### Removed
 ### Fixed
 - Wrapped: fix crash due to code cleanup typo introduced at [2.0.0](#200---2026-04-28).
+- Fixed crash on multiple buttons due to Menus at 'File\Spider ...' setting usage. See [Issue 8](https://github.com/regorxxx/Infinity-Tools-SMP/issues/8).
 
 ## [2.0.0] - 2026-04-28
 ### Added
