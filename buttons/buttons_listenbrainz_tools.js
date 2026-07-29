@@ -1,5 +1,5 @@
 ﻿'use strict';
-//07/05/26
+//29/07/26
 
 /*
 	Integrates ListenBrainz feedback and recommendations statistics within foobar2000 library.
@@ -139,7 +139,7 @@ addButton({
 			} else {
 				this.retrievePlaylists(false);
 				if (!ListenBrainz.cache.following.size) { this.retrieveFollowing(); }
-				listenBrainzMenu.bind(this)().btn_up(this.currX, this.currY + this.currH);
+				listenBrainzMenu.call(this).btn_up(this.currX, this.currY + this.currH);
 			}
 		},
 		description: function () {

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//29/07/26
 
 /* exported createFpMenuLeft */
 
@@ -27,7 +27,7 @@ include('..\\..\\main\\main_menu\\main_menu_custom.js');
 function createFpMenuLeft({ bSimulate = false } = {}) {
 	if (bSimulate) {
 		this.selItems = { Count: 2 };
-		return createFpMenuLeft.bind(this)(false);
+		return createFpMenuLeft.call(this, { bSimulate: false });
 	}
 	const menu = new _menu();
 	// Safe Check

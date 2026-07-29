@@ -1,5 +1,5 @@
 ﻿'use strict';
-//06/06/26
+//29/07/26
 
 /*
 	Quickmatch same....
@@ -126,7 +126,7 @@ addButton({
 				);
 				menu.btn_up(this.currX, this.currY + this.currH);
 			} else {
-				quickmatchMenu.bind(this)().btn_up(this.currX, this.currY + this.currH);
+				quickmatchMenu.call(this).btn_up(this.currX, this.currY + this.currH);
 			}
 		},
 		description: function () {

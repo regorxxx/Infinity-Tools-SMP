@@ -21,7 +21,7 @@ include('..\\..\\main\\playlist_manager\\playlist_manager_listenbrainz.js');
 /* global ListenBrainz:readable */
 
 function wrappedMenu({ bSimulate = false } = {}) {
-	if (bSimulate) { return wrappedMenu.bind({ buttonsProperties: this.buttonsProperties, prefix: this.prefix })(false); }
+	if (bSimulate) { return wrappedMenu.call({ buttonsProperties: this.buttonsProperties, prefix: this.prefix }, { bSimulate: false }); }
 	// ListenBrainz token
 	if (!wrapped.settings.tokens.listenBrainz && this.buttonsProperties.lBrainzToken[1]) {
 		wrapped.settings.tokens.listenBrainz = ListenBrainz.decryptToken({ lBrainzToken: this.buttonsProperties.lBrainzToken[1], bEncrypted: this.buttonsProperties.lBrainzEncrypt[1] });

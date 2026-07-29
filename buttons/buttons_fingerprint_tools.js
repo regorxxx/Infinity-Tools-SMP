@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//29/07/26
 
 /*
 	Fingerprint tag (Chromaprint)
@@ -54,7 +54,7 @@ addButton({
 		coordinates: { x: 0, y: 0, w: _textWidth('Fingerprinting', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Fingerprinting',
 		func: function (mask) { // eslint-disable-line no-unused-vars
-			return createFpMenuLeft.bind(this)().btn_up(this.currX, this.currY + this.currH);
+			return createFpMenuLeft.call(this).btn_up(this.currX, this.currY + this.currH);
 		},
 		description: function () {
 			this.selItems = plman.GetPlaylistSelectedItems(plman.ActivePlaylist);
@@ -68,7 +68,7 @@ addButton({
 			// Create dynamic menus
 			if (this.buttonsProperties.bDynamicMenus[1]) {
 				bindDynamicMenus({
-					menu: createFpMenuLeft.bind({ buttonsProperties: this.buttonsProperties, prefix: '' }),
+					menu: createFpMenuLeft.bind(this, { buttonsProperties: this.buttonsProperties, prefix: '' }),
 					parentName: 'Fingerprinting',
 				});
 			}

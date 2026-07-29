@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//29/07/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -90,7 +90,7 @@ addButton({
 				);
 				menu.btn_up(this.currX, this.currY + this.currH);
 			} else {
-				graphInfoMenu.bind(this)().btn_up(this.currX, this.currY + this.currH);
+				graphInfoMenu.call(this).btn_up(this.currX, this.currY + this.currH);
 			}
 		},
 		description: buttonTooltipSbdCustom,

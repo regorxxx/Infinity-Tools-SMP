@@ -1,5 +1,5 @@
 'use strict';
-//19/03/26
+//29/07/26
 
 /*
 	Integrates Last.fm recommendations statistics within foobar2000 library.
@@ -172,7 +172,7 @@ addButton({
 				).btn_up(this.currX, this.currY + this.currH);
 			} else {
 				// Call menu
-				const menu = _lastListMenu.bind(this)();
+				const menu = _lastListMenu.call(this);
 				menu.btn_up(this.currX, this.currY + this.currH);
 				// Cache input values
 				let key;

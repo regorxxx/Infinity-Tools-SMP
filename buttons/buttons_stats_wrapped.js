@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/06/26
+//29/07/26
 
 /*
 	Wrapped
@@ -219,7 +219,7 @@ addButton({
 				);
 				menu.btn_up(this.currX, this.currY + this.currH);
 			} else {
-				wrappedMenu.bind(this)().btn_up(this.currX, this.currY + this.currH);
+				wrappedMenu.call(this).btn_up(this.currX, this.currY + this.currH);
 			}
 		},
 		description: () => {

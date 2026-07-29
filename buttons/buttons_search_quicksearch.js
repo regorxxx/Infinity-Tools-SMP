@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/06/26
+//29/07/26
 
 /*
 	Quicksearch for same....
@@ -176,7 +176,7 @@ addButton({
 				);
 				menu.btn_up(this.currX, this.currY + this.currH);
 			} else {
-				quickSearchMenu.bind(this)().btn_up(this.currX, this.currY + this.currH);
+				quickSearchMenu.call(this).btn_up(this.currX, this.currY + this.currH);
 			}
 		},
 		description: function () {
@@ -214,7 +214,7 @@ addButton({
 });
 
 function quickSearchMenu({ bSimulate = false } = {}) {
-	if (bSimulate) { return quickSearchMenu.bind({ selItems: { Count: 1 }, buttonsProperties: this.buttonsProperties, prefix: this.prefix })(false); }
+	if (bSimulate) { return quickSearchMenu.call({ selItems: { Count: 1 }, buttonsProperties: this.buttonsProperties, prefix: this.prefix }, { bSimulate: false }); }
 	let bPlsSel = false;
 	// Safe Check
 	if (!this.selItems || !this.selItems.Count) {
