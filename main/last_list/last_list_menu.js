@@ -1,5 +1,5 @@
 'use strict';
-//29/05/26
+//29/07/26
 
 /* exported _lastListMenu */
 
@@ -23,7 +23,7 @@ function _lastListMenu({ bSimulate = false, bDynamicMenu = false /* on SMP main 
 	const filePaths = JSON.parse(this.buttonsProperties.filePaths[1]);
 	if (bSimulate) {
 		this.sel = null;
-		return _lastListMenu.bind(this)({ bSimulate: false, bDynamicMenu: true });
+		return _lastListMenu.call(this, { bSimulate: false, bDynamicMenu: true });
 	}
 	const menu = new _menu();
 	// Get current selection and metadata
