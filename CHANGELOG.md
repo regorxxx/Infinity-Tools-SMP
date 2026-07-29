@@ -30,6 +30,7 @@
 - Quickmatch: added 'Same album release' preset on new setups.
 - UI: support for dark themed popups if JS host allows it.
 - UI: improved blend color mode to use a mix of CUI/DUI colors when no art is available (like Biograhpy and Library-Tree-SMP do).
+- UI: improvements on dynamic colors handling in some cases where main colors have low luminance.
 - Autobackup: improved logging in some cases.
 - Helpers: updated curl.exe to v8.20.0-slim. See [here](https://github.com/lordmulder/cURL-build-win32).
 - Helpers: updated 7za.exe to v26.01. See [here](https://www.7-zip.org/download.html).
