@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//19/06/26
+//07/08/26
 
 /* exported wrapped */
 
@@ -9,7 +9,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global forEachNested:readable, _bt:readable, _q:readable, round:readable, _asciify:readable, _p:readable, _t:readable, isFbMetadbHandle:readable, range:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global sanitize:readable, _isFolder:readable,, _isFile:readable, _createFolder:readable, getFiles:readable, _runCmd:readable, _copyFile:readable, _save:readable, _run:readable, _recycleFile:readable, _deleteFolder:readable, _deleteFile:readable, _jsonParseFileCheck:readable, utf8:readable, _copyDependencies:readable, _foldPath:readable, _resolvePath:readable */
+/* global sanitize:readable, _isFolder:readable,, _isFile:readable, _createFolder:readable, getFiles:readable, _runCmd:readable, _copyFile:readable, _save:readable, _run:readable, _recycleFile:readable, _deleteFolder:readable, _deleteFile:readable, _jsonParseFileCheck:readable, utf8:readable, _copyDependencies:readable, _foldPath:readable, _resolvePath:readable, imgAllowedExt:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
 include('..\\..\\helpers\\helpers_xxx_statistics.js');
@@ -1899,7 +1899,7 @@ const wrapped = {
 		const stubPath = fb.TitleFormat(
 			_resolvePath(this.settings.imageStubPath).replace(/%1/gi, sanitizeTagTfo(artist.replace(/,.*$/, '')))
 		).Eval(true);
-		const files = getFiles(stubPath, new Set(['.jpg', '.png']));
+		const files = getFiles(stubPath, new Set(imgAllowedExt));
 		if (files && files.length) { return Promise.resolve(files.shuffle()[0]); }
 		return this.settings.bOffline
 			? Promise.resolve(null)
@@ -2034,7 +2034,7 @@ const wrapped = {
 	*/
 	getRandomBackgroundImg: function (root = this.basePath, bRelative = true) {
 		if (!this.backgroundImgs.length) {
-			this.backgroundImgs = getFiles(root + 'img\\bg\\', new Set(['.jpg', '.jpeg', '.png']))
+			this.backgroundImgs = getFiles(root + 'img\\bg\\', new Set(imgAllowedExt))
 				.map((path) => path.replace(root, ''));
 		}
 		return (bRelative ? '' : root) + this.backgroundImgs.shuffle().splice(0)[0];
@@ -3344,7 +3344,7 @@ const wrapped = {
 					folders.xxx + (folder === 'map'
 						? 'helpers-external\\countries-mercator\\'
 						: 'images\\wrapped\\' + folder + '\\'
-					), new Set(['.jpg', '.jpeg', '.png'])
+					), new Set(imgAllowedExt)
 				);
 				files.forEach((file) => _copyFile(file, path + file.split('\\').slice(-1)[0], true));
 			}
