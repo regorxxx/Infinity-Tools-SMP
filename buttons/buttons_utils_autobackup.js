@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//17/08/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -95,13 +95,6 @@ newButtonsProperties.backupFormat.push(newButtonsProperties.backupFormat[1]);
 
 setProperties(newButtonsProperties, prefix, 0); //This sets all the panel properties at once
 newButtonsProperties = getPropertiesPairs(newButtonsProperties, prefix, 0);
-{ // TODO: remove on next relase
-	if (!/^(\w:\\|\.\\profile|%FB2K_PROFILE_PATH%|%PROFILE%)/.test(newButtonsProperties.outputPath[1])) {
-		newButtonsProperties.outputPath[1] = '.\\profile\\' + newButtonsProperties.outputPath[1];
-		overwriteProperties(newButtonsProperties);
-	}
-}
-
 buttonsBar.list.push(newButtonsProperties);
 
 addButton({
