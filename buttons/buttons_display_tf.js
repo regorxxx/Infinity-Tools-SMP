@@ -1,5 +1,5 @@
-﻿'use strict';
-//07/05/26
+'use strict';
+//24/08/26
 
 /*
 	Volume controls and display
@@ -268,7 +268,21 @@ addButton({
 			const bInfo = typeof barProperties === 'undefined' || barProperties.bTooltipInfo[1];
 			let info;
 			if (this.hasDynamicQueries()) {
-				const dynTagRe = [/#((PREV)?(DECADE|YEAR|(M)?MONTH|(D)?DAY|(D)?WEEK)|NOW(_TS)?|TODAY(_TS)?|(YESTER|PREV)DAY(_TS)?)#/i, /#(VOLUME(DB)?|VERSION|ISPLAYING|ISPAUSED|PLAYSTATE|SAC|PLSCOUNT)#/i, /#(DEVICE(ID)?)#/i, /#(RGMODE)#/i, /#(PLAYMODE)#/i, /#(SEL(TRACKS|DURATION|SIZE))#/i, /#(SELTYPE)#/i, /#(SEL(PLAYING|INLIBRARY))#/i, /#(PLS(IDX|NAME|TRACKS|ISAUTOPLS|ISLOCKED|LOCKS|LOCKNAME))#/i, /#(PLSPLAY(IDX|NAME|TRACKS))#/i, /#(PLS(DURATION|SIZE))#/i, /#(PLSPLAY(DURATION|SIZE))#/i];
+				const dynTagRe = [
+					/#(?:(?:PREV)?(?:DECADE|YEAR|(?:M)?MONTH|(?:D)?DAY|(?:D)?WEEK))#/i,
+					/#(?:NOW(?:_TS)?|TODAY(?:_TS)?|(?:YESTER|PREV)DAY(?:_TS)?)#/i,
+					/#(?:VOLUME(?:DB)?|VERSION|ISPLAYING|ISPAUSED|PLAYSTATE|SAC|PLSCOUNT)#/i,
+					/#(?:DEVICE(ID)?)#/i,
+					/#(?:RGMODE)#/i,
+					/#(?:PLAYMODE)#/i,
+					/#(?:SEL(?:TRACKS|DURATION|SIZE))#/i,
+					/#(?:SELTYPE)#/i,
+					/#(?:SEL(?:PLAYING|INLIBRARY))#/i,
+					/#(?:PLS(?:IDX|NAME|TRACKS|ISAUTOPLS|ISLOCKED|LOCKS|LOCKNAME))#/i,
+					/#(?:PLSPLAY(?:IDX|NAME|TRACKS))#/i,
+					/#(?:PLS(?:DURATION|SIZE))#/i,
+					/#(?:PLSPLAY(?:DURATION|SIZE))#/i
+				];
 				const tf = this.tfSource();
 				if (dynTagRe.some((r) => r.test(tf))) { info = 'Global:'; }
 			}

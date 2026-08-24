@@ -1,5 +1,5 @@
 ﻿'use strict';
-//17/04/26
+//24/08/26
 
 /* exported harmonicMixing, queryReplaceKeys, harmonicMixingCycle, harmonicMixingSort */
 /* global globTags:readable */
@@ -241,8 +241,8 @@ function queryReplaceKeys(query, handle, bDebug = false) {
 		if ((query.match(/#/g) || []).length >= 2) { console.log('queryReplaceKeys(): handle is null'); return; }
 		else { return query; }
 	}
-	if (/#NEXTKEY#|#PREVKEY#/i.test(query)) {
-		const keyTag = query.match(/(\S+) \S* #NEXTKEY#|#PREVKEY#/i)[1] || '';
+	if (/#(?:NEXTKEY|PREVKEY)#/i.test(query)) {
+		const keyTag = query.match(/(\S+) \S* #(?:NEXTKEY|PREVKEY)#/i)[1] || '';
 		const key = fb.TitleFormat(_bt(keyTag)).EvalWithMetadb(handle);
 		const keyObj = key.length ? camelotWheel.getKeyNotationObjectCamelot(key) : null;
 		if (keyObj) {
@@ -252,7 +252,7 @@ function queryReplaceKeys(query, handle, bDebug = false) {
 				.replace(/(\S+ \S* )#NEXTKEY#/gi, _p(nextKeys.map((val) => '$1' + val).join(' OR ')))
 				.replace(/(\S+ \S* )#PREVKEY#/gi, _p(prevKeys.map((val) => '$1' + val).join(' OR ')));
 		} else {
-			query = query.replace(/(\S+) \S* #NEXTKEY#|#PREVKEY#/gi, 'NOT $1 PRESENT');
+			query = query.replace(/(\S+) \S* #(?:NEXTKEY|PREVKEY)#/gi, 'NOT $1 PRESENT');
 		}
 	}
 	return query;

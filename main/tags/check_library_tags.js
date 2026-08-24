@@ -1,5 +1,5 @@
 ﻿'use strict';
-//17/04/26
+//24/08/26
 
 /*
 	Check Library Tags
@@ -302,7 +302,7 @@ function checkTags({
 							const toCompareWith = bCompare ? tagsToCompareMap.get(tagA) : null;
 							const totalA = countArrayFiltered[indexA].length - 1;
 							const delay = bCompare ? (totalA + 1) * (toCompareWith.size ** 2) / 150 * iDelay / 100 : (totalA + 1) / 1000 * iDelay / 100;
-							const isGenre = /.*(genre|style).*/i;
+							const isGenre = /(?:genre|style)/i;
 							countArrayFiltered[indexA].forEach((tagValueA, i) => {
 								promises.push(new Promise(resolve => {
 									setTimeout(() => {

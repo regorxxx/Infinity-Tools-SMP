@@ -1,5 +1,5 @@
 ﻿'use strict';
-//06/06/26
+//24/08/26
 
 /* exported dynamicQuery */
 
@@ -59,13 +59,13 @@ function dynamicQueryProcess({ query = 'ARTIST IS #ARTIST#', handle = fb.GetFocu
 				: null;
 		} else if (handleList) {
 			const queries = [...new Set(handleList.Convert().map((handle) => {
-				return /#NEXTKEY#|#PREVKEY#/i.test(query)
+				return /#(?:NEXTKEY|PREVKEY)#/i.test(query)
 					? queryReplaceWithCurrent(queryReplaceKeys(query, handle), handle, null, { bToLowerCase })
 					: queryReplaceWithCurrent(query, handle, null, { bToLowerCase });
 			}))];
 			query = queryJoin(queries, 'OR');
 		} else if (handle) {
-			if (/#NEXTKEY#|#PREVKEY#/i.test(query)) { query = queryReplaceKeys(query, handle); }
+			if (/#(?:NEXTKEY|PREVKEY)#/i.test(query)) { query = queryReplaceKeys(query, handle); }
 			query = queryReplaceWithCurrent(query, handle, null, { bToLowerCase });
 		}
 	}
