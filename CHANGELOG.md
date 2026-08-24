@@ -2,6 +2,7 @@
 
 ## [Table of Contents]
 - [Unreleased](#unreleased)
+- [2.1.0](#210---2026-08-24)
 - [2.0.0](#200---2026-04-28)
 - [1.4.0](#140---2026-01-12)
 - [1.3.0](#130---2026-01-01)
@@ -10,6 +11,12 @@
 - [1.0.0](#100---2025-11-19)
 
 ## [Unreleased][]
+### Added
+### Changed
+### Removed
+### Fixed
+
+## [2.1.0] - 2026-08-24
 ### Added
 - Playlist Tools\Playlist manipulation: new submenu with playlists sorting features.
 - Playlist Tools\Playlist manipulation: new submenu with playlists creation features.
@@ -225,7 +232,8 @@
 - Multiple foobar v2.25 file-relative fixes.
 
 
-[Unreleased]: ../../compare/v2.0.0...HEAD
+[Unreleased]: ../../compare/v2.1.0...HEAD
+[2.1.0]: ../../compare/v.2.0.0...v2.1.0
 [2.0.0]: ../../compare/v.1.4.0...v2.0.0
 [1.4.0]: ../../compare/v.1.3.0...v1.4.0
 [1.3.0]: ../../compare/v.1.2.0...v1.3.0
