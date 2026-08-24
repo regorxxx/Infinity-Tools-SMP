@@ -1,5 +1,5 @@
 'use strict';
-//06/06/26
+//24/08/26
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -173,7 +173,7 @@ Object.keys(SearchByDistance_properties).forEach((key) => { // Checks
 		SearchByDistance_properties[key].push({ greaterEq: -1, func: Number.isSafeInteger }, SearchByDistance_properties[key][1]);
 	} else if (k.endsWith('query')) {
 		SearchByDistance_properties[key].push({ func: (query) => checkQuery(query, true) }, SearchByDistance_properties[key][1]);
-	} else if (/(source|tags?)$/gi.test(k)) {
+	} else if (/(?:source|tags?)$/gi.test(k)) {
 		SearchByDistance_properties[key].push({ func: isJSON }, SearchByDistance_properties[key][1]);
 	} else if (regExBool.test(key)) {
 		SearchByDistance_properties[key].push({ func: isBoolean }, SearchByDistance_properties[key][1]);
@@ -213,12 +213,6 @@ if (typeof buttonsBar === 'undefined' && typeof bNotProperties === 'undefined') 
 	setProperties(SearchByDistance_panelProperties, sbd_prefix);
 }
 
-{ // TODO: remove on next relase
-	/* global getFiles:readable, _moveFile:readable */
-	getFiles(folders.data, new Set(['.json']), '*\\searchByDistance_*.json')
-		.forEach((file) => _moveFile(file, file.replace('searchByDistance_', 'musicmap_')));
-}
-
 /*
 	Initialize maps/graphs at start. Global variables
 */
@@ -239,7 +233,7 @@ const sbd = {
 	themesPath: folders.userPresets + 'themes\\',
 	get defaultRecipesPath() { return folders.xxx + 'presets\\' + sbd.name + '\\recipes\\'; },
 	get defaultThemesPath() { return folders.xxx + 'presets\\' + sbd.name + '\\themes\\'; },
-	isJsonProperty: (key) => /(source|tags?)$/gi.test(key),
+	isJsonProperty: (key) => /(?:source|tags?)$/gi.test(key),
 	getMethodDescription: (key) => {
 		switch (key.toUpperCase()) {
 			case 'WEIGHT': return 'Tags similarity (WEIGHT)';
@@ -2873,7 +2867,7 @@ function checkScoringDistribution(distr) {
 }
 
 function parsePlaylistName(playlistName, reference) {
-	const bIsTF = /(%.*%)|(\$.*\(.*\))/.test(playlistName);
+	const bIsTF = /(?:%.*%)|(?:\$.*\(.*\))/.test(playlistName);
 	if (typeof reference === 'string') {
 		const themeRegexp = /%SBD_THEME%/gi;
 		if (bIsTF && themeRegexp.test(playlistName)) {

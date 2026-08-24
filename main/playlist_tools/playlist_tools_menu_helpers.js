@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//24/08/26
 
 /* exported overwritePanelProperties, loadProperties, createSubMenuEditEntries, lastActionEntry, focusFlags, playlistCountFlags, playlistCountFlagsRem, playlistCountFlagsAddRem, multipleSelectedFlags, multipleSelectedFlagsReorder, selectedFlags, selectedFlagsReorder, selectedFlagsRem, selectedFlagsAddRem, closeLock, createTagMenu, createSmartShuffleMenu */
 
@@ -439,14 +439,14 @@ function importPreset(path = folders.data + 'playlistTools_presets.json') {
 
 function lastActionEntry() {
 	const fullName = menu.lastCall.length ? menu.lastCall : null;
-	let entryText = fullName ? fullName.replace(/.*\\/, '') : null;
+	let entryText = fullName ? fullName.replace(/^.*\\/, '') : null;
 	let flags = MF_STRING;
 	if (entryText === null) {
 		entryText = '- No last action -';
 		flags = MF_GRAYED;
 	} else {
 		// Reuse original flags
-		const entry = menu.getEntries().find((entry) => entry.entryText === entryText.replace(/.*\\/, ''));
+		const entry = menu.getEntries().find((entry) => entry.entryText === entryText.replace(/^.*\\/, ''));
 		if (entry) { flags = entry.flags; }
 		// Prefer the full name if entry name is not clear enough
 		if (/^by/i.test(entryText)) { entryText = fullName; }

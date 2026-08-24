@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//24/08/26
 
 /* global menusEnabled:readable, configMenu:readable, readmes:readable, menu:readable, newReadmeSep:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, menu_propertiesBack:readable, menu_panelProperties:readable, overwritePanelProperties:readable, shortcutsPath:readable, importPreset:readable, presets:writable, menu_panelPropertiesBack:readable, loadProperties:readable, overwriteDefaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, specialMenu:readable, sbd:readable */
 
@@ -418,7 +418,7 @@
 			let iCount = 0;
 			const breakOn = 20;
 			if (Object.keys(readmes).length) {
-				const sepRegEx = /(^sep$)|(^separator$)/i;
+				const sepRegEx = /^(?:sep|separator)$/i;
 				Object.entries(readmes).forEach(([key, value]) => { // Only show non empty files
 					if (sepRegEx.test(value)) { menu.newSeparator(subMenuName); }
 					else if (_isFile(value)) {
