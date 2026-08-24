@@ -15,6 +15,7 @@
 - Playlist Tools\Playlist manipulation: new submenu with playlists creation features.
 - Playlist Tools\Playlist manipulation: new submenu with playlists creation features.
 - Playlist Tools\Playlist manipulation: new submenu to perform a query search on specific playlists (which also works with dynamic queries based on current selection).
+- Playlist Tools\Playlist manipulation: new menu entry to show playlist GUID (requires foobar2000 v2).
 - Quicksearch: added new setting for max tracks from selection processed by dynamic queries. Previously value was hardcoded (default 1000).
 - ListenBrainz Tools: added blacklist settings for releases and artists.
 - UI: added fallback to front art setting for Art by TF (background setting), if no file was found.

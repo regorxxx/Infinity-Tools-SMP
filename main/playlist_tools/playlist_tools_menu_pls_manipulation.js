@@ -1,9 +1,9 @@
 'use strict';
-//06/06/26
+//22/08/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable, entryMaxLength:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkDynQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable, VK_SHIFT:readable, range:readable, createAutoplaylistPresets:readable, _setClipboardData:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkDynQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable, VK_SHIFT:readable, range:readable, createAutoplaylistPresets:readable, _setClipboardData:readable, compareVersions:readable */
 
 // Playlist manipulation...
 {
@@ -1293,6 +1293,16 @@
 						catch (e) { return; } // eslint-disable-line no-unused-vars
 						if (!input.length) { return; }
 						plman.ActivePlaylist = plman.FindOrCreatePlaylist(input, false);
+					}
+				});
+			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+		}
+		{	//  laylist GUID
+			const name = 'Show playlist GUID...';
+			if ((!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) && plman.GetGUID && compareVersions(fb.Version, '2.0.0')) {
+				menu.newEntry({
+					menuName, entryText: name, func: () => {
+						fb.ShowPopupMessage(plman.GetGUID(plman.ActivePlaylist));
 					}
 				});
 			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
