@@ -2,6 +2,7 @@
 
 ## [Table of Contents]
 - [Unreleased](#unreleased)
+- [2.1.1](#211---2026-08-26)
 - [2.1.0](#210---2026-08-24)
 - [2.0.0](#200---2026-04-28)
 - [1.4.0](#140---2026-01-12)
@@ -15,6 +16,13 @@
 ### Changed
 ### Removed
 ### Fixed
+
+## [2.1.1] - 2026-08-26
+### Added
+### Changed
+### Removed
+### Fixed
+- Fixed wrong files on last update [2.1.0](#210---2026-08-24) due to github glitch.
 
 ## [2.1.0] - 2026-08-24
 ### Added
@@ -232,7 +240,8 @@
 - Multiple foobar v2.25 file-relative fixes.
 
 
-[Unreleased]: ../../compare/v2.1.0...HEAD
+[Unreleased]: ../../compare/v2.1.1...HEAD
+[2.1.1]: ../../compare/v.2.1.0...v2.1.1
 [2.1.0]: ../../compare/v.2.0.0...v2.1.0
 [2.0.0]: ../../compare/v.1.4.0...v2.0.0
 [1.4.0]: ../../compare/v.1.3.0...v1.4.0

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//17/08/26
+//26/08/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -10,7 +10,7 @@
 // eslint-disable-next-line no-unused-vars
 var bLoadTags = true; // NOSONAR
 
-if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '2.1.0', features: { drag_n_drop: false } }); }
+if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '2.1.1', features: { drag_n_drop: false } }); }
 
 // GDI/D2D draw mode
 window.DrawMode = Math.max(Math.min(window.GetProperty('bar.Draw mode: GDI (0), D2D (1)', 0), 1), 0);
