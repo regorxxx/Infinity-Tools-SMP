@@ -14,6 +14,7 @@
 ## [Unreleased][]
 ### Added
 ### Changed
+- UI: Added support for native methods to run CMD tools while using JSplitter, which avoids creating new CMD windows. For ex. for button "Utils\Checksum".
 - Helpers: updated helpers.
 ### Removed
 ### Fixed

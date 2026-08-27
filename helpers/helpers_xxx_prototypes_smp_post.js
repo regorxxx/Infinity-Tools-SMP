@@ -1,7 +1,12 @@
-﻿'use strict';
-//29/03/26
+'use strict';
+//26/08/26
+
+/* global removeEventListenerSelf:readable */
 
 if (typeof addEventListener !== 'undefined' && typeof removeEventListenerSelf !== 'undefined') {
+	/*
+		Plman
+	*/
 	const playbackHistory = [];
 	const addToPlaybackHistory = (handle) => {
 		const pl = plman.GetPlayingItemLocation();
@@ -43,4 +48,26 @@ if (typeof addEventListener !== 'undefined' && typeof removeEventListenerSelf !=
 	};
 
 	if (fb.IsPlaying) { addToPlaybackHistory(fb.GetNowPlaying()); }
+
+	/*
+		Utils
+	*/
+
+	if (utils.RunCmdAsync) {
+		utils.RunCmdAsyncV2 = function () {
+			let id;
+			const prom = new Promise((resolve, reject) => {
+				addEventListener('on_run_cmd_async_done', function (taskId, success, exitCode, stdout, stderr) {
+					if (taskId === id) {
+						console.log(success);
+						if (success) { resolve(stdout); }
+						else { reject(stderr); }
+					}
+				});
+			});
+			id = utils.RunCmdAsync(...arguments);
+			return prom;
+		};
+	}
+
 }

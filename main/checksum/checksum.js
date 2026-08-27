@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/05/26
+//27/08/26
 
 /* exported checksumUtils */
 
@@ -9,6 +9,11 @@ include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global _q:readable, dateFormatter:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global _isFile:readable, _exec:readable, _recycleFile:readable, _resolvePath:readable, _save:readable, _jsonParse:readable, _open:readable, utf8:readable */
+if (utils.RunCmdAsync) {
+	include('..\\..\\helpers\\callbacks_xxx.js');
+	include('..\\..\\helpers\\helpers_xxx_prototypes_smp_post.js');
+	/* utils.RunCmdAsyncV2 */
+}
 
 const checksumUtils = {
 	bRunning: false,
@@ -126,7 +131,11 @@ const checksumUtils = {
 				const bFound = _isFile(filePath);
 				if (bFound && !bOverwrite) { return { path, fileName, checksum: null, overwritten: false, saved: false }; }
 				const overwritten = bFound ? _recycleFile(filePath) : false;
-				return _exec(_resolvePath(binPath) + ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
+				return (
+					utils.RunCmdAsyncV2
+						? utils.RunCmdAsyncV2(_resolvePath(binPath), ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
+						: _exec(_resolvePath(binPath) + ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
+				)
 					.then(() => {
 						if (bAnimation) { parent.switchAnimation(animId, false); }
 						if (_isFile(filePath)) {
@@ -154,7 +163,7 @@ const checksumUtils = {
 	},
 	verify: function ({
 		handleList = this.getSelections(), binPath = folders.xxx + 'exactfile\\exf.exe',
-		fileMask = '%1.sfv', args = '-osfv -r -d "%1" -otf "%2" *.*',
+		fileMask = '%1.sfv', args = '-c "%2"',
 		parent = void (0)
 	} = {}) {
 		const bAnimation = parent && Object.hasOwn(parent, 'switchAnimation') && Object.hasOwn(parent, 'stopAllAnimations');
@@ -164,7 +173,7 @@ const checksumUtils = {
 			handleList.Sort();
 			const paths = this.getSelectionsPaths(handleList);
 			parent.switchAnimation('Checksum Tools processing selection', false);
-			const errorRe = /^(\d+).*errors/mi;
+			const errorRe = /^(\d+)\s[\w\s]*errors/mi;
 			return Promise.serial(paths, (path, i) => {
 				const animId = 'Checksum Tools verifying folder ' + (i + 1) + '/' + paths.length;
 				if (bAnimation) { parent.switchAnimation(animId, true); }
@@ -175,7 +184,11 @@ const checksumUtils = {
 				if (this.bAbort) { return { path, file, pass: false, errors: null }; }
 				const bFound = _isFile(filePath);
 				if (!bFound) { return { path, file, pass: false, errors: null }; }
-				return _exec(_resolvePath(binPath) + ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
+				return (
+					utils.RunCmdAsyncV2
+						? utils.RunCmdAsyncV2(_resolvePath(binPath), ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
+						: _exec(_resolvePath(binPath) + ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
+				)
 					.then((out) => {
 						if (bAnimation) { parent.switchAnimation(animId, false); }
 						if (out) { out = out.trim(); }
