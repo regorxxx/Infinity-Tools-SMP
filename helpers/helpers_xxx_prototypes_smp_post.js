@@ -1,5 +1,5 @@
 'use strict';
-//26/08/26
+//28/08/26
 
 /* global removeEventListenerSelf:readable */
 
@@ -59,7 +59,6 @@ if (typeof addEventListener !== 'undefined' && typeof removeEventListenerSelf !=
 			const prom = new Promise((resolve, reject) => {
 				addEventListener('on_run_cmd_async_done', function (taskId, success, exitCode, stdout, stderr) {
 					if (taskId === id) {
-						console.log(success);
 						if (success) { resolve(stdout); }
 						else { reject(stderr); }
 					}

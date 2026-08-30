@@ -192,7 +192,6 @@ const checksumUtils = {
 					.then((out) => {
 						if (bAnimation) { parent.switchAnimation(animId, false); }
 						if (out) { out = out.trim(); }
-						console.log(out);
 						if (out && out.length) {
 							const errors = errorRe.exec(out);
 							if (errors && errors[1]) {
