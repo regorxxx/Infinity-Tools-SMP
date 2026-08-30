@@ -1,5 +1,5 @@
 ﻿'use strict';
-//24/08/26
+//30/08/26
 
 /* exported harmonicMixing, queryReplaceKeys, harmonicMixingCycle, harmonicMixingSort */
 /* global globTags:readable */
@@ -99,9 +99,8 @@ function harmonicMixingSort({
 	if (!keyTag.length) { return null; }
 	if (!selItems || !selItems.Count) { return null; }
 	// Instead of predefining a mixing pattern, create one randomly each time, with predefined proportions
-	const handleList = bShuffleInput
-		? new FbMetadbHandleList(selItems.Convert().shuffle())
-		: selItems.Clone();
+	const handleList = selItems.Clone();
+	if (bShuffleInput) { handleList.Shuffle(); }
 	let tfo = '';
 	// Translate keys into something usable on TF
 	// Also, instead of adding multiple individual if statements, better to nest them (so only those required are evaluated)
@@ -125,9 +124,11 @@ function harmonicMixingSort({
 
 function findTracksWithPattern({ selItems, pattern, keyTag, playlistLength, bShuffleInput = false, bDoublePass = false, bDebug = false }) {
 	// Tags and constants
-	if (bShuffleInput) { selItems = new FbMetadbHandleList(selItems.Convert().shuffle()); }
-	const keyHandle = getHandleListTags(selItems, [keyTag], { bMerged: true });
-	const poolLength = selItems.Count;
+	const handleList = bShuffleInput
+		? selItems.Clone().Shuffle()
+		: selItems;
+	const keyHandle = getHandleListTags(handleList, [keyTag], { bMerged: true });
+	const poolLength = handleList.Count;
 	let nextKeyObj;
 	let keyCache = new Map();
 	let keyDebug = [];
@@ -163,7 +164,7 @@ function findTracksWithPattern({ selItems, pattern, keyTag, playlistLength, bShu
 				}
 				if (camelotKeyNew) {
 					if (nextKeyObj.hour === camelotKeyNew.hour && nextKeyObj.letter === camelotKeyNew.letter) {
-						selectedHandlesArray.push(selItems[index]);
+						selectedHandlesArray.push(handleList[index]);
 						if (bDebug) { keyDebug.push(camelotKeyCurrent); keySharpDebug.push(camelotWheel.getKeyNotationSharp(camelotKeyCurrent)); patternDebug.push(pattern[i]); }
 						nextIndex = indexNew; // Which will be used for next movement
 						bFound = true;
@@ -187,7 +188,7 @@ function findTracksWithPattern({ selItems, pattern, keyTag, playlistLength, bShu
 		}
 	}
 	// Add tail
-	selectedHandlesArray.push(selItems[nextIndex]);
+	selectedHandlesArray.push(handleList[nextIndex]);
 	if (bDebug) { keyDebug.push(camelotKeyNew); keySharpDebug.push(camelotWheel.getKeyNotationSharp(camelotKeyNew)); }
 	// Double pass
 	if (bDoublePass) {
@@ -196,12 +197,12 @@ function findTracksWithPattern({ selItems, pattern, keyTag, playlistLength, bShu
 		// Find positions where the remainder tracks could be placed as long as they have the same key than other track
 		const selectedHandles = new FbMetadbHandleList(selectedHandlesArray);
 		for (let i = 0; i < poolLength; i++) {
-			const currTrack = selItems[i];
+			const currTrack = handleList[i];
 			if (selectedHandles.Find(currTrack) === -1) {
 				const matchIdx = selectedHandlesArray.findIndex((selTrack, j) => {
 					let idx = -1;
 					if (keyMap.has(j)) { idx = keyMap.get(j); }
-					else { idx = selItems.Find(selTrack); keyMap.set(j, idx); }
+					else { idx = handleList.Find(selTrack); keyMap.set(j, idx); }
 					const selKey = keyHandle[idx];
 					return selKey[0] === keyHandle[i][0];
 				});

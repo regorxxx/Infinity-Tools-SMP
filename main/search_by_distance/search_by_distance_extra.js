@@ -1,5 +1,5 @@
 ﻿'use strict';
-//17/04/26
+//30/08/26
 
 /* exported calculateSimilarArtistsFromPls, addTracksRelation, calculateTrackSimilarity */
 
@@ -45,7 +45,7 @@ async function calculateSimilarArtists({ selHandle = fb.GetFocusItem(), properti
 	selArtistTracks = removeDuplicates({ handleList: selArtistTracks, sortBias: globQuery.remDuplBias, bPreserveSort: false, bAdvTitle: true, bMultiple: true });
 	// Use only X random tracks instead of all of them
 	const report = new Map();
-	const randomSelTracks = selArtistTracks.Convert().shuffle().slice(0, size);
+	const randomSelTracks = selArtistTracks.Shuffle().Convert().slice(0, size);
 	const newConfig = clone(properties);
 	const tags = JSON.parse(newConfig.tags[1]);
 	const genreStyleTag = Object.values(tags).filter((t) => t.type.includes('graph') && !t.type.includes('virtual')).map((t) => t.tf).flat(Infinity).filter(Boolean);

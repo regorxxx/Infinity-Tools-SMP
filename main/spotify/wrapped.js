@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//07/08/26
+//30/08/26
 
 /* exported wrapped */
 
@@ -1450,7 +1450,7 @@ const wrapped = {
 			if (this.settings.logOpt.bDebugQuery) { console.log('computeDiscoverPlaylist:\n\t ' + query); }
 			handleList = fb.GetQueryItemsCheck(handleList, query);
 			if (handleList) {
-				handleList = new FbMetadbHandleList(handleList.Convert().slice(0, size).shuffle());
+				handleList = new FbMetadbHandleList(handleList.Shuffle().Convert().slice(0, size));
 				({ handleList } = shuffleByTags({ selItems: handleList, bSendToActivePls: false, bAdvancedShuffle: true, sortBias: 'rating', bMultiple: true }) || { handleList: new FbMetadbHandleList() });
 				this.playlists.discover = handleList;
 			}
@@ -1481,7 +1481,7 @@ const wrapped = {
 			/** @type {FbMetadbHandleList} */
 			let handleList = fb.GetQueryItemsCheck(fb.GetLibraryItems(), query);
 			if (handleList) {
-				handleList = new FbMetadbHandleList(handleList.Convert().shuffle().slice(0, size));
+				handleList = new FbMetadbHandleList(handleList.Shuffle().Convert().slice(0, size));
 				({ handleList } = shuffleByTags({ selItems: handleList, bSendToActivePls: false, bAdvancedShuffle: true, sortBias: 'rating', bMultiple: true }) || { handleList: new FbMetadbHandleList() });
 				this.playlists.topArtists = handleList;
 			}
@@ -1512,7 +1512,7 @@ const wrapped = {
 			/** @type {FbMetadbHandleList} */
 			let handleList = fb.GetQueryItemsCheck(fb.GetLibraryItems(), query);
 			if (handleList) {
-				handleList = new FbMetadbHandleList(handleList.Convert().shuffle().slice(0, size));
+				handleList = new FbMetadbHandleList(handleList.Shuffle().Convert().slice(0, size));
 				({ handleList } = shuffleByTags({ selItems: handleList, bSendToActivePls: false, bAdvancedShuffle: true, sortBias: 'rating', bMultiple: true }) || { handleList: new FbMetadbHandleList() });
 				this.playlists.topGenres = handleList;
 			}
@@ -1550,7 +1550,7 @@ const wrapped = {
 						let handleListCountry = fb.GetQueryItemsCheck(fb.GetLibraryItems(), query);
 						if (this.settings.logOpt.bDebugQuery) { console.log('computeTopCountriesPlaylist:\n\t ' + _p(handleListCountry.Count) + ' <- ' + query); }
 						if (handleListCountry) {
-							handleListCountry = new FbMetadbHandleList(handleListCountry.Convert().shuffle().slice(0, size / count));
+							handleListCountry = new FbMetadbHandleList(handleListCountry.Shuffle().Convert().slice(0, size / count));
 							handleList.AddRange(handleListCountry);
 						}
 					});

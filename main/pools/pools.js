@@ -1,5 +1,5 @@
 'use strict';
-//17/04/26
+//30/08/26
 
 /* exported _pools */
 
@@ -342,9 +342,9 @@ function _pools({
 						// Remove duplicates within the group (for ex. when retrieving 2 versions of same album)
 						if (this.checkDuplicatesBy.length) {
 							handleListsGroups[i] = removeDuplicates({ handleList: handleListsGroups[i], checkKeys: this.checkDuplicatesBy, sortBias: this.sortBias, bPreserveSort: false, bAdvTitle: this.bAdvTitle, bMultiple: this.bMultiple });
-							handleListsGroups[i] = new FbMetadbHandleList(handleListsGroups[i].Convert().shuffle().slice(0, limit));
+							handleListsGroups[i] = new FbMetadbHandleList(handleListsGroups[i].Shuffle().Convert().slice(0, limit));
 						} else {
-							handleListsGroups[i] = new FbMetadbHandleList(handleListsGroups[i].Convert().shuffle().slice(0, limit));
+							handleListsGroups[i] = new FbMetadbHandleList(handleListsGroups[i].Shuffle().Convert().slice(0, limit));
 						}
 					}
 					// Join all tracks
@@ -606,7 +606,7 @@ function _pools({
 		if (!bHarmonic && !bShuffle && Object.hasOwn(pool, 'sort')) {
 			if (pool.sort.toUpperCase !== '%PLAYLIST_INDEX%') {
 				if (pool.sort.length) { handleListTo.OrderByFormat(fb.TitleFormat(pool.sort), 1); }
-				else { handleListTo = new FbMetadbHandleList(handleListTo.Convert().shuffle()); }
+				else { handleListTo = new FbMetadbHandleList(handleListTo.Shuffle().Convert()); }
 			}
 			console.log(scriptName + ': sorting ' + _p(pool.sort.length ? pool.sort : 'random')); // DEBUG
 		}

@@ -1,5 +1,5 @@
 'use strict';
-//29/07/26
+//30/08/26
 
 /* exported listenBrainzMenu */
 
@@ -458,7 +458,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 						report += '\n\nAlso found these tracks tagged on library but not on ListenBrainz' + (bRemovedDup ? ', minus duplicates by MBID,\nTo retrieve the full list, use this query: ' + query : ':') + '\n\n' + table.toString();
 					}
 					fb.ShowPopupMessage(report, 'ListenBrainz ' + entry.name + ' ' + _p(user));
-					if (bShift) { handleList = new FbMetadbHandleList(handleList.Convert().shuffle()); }
+					if (bShift) { handleList.Shuffle(); }
 					sendToPlaylist(handleList, 'ListenBrainz ' + entry.name);
 				}, flags: bListenBrainz ? MF_STRING : MF_GRAYED, data: { bDynamicMenu: true }
 			});
