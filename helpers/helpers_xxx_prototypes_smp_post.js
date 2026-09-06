@@ -1,5 +1,5 @@
 'use strict';
-//28/08/26
+//03/09/26
 
 /* global removeEventListenerSelf:readable */
 
@@ -65,6 +65,22 @@ if (typeof addEventListener !== 'undefined' && typeof removeEventListenerSelf !=
 				});
 			});
 			id = utils.RunCmdAsync(...arguments);
+			return prom;
+		};
+	}
+
+	if (utils.GetFolderSizeAsync) {
+		utils.GetFolderSizeAsyncV2 = function () {
+			let id;
+			const prom = new Promise((resolve, reject) => {
+				addEventListener('on_get_folder_size_done', (taskId, success, size, errorText) => {
+					if (taskId === id) {
+						if (success) { resolve(size); }
+						else { reject(errorText); }
+					}
+				});
+			});
+			id = utils.GetFolderSizeAsync(...arguments);
 			return prom;
 		};
 	}
