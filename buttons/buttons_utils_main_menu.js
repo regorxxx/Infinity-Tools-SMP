@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//06/09/26
 
 /*
 	Main Menu shortcut
@@ -300,7 +300,7 @@ buttonsBar.list.push(newButtonsProperties);
 							plman.SetPlaylistFocusItem(plman.ActivePlaylist, entry.idx);
 						}
 						if (!bValidState) {
-							const menuState = tryMethod('IsMainMenuCommandChecked', fb, null)(entry.command);
+							const menuState = tryMethod(fb, 'IsMainMenuCommandChecked', null)(entry.command);
 							if (menuState !== null && menuState !== this.active) {
 								console.log('Main Menu button: fixing entry state mismatch...');
 								return;
@@ -335,7 +335,7 @@ buttonsBar.list.push(newButtonsProperties);
 				const entries = JSON.parse(this.buttonsProperties.entries[1]);
 				const indicator = JSON.parse(this.buttonsProperties.indicator[1]);
 				if (indicator.enabled) {
-					const results = entries.map((e) => { return { name: e.name, check: tryMethod('IsMainMenuCommandChecked', fb, null)(e.command) }; })
+					const results = entries.map((e) => { return { name: e.name, check: tryMethod(fb, 'IsMainMenuCommandChecked', null)(e.command) }; })
 						.filter((e) => e.check !== null)
 						.map((e) => e.name + ': ' + e.check);
 					info += '\nEntries:\n--->' + results.join('\n--->');
@@ -355,7 +355,7 @@ buttonsBar.list.push(newButtonsProperties);
 				stateCheck: function (parent, bPopup) {
 					const entries = JSON.parse(this.buttonsProperties.entries[1]);
 					const results = entries.map((e) => {
-						return { command: e.command, check: tryMethod('IsMainMenuCommandChecked', fb, null)(e.command) };
+						return { command: e.command, check: tryMethod(fb, 'IsMainMenuCommandChecked', null)(e.command) };
 					}).filter((e) => e.check !== null);
 					const bValid = new Set(results.map((e) => e.check)).size === 1;
 					if (!bValid && bPopup) {

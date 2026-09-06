@@ -1,9 +1,9 @@
 'use strict';
-//22/08/26
+//31/08/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable, entryMaxLength:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkDynQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable, VK_SHIFT:readable, range:readable, createAutoplaylistPresets:readable, _setClipboardData:readable, compareVersions:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkDynQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable, VK_SHIFT:readable, range:readable, createAutoPlaylistPresets:readable, _setClipboardData:readable, compareVersions:readable */
 
 // Playlist manipulation...
 {
@@ -1224,7 +1224,7 @@
 					const subMenuNameTwo = menu.newMenu('AutoPlaylists presets', subMenuName);
 					menu.newCondEntry({
 						entryText: 'AutoPlaylists presets (cond)', condFunc: () => {
-							createAutoplaylistPresets().forEach((opt) => {
+							createAutoPlaylistPresets().forEach((opt) => {
 								const subMenuNameThree = opt.menu ? menu.findOrNewMenu(opt.menu, subMenuNameTwo) : subMenuNameTwo;
 								if (menu.isSeparator(opt)) { menu.newSeparator(subMenuNameThree); return; }
 								menu.newEntry({
