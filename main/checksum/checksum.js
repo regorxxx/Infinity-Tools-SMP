@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/08/26
+//01/09/26
 
 /* exported checksumUtils */
 
@@ -19,10 +19,10 @@ const checksumUtils = {
 	bRunning: false,
 	bAbort: false,
 	commentRe: /;.*\r?\n?\r?/gim,
-	isRunning: () => {
+	isRunning: function isRunning() {
 		return this.bRunning;
 	},
-	abort: () => {
+	abort: function abort() {
 		this.bAbort = true;
 	},
 	getSelection: function getSelection() {
@@ -72,8 +72,13 @@ const checksumUtils = {
 		report += '\t\t' + results.filter((r) => r.overwritten).length + ' overwritten files';
 		console.log(report);
 		if (bShowPopup || this.bAbort || results.some((r) => r.checksum && !r.saved)) {
+			if (results.some((r) => r.checksum && !r.saved)) {
+				const temp = results.filter((r) => r.checksum && !r.saved)
+					.map((r) => r.path + '\\' + r.fileName).join('\n');
+				fb.ShowPopupMessage(temp, 'Checksum Tools: failed files (create)');
+			}
 			report += '\n\n' + results.map((r) => r.path + '\\' + r.fileName + ' - ' + (r.saved ? 'saved' : (r.checksum === null ? 'skipped' : 'error'))).join('\n');
-			fb.ShowPopupMessage(report);
+			fb.ShowPopupMessage(report, 'Checksum Tools: report (create)');
 		}
 		return report;
 	},
@@ -88,7 +93,7 @@ const checksumUtils = {
 		console.log(report);
 		if (bShowPopup) {
 			report += '\n\n' + results.map((r) => r.path + '\\' + r.file + ' - ' + (r.errors ? r.errors + ' errors' : 'passed')).join('\n');
-			fb.ShowPopupMessage(report);
+			fb.ShowPopupMessage(report, 'Checksum Tools: report (verify)');
 		}
 		return report;
 	},
@@ -147,14 +152,19 @@ const checksumUtils = {
 							return { path, fileName, checksum: '-not available-', overwritten, saved: true };
 						}
 						return { path, fileName, checksum: null, overwritten: false, saved: false };
+					})
+					.catch(() => {
+						return { path, fileName, checksum: '-not available-', overwritten: false, saved: false };
 					});
-			}).then((results) => {
-				this.showCreateReport(results, bShowPopup);
-				return results;
-			}).finally(() => {
-				this.bRunning = this.bAbort = false;
-				if (bAnimation) { parent.stopAllAnimations(); }
-			});
+			})
+				.then((results) => {
+					this.showCreateReport(results, bShowPopup);
+					return results;
+				})
+				.finally(() => {
+					this.bRunning = this.bAbort = false;
+					if (bAnimation) { parent.stopAllAnimations(); }
+				});
 		} else {
 			this.bRunning = this.bAbort = false;
 			if (bAnimation) { parent.stopAllAnimations(); }
