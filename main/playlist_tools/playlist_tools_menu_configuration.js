@@ -1,5 +1,5 @@
 ﻿'use strict';
-//24/08/26
+//10/09/26
 
 /* global menusEnabled:readable, configMenu:readable, readmes:readable, menu:readable, newReadmeSep:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, menu_propertiesBack:readable, menu_panelProperties:readable, overwritePanelProperties:readable, shortcutsPath:readable, importPreset:readable, presets:writable, menu_panelPropertiesBack:readable, loadProperties:readable, overwriteDefaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, specialMenu:readable, sbd:readable */
 
@@ -180,11 +180,9 @@
 				});
 				menu.newEntry({
 					menuName: subMenuName, entryText: 'Track selection bias...', func: () => {
-						const input = Input.string('string', menu_properties.sortBias[1], 'Enter TF expression for track selection when finding duplicates:\n\nOutput must be numbers separated by \'|\'.\nHigher valued tracks will be preferred.\n\n\'DEFAULT\' restores default setting.', scriptName + ': ' + configMenu, globQuery.remDuplBias, void (0), false);
+						const input = Input.string('string', menu_properties.sortBias[1], 'Enter TF expression for track selection when finding duplicates:\n\nOutput must be numbers separated by \'|\'.\nHigher valued tracks will be preferred.\n\n\'DEFAULT\' restores default setting.', scriptName + ': ' + configMenu, globQuery.remDuplBias, void (0), false, menu_properties.sortBias[3]);
 						if (input === null) { return; }
-						menu_properties.sortBias[1] = input.toUpperCase() === 'DEFAULT'
-							? menu_properties.sortBias[3]
-							: input;;
+						menu_properties.sortBias[1] = input;
 						overwriteMenuProperties(); // Updates panel
 					}
 				});

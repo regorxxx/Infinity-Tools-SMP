@@ -1,5 +1,5 @@
-﻿'use strict';
-//27/04/26
+'use strict';
+//10/09/26
 
 /* exported createConfigMenu */
 
@@ -108,11 +108,9 @@ function createConfigMenu(parent) {
 			menu.newEntry({
 				menuName, entryText, func: () => {
 					const example = '["GENRE","GENRE2"]';
-					const input = Input.json('array strings', JSON.parse(properties[key][1]), 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example + (info[i] ? info[i] : ''), sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true);
+					const input = Input.json('array strings', JSON.parse(properties[key][1]), 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example + (info[i] ? info[i] : ''), sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(properties[key][3]));
 					if (input === null) { return; }
-					properties[key][1] = input.length === 1 && input[0].toUpperCase() === 'DEFAULT'
-						? properties[key][3]
-						: JSON.stringify(input);
+					properties[key][1] = JSON.stringify(input);
 					if (hook) { hook(key, i, properties); }
 					overwriteProperties(properties); // Updates panel
 				}, flags: bProperties && Object.hasOwn(recipe.properties, key) || (flag[i] === void (0) ? false : flag[i]) ? MF_GRAYED : MF_STRING
@@ -319,15 +317,10 @@ function createConfigMenu(parent) {
 					menu.newEntry({
 						menuName: subMenuName, entryText, func: () => {
 							const example = '["GENRE","LASTFM_GENRE","GENRE2"]';
-							const input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example, sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true);
+							const input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example, sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(properties.tags[3]));
 							if (input === null) { return; }
-							if (input.length === 1 && input[0].toUpperCase() === 'DEFAULT') {
-								baseTag.tf = JSON.parse(properties.tags[3]);
-								properties.tags[1] = properties.tags[3];
-							} else {
-								baseTag.tf = input;
-								properties.tags[1] = JSON.stringify(tags);
-							}
+							baseTag.tf = input;
+							properties.tags[1] = JSON.stringify(tags);
 							overwriteProperties(properties); // Updates panel
 							if (tag.type.includes('graph')) {
 								const answer = WshShell.Popup('Reset link cache now?\nOtherwise do it manually after all tag changes.', 0, sbd.name + ': Cache', popup.question + popup.yes_no);
@@ -673,11 +666,9 @@ function createConfigMenu(parent) {
 			{
 				menu.newEntry({
 					menuName: subMenuName, entryText: getEntryText('sortBias', 'Duplicates selection bias...'), func: () => {
-						const input = Input.string('string', properties['sortBias'][1], 'Enter TF expression for track selection when finding duplicates:\n\nOutput must be numbers separated by \'|\'.\nHigher valued tracks will be preferred.\n\n\'DEFAULT\' restores default setting.', sbd.name + ': Duplicates selection bias', globQuery.remDuplBias, void (0), false);
+						const input = Input.string('string', properties['sortBias'][1], 'Enter TF expression for track selection when finding duplicates:\n\nOutput must be numbers separated by \'|\'.\nHigher valued tracks will be preferred.\n\n\'DEFAULT\' restores default setting.', sbd.name + ': Duplicates selection bias', globQuery.remDuplBias, void (0), false, properties.sortBias[3]);
 						if (input === null) { return; }
-						properties.sortBias[1] = input.toUpperCase() === 'DEFAULT'
-							? properties.sortBias[3]
-							: input;
+						properties.sortBias[1] = input;
 						overwriteProperties(properties); // Updates panel
 					}, flags: Object.hasOwn(recipe, 'sortBias') || !isEnabled ? MF_GRAYED : MF_STRING
 				});
@@ -1275,11 +1266,9 @@ function createConfigMenu(parent) {
 						const currValue = options.some((opt) => opt.tf === properties.smartShuffleSortBias[1])
 							? shuffleBiasTf(properties.smartShuffleSortBias[1])
 							: properties.smartShuffleSortBias[1];
-						const input = Input.string('string', currValue, 'Enter TF expression:\n\n\'DEFAULT\' restores default setting.', sbd.name + ': Smart Shuffle sorting bias', shuffleBiasTf('rating'));
+						const input = Input.string('string', currValue, 'Enter TF expression:\n\n\'DEFAULT\' restores default setting.', sbd.name + ': Smart Shuffle sorting bias', shuffleBiasTf('rating'), void (0), void (0), properties.smartShuffleSortBias[3]);
 						if (input === null) { return; }
-						properties.smartShuffleSortBias[1] = input.toUpperCase() === 'DEFAULT'
-							? properties.smartShuffleSortBias[3]
-							: input;
+						properties.smartShuffleSortBias[1] = input;
 						overwriteProperties(properties); // Updates panel
 					}, flags: Object.hasOwn(recipe, 'smartShuffleSortBias') ? MF_GRAYED : MF_STRING
 				});

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/05/26
+//10/09/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, configMenu:readable, specialMenu:readable, deferFunc:readable, menu_propertiesBack:readable, createSmartShuffleMenu:readable */
 
@@ -183,11 +183,9 @@
 							menu.newEntry({
 								menuName, entryText, func: () => {
 									const example = '["GENRE","GENRE2"]';
-									const input = Input.json('array strings', JSON.parse(menu_properties[key][1]), 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example + (info[i] ? info[i] : ''), sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true);
+									const input = Input.json('array strings', JSON.parse(menu_properties[key][1]), 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example + (info[i] ? info[i] : ''), sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(menu_properties[key][3]));
 									if (input === null) { return; }
-									menu_properties[key][1] = input.length === 1 && input[0].toUpperCase() === 'DEFAULT'
-										? menu_properties[key][3]
-										: JSON.stringify(input);
+									menu_properties[key][1] = JSON.stringify(input);
 									if (hook) { hook(key, i, menu_properties); }
 									overwriteMenuProperties(); // Updates panel
 								}, flags: (flag[i] === void (0) ? false : flag[i]) ? MF_GRAYED : MF_STRING
