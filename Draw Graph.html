@@ -1,4 +1,4 @@
-<!DOCTYPE html> <!-- 11/08/25 -->
+<!DOCTYPE html> <!-- 11/09/26 -->
 <html>
 
 <head>
@@ -358,7 +358,7 @@
 							}
 							if (link.data.weight !== undefined && link.data.weight !== null) {
 								<!-- linkDistance = link.data.weight; -->
-								const { distance, influence } = calcGraphDistance(graph, link.fromId, link.toId, true, influenceMethod);
+								const { distance, influence } = calcGraphDistance(graph, link.fromId, link.toId, influenceMethod);
 								linkDistance = Math.round(distance - influence);
 							}
 							count++;
@@ -382,7 +382,7 @@
 				let borderColor = '#9b9b9b';
 				let text = '';
 				let textSize = '1.6vmin';
-				const [distance, influence] = calcGraphDistance(graph, fromNode.id, toNode.id, true, influenceMethod);
+				const {distance, influence} = calcGraphDistance(graph, fromNode.id, toNode.id, influenceMethod);
 				const linkDistance = Math.round(distance - influence);
 				text += '<br>Selected node: <span style="background:' + bgcolor + ';color:' + textColor + ';border: 1px dashed ' + borderColor + ';">&nbsp;' + toNode.id + '&nbsp;</span>';
 				text += '<br><span style="font-size: ' + textSize + ';">Distance: &nbsp;' + linkDistance + '</span>'
