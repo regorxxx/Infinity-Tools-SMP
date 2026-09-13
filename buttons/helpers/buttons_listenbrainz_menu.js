@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 //30/08/26
 
 /* exported listenBrainzMenu */

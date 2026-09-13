@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 //27/04/26
 
 /* exported wrappedMenu */
