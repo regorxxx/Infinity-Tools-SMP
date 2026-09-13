@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 //03/06/26
 
 /* exported AutoBackup */

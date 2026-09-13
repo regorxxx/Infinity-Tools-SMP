@@ -1,4 +1,4 @@
-/*! @ryanmorr/fastmap v0.1.2 | https://github.com/ryanmorr/fastmap */
+﻿/*! @ryanmorr/fastmap v0.1.2 | https://github.com/ryanmorr/fastmap */
 /* global module:readable, define:readable, global:readable, require:readable */
 /* exported module, exports, define*/
 

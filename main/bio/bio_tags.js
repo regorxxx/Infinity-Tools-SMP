@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 //29/05/26
 
 /* exported lastfmListeners */
