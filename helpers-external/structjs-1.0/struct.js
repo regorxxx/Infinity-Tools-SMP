@@ -1,4 +1,4 @@
-/*eslint-env es6, node*/
+﻿/*eslint-env es6, node*/
 "use strict"
 const rechk = /^([<>])?(([1-9]\d*)?([xcbB?hHiIfdsp]))*$/;
 const refmt = /([1-9]\d*)?([xcbB?hHiIfdsp])/g;

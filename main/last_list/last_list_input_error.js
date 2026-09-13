@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 //07/05/24
 
 /* exported InputError */

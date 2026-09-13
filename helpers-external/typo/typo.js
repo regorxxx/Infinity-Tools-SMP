@@ -1,4 +1,4 @@
-/* globals chrome: false */
+﻿/* globals chrome: false */
 /* globals __dirname: false */
 /* globals require: false */
 /* globals Buffer: false */

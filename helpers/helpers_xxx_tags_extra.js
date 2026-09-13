@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 //07/05/26
 
 /* exported writeSimilarArtistsTags, updateSimilarDataFile, mergeSimilarDataFromFiles */

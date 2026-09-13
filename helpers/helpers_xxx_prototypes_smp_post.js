@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 //03/09/26
 
 /* global removeEventListenerSelf:readable */

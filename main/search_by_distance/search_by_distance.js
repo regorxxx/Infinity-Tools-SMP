@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 //24/08/26
 var version = '8.0.0'; // NOSONAR [shared on files]
 
