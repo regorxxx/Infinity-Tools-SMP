@@ -14,11 +14,13 @@
 ## [Unreleased][]
 ### Added
 ### Changed
+- UI: support for D2D draw mode has been changed at the properties panel to ('- Draw mode: GDI (0), D2D (1)'). After script update, it will need to be set again if desired.
 - UI: Added support for native methods to run CMD tools while using JSplitter, which avoids creating new CMD windows. For ex. for button "Utils\Checksum".
 - Buttons: multiple improvements to button "Utils\Checksum" regarding UI, popups and error listing.
 - Helpers: updated helpers.
 ### Removed
 ### Fixed
+- Music Map: multiple fixes to Draw Graph.html browser rendering.
 - Fixed UTF-8 script files without BOM not being properly recognized on windows.
 
 ## [2.1.1] - 2026-08-26

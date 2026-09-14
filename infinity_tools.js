@@ -1,5 +1,5 @@
 ﻿'use strict';
-//26/08/26
+//14/09/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -10,10 +10,10 @@
 // eslint-disable-next-line no-unused-vars
 var bLoadTags = true; // NOSONAR
 
-if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '2.1.1', features: { drag_n_drop: false } }); }
+if (!window.ScriptInfo.PackageId) { window.DefineScript('Infinity-Tools-SMP', { author: 'regorxxx', version: '2.2.0', features: { drag_n_drop: false } }); }
 
 // GDI/D2D draw mode
-window.DrawMode = Math.max(Math.min(window.GetProperty('bar.Draw mode: GDI (0), D2D (1)', 0), 1), 0);
+if (typeof window.DrawMode !== 'undefined') { window.DrawMode = Math.max(Math.min(window.GetProperty('- Draw mode: GDI (0), D2D (1)', 0), 1), 0); }
 
 {
 	[
@@ -52,7 +52,7 @@ globProfiler.Print('helpers');
 checkCompatible();
 
 let barProperties = {
-	drawMode: ['Draw mode: GDI (0), D2D (1)', 0, { func: isInt, range: [[0,1]] }],
+	drawMode: ['- Draw mode: GDI (0), D2D (1)', 0, { func: isInt, range: [[0,1]] }],
 	name: ['Name of config json file', 'buttons_' + randomString(5), { func: isString }],
 	toolbarColor: ['Toolbar color', -1, { func: isInt }],
 	textColor: ['Buttons\' text color', -1, { func: isInt }],
