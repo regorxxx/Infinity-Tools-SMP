@@ -18,6 +18,7 @@
 - Helpers: updated helpers.
 ### Removed
 ### Fixed
+- UI: fixed icons not being properly drawn for text colors different than black or white in some cases. Bug introduced at [v2.1.0](#210---2026-08-24). See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087037.html#msg1087037).
 
 ## [2.2.0] - 2026-09-14
 ### Added

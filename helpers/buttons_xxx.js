@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/07/26
+//15/09/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -652,7 +652,7 @@ function ThemedButton({
 							const iconGr = iconImage.GetGraphics();
 							iconGr.FillSolidRect(0, 0, iconImage.Width, iconImage.Height, iconColor);
 							iconImage.ReleaseGraphics(iconGr);
-							let iconMask = gdi.Image(iconCalculated.replace(/(icons\\.{1,255})\.png$/i, '$1_mask.$2'));
+							let iconMask = gdi.Image(iconCalculated.replace(/(icons\\.{1,255})\.(png|webp|tiff)$/i, '$1_mask.$2'));
 							if (iconMask) {
 								iconMask = iconMask.Resize(iconWidthCalculated, iconHeightCalculated, InterpolationMode.NearestNeighbor);
 								iconImage.ApplyMask(iconMask);
