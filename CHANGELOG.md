@@ -15,6 +15,7 @@
 ## [Unreleased][]
 ### Added
 ### Changed
+- UI: after changing buttons text color, a popup will ask to adjust active button color based on it.
 - Helpers: updated helpers.
 ### Removed
 ### Fixed

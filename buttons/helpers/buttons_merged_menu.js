@@ -1,5 +1,5 @@
 ﻿'use strict';
-//12/06/26
+//15/09/26
 
 /* exported createButtonsMenu, onRbtnUpImportSettings */
 
@@ -16,7 +16,7 @@ include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global findRecursiveFile:readable, _open:readable, _isFile:readable, utf8:readable, _save:readable, _isFolder:readable, _createFolder:readable, WshShell:readable, _explorer:readable, getFiles:readable, _moveFile:readable, popup:readable */
 include('..\\..\\helpers\\helpers_xxx_UI.js');
-/* global RGBA:readable, toRGB:readable, _scale:readable */
+/* global RGBA:readable, toRGB:readable, _scale:readable, lightenColor:readable */
 include('..\\..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\..\\helpers\\helpers_xxx_export.js');
@@ -258,6 +258,10 @@ function createButtonsMenu(name) {
 					barProperties.textColor[1] = utils.ColourPicker(window.ID, barProperties.textColor[1]);
 					console.log('Toolbar (' + window.Name + '): Selected color ->\n\t Android: ' + barProperties.textColor[1] + ' - RGB: ' + Chroma(barProperties.textColor[1]).rgb());
 					buttonsBar.config.textColor = barProperties.textColor[1]; // buttons_xxx.js
+				}
+				const answer = WshShell.Popup('Adjust active button color?\n\nThis is a highlight color applied to tools which are active on background.', 0, 'Toolbar', popup.question + popup.yes_no);
+				if (answer === popup.yes) {
+					buttonsBar.config.activeColor = barProperties.activeColor[1] = lightenColor(buttonsBar.config.textColor, 10); // buttons_xxx.js
 				}
 				forEachButton((button) => { button.clearIconCache(); });
 				overwriteProperties(barProperties);
