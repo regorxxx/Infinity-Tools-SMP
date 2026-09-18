@@ -1,5 +1,5 @@
 ﻿'use strict';
-//15/09/26
+//18/09/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -1357,7 +1357,7 @@ addEventListener('on_key_up', (k) => {
 });
 
 addEventListener('on_focus', (is_focused) => {
-	window.IsFocused = is_focused;
+	if (!Object.hasOwn(window, 'IsFocused')) { window.IsFocused = is_focused; }
 	if (!is_focused) { buttonsBar.keyDown.clear(); }
 });
 
