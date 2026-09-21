@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/07/26
+//21/09/26
 
 /* exported createFpMenuLeft */
 
@@ -10,7 +10,7 @@ include('..\\..\\helpers\\buttons_xxx.js');
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global _isFile:readable, WshShell:readable, popup:readable, _deleteFile:readable, _save:readable, _saveSplitJson:readable, utf8:readable, _jsonParseFile:readable , _jsonParseFileSplit:readable, _copyDependencies:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global round:readable, roughSizeOfObject:readable, SetReplacer:readable, _b:readable, _p:readable */
+/* global round:readable, roughSizeOfObject:readable, SetReplacer:readable, _b:readable */
 include('..\\..\\helpers\\helpers_xxx_properties.js');
 /* global overwriteProperties:readable */
 include('..\\..\\helpers\\menu_xxx.js');
@@ -252,7 +252,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 						libraryMap = chromaPrintUtils.libraryMap({ toHandleList, bReverse: false });
 						_save(databaseIdxPath, JSON.stringify(Object.entries(libraryMap)));
 						libraryMap = null;
-						reverseMap = await chromaPrintUtils.reverseIndexingIter({ toHandleList, bReadFiles: ppt.bReadFiles[1], ToEntries: true });
+						reverseMap = await chromaPrintUtils.reverseIndexingIter({ toHandleList, bReadFiles: ppt.bReadFiles[1], bToEntries: true });
 					}
 					if (reverseMap) {
 						// Split file if needed
@@ -260,9 +260,9 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 						// File size is usually 1.35 smaller than JS ram usage
 						const fileSize = round(roughSizeOfObject(reverseMap) / 1024 ** 2 / 1.35, 1);
 						let bDone;
-						if (fileSize > 20) {
+						if (fileSize > 5) {
 							const dataLen = reverseMap.length;
-							const newLen = round(dataLen / fileSize * 20, 0);
+							const newLen = round(dataLen / fileSize * 5, 0);
 							bDone = _saveSplitJson(databasePath, reverseMap, SetReplacer, void (0), newLen);
 						} else {
 							bDone = _save(databasePath, JSON.stringify(reverseMap, SetReplacer));

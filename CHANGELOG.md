@@ -16,10 +16,13 @@
 ### Added
 ### Changed
 - Fingerprint tools: improved console logging, reducing spamming and adding errors on file saving (except OOM errors).
+- Fingerprint tools: warns when foobar2000 is not configured to read the full fingerprint tag on ChromaPrint fast entry, previously was only done on the standard one.
 - UI: after changing buttons text color, a popup will ask to adjust active button color based on it.
 - Helpers: updated helpers.
 ### Removed
 ### Fixed
+- Fingerprint tools: fixed error related to tag matching and ffprobe usage ('Read directly from files' option).
+- Fingerprint tools: reduced database split size to avoid OOM errors.
 - UI: fixed icons not being properly drawn for text colors different than black or white in some cases. Bug introduced at [v2.1.0](#210---2026-08-24). See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087037.html#msg1087037).
 - UI: fixed incompatibility with JSplitter v4.2.0+ or v3.9.0+.
 

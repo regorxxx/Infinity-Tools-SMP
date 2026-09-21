@@ -1,12 +1,12 @@
 ﻿'use strict';
-//07/05/26
+//21/09/26
 
 include('..\\..\\helpers\\helpers_xxx.js');
-/* global folders:readable, globTags:readable,  */
+/* global folders:readable, globTags:readable, isFoobarV2:readable  */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global getHandleListTagsV2:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global round:readable, require:readable, range:readable, _p:readable */
+/* global round:readable, require:readable, range:readable, _p:readable, _t:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global _isFile:readable, _deleteFile:readable, _jsonParseFileSplit:readable, _jsonParseFile:readable, _jsonParseFileCheck:readable, utf8:readable, _runHidden:readable */
 include('..\\..\\helpers-external\\chromaprint-utils-js\\chromaprint-utils-js.js');
@@ -158,7 +158,7 @@ chromaPrintUtils.compareFingerprints = async function compareFingerprints({
 };
 
 // Checks provided tracks' fingerprints against a rounded-fp database. Then performs full comparison against the found partial matches.
-chromaPrintUtils.compareFingerprintsFilter = async function compareFingerprints({
+chromaPrintUtils.compareFingerprintsFilter = async function compareFingerprintsFilter({
 	fromHandleList = plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
 	toHandleList = fb.GetLibraryItems(),
 	tagName = globTags.acoustidFP,
@@ -178,9 +178,14 @@ chromaPrintUtils.compareFingerprintsFilter = async function compareFingerprints(
 	const profile = bProfile ? new FbProfiler('ChromaPrint search fingerprint') : null;
 	// Get Tags
 	const fromTags = (bReadFiles
-		? await ffprobeUtils.getTags(fromHandleList, tagName).then((tags) => { return tags.map((obj) => [obj[tagName]]); })
+		? await ffprobeUtils.getTags(fromHandleList, tagName).then((tags) => tags.map((obj) => [obj[tagName]]))
 		: getHandleListTagsV2(fromHandleList, [tagName], { bMerged: true, splitBy: null })
 	).map((array) => array.flatMap((item) => item.split(',')).map((item) => item ? Number(item) : void (0)).filter(Boolean));
+	// Safecheck for improper set Library
+	if (fromTags.every((val) => !val.length)) {
+		fb.ShowPopupMessage('Selection has no ChromaPrint fingerprint tags or Foobar2000 has not be configured to read the full tag (on v1.6.X).\n\nEither configure \'LargeFieldsConfig.txt\' properly or use \'Read directly from files\' option.', 'Fingerprint Tagger');
+		return null;
+	}
 	// Get reverse map of tags
 	let data = null;
 	if (_isFile(reverseDbPath) || _isFile(reverseDbPath.replace('.json', '0.json'))) {
@@ -319,6 +324,9 @@ chromaPrintUtils.calculateFingerprints = function calculateFingerprints({
 			const path = handle.Path;
 			if (_isFile(path)) {
 				if (bDebug) { console.log(fpcalcPath + ' -raw -json "' + path + '">"' + fpcalcJSON + '"'); }
+				utils.Run
+					? utils.Run(batFile, [path, fpcalcJSON, fpcalcPath], void (0), void (0), 0, true)
+					: _runHidden(batFile, path, fpcalcJSON, fpcalcPath);
 				_runHidden(batFile, path, fpcalcJSON, fpcalcPath);
 				const data = _jsonParseFileCheck(fpcalcJSON);
 				if (data && Object.hasOwn(data, 'fingerprint')) {
@@ -361,9 +369,9 @@ chromaPrintUtils.libraryMap = function libraryMap({
 }) {
 	const libMap = bFastMap ? new FastMap() : new Map();
 	if (bReverse) {
-		toHandleList.GetLibraryRelativePaths().forEach((path, idx) => { libMap.set(path, idx); });
+		toHandleList.GetLibraryRelativePaths().forEach((path, idx) => { libMap.set(utils.MD5(path), idx); });
 	} else {
-		toHandleList.GetLibraryRelativePaths().forEach((path, idx) => { libMap.set(idx, path); });
+		toHandleList.GetLibraryRelativePaths().forEach((path, idx) => { libMap.set(idx, utils.MD5(path)); });
 	}
 	return libMap;
 };
@@ -381,16 +389,20 @@ chromaPrintUtils.reverseIndexingIter = async function reverseIndexingIter({
 }) {
 	const profile = bProfile ? new FbProfiler('ChromaPrint fingerprint') : null;
 	const toHandleListArr = toHandleList.Convert();
-	const totalTracks = toHandleListArr.length, numTracks = (bReadFiles ? 100 : 10000), maxCount = Math.ceil(totalTracks / numTracks);
+	const totalTracks = toHandleListArr.length, numTracks = (bReadFiles ? 50 : 10000), maxCount = Math.ceil(totalTracks / numTracks);
 	let reverseMap = bFastMap ? new FastMap() : new Map();
 	let prevProgress = -1;
+	const tf = fb.TitleFormat(_t(tagName));
 	for (let count = 0; count < maxCount; count++) {
 		const currOffset = count * numTracks;
 		const currMax = (count + 1) === maxCount ? totalTracks : currOffset + numTracks;
 		const toTags = bReadFiles
 			? await ffprobeUtils.getTags(new FbMetadbHandleList(toHandleListArr.slice(currOffset, currMax)), tagName)
-				.then((tags) => { return tags.map((obj) => [obj[tagName]]); })
-			: getHandleListTagsV2(new FbMetadbHandleList(toHandleListArr.slice(currOffset, currMax)), [tagName], { bMerged: true, splitBy: null });
+				.then((tags) => tags.map((obj) => [obj[tagName]]))
+				.catch((error) => console.log(error.message))
+			: window.Parent === 'foo_uie_jsplitter' && isFoobarV2
+				? toHandleListArr.slice(currOffset, currMax).map((h) => [tf.EvalWithMetadb(h, true)])
+				: getHandleListTagsV2(new FbMetadbHandleList(toHandleListArr.slice(currOffset, currMax)), [tagName], { bMerged: true, splitBy: null });
 		this.reverseIndexing({ toTags, prevMap: reverseMap, currOffset, bFastMap, reverseIdxLen, tagLen, bProfile: false, bConsole: false });
 		const progress = Math.round(currMax / totalTracks * 10) * 10;
 		if (progress > prevProgress) { prevProgress = progress; console.log('Creating fingerprint database ' + progress + '%.'); }

@@ -1,16 +1,17 @@
-﻿'use strict';
-//17/04/26
+'use strict';
+//21/09/26
 
 /* exported ffprobeUtils */
 
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global globTags:readable, folders:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global _isFile:readable, WshShell:readable */
+/* global _isFile:readable, WshShell:readable, _jsonParse */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global _q:readable */
 
 const ffprobeUtils = {
+	omitFiles: /\.(iso|zip|rar|7z)$/i,
 	paths: [
 		folders.binaries + 'ffprobe\\ffprobe_32.exe',
 		folders.xxx + 'helpers-external\\ffprobe\\ffprobe_32.exe',
@@ -38,24 +39,31 @@ const ffprobeUtils = {
 		} else { this.path = null; }
 		return this.path;
 	},
+	isCompatibleFile: function isCompatibleFile(file) {
+		return !this.omitFiles.test(file);
+	},
 	getTagsFromFile: function getTagsFromFile(file, tagName = globTags.acoustidFP, undefinedVal = '') {
 		if (!this.path && !this.getPath()) { return Promise.reject(new Error('ffprobe executable not found')); }
-		return this.exec(_q(this.path) + ' -v quiet -print_format json -show_entries format_tags=' + tagName + ' -i ' + _q(file))
-			.then((resolve) => {
-				const data = resolve ? JSON.parse(resolve) : null;
-				const tags = data && data.format && data.format.tags ? data.format.tags : { [tagName]: undefinedVal };
-				return tags;
-			}, (error) => {
-				return Promise.reject(error); // NOSONAR
-			});
+		if (!this.isCompatibleFile(file)) { return  { [tagName]: undefinedVal }; }
+		return (
+			utils.RunCmdAsyncV2
+				? utils.RunCmdAsyncV2(this.path, ' -v quiet -print_format json -show_entries format_tags=' + tagName + ' -i ' + _q(file))
+				: this.exec(_q(this.path) + ' -v quiet -print_format json -show_entries format_tags=' + tagName + ' -i ' + _q(file))
+		).then((resolve) => {
+			const data = resolve ? _jsonParse(resolve) : null;
+			const tags = data && data.format && data.format.tags
+				? { [tagName]: Object.values(data.format.tags)[0] || undefinedVal } // ffprobe tag name may not match original one regarding casing
+				: { [tagName]: undefinedVal };
+			return tags;
+		}, () => {
+			throw new Error('Failed file: ' + file);
+		});
 	},
 	getTags: function getTags(handleList, tagName = globTags.acoustidFP) {
 		if (!this.path && !this.getPath()) { return Promise.reject(new Error('ffprobe executable not found')); }
 		const paths = handleList.Convert().map((h) => h.Path);
 		const tags = paths.map((path) => this.getTagsFromFile(path, tagName));
-		return Promise.all(tags).then((values) => {
-			return values;
-		});
+		return Promise.all(tags);
 	},
 	exec: function exec(command) {
 		const execObj = WshShell.Exec(command);
