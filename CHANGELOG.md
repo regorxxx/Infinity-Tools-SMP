@@ -15,6 +15,7 @@
 ## [Unreleased][]
 ### Added
 ### Changed
+- Fingerprint tools: improved console logging, reducing spamming and adding errors on file saving (except OOM errors).
 - UI: after changing buttons text color, a popup will ask to adjust active button color based on it.
 - Helpers: updated helpers.
 ### Removed

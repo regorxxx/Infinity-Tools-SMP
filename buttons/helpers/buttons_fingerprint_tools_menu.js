@@ -206,8 +206,8 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 							const oldKeys = new Set(Object.values(oldData));
 							const newKeys = new Set(Object.keys(libraryMap));
 							const toAdd = newKeys.difference(oldKeys);
+							console.log('ChromaPrint idx adding: ' + toAdd.size + ' items');
 							toAdd.forEach((key) => {
-								console.log('ChromaPrint idx adding: ' + key);
 								toAddHandleList.Add(toHandleList[libraryMap.get(key)]);
 								oldData.set(++idxCount, key); // idx must be remapped to new positions
 							});
@@ -215,8 +215,8 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 								if (!newKeys.has(value)) { toDeleteIdx.add(Number(key)); }
 							});
 							if (toDeleteIdx.size) {
+								console.log('ChromaPrint idx deleting:\n\t' + toDeleteIdx.size + ' items');
 								toDeleteIdx.forEach((key) => {
-									console.log('ChromaPrint idx deleting: ' + _p(key) + ' ' + oldData.get(key));
 									oldData.delete(key);
 								});
 							}
@@ -259,13 +259,15 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 						// Calculate in Mb, leave some margin before reaching 110 Mb, since size is an estimation
 						// File size is usually 1.35 smaller than JS ram usage
 						const fileSize = round(roughSizeOfObject(reverseMap) / 1024 ** 2 / 1.35, 1);
+						let bDone;
 						if (fileSize > 20) {
 							const dataLen = reverseMap.length;
 							const newLen = round(dataLen / fileSize * 20, 0);
-							_saveSplitJson(databasePath, reverseMap, SetReplacer, void (0), newLen);
+							bDone = _saveSplitJson(databasePath, reverseMap, SetReplacer, void (0), newLen);
 						} else {
-							_save(databasePath, JSON.stringify(reverseMap, SetReplacer));
+							bDone = _save(databasePath, JSON.stringify(reverseMap, SetReplacer));
 						}
+						if (!bDone) { console.log('Error saving database files'); }
 						reverseMap = null; // Free memory immediately, these are huge
 					}
 					ppt.databaseHash[1] = newhash;
@@ -370,6 +372,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 	}
 	if (databaseHash !== -1) {
 		let bRecreate = popup.no;
+		const toHandleList = fb.GetLibraryItems();
 		// Missing database?
 		if (!_isFile(databasePath) && !_isFile(databasePathSplit)) {
 			ppt.databaseHash[1] = -1;
@@ -377,7 +380,7 @@ function createFpMenuLeft({ bSimulate = false } = {}) {
 			bRecreate = WshShell.Popup('ChromaPrint database file is missing.\nRecreate it?', 0, 'Fingerprint Tools', popup.question + popup.yes_no);
 		}
 		// Check database is up to date and ask to recreate it otherwise
-		else if (chromaprintDatabaseHash(fb.GetLibraryItems()) !== databaseHash) {
+		else if (chromaprintDatabaseHash(toHandleList) !== databaseHash) {
 			bRecreate = WshShell.Popup('Previous ChromaPrint database may not be up to date.\nRecreate it?', 0, 'Fingerprint Tools', popup.question + popup.yes_no);
 		}
 		// Call the entry to recreate it directly without any more questions and continue with the menu
