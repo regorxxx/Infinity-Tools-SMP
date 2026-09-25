@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/09/26
+//25/09/26
 
 /* exported createButtonsMenu, onRbtnUpImportSettings */
 
@@ -259,11 +259,11 @@ function createButtonsMenu(name) {
 					console.log('Toolbar (' + window.Name + '): Selected color ->\n\t Android: ' + barProperties.textColor[1] + ' - RGB: ' + Chroma(barProperties.textColor[1]).rgb());
 					buttonsBar.config.textColor = barProperties.textColor[1]; // buttons_xxx.js
 				}
+				forEachButton((button) => button.clearIconCache());
 				const answer = WshShell.Popup('Adjust active button color?\n\nThis is a highlight color applied to tools which are active on background.', 0, 'Toolbar', popup.question + popup.yes_no);
 				if (answer === popup.yes) {
 					buttonsBar.config.activeColor = barProperties.activeColor[1] = lightenColor(buttonsBar.config.textColor, 10); // buttons_xxx.js
 				}
-				forEachButton((button) => { button.clearIconCache(); });
 				overwriteProperties(barProperties);
 				window.Repaint();
 			}
@@ -392,6 +392,7 @@ function createButtonsMenu(name) {
 				}
 				overwriteProperties(barProperties);
 				buttonsBar.config.partAndStateID = barProperties.bBgButtons[1] ? 1 : 6; // buttons_xxx.js
+				forEachButton((button) => button.clearIconCache());
 				window.Repaint();
 			}
 		});
@@ -486,6 +487,7 @@ function createButtonsMenu(name) {
 				buttonsBar.config.animationColors = buttonsBar.config.default.animationColors;
 				buttonsBar.config.bToolbar = buttonsBar.config.default.bToolbar;
 				overwriteProperties(barProperties);
+				forEachButton((button) => button.clearIconCache());
 				window.Repaint();
 			}
 		});
