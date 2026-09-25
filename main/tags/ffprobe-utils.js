@@ -1,5 +1,5 @@
 'use strict';
-//21/09/26
+//25/09/26
 
 /* exported ffprobeUtils */
 
@@ -44,20 +44,17 @@ const ffprobeUtils = {
 	},
 	getTagsFromFile: function getTagsFromFile(file, tagName = globTags.acoustidFP, undefinedVal = '') {
 		if (!this.path && !this.getPath()) { return Promise.reject(new Error('ffprobe executable not found')); }
-		if (!this.isCompatibleFile(file)) { return  { [tagName]: undefinedVal }; }
-		return (
-			utils.RunCmdAsyncV2
-				? utils.RunCmdAsyncV2(this.path, ' -v quiet -print_format json -show_entries format_tags=' + tagName + ' -i ' + _q(file))
-				: this.exec(_q(this.path) + ' -v quiet -print_format json -show_entries format_tags=' + tagName + ' -i ' + _q(file))
-		).then((resolve) => {
-			const data = resolve ? _jsonParse(resolve) : null;
-			const tags = data && data.format && data.format.tags
-				? { [tagName]: Object.values(data.format.tags)[0] || undefinedVal } // ffprobe tag name may not match original one regarding casing
-				: { [tagName]: undefinedVal };
-			return tags;
-		}, () => {
-			throw new Error('Failed file: ' + file);
-		});
+		if (!this.isCompatibleFile(file)) { return { [tagName]: undefinedVal }; }
+		return this.exec(this.path, '-v quiet -print_format json -show_entries format_tags=' + tagName + ' -i ' + _q(file))
+			.then((resolve) => {
+				const data = resolve ? _jsonParse(resolve) : null;
+				const tags = data && data.format && data.format.tags
+					? { [tagName]: Object.values(data.format.tags)[0] || undefinedVal } // ffprobe tag name may not match original one regarding casing
+					: { [tagName]: undefinedVal };
+				return tags;
+			}, () => {
+				throw new Error('Failed file: ' + file);
+			});
 	},
 	getTags: function getTags(handleList, tagName = globTags.acoustidFP) {
 		if (!this.path && !this.getPath()) { return Promise.reject(new Error('ffprobe executable not found')); }
@@ -65,19 +62,23 @@ const ffprobeUtils = {
 		const tags = paths.map((path) => this.getTagsFromFile(path, tagName));
 		return Promise.all(tags);
 	},
-	exec: function exec(command) {
-		const execObj = WshShell.Exec(command);
-		return new Promise((res, rej) => {
-			setTimeout(() => {
-				switch (execObj.Status) {
-					case 2: rej(execObj.StdErr.ReadAll()); break;
-					case 1:
-					default: { // Buffer gets broken with large tags and have to force reading it
-						const data = execObj.StdOut.ReadAll();
-						if (data) { res(data); } else { rej(new Error('ffprobe failed reading data')); }
+	exec: function exec(command, args) {
+		if (utils.RunCmdAsyncV2) {
+			return utils.RunCmdAsyncV2(command, ' ' + args);
+		} else {
+			const execObj = WshShell.Exec(_q(command) + ' ' + args);
+			return new Promise((res, rej) => {
+				setTimeout(() => {
+					switch (execObj.Status) {
+						case 2: rej(execObj.StdErr.ReadAll()); break;
+						case 1:
+						default: { // Buffer gets broken with large tags and have to force reading it
+							const data = execObj.StdOut.ReadAll();
+							if (data) { res(data); } else { rej(new Error('ffprobe failed reading data')); }
+						}
 					}
-				}
-			}, 0);
-		});
+				}, 0);
+			});
+		}
 	}
 };

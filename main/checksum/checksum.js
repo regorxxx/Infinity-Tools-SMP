@@ -1,5 +1,5 @@
 ﻿'use strict';
-//01/09/26
+//25/09/26
 
 /* exported checksumUtils */
 
@@ -9,11 +9,6 @@ include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global _q:readable, dateFormatter:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
 /* global _isFile:readable, _exec:readable, _recycleFile:readable, _resolvePath:readable, _save:readable, _jsonParse:readable, _open:readable, utf8:readable */
-if (utils.RunCmdAsync) {
-	include('..\\..\\helpers\\callbacks_xxx.js');
-	include('..\\..\\helpers\\helpers_xxx_prototypes_smp_post.js');
-	/* utils.RunCmdAsyncV2 */
-}
 
 const checksumUtils = {
 	bRunning: false,
@@ -136,11 +131,7 @@ const checksumUtils = {
 				const bFound = _isFile(filePath);
 				if (bFound && !bOverwrite) { return { path, fileName, checksum: null, overwritten: false, saved: false }; }
 				const overwritten = bFound ? _recycleFile(filePath) : false;
-				return (
-					utils.RunCmdAsyncV2
-						? utils.RunCmdAsyncV2(_resolvePath(binPath), ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
-						: _exec(_resolvePath(binPath) + ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
-				)
+				return _exec(_resolvePath(binPath), args.replaceAll('%1', path).replaceAll('%2', filePath))
 					.then(() => {
 						if (bAnimation) { parent.switchAnimation(animId, false); }
 						if (_isFile(filePath)) {
@@ -194,11 +185,7 @@ const checksumUtils = {
 				if (this.bAbort) { return { path, file, pass: false, errors: null }; }
 				const bFound = _isFile(filePath);
 				if (!bFound) { return { path, file, pass: false, errors: null }; }
-				return (
-					utils.RunCmdAsyncV2
-						? utils.RunCmdAsyncV2(_resolvePath(binPath), ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
-						: _exec(_resolvePath(binPath) + ' ' + args.replaceAll('%1', path).replaceAll('%2', filePath))
-				)
+				return _exec(_resolvePath(binPath), args.replaceAll('%1', path).replaceAll('%2', filePath))
 					.then((out) => {
 						if (bAnimation) { parent.switchAnimation(animId, false); }
 						if (out) { out = out.trim(); }

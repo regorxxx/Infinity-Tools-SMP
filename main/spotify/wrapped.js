@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//30/08/26
+//25/09/26
 
 /* exported wrapped */
 
@@ -17,7 +17,7 @@ include('..\\..\\helpers\\helpers_xxx_statistics.js');
 include('..\\..\\helpers\\helpers_xxx_tags.js');
 /* global queryCombinations:readable, queryJoin:readable, sanitizeQueryVal:readable, sanitizeTagIds:readable, sanitizeTagValIds:readable, sanitizeTagTfo:readable */
 include('..\\..\\helpers\\helpers_xxx_web.js');
-/* global send:readable, downloadFile:readable */
+/* global send:readable, downloadFileV3:readable */
 include('..\\..\\helpers\\camelot_wheel_xxx.js');
 /* global camelotWheel:readable */
 include('..\\timeline\\timeline_helpers.js');
@@ -1901,6 +1901,7 @@ const wrapped = {
 		).Eval(true);
 		const files = getFiles(stubPath, new Set(imgAllowedExt));
 		if (files && files.length) { return Promise.resolve(files.shuffle()[0]); }
+		// TODO use downloader.getLastfmImgArtistList(artist).then((result) => result[0].url);
 		return this.settings.bOffline
 			? Promise.resolve(null)
 			: spotify.searchArtistInfo(artist)
@@ -2014,7 +2015,7 @@ const wrapped = {
 						data.artistImg = bRelative ? imgPath.replace(root, '') : imgPath;
 					} else { bFallback = true; }
 				} else if (data.artistImg && !this.settings.bOffline) {
-					downloadFile(data.artistImg, imgPath, { timeout: 5, retry: 1 });
+					downloadFileV3(data.artistImg, imgPath, { timeout: 5, retry: 1 });
 					data.artistImg = bRelative ? imgPath.replace(root, '') : imgPath;
 				} else { bFallback = true; }
 				if (bFallback) { data.artistImg = (bRelative ? '' : root) + 'img\\fallback\\nocover.png'; }
@@ -2189,7 +2190,7 @@ const wrapped = {
 			(data) => {
 				if (data.img && !this.settings.bOffline) {
 					const imgPath = path + _asciify(sanitize(data.name)).replace(/ /g, '').slice(0, 10).toLowerCase() + '.jpg';
-					downloadFile(data.img, imgPath, { timeout: 5, retry: 1 });
+					downloadFileV3(data.img, imgPath, { timeout: 5, retry: 1 });
 					data.img = bRelative ? imgPath.replace(root, '') : imgPath;
 				} else {
 					data.img = (bRelative ? '' : root) + 'img\\fallback\\city.jpg';
