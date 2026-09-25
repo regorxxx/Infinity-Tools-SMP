@@ -1,5 +1,5 @@
 ﻿'use strict';
-//12/06/26
+//25/09/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -395,7 +395,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 				if (bar.bToolbar) { bar.toolbarColor = main; }
 				if (bar.textColor !== -1 && bar.bToolbar) {
 					bar.textColor = mostContrastColor(bar.toolbarColor).color;
-					forEachButton((button) => {	button.clearIconCache(); });
+					forEachButton((button) => button.clearIconCache());
 				}
 				if (bar.buttonColor !== -1) { bar.buttonColor = note; }
 				if (bar.hoverColor !== -1) { bar.hoverColor = mainAlt; }
