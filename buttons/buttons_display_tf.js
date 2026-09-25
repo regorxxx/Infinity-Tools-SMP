@@ -450,39 +450,40 @@ addButton({
 			},
 			get onClickOptions() {
 				const bLibraryTree = !!utils.GetPackageInfo('{E85C9EF0-778B-46DD-AF20-F4BE831360DD}');
+				const libraryTreeText = 'Specify Library-Tree-SMP panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-SMP and only works for panels within same JS host component.';
 				return [
 					{ text: 'None', func: null, bAvailable: true },
 					{ text: this.buttonsProperties.bPlaying[1] ? 'Show Now Playing / Selection' : 'Show Selection', func: this.showHandle, bAvailable: true },
 					{ text: 'Show Now / Prev. Playing', func: this.showHandleV2, bAvailable: true },
 					{
-						text: 'Show on Library-Tree-SMP', func: () => {
+						text: 'Show on Library Tree', func: () => {
 							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
-							['Library-Tree-SMP'].forEach((n) => window.NotifyOthers(n + ': show handle', { handle: this.handle(), window: panels }));
+							window.NotifyOthers('Library-Tree-SMP: show handle', { handle: this.handle(), window: panels });
 						},
 						input: () => {
-							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], 'Specify Library-Tree-SMP panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-v2.4.0.mod.11 or later and only works for panels within same JS host component.', 'Library-Tree-SMP panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
+							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], libraryTreeText, 'Library-Tree-SMP panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
 							if (panels === null) { return; }
 							this.buttonsProperties.onClickArg[1] = panels;
 						}, bAvailable: bLibraryTree
 					},
 					{
-						text: 'Quicksearch on Library-Tree-SMP', func: () => {
+						text: 'Quicksearch on Library Tree', func: () => {
 							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
-							['Library-Tree-SMP'].forEach((n) => window.NotifyOthers(n + ': quicksearch', { search: this.displayFunc(), window: panels }));
+							window.NotifyOthers('Library-Tree-SMP: quicksearch', { search: this.displayFunc(), window: panels });
 						},
 						input: () => {
-							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], 'Specify Library-Tree-SMP panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-v2.4.0.mod.11 or later and only works for panels within same JS host component.', 'Library-Tree-SMP panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
+							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], libraryTreeText, 'Library-Tree-SMP panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
 							if (panels === null) { return; }
 							this.buttonsProperties.onClickArg[1] = panels;
 						}, bAvailable: bLibraryTree
 					},
 					{
-						text: 'Search on Library-Tree-SMP', func: () => {
+						text: 'Search on Library Tree', func: () => {
 							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
-							['Library-Tree-SMP'].forEach((n) => window.NotifyOthers(n + ': search', { search: this.displayFunc(), window: panels }));
+							window.NotifyOthers('Library-Tree-SMP: search', { search: this.displayFunc(), window: panels });
 						},
 						input: () => {
-							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], 'Specify Library-Tree-SMP panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-v2.4.0.mod.11 or later and only works for panels within same JS host component.', 'Library-Tree-SMP panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
+							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], libraryTreeText, 'Library-Tree-SMP panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
 							if (panels === null) { return; }
 							this.buttonsProperties.onClickArg[1] = panels;
 						}, bAvailable: bLibraryTree
