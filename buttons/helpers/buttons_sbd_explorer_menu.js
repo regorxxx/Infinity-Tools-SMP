@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//27/09/26
 
 /* exported graphInfoMenu */
 
@@ -279,7 +279,7 @@ function graphInfoMenu() {
 							).difference(
 								new Set(music_graph_descriptors.replaceWithAlternativeTerms([node], true, true))
 							);
-							if (!similar.size) { fb.ShowPopupMessage('No results found.\n\nThis may happen if the selected genre/style is so specific/narraw that there is nothing similar to it.', playlistName); return; }
+							if (!similar.size) { fb.ShowPopupMessage('No results found.\n\nThis may happen if the selected genre/style is so specific/narrow that there is nothing similar to it, using non English values or not present on the map.', playlistName); return; }
 							const query = queryJoin(queryCombinations([...similar], entries.map((e) => e.tf || []).flat(Infinity).filter(Boolean), 'OR'), 'OR') || '';
 							const bShift = utils.IsKeyPressed(VK_SHIFT);
 							const bCtrl = utils.IsKeyPressed(VK_CONTROL);
