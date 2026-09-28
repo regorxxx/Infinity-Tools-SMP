@@ -387,9 +387,11 @@ function ThemedButton({
 		if (buttonsBar.config.textColor === -1 && (!buttonsBar.useThemeManager() || !bDrawBackground) && [buttonStates.down, buttonStates.hover].includes(state)) {
 			const hover = this.getHoverColor(state);
 			const text = window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text);
-			return invert(hover, true) === invert(text, true)
-				? invert(text, true)
-				: text;
+			return hover === -1
+				? text
+				: invert(hover, true) === invert(text, true)
+					? invert(text, true)
+					: text;
 		} else {
 			return buttonsBar.config.textColor === -1
 				? buttonsBar.useThemeManager() && bDrawBackground
