@@ -1,5 +1,5 @@
 ﻿'use strict';
-//22/05/26
+//27/09/26
 
 /*
 	Playback controls
@@ -50,24 +50,26 @@ buttonsBar.list.push(newButtonsProperties);
 		eventListeners: [],
 		setCallbacks: function (add) {
 			if (add) {
-				this.eventListeners.push(addEventListener('on_metadb_changed', (handleList) => {
-					const sel = this.getSelection();
-					if (!sel) { return false; }
-					sel.Sort();
-					sel.MakeIntersection(handleList);
-					if (sel.Count) { this.repaint(); }
-				}));
-				this.eventListeners.push(addEventListener('on_selection_changed', () => {
-					this.clearSelectionCache();
-					this.getSelection();
-					this.repaint();
-				}));
-				this.eventListeners.push(addEventListener('on_playback_stop', () => {
-					if (this.properties.bPlaying[1]) {
+				this.eventListeners.push(
+					addEventListener('on_metadb_changed', (handleList) => {
+						const sel = this.getSelection();
+						if (!sel) { return false; }
+						sel.Sort();
+						sel.MakeIntersection(handleList);
+						if (sel.Count) { this.repaint(); }
+					}),
+					addEventListener('on_selection_changed', () => {
 						this.clearSelectionCache();
+						this.getSelection();
 						this.repaint();
-					}
-				}));
+					}),
+					addEventListener('on_playback_new_track', () => {
+						if (this.properties.bPlaying[1]) {
+							this.clearSelectionCache();
+							this.repaint();
+						}
+					})
+				);
 			} else {
 				this.eventListeners.forEach((listener) => removeEventListener(listener.event, void (0), listener.id));
 			}
