@@ -1,5 +1,5 @@
 ﻿'use strict';
-//18/09/26
+//28/09/26
 
 /* exported ThemedButton, getUniquePrefix, addButton, addButtonSeparator, showButtonReadme, addButtonSpacer, addButtonNewLine */
 
@@ -43,7 +43,7 @@ buttonsBar.config = {
 	bToolbar: false, // Change this on buttons bars files to set the background color
 	textColor: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI : ColourTypeCUI).text),
 	buttonColor: -1,
-	activeColor: RGB(0, 163, 240),
+	activeColor: -1,
 	animationColors: [RGBA(10, 120, 204, 50), RGBA(199, 231, 255, 30)],
 	orientation: 'x',
 	textPosition: 'right',
@@ -401,6 +401,17 @@ function ThemedButton({
 		}
 	};
 
+	this.getActiveColor = function (state) {
+		const buttonColor = this.extractColor('active', state);
+		if (buttonColor !== null) { return buttonColor; }
+		const bDrawBackground = buttonsBar.config.partAndStateID === 1;
+		return buttonsBar.config.activeColor === -1
+			? buttonsBar.useThemeManager() && bDrawBackground
+				? utils.GetSysColour(14)
+				: window[(window.InstanceType === 1 ? 'GetColourDUI' : 'GetColourCUI')]((window.InstanceType === 1 ? ColourTypeDUI.highlight : ColourTypeCUI.active_item_frame))
+			: buttonsBar.config.activeColor;
+	};
+
 	this.drawButtonRect = function (gr, bDrawBackground) {
 		const arc = Math.min(3, (this.currW - 4) / 2, (this.currH - 2) / 4 - 2);
 		const x = this.currX + 1;
@@ -639,7 +650,7 @@ function ThemedButton({
 					? null
 					: iconCalculated.replace(/(icons\\.{1,255})\.png$/i, '$1_dark.$2');
 				const iconColor = this.active
-					? buttonsBar.config.activeColor
+					? this.getActiveColor(this.state)
 					: textColor;
 				const bMask = ![RGB(255, 255, 255), -1, RGB(0, 0, 0)].includes(iconColor);
 				const iconDarkMode = iconCalculatedDarkMode && !bMask
@@ -689,7 +700,7 @@ function ThemedButton({
 				if (this.active) { // Draw copy of icon in background blurred
 					iconImage = gdi.CreateImage(this.gFontIcon.Size, this.gFontIcon.Size);
 					const g = iconImage.GetGraphics();
-					g.DrawString(iconCalculated, this.gFontIcon, lightenColor(buttonsBar.config.activeColor, 50), 0, 0, this.gFontIcon.Size, this.gFontIcon.Size, DT_CENTER | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX);
+					g.DrawString(iconCalculated, this.gFontIcon, lightenColor(this.getActiveColor(this.state), 50), 0, 0, this.gFontIcon.Size, this.gFontIcon.Size, DT_CENTER | DT_VCENTER | DT_CALCRECT | DT_NOPREFIX);
 					iconImage.ReleaseGraphics(g);
 					iconImage = iconImage.Resize(this.gFontIcon.Size + 2, this.gFontIcon.Size + 2, InterpolationMode.Bilinear);
 					iconImage.StackBlur(2);
@@ -747,7 +758,7 @@ function ThemedButton({
 			}
 			if (!this.iconImage && this.icon) {
 				const iconColor = this.active
-					? buttonsBar.config.activeColor
+					? this.getActiveColor(this.state)
 					: textColor;
 				[
 					buttonsBar.config.outlineIcon > 0 && this.state !== buttonStates.hover

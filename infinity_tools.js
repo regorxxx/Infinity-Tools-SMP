@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/09/26
+//28/09/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -63,7 +63,7 @@ let barProperties = {
 	bReflow: ['Reflow according to width / height', false, { func: isBoolean }],
 	bAlignSize: ['Align buttons according to size', true, { func: isBoolean }],
 	scale: ['UI scale', _scale(0.7, false), { func: isReal }],
-	activeColor: ['Buttons\' active icon color', buttonsBar.config.activeColor, { func: isInt }],
+	activeColor: ['Buttons\' active icon color', -1, { func: isInt }],
 	animationColors: ['Buttons\' animation colors', JSON.stringify(buttonsBar.config.animationColors), { func: isJSON, forceDefaults: true }],
 	bIconMode: ['Show only button\'s icons', false, { func: isBoolean }],
 	bIconModeExpand: ['Expand to full button on hover', false, { func: isBoolean }],

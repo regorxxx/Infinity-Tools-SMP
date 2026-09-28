@@ -14,6 +14,7 @@
 
 ## [Unreleased][]
 ### Added
+- UI: active button color is now based by default in DUI/CUI colors and adjusted according to it. Previous installations will have a color already set, thus it will not change unless manually reset first.
 ### Changed
 - Fingerprint tools: improved console logging, reducing spamming and adding errors on file saving (except OOM errors).
 - Fingerprint tools: warns when foobar2000 is not configured to read the full fingerprint tag on ChromaPrint fast entry, previously was only done on the standard one.
