@@ -20,6 +20,7 @@
 - Fingerprint tools: greatly improved database structure to reduce file size and memory usage.
 - UI: after changing buttons text color, a popup will ask to adjust active button color based on it.
 - UI: improved default behavior regarding hover effects if hover color is disabled. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087726.html#msg1087726).
+- Music Map: minor changes to 'Ambient Classical' relationships.
 - Helpers: updated helpers.
 ### Removed
 ### Fixed
