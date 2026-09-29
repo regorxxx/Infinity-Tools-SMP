@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/07/26
+//28/09/26
 
 /*
 	Wrapped
@@ -88,7 +88,7 @@ addButton({
 						bServicesListens:
 							{ popup: 'Listens will be downloaded from server (ListenBrainz) and merged with local playback statistics. Don\'t forget to set the relevant tokens for those services.\n\nThese listens may also be used on offline mode as long as they have been downloaded at least once (and the associated user name has been set -token is not needed-).' },
 						imageStubPath:
-							{ input: 'Artists images stub path (.jpg or .png). If it starts with .\\, will be relative to foobar profile folder.\n\nEnter TF expression:\n(\'%1\' will be replaced internally with the artist name)' },
+							{ input: 'Artists images stub path (.jpg or .png). If it starts with .\\profile\\, will be relative to foobar profile folder.\n\nEnter TF expression:\n(\'%1\' will be replaced internally with the artist name)' },
 						tags: { bHide: true },
 						extraCmd: { bHide: true },
 						logOpt: { bHide: true },

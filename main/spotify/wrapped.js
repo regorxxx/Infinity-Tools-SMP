@@ -1,6 +1,6 @@
 ﻿
 'use strict';
-//25/09/26
+//28/09/26
 
 /* exported wrapped */
 
@@ -24,8 +24,8 @@ include('..\\timeline\\timeline_helpers.js');
 /* global getDataAsync:readable */
 include('..\\search\\top_tracks_from_date.js');
 /* global getPlayCountV2:readable, timeOnPeriod:readable */
-include('spotify.js');
-/* global spotify:readable */
+include('..\\window\\window_xxx_downloader.js');
+/* global _downloader:readable */
 include('..\\search_by_distance\\search_by_distance_genres.js');
 /* global getNearestGenreStyles:readable, music_graph_descriptors:readable, musicGraph:readable */
 include('..\\search_by_distance\\search_by_distance_culture.js');
@@ -63,7 +63,7 @@ const wrapped = {
 		highBpmHalveFactor: 30, // [0, 100]
 		bServicesListens: false,
 		tokens: { listenBrainz: '', listenBrainzUser: '' },
-		imageStubPath: folders.getBioArtistArtPath({artist: '%1'}),
+		imageStubPath: folders.getBioArtistArtPath({ artist: '%1' }),
 		filePaths: {
 			worldMapArtists: _foldPath(folders.data + 'worldMap.json')
 		},
@@ -211,6 +211,8 @@ const wrapped = {
 			web: new FbMetadbHandleList()
 		}
 	},
+	downloadStack: [],
+	downloader: new _downloader(),
 	resetStats: function () {
 		forEachNested(this.stats, (_, key, obj) => {
 			if (key === 'list') {
@@ -292,7 +294,7 @@ const wrapped = {
 				}
 				// Process
 				data.forEach((artist) => {
-					artist.artistImg = this.basePath + 'img\\untitled.jpg';
+					artist.artistImg = this.basePath + 'img\\fallback\\noartist.png';
 					artist.artist = artist.x;
 					artist.listens = artist.y;
 					delete artist.x;
@@ -1901,15 +1903,11 @@ const wrapped = {
 		).Eval(true);
 		const files = getFiles(stubPath, new Set(imgAllowedExt));
 		if (files && files.length) { return Promise.resolve(files.shuffle()[0]); }
-		// TODO use downloader.getLastfmImgArtistList(artist).then((result) => result[0].url);
 		return this.settings.bOffline
 			? Promise.resolve(null)
-			: spotify.searchArtistInfo(artist)
-				.then((sData) => {
-					let img = null;
-					try { img = sData.best_match.items[0].images[0].url; } catch (e) { /* empty */ } // eslint-disable-line no-unused-vars
-					return img;
-				});
+			: this.downloader.getLastfmImgArtistList(artist).then((result) => {
+				return result[0].url;
+			});
 	},
 	/**
 	 * Takes the 'artistsData' from {@link wrapped.getArtistsData} or 'tracksData' from {@link wrapped.getTracksData} and mutates it to include an img property with the URL.
@@ -2000,6 +1998,7 @@ const wrapped = {
 	 * @returns {promise.<{artist:string, listens:number, artistImg:string|null}[]>}
 	*/
 	downloadArtistsImgs: function (dataArr, root = this.basePath, bRelative = true) {
+		this.downloadStack.length = 0;
 		const path = root + 'img\\artists\\';
 		if (!_isFolder(path)) { _createFolder(path); }
 		return Promise.parallel(
@@ -2015,10 +2014,13 @@ const wrapped = {
 						data.artistImg = bRelative ? imgPath.replace(root, '') : imgPath;
 					} else { bFallback = true; }
 				} else if (data.artistImg && !this.settings.bOffline) {
-					downloadFileV3(data.artistImg, imgPath, { timeout: 5, retry: 1 });
+					this.downloadStack.push(downloadFileV3(data.artistImg, imgPath, { timeout: 5, retry: 1 }));
 					data.artistImg = bRelative ? imgPath.replace(root, '') : imgPath;
+					this.downloadStack.at(-1).then(() => {
+						if (!_isFile(data.artistImg) && bFallback) { data.artistImg = (bRelative ? '' : root) + 'img\\fallback\\noartist.png'; }
+					});
 				} else { bFallback = true; }
-				if (bFallback) { data.artistImg = (bRelative ? '' : root) + 'img\\fallback\\nocover.png'; }
+				if (bFallback) { data.artistImg = (bRelative ? '' : root) + 'img\\fallback\\noartist.png'; }
 				return Promise.resolve(data.artistImg);
 			}
 		).then(() => dataArr);
@@ -2183,6 +2185,7 @@ const wrapped = {
 	 * @returns {Promise.<string>}
 	*/
 	downloadCityImgs: function (citiesData, root = this.basePath, bRelative = true) {
+		this.downloadStack.length = 0;
 		const path = root + 'img\\cities\\';
 		if (!_isFolder(path)) { _createFolder(path); }
 		return Promise.parallel(
@@ -2190,7 +2193,7 @@ const wrapped = {
 			(data) => {
 				if (data.img && !this.settings.bOffline) {
 					const imgPath = path + _asciify(sanitize(data.name)).replace(/ /g, '').slice(0, 10).toLowerCase() + '.jpg';
-					downloadFileV3(data.img, imgPath, { timeout: 5, retry: 1 });
+					this.downloadStack(downloadFileV3(data.img, imgPath, { timeout: 5, retry: 1 }));
 					data.img = bRelative ? imgPath.replace(root, '') : imgPath;
 				} else {
 					data.img = (bRelative ? '' : root) + 'img\\fallback\\city.jpg';
@@ -2278,10 +2281,15 @@ const wrapped = {
 			.then(() => !!wrappedData.cities[0] && this.getArtistsImgs(wrappedData.cities[0].artists.slice(0, this.settings.cityArtistSlice)))
 			.then(() => !!wrappedData.albums[0] && this.getArtistsImgs([wrappedData.albums[0]]))
 			.then(() => this.downloadArtistsImgs(wrappedData.artists))
+			.then(() => Promise.allSettled(this.downloadStack))
 			.then(() => this.downloadArtistsImgs(wrappedData.tracks))
+			.then(() => Promise.allSettled(this.downloadStack))
 			.then(() => this.downloadArtistsImgs(this.stats.countries.byArtist))
+			.then(() => Promise.allSettled(this.downloadStack))
 			.then(() => !!wrappedData.cities[0] && this.downloadArtistsImgs(wrappedData.cities[0].artists.slice(0, this.settings.cityArtistSlice)))
+			.then(() => Promise.allSettled(this.downloadStack))
 			.then(() => !!wrappedData.albums[0] && this.downloadArtistsImgs([wrappedData.albums[0]]))
+			.then(() => Promise.allSettled(this.downloadStack))
 			.then(() => this.saveTracksImgs([
 				...wrappedData.tracks,
 				...wrappedData.albums,
@@ -2291,7 +2299,9 @@ const wrapped = {
 			].filter((track) => track && track.handle)))
 			.then(() => !!wrappedData.cities[0] && this.getCityImg(wrappedData.cities[0]))
 			.then(() => this.downloadCityImgs(wrappedData.cities))
-			.then(() => wrappedData);
+			.then(() => Promise.allSettled(this.downloadStack))
+			.then(() => wrappedData)
+			.finally(() => this.downloadStack.length = 0);
 	},
 	createPlaylists: function (timePeriod) {
 		if (this.playlists.top.Count) {
