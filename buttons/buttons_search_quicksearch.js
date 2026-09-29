@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/07/26
+//29/09/26
 
 /*
 	Quicksearch for same....
@@ -19,7 +19,7 @@ include('..\\helpers\\menu_xxx_extras.js');
 include('..\\helpers\\buttons_xxx_menu.js');
 /* global settingsMenu:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, _qCond:readable, isInt:readable */
+/* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, _qCond:readable, isInt:readable, capitalizeAll:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -127,7 +127,8 @@ addButton({
 						lastQuery: { bHide: true },
 						bDynamicMenus:
 							{ popup: 'Remember to set different panel names to every buttons toolbar, otherwise menus will not be properly associated to a single panel.\n\nShift + Win + R. Click -> Configure panel... (\'edit\' at top)' },
-						entries: { bHide: true }
+						entries: { bHide: true },
+						playlistName: { input: 'Enter output playlist:\n\n%1 will be replaced with entry name. i.e. "Same Album"\n\nFor ex: 🔍 %1\t--->\t🔍 Same Album\n\nGenerated names have a length limit to not overflow UI.' }
 					},
 					{
 						bDynamicMenus:
@@ -183,7 +184,7 @@ addButton({
 			const bShift = utils.IsKeyPressed(VK_SHIFT);
 			const bInfo = typeof barProperties === 'undefined' || barProperties.bTooltipInfo[1];
 			let info = 'Quicksearch using selection as reference:';
-			info += '\nSelected\t ' + (plman.ActivePlaylist !== -1 ? plman.GetPlaylistSelectedItems(plman.ActivePlaylist).Count : 0) + ' items.';
+			info += '\nSelected\t ' + (plman.ActivePlaylist === -1 ? 0 : plman.GetPlaylistSelectedItems(plman.ActivePlaylist).Count) + ' items.';
 			if (bShift || bInfo) {
 				info += '\n-----------------------------------------------------';
 				info += '\n(Shift + L. Click to open config menu)';
@@ -236,7 +237,10 @@ function quickSearchMenu({ bSimulate = false } = {}) {
 	// Entry list
 	const queryFilter = JSON.parse(this.buttonsProperties.entries[1]);
 	// Globals
-	const playlistName = this.buttonsProperties.playlistName[1];
+	const getPlaylistName = (entry, tagVal, len = 60) => this.buttonsProperties.playlistName[1]
+		.replace(/%1/g, () => entry.name)
+		.replace(/%2/g, () => capitalizeAll(tagVal))
+		.cut(len);
 	const sortTF = this.buttonsProperties.sortTF[1];
 	const bOmitSortPls = this.buttonsProperties.bOmitSortPls[1];
 	// Menu
@@ -256,6 +260,7 @@ function quickSearchMenu({ bSimulate = false } = {}) {
 					entryText: queryObj.name, func: () => {
 						let query = queryObj.query;
 						if ((query.includes('#') || (Array.isArray(query) && query.some((q) => q.includes('#')))) && bPlsSel && !fb.GetFocusItem(true)) { fb.ShowPopupMessage('Can not evaluate query without a selection:\n' + queryObj.query, 'Quicksearch'); return; }
+						const playlistName = getPlaylistName(queryObj);
 						const bShift = utils.IsKeyPressed(VK_SHIFT);
 						const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 						if (this.buttonsProperties.bEvalSel[1]) {
@@ -297,6 +302,7 @@ function quickSearchMenu({ bSimulate = false } = {}) {
 				if (query.includes('#') && bPlsSel && !fb.GetFocusItem(true)) { fb.ShowPopupMessage('Can not evaluate query without a selection:\n' + query, 'Quicksearch'); return; }
 				if (!query.length) { return; }
 				// Playlist
+				const playlistName = getPlaylistName({ name: 'Custom query'}, '');
 				const bShift = utils.IsKeyPressed(VK_SHIFT);
 				const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 				if (bShift || bCtrl) {
@@ -345,6 +351,7 @@ function quickSearchMenu({ bSimulate = false } = {}) {
 						menuName: beginMenu, entryText: queryObj.name, func: () => {
 							let query = queryObj.query.replace(/#$/, '*#');
 							if (query.includes('#') && bPlsSel && !fb.GetFocusItem(true)) { fb.ShowPopupMessage('Can not evaluate query without a selection:\n' + queryObj.query, 'Quicksearch'); return; }
+							const playlistName = getPlaylistName(queryObj);
 							const bShift = utils.IsKeyPressed(VK_SHIFT);
 							const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 							if (this.buttonsProperties.bEvalSel[1]) {
@@ -399,6 +406,7 @@ function quickSearchMenu({ bSimulate = false } = {}) {
 						menuName: beginMenu, entryText: queryObj.name, func: () => {
 							let query = queryObj.query.replaceAll(' IS ', ' HAS ');
 							if (query.includes('#') && bPlsSel && !fb.GetFocusItem(true)) { fb.ShowPopupMessage('Can not evaluate query without a selection:\n' + queryObj.query, 'Quicksearch'); return; }
+							const playlistName = getPlaylistName(queryObj);
 							const bShift = utils.IsKeyPressed(VK_SHIFT);
 							const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 							if (this.buttonsProperties.bEvalSel[1]) {
@@ -477,6 +485,7 @@ function quickSearchMenu({ bSimulate = false } = {}) {
 					menuName: partialMenu, entryText: queryObj.name, func: () => {
 						let query = queryObj.query;
 						if (query.includes('#') && bPlsSel && !fb.GetFocusItem(true)) { fb.ShowPopupMessage('Can not evaluate query without a selection:\n' + queryObj.query, 'Quicksearch'); return; }
+						const playlistName = getPlaylistName(queryObj);
 						const bShift = utils.IsKeyPressed(VK_SHIFT);
 						const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 						if (this.buttonsProperties.bEvalSel[1]) {
@@ -566,6 +575,7 @@ function quickSearchMenu({ bSimulate = false } = {}) {
 					menuName: partialMenu, entryText: queryObj.name, func: () => {
 						let query = queryObj.query;
 						if (query.includes('#') && bPlsSel && !fb.GetFocusItem(true)) { fb.ShowPopupMessage('Can not evaluate query without a selection:\n' + queryObj.query, 'Quicksearch'); return; }
+						const playlistName = getPlaylistName(queryObj);
 						const bShift = utils.IsKeyPressed(VK_SHIFT);
 						const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 						if (this.buttonsProperties.bEvalSel[1]) {

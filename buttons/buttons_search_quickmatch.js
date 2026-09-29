@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/07/26
+//29/09/26
 
 /*
 	Quickmatch same....
@@ -97,7 +97,8 @@ addButton({
 				const menu = settingsMenu(
 					this, true, ['buttons_search_quickmatch.js'],
 					{
-						entries: { bHide: true }
+						entries: { bHide: true },
+						playlistName: { input: 'Enter output playlist:\n\n%1 will be replaced with entry name. i.e. "By Genre"\n%2 will be replaced with tag value. i.e. "Rock"\n\nFor ex: 🔍 %1: %2\t--->\t🔍 By Genre: Rock\n\nGenerated names have a length limit to not overflow UI.'}
 					}, void (0),
 					(menu) => {
 						menu.newSeparator();
@@ -298,7 +299,10 @@ function quickmatchMenu() {
 		}
 	}
 	// Globals
-	const playlistName = this.buttonsProperties.playlistName[1];
+	const getPlaylistName = (entry, tagVal, len = 60) => this.buttonsProperties.playlistName[1]
+		.replace(/%1/g, () => entry.name)
+		.replace(/%2/g, () => capitalizeAll(tagVal))
+		.cut(len);
 	const sortTF = this.buttonsProperties.sortTF[1];
 	const bOmitSortPls = this.buttonsProperties.bOmitSortPls[1];
 	// Menu
@@ -343,6 +347,7 @@ function quickmatchMenu() {
 								}
 							}
 							if (query.includes('#') && !fb.GetFocusItem(true)) { fb.ShowPopupMessage('Can not evaluate query without a selection:\n' + queryObj.query, 'Quickmatch'); return; }
+							const playlistName = getPlaylistName(queryObj, tagVal);
 							const bShift = utils.IsKeyPressed(VK_SHIFT);
 							const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 							if (bShift || bCtrl) {

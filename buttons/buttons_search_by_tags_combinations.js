@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/07/26
+//29/09/26
 
 /*
 	Search same by v 1.0 24/08/22
@@ -72,7 +72,7 @@ include('..\\helpers\\buttons_xxx_menu.js');
 include('..\\helpers\\menu_xxx_extras.js');
 /* global _createSubMenuEditEntries:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, isInt:readable */
+/* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, isInt:readable, capitalizeAll:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -197,6 +197,10 @@ addButton({
 		coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.customName[1], buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: newButtonsProperties.customName[1],
 		func: function (mask) {
+			const getPlaylistName = (entry, tagVal, len = 60) => this.buttonsProperties.playlistName[1]
+				.replace(/%1/g, () => entry.name)
+				.replace(/%2/g, () => capitalizeAll(tagVal))
+				.cut(len);
 			if (mask === MK_SHIFT) {
 				const oldName = this.buttonsProperties.customName[1].toString();
 				settingsMenu(
@@ -204,7 +208,8 @@ addButton({
 					{
 						bAdvTitle: { popup: globRegExp.title.desc },
 						bMultiple: { popup: 'Partial multi-value tag matching when removing duplicates.' },
-						presets: { bHide: true }
+						presets: { bHide: true },
+						playlistName: { input: 'Enter output playlist:\n\n%1 will be replaced with entry name. i.e. "By Genre - Style - Mood"\n\nFor ex: 🔍 %1\t--->\t🔍 By Genre - Style - Mood\n\nGenerated names have a length limit to not overflow UI.' }
 					},
 					void (0),
 					(menu) => {
@@ -277,6 +282,7 @@ addButton({
 								bAdvTitle: this.buttonsProperties.bAdvTitle[1],
 								playlistLength: Number(this.buttonsProperties.playlistLength[1]),
 								...preset.settings,
+								playlistName: getPlaylistName(preset),
 								bProfile: typeof menu_panelProperties === 'undefined' ? false : menu_panelProperties.bProfile[1]
 							});
 						}
@@ -291,12 +297,12 @@ addButton({
 							(key) => !Object.hasOwn(this.buttonsProperties, key) || this.buttonsProperties[key][1] === JSON.stringify(entry.settings[key])
 						)
 					);
-				console.log(((preset || { settings: { sameBy: JSON.parse(this.buttonsProperties.sameBy[1]) } }).settings));
 				searchSameByCombs({
 					checkDuplicatesBy: JSON.parse(this.buttonsProperties.checkDuplicatesBy[1]),
 					bAdvTitle: this.buttonsProperties.bAdvTitle[1],
 					playlistLength: Number(this.buttonsProperties.playlistLength[1]),
 					...((preset || { settings: { sameBy: JSON.parse(this.buttonsProperties.sameBy[1]) } }).settings),
+					playlistName: getPlaylistName(preset),
 					bProfile: typeof menu_panelProperties === 'undefined' ? false : menu_panelProperties.bProfile[1]
 				});
 			}

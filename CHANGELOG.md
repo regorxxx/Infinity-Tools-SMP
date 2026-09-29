@@ -17,6 +17,9 @@
 - Buttons: added 'Interactive Rating stars' preset on empty toolbars.
 - UI: active button color is now based by default in DUI/CUI colors and adjusted according to it. Previous installations will have a color already set, thus it will not change unless manually reset first.
 ### Changed
+- Quickmatch: playlist name is now configurable with dynamic variables based on entries.
+- Quicksearch: playlist name is now configurable with dynamic variables based on entries.
+- Search same by: playlist name is now configurable with dynamic variables based on entries.
 - Fingerprint tools: improved console logging, reducing spamming and adding errors on file saving (except OOM errors).
 - Fingerprint tools: warns when foobar2000 is not configured to read the full fingerprint tag on ChromaPrint fast entry, previously was only done on the standard one.
 - Fingerprint tools: greatly improved database structure to reduce file size and memory usage.
