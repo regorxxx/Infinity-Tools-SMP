@@ -14,6 +14,7 @@
 
 ## [Unreleased][]
 ### Added
+- Buttons: added 'Interactive Rating stars' preset on empty toolbars.
 - UI: active button color is now based by default in DUI/CUI colors and adjusted according to it. Previous installations will have a color already set, thus it will not change unless manually reset first.
 ### Changed
 - Fingerprint tools: improved console logging, reducing spamming and adding errors on file saving (except OOM errors).
@@ -29,6 +30,7 @@
 - Helpers: updated helpers.
 ### Removed
 ### Fixed
+- Buttons: added default settings to 'Volume display' preset so display TF button actually shows some volume-related display instead of the default settings value (rating display). Seems it was forgotten when first released.
 - Fingerprint tools: fixed error related to tag matching and ffprobe usage ('Read directly from files' option).
 - Fingerprint tools: reduced database split size to avoid OOM errors.
 - UI: fixed icons not being properly drawn for text colors different than black or white in some cases. Bug introduced at [v2.1.0](#210---2026-08-24). See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087037.html#msg1087037).

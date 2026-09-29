@@ -1,0 +1,24 @@
+{
+  "id": "properties",
+  "values": {
+    "bar.Toolbar color": -1,
+    "bar.Buttons' text color": -1,
+    "bar.Buttons' theme enabled": false,
+    "bar.Buttons' color": -1,
+    "bar.Buttons' opacity": 0,
+    "bar.Buttons' hover color": -1,
+    "bar.Buttons' hover dynamic color": true,
+    "bar.Buttons' hover gradient": true,
+    "bar.Buttons' borders": false,
+    "dtf0.Display area size": 60,
+    "dtf0.Fallback text": "#VOLUMEDB#",
+    "dtf0.Follow now playing": true,
+    "dtf0.Font size scale": 1.2,
+    "dtf0.Font style": "Bold",
+    "dtf0.On click action": 5,
+    "dtf0.Relative size (window)": false,
+    "dtf0.Text flags": 36101,
+    "dtf0.Title Format expression": "#VOLUMEDB#"
+  },
+  "version": "1"
+}

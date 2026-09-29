@@ -297,6 +297,7 @@ function loadButtonsFile(bStartup = false) {
 			{
 				name: 'Volume display', files:
 					['buttons_playback_volume.js', 'separator', 'buttons_display_tf.js'],
+				properties: folders.xxx + 'presets\\Playlist Tools\\toolbars\\volumedisplay.json'
 			},
 			{
 				name: 'Status bar', files:
@@ -307,6 +308,10 @@ function loadButtonsFile(bStartup = false) {
 				name: 'Playback controls', files:
 					['buttons_playback_random.js', 'spacer', 'buttons_playback_prev.js', 'buttons_playback_play.js', 'buttons_playback_next.js', 'spacer', 'buttons_playback_love.js'],
 				properties: folders.xxx + 'presets\\Playlist Tools\\toolbars\\playbackcontrol.json'
+			},
+			{
+				name: 'Interactive Rating stars', files:
+					['buttons_playback_rating.js']
 			},
 			{
 				name: 'Track info', files:
