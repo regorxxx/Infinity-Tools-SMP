@@ -1,5 +1,5 @@
 ﻿'use strict';
-//24/08/26
+//29/09/26
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -422,6 +422,7 @@ async function updateCache({ newCacheLink, newCacheLinkSet, bForce = false, prop
 			console.log(sbd.name + ': tags used for cache - ' + genreStyleTags);
 			const tfo = fb.TitleFormat(genreStyleTags);
 			const styleGenres = await new Promise((resolve) => {
+				doOnce('SBD popup', () => fb.ShowPopupMessage(sbd.name + ' has to process your library and cache genre/style links. This may take a while, specially in large libraries.\n\nPlease don\'t reload the panel during this step. Check console log or button\'s animation and tooltip for completion.', sbd.name + ': Link Cache'))();
 				const libItems = fb.GetLibraryItems().Convert();
 				const num = libItems.length;
 				let tagValues = [];
@@ -441,9 +442,9 @@ async function updateCache({ newCacheLink, newCacheLinkSet, bForce = false, prop
 								if (bBar) {
 									sbdButtons.forEach((key) => {
 										buttonsBar.buttons[key].switchAnimation('Link cache (tags)', false);
-										buttonsBar.buttons[key].switchAnimation('Link cache (tags) ' + prevProgress + '%', false);
+										buttonsBar.buttons[key].switchAnimation('Link cache (tags) ' + Math.min(prevProgress, 100) + '%', false);
 										buttonsBar.buttons[key].cleanAnimation();
-										buttonsBar.buttons[key].switchAnimation('Link cache (tags) ' + progress + '%', true, () => !sbd.isCalculatingCache);
+										buttonsBar.buttons[key].switchAnimation('Link cache (tags) ' + Math.min(progress, 100) + '%', true, () => !sbd.isCalculatingCache);
 									});
 								}
 								prevProgress = progress;
@@ -471,9 +472,9 @@ async function updateCache({ newCacheLink, newCacheLinkSet, bForce = false, prop
 				if (bBar) {
 					sbdButtons.forEach((key) => {
 						buttonsBar.buttons[key].switchAnimation('Link cache (links)', false);
-						buttonsBar.buttons[key].switchAnimation('Link cache (links) ' + prevProgress + '%', false);
+						buttonsBar.buttons[key].switchAnimation('Link cache (links) ' + Math.min(prevProgress, 100) + '%', false);
 						buttonsBar.buttons[key].cleanAnimation();
-						buttonsBar.buttons[key].switchAnimation('Link cache (links) ' + progress + '%', true, () => !sbd.isCalculatingCache);
+						buttonsBar.buttons[key].switchAnimation('Link cache (links) ' + Math.min(progress, 100) + '%', true, () => !sbd.isCalculatingCache);
 					});
 				}
 			};
@@ -679,7 +680,7 @@ function testRecipe({ path = null, json = null, baseTags = null } = {}) {
 				result.report.push('Tag missing multi-value type ' + _p(validValTypes.join(', ')) + ': ' + key);
 			}
 			// Range
-			const rangeRegEx = /-*range/i;
+			const rangeRegEx = /range$/i;
 			if (Object.hasOwn(tag, 'range') && !tag.type.some((t) => rangeRegEx.test(t))) {
 				result.valid = false;
 				result.report.push('Tag missing range type: ' + key);
@@ -979,7 +980,7 @@ async function searchByDistance({
 								if (newValue !== Infinity) {
 									newValue = JSON.stringify(recipeProperties[rKey]);
 								}
-								eval(rKey + ' = ' + newValue);
+								eval(rKey + ' = ' + newValue); // NOSONAR
 							}
 						});
 					}
@@ -989,9 +990,9 @@ async function searchByDistance({
 					const newValue = value === Infinity
 						? value
 						: JSON.stringify(value);
-					eval(key + ' = ' + newValue);
+					eval(key + ' = ' + newValue); // NOSONAR
 					if (key === 'theme') { bOverwriteTheme = true; }
-					if (bSearchDebug) { console.log(key, value, eval(key)); }
+					if (bSearchDebug) { console.log(key, value, eval(key)); } // NOSONAR
 				}
 			} else { console.log('Recipe has a not recognized variable: ' + key); }
 		});
@@ -2793,7 +2794,7 @@ function parseGraphDistance(graphDistance, descr = music_graph_descriptors, bBas
 				fb.ShowPopupMessage('Error parsing graphDistance (using no descriptor variable): ' + output, sbd.name);
 				return null;
 			}
-			output = eval(output);
+			output = eval(output); // NOSONAR
 			if (Number.isNaN(output)) { fb.ShowPopupMessage('Error parsing graphDistance (not a valid number): ' + output, sbd.name); }
 		} else {
 			output = Number(output);
@@ -2867,7 +2868,7 @@ function checkScoringDistribution(distr) {
 }
 
 function parsePlaylistName(playlistName, reference) {
-	const bIsTF = /(?:%.*%)|(?:\$.*\(.*\))/.test(playlistName);
+	const bIsTF = /(?:%[^%]*%)|(?:\$\w*\(.*\))/.test(playlistName);
 	if (typeof reference === 'string') {
 		const themeRegexp = /%SBD_THEME%/gi;
 		if (bIsTF && themeRegexp.test(playlistName)) {

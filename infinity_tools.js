@@ -251,11 +251,11 @@ function loadButtonsFile(bStartup = false) {
 			},
 			/* global sbd:readable */
 			{
-				name: (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ' (basic)', files:
+				name: (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ' (basic)', warning: true, files:
 					['buttons_music_map_basic.js', 'buttons_music_map_genre_explorer.js']
 			},
 			{
-				name: (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ' (customizable)', files:
+				name: (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ' (customizable)', warning: true, files:
 					['buttons_music_map_customizable.js', 'buttons_music_map_customizable.js', 'buttons_music_map_genre_explorer.js']
 			},
 			{
@@ -317,7 +317,7 @@ function loadButtonsFile(bStartup = false) {
 		].map((preset) =>
 			preset.files.every((file) => _isFile(folders.xxx + 'buttons\\' + file) || ['separator', 'spacer', 'newline'].includes(file.toLowerCase())) ? preset : void (0)
 		).filter(Boolean);
-		const input = Input.number('int positive', presets.length, 'Choose a preset (by number) from the following list, to load the toolbar with pre-defined buttons:\n' + presets.map((p, i) => '\t' + _b((i + 1).toString().padStart(2, '0')) + ' ' + p.name).join('\n') + '\n\nCanceling will load a blank toolbar by default.\n\nNote buttons may be added or removed at any time later by R. Clicking on the toolbar.', 'Toolbar: preset', 1, [(n) => n > 0 && n <= presets.length]);
+		const input = Input.number('int positive', presets.length, 'Choose a preset (by number) from the following list, to load the toolbar with pre-defined buttons:\n' + presets.map((p, i) => '   ◦ ' + _b((i + 1).toString().padStart(2, '0')) + ' ' + p.name + (p.warning ? ' (*)' : '')).join('\n') + '\n\n• Canceling will load an empty toolbar.\n\n• Buttons may be changed at any time by R. Clicking on toolbar.\n\n• Some buttons (*) may require a first-time installation process; don\'t reload the panel during processing (check button\'s animation and console log). For ex: Music Map buttons.', 'Toolbar: preset', 1, [(n) => n > 0 && n <= presets.length]);
 		if (input == null) { return false; }
 		const preset = presets[input - 1];
 		if (preset) {

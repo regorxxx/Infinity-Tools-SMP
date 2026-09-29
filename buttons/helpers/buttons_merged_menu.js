@@ -1,5 +1,5 @@
 ﻿'use strict';
-//25/09/26
+//29/09/26
 
 /* exported createButtonsMenu, onRbtnUpImportSettings */
 
@@ -62,73 +62,81 @@ function createButtonsMenu(name) {
 	}
 	{
 		const subMenu = menu.newMenu('Add button');
-		menu.newEntry({ menuName: subMenu, entryText: 'Ctrl + L. Click opens readme:', flags: MF_GRAYED });
-		menu.newSeparator(subMenu);
-		[...new Set(files.map((path) => {
-			const entryText = path.split('\\').pop();
-			return subCategories.find((folder) => entryText.includes(folder)) || 'Others';
-		}))]
-			.filter(Boolean)
-			.map(parseSubMenuFolder)
-			.sort(strNumCollator.compare)
-			.forEach((subMenuFolder) => menu.findOrNewMenu(subMenuFolder, subMenu));
-		files.forEach((path) => {
-			const fileName = path.split('\\').pop();
-			let entryText = fileName + (isAllowed(fileName)
-				? (isAllowedV2(fileName)
-					? '' : '\t(Playlist Tools)'
-				) : '\t(1 allowed)');
-			let subMenuFolder = subCategories.find((folder) => entryText.includes(folder)) || 'Others';
-			if (subMenuFolder && subMenuFolder.length) {
-				subMenuFolder = parseSubMenuFolder(subMenuFolder);
-				subMenuFolder = menu.findOrNewMenu(subMenuFolder, subMenu);
-			}
-			entryText = entryText.replace('buttons_', '').replace('others_', '');
-			menu.newEntry({
-				menuName: subMenuFolder, entryText, func: () => {
-					const bOnlyReadme = utils.IsKeyPressed(VK_CONTROL);
-					if (!bOnlyReadme) {
-						buttonsPath.push(path);
-						const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
-						_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
-					}
-					showButtonReadme(fileName);
-					if (!bOnlyReadme) { window.Reload(); }
-				}, flags: isAllowed(fileName) && isAllowedV2(fileName) ? MF_STRING : MF_GRAYED
+		if (forEachButton((button) => button.isAnyAnimationActive())) {
+			menu.newEntry({ menuName: subMenu, entryText: 'N/A during buttons processing', flags: MF_GRAYED });
+		} else {
+			menu.newEntry({ menuName: subMenu, entryText: 'Ctrl + L. Click opens readme:', flags: MF_GRAYED });
+			menu.newSeparator(subMenu);
+			[...new Set(files.map((path) => {
+				const entryText = path.split('\\').pop();
+				return subCategories.find((folder) => entryText.includes(folder)) || 'Others';
+			}))]
+				.filter(Boolean)
+				.map(parseSubMenuFolder)
+				.sort(strNumCollator.compare)
+				.forEach((subMenuFolder) => menu.findOrNewMenu(subMenuFolder, subMenu));
+			files.forEach((path) => {
+				const fileName = path.split('\\').pop();
+				let entryText = fileName + (isAllowed(fileName)
+					? (isAllowedV2(fileName)
+						? '' : '\t(Playlist Tools)'
+					) : '\t(1 allowed)');
+				let subMenuFolder = subCategories.find((folder) => entryText.includes(folder)) || 'Others';
+				if (subMenuFolder && subMenuFolder.length) {
+					subMenuFolder = parseSubMenuFolder(subMenuFolder);
+					subMenuFolder = menu.findOrNewMenu(subMenuFolder, subMenu);
+				}
+				entryText = entryText.replace('buttons_', '').replace('others_', '');
+				menu.newEntry({
+					menuName: subMenuFolder, entryText, func: () => {
+						const bOnlyReadme = utils.IsKeyPressed(VK_CONTROL);
+						if (!bOnlyReadme) {
+							buttonsPath.push(path);
+							const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
+							_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
+						}
+						showButtonReadme(fileName);
+						if (!bOnlyReadme) { window.Reload(); }
+					}, flags: isAllowed(fileName) && isAllowedV2(fileName) ? MF_STRING : MF_GRAYED
+				});
 			});
-		});
-		menu.newSeparator(subMenu);
-		menu.newEntry({
-			menuName: subMenu, entryText: 'Toolbar separator', func: () => {
-				buttonsPath.push('separator');
-				const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
-				_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
-				const newKeys = Object.keys(addButtonSeparator());
-				buttonsBar.listKeys.push(newKeys);
-			}
-		});
-		menu.newEntry({
-			menuName: subMenu, entryText: 'Toolbar spacer', func: () => {
-				buttonsPath.push('spacer');
-				const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
-				_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
-				const newKeys = Object.keys(addButtonSpacer());
-				buttonsBar.listKeys.push(newKeys);
-			}
-		});
-		menu.newEntry({
-			menuName: subMenu, entryText: 'Toolbar new line', func: () => {
-				buttonsPath.push('newline');
-				const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
-				_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
-				const newKeys = Object.keys(addButtonNewLine());
-				buttonsBar.listKeys.push(newKeys);
-			}
-		});
+			menu.newSeparator(subMenu);
+			menu.newEntry({
+				menuName: subMenu, entryText: 'Toolbar separator', func: () => {
+					buttonsPath.push('separator');
+					const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
+					_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
+					const newKeys = Object.keys(addButtonSeparator());
+					buttonsBar.listKeys.push(newKeys);
+				}
+			});
+			menu.newEntry({
+				menuName: subMenu, entryText: 'Toolbar spacer', func: () => {
+					buttonsPath.push('spacer');
+					const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
+					_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
+					const newKeys = Object.keys(addButtonSpacer());
+					buttonsBar.listKeys.push(newKeys);
+				}
+			});
+			menu.newEntry({
+				menuName: subMenu, entryText: 'Toolbar new line', func: () => {
+					buttonsPath.push('newline');
+					const fileNames = buttonsPath.map((path) => { return path.split('\\').pop(); });
+					_save(folders.data + name + '.json', JSON.stringify(fileNames, null, '\t').replace(/\n/g, '\r\n'));
+					const newKeys = Object.keys(addButtonNewLine());
+					buttonsBar.listKeys.push(newKeys);
+				}
+			});
+		}
 	}
 	{
+		const paths = forEachButton((button) => button.isAnyAnimationActive())
+			? Object.values(buttonsBar.buttons).map((button, i) => button.isAnyAnimationActive() ? buttonsPath[i] : null)
+			: buttonsPath;
 		const subMenu = menu.newMenu('Remove button');
-		buttonsPath.forEach((path, idx) => {
+		paths.forEach((path, idx) => {
+			if (path === null) { menu.newEntry({ menuName: subMenu, entryText: 'N/A (buttons processing)\t(' + (idx + 1) + ')', flags: MF_GRAYED }); return; }
 			let buttonName = path.split('\\').pop();
 			if (['separator', 'newline', 'spacer'].includes(buttonName)) { buttonName = '-- ' + buttonName + ' --'; }
 			menu.newEntry({
@@ -193,15 +201,19 @@ function createButtonsMenu(name) {
 		const subMenu = menu.newMenu('Change button position');
 		menu.newEntry({ menuName: subMenu, entryText: 'Or pressing R. Click over buttons:', flags: MF_GRAYED });
 		menu.newSeparator(subMenu);
-		buttonsPath.forEach((path, idx) => {
-			menu.newEntry({
-				menuName: subMenu, entryText: path.split('\\').pop() + '\t(' + (idx + 1) + ')', func: () => {
-					const input = Input.number('int positive', idx + 1, 'Enter new position:\n(1 - ' + buttonsPath.length + ')', 'Buttons bar: button position', buttonsPath.length, [n => n > 0 && n <= buttonsPath.length]);
-					if (input === null) { return; }
-					moveButton(buttonsBar.listKeys[idx][0], buttonsBar.listKeys[input - 1][0]);
-				}, flags: buttonsPath.length > 1 ? MF_STRING : MF_GRAYED
+		if (forEachButton((button) => button.isAnyAnimationActive())) {
+			menu.newEntry({ menuName: subMenu, entryText: 'N/A during buttons processing', flags: MF_GRAYED });
+		} else {
+			buttonsPath.forEach((path, idx) => {
+				menu.newEntry({
+					menuName: subMenu, entryText: path.split('\\').pop() + '\t(' + (idx + 1) + ')', func: () => {
+						const input = Input.number('int positive', idx + 1, 'Enter new position:\n(1 - ' + buttonsPath.length + ')', 'Buttons bar: button position', buttonsPath.length, [n => n > 0 && n <= buttonsPath.length]);
+						if (input === null) { return; }
+						moveButton(buttonsBar.listKeys[idx][0], buttonsBar.listKeys[input - 1][0]);
+					}, flags: buttonsPath.length > 1 ? MF_STRING : MF_GRAYED
+				});
 			});
-		});
+		}
 	}
 	menu.newSeparator();
 	menu.newEntry({
