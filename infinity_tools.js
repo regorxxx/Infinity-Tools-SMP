@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/09/26
+//29/09/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -275,7 +275,7 @@ function loadButtonsFile(bStartup = false) {
 					['buttons_tags_batch_tagger.js', 'buttons_tags_batch_tagger.js']
 			},
 			{
-				name: 'Autobackup and Tools', files:
+				name: 'Autobackup + Playlist Tools', files:
 					['buttons_utils_autobackup.js', 'buttons_utils_main_menu.js', 'buttons_playlist_tools.js',]
 			},
 			{
@@ -283,15 +283,15 @@ function loadButtonsFile(bStartup = false) {
 					['buttons_device_priority.js', 'buttons_device_switcher.js']
 			},
 			{
-				name: 'ListenBrainz & Last.fm', files:
+				name: 'ListenBrainz + Last.fm', files:
 					['buttons_listenbrainz_tools.js', 'buttons_lastfm_tools.js']
 			},
 			{
-				name: 'Full', files:
+				name: 'Playlist Tools + Pools + Quicksearch', files:
 					['buttons_playlist_tools.js', 'buttons_playlist_tools_submenu_custom.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_remove_duplicates.js', 'buttons_search_quicksearch.js']
 			},
 			{
-				name: 'Full' + (typeof sbd === 'undefined' ? ' (with Music Map)' : ' (with ' + sbd.name + ')'), files:
+				name: 'Playlist Tools + Pools + Quicksearch' + (typeof sbd === 'undefined' ? ' + Music Map' : ' + ' + sbd.name), warning: true, files:
 					['buttons_playlist_tools.js', 'buttons_playlist_tools_submenu_custom.js', 'buttons_playlist_tools_macros.js', 'buttons_playlist_tools_pool.js', 'buttons_playlist_remove_duplicates.js', 'buttons_music_map_customizable.js', 'buttons_search_quicksearch.js']
 			},
 			{
@@ -352,7 +352,7 @@ function loadButtonsFile(bStartup = false) {
 		['buttons_search_by_distance_customizable.js', 'buttons_music_map_customizable.js.'],
 		['buttons_search_by_distance_info.js', 'buttons_music_map_genre_explorer.js.'],
 		['buttons_search_by_distance_genre_explorer.js', 'buttons_music_map_genre_explorer.js.'],
-		['buttons_display_volume.js', 'buttons_playback_volume.js.'],
+		['buttons_display_volume.js', 'buttons_playback_volume.js.']
 	]);
 	buttonsPath = names
 		.map((name) => remap.has(name) ? remap.get(name) : name)
