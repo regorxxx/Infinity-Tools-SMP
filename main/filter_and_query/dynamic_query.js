@@ -1,5 +1,5 @@
 ﻿'use strict';
-//24/08/26
+//30/09/26
 
 /* exported dynamicQuery */
 
@@ -10,9 +10,9 @@
 
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
-/* global isFunction:readable */
+/* global isFunction:readable, capitalizeAll:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
-/* global queryReplaceWithCurrent:readable, queryJoin:readable, checkQuery:readable */
+/* global queryReplaceWithCurrent:readable, queryJoin:readable, checkQuery:readable, getCustomPlaylistName:readable */
 include('..\\sort\\harmonic_mixing.js');
 /* global queryReplaceKeys:readable */
 
@@ -22,16 +22,33 @@ include('..\\sort\\harmonic_mixing.js');
  * @function
  * @name dynamicQuery
  * @kind function
- * @param {{ query?: string sort?: { tfo?: string direction: number } handle?: FbMetadbHandle handleList?: FbMetadbHandleList playlistName?: string bSendToPls?: boolean source?: FbMetadbHandleList bToLowerCase?: boolean bForceStatic?: boolean }} { query, sort, handle, handleList, playlistName, bSendToPls, source, bToLowerCase }? [{ query = 'ARTIST IS #ARTIST#', sort = { tfo: null, direction: 1 }, handle = fb.GetFocusItem(true), handleList = null, playlistName = 'Search...', bSendToPls = true, source = null, bToLowerCase = false, bForceStatic = false } = {}]
+ * @param {{ query?: string sort?: { tfo?: string direction: number } handle?: FbMetadbHandle handleList?: FbMetadbHandleList playlistNameArgs?: {entryName?: string, tagVal?: string, input: string} playlistName?: string bSendToPls?: boolean source?: FbMetadbHandleList bToLowerCase?: boolean bForceStatic?: boolean }} { query, sort, handle, handleList, playlistName, bSendToPls, source, bToLowerCase }? [{ query = 'ARTIST IS #ARTIST#', sort = { tfo: null, direction: 1 }, handle = fb.GetFocusItem(true), handleList = null, playlistNameArgs = null, playlistName = 'Search...', bSendToPls = true, source = null, bToLowerCase = false, bForceStatic = false } = {}]
  * @returns {FbMetadbHandleList | null}
  */
-function dynamicQuery({ query = 'ARTIST IS #ARTIST#', sort = { tfo: null, direction: 1 }, handle = fb.GetFocusItem(true), handleList = null, playlistName = 'Search...', bSendToPls = true, source = null, bToLowerCase = false, bForceStatic = false } = {}) {
+function dynamicQuery({
+	query = 'ARTIST IS #ARTIST#',
+	sort = { tfo: null, direction: 1 },
+	handle = fb.GetFocusItem(true),
+	handleList = null,
+	playlistNameArgs = null,
+	playlistName = 'Search...',
+	bSendToPls = true,
+	source = null,
+	bToLowerCase = false,
+	bForceStatic = false
+} = {}) {
 	query = dynamicQueryProcess({ query, handle, handleList, bToLowerCase, bForceStatic });
 	if (!query) { return null; }
 	let outputHandleList = fb.GetQueryItems((isFunction(source) ? source() : source) || fb.GetLibraryItems(), query);
 	if (sort && sort.tfo !== null && sort.tfo.length) { outputHandleList.OrderByFormat(fb.TitleFormat(sort.tfo), sort.direction || 1); }
 	if (bSendToPls) {
 		console.log('Query: ' + query);
+		if (playlistNameArgs) {
+			playlistName = getCustomPlaylistName({
+				entryName: 'By ' + (query.match(/#[$()\w]+#/gi).map((s) => capitalizeAll(s)).join(' - ') || 'Custom'),
+				...playlistNameArgs
+			});
+		}
 		sendToPlaylist(outputHandleList, playlistName);
 	}
 	return outputHandleList;

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/26
+//30/09/26
 
 /*
 	Search same by v 1.0 24/08/22
@@ -72,7 +72,7 @@ include('..\\helpers\\buttons_xxx_menu.js');
 include('..\\helpers\\menu_xxx_extras.js');
 /* global _createSubMenuEditEntries:readable  */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, isInt:readable, capitalizeAll:readable */
+/* global isBoolean:readable, isString:readable, isStringWeak:readable, isJSON:readable, isInt:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_properties.js');
@@ -89,6 +89,7 @@ prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
 	customName: ['Name for the custom UI button', 'Search Same By... (c)', { func: isStringWeak }, 'Search Same By... (c)'],
+	playlistName: ['Playlist name', '🔍 %1: %2', { func: isString }, '🔍 %1: %2'],
 	playlistLength: ['Playlist size', 50, { greater: 0, func: isInt }, 50],
 	forcedQuery: ['Forced query to filter database', globQuery.filter, { func: (query) => { return checkQuery(query, true); } }, globQuery.filter],
 	checkDuplicatesBy: ['Tags to look for duplicates', JSON.stringify(globTags.remDupl), { func: isJSON }, JSON.stringify(globTags.remDupl)],
@@ -99,7 +100,6 @@ var newButtonsProperties = { // NOSONAR[global]
 		[globTags.style.toUpperCase()]: 2,
 		[globTags.mood.toUpperCase()]: 5
 	}), { func: isJSON }],
-	playlistName: ['Playlist name', 'Search...', { func: isString }, 'Search...'],
 	presets: ['Presets', JSON.stringify([
 		{
 			name: 'By Genre', settings: {
@@ -197,10 +197,6 @@ addButton({
 		coordinates: { x: 0, y: 0, w: _textWidth(newButtonsProperties.customName[1], buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: newButtonsProperties.customName[1],
 		func: function (mask) {
-			const getPlaylistName = (entry, tagVal, len = 60) => this.buttonsProperties.playlistName[1]
-				.replace(/%1/g, () => entry.name)
-				.replace(/%2/g, () => capitalizeAll(tagVal))
-				.cut(len);
 			if (mask === MK_SHIFT) {
 				const oldName = this.buttonsProperties.customName[1].toString();
 				settingsMenu(
@@ -209,7 +205,7 @@ addButton({
 						bAdvTitle: { popup: globRegExp.title.desc },
 						bMultiple: { popup: 'Partial multi-value tag matching when removing duplicates.' },
 						presets: { bHide: true },
-						playlistName: { input: 'Enter output playlist:\n\n%1 will be replaced with entry name. i.e. "By Genre - Style - Mood"\n\nFor ex: 🔍 %1\t--->\t🔍 By Genre - Style - Mood\n\nGenerated names have a length limit to not overflow UI.' }
+						playlistName: { input: 'Enter output playlist:\n\n%1 will be replaced with entry name. i.e. "By Genre - Style - Mood"\n%2 will be replaced with tag value. i.e. "Rock"\n\nFor ex: 🔍 %1: %2\t--->\t🔍 By Genre - Style - Mood: Rock\n\nGenerated names have a length limit to not overflow UI.' }
 					},
 					void (0),
 					(menu) => {
@@ -281,8 +277,8 @@ addButton({
 								checkDuplicatesBy: JSON.parse(this.buttonsProperties.checkDuplicatesBy[1]),
 								bAdvTitle: this.buttonsProperties.bAdvTitle[1],
 								playlistLength: Number(this.buttonsProperties.playlistLength[1]),
+								playlistNameArgs: { entryName: entry.name, input: this.buttonsProperties.playlistName[1] },
 								...preset.settings,
-								playlistName: getPlaylistName(preset),
 								bProfile: typeof menu_panelProperties === 'undefined' ? false : menu_panelProperties.bProfile[1]
 							});
 						}
@@ -301,8 +297,8 @@ addButton({
 					checkDuplicatesBy: JSON.parse(this.buttonsProperties.checkDuplicatesBy[1]),
 					bAdvTitle: this.buttonsProperties.bAdvTitle[1],
 					playlistLength: Number(this.buttonsProperties.playlistLength[1]),
+					playlistNameArgs: { ...(preset ? { entryName: preset.name } : {}), input: this.buttonsProperties.playlistName[1] },
 					...((preset || { settings: { sameBy: JSON.parse(this.buttonsProperties.sameBy[1]) } }).settings),
-					playlistName: getPlaylistName(preset),
 					bProfile: typeof menu_panelProperties === 'undefined' ? false : menu_panelProperties.bProfile[1]
 				});
 			}

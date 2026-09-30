@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/26
+//30/09/26
 
 /*
 	Quickmatch same....
@@ -29,7 +29,7 @@ include('..\\helpers\\helpers_xxx_properties.js');
 include('..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\helpers\\helpers_xxx_tags.js');
-/* global queryJoin:readable */
+/* global queryJoin:readable, getCustomPlaylistName:readable */
 include('..\\helpers\\helpers_xxx_tags_extra.js');
 /* global getSimilarDataFromFile:readable */
 include('..\\main\\filter_and_query\\dynamic_query.js');
@@ -43,8 +43,7 @@ if (!window.ScriptInfo.Name) { window.DefineScript('Quickmatch button', { author
 prefix = getUniquePrefix(prefix, ''); // Puts new ID before '_'
 
 var newButtonsProperties = { // NOSONAR[global]
-	playlistName: ['Playlist name', 'Search...', { func: isString }, 'Search...'],
-	bIconMode: ['Icon-only mode', false, { func: isBoolean }, false],
+	playlistName: ['Playlist name', '🔍 %1: %2', { func: isString }, '🔍 %1: %2'],
 	entries: ['Quickmatch entries', JSON.stringify([
 		{
 			name: 'By Genre',
@@ -79,7 +78,8 @@ var newButtonsProperties = { // NOSONAR[global]
 		musicMapArtists: _foldPath(folders.data + 'musicmap_artists.json'),
 		worldMapArtists: _foldPath(folders.data + 'worldMap.json'),
 		lastfmArtists: _foldPath(folders.data + 'lastfm_artists.json')
-	})]
+	})],
+	bIconMode: ['Icon-only mode', false, { func: isBoolean }, false]
 };
 newButtonsProperties.filePaths.push({ func: isJSON, forceDefaults: true }, newButtonsProperties.filePaths[1]);
 newButtonsProperties.entries.push(newButtonsProperties.entries[1]);
@@ -299,10 +299,6 @@ function quickmatchMenu() {
 		}
 	}
 	// Globals
-	const getPlaylistName = (entry, tagVal, len = 60) => this.buttonsProperties.playlistName[1]
-		.replace(/%1/g, () => entry.name)
-		.replace(/%2/g, () => capitalizeAll(tagVal))
-		.cut(len);
 	const sortTF = this.buttonsProperties.sortTF[1];
 	const bOmitSortPls = this.buttonsProperties.bOmitSortPls[1];
 	// Menu
@@ -347,7 +343,7 @@ function quickmatchMenu() {
 								}
 							}
 							if (query.includes('#') && !fb.GetFocusItem(true)) { fb.ShowPopupMessage('Can not evaluate query without a selection:\n' + queryObj.query, 'Quickmatch'); return; }
-							const playlistName = getPlaylistName(queryObj, tagVal);
+							const playlistName = getCustomPlaylistName({ input: this.buttonsProperties.playlistName[1], entryName: queryObj.name, tagVal });
 							const bShift = utils.IsKeyPressed(VK_SHIFT);
 							const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 							if (bShift || bCtrl) {

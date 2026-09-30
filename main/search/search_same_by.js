@@ -1,5 +1,5 @@
 ﻿'use strict';
-//21/07/26
+//30/09/26
 
 /*
 	Search same by
@@ -72,13 +72,13 @@ var bLoadTags = true; // NOSONAR
 include('..\\..\\helpers\\helpers_xxx.js');
 /* global globTags:readable, globQuery:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
-/* global _p:readable, isArrayStrings:readable, isArrayNumbers:readable, isFloat:readable, _t:readable, _q:readable, isFloat:readable, round:readable, _asciify:readable */
+/* global _p:readable, isArrayStrings:readable, isArrayNumbers:readable, isFloat:readable, _t:readable, _q:readable, isFloat:readable, round:readable, _asciify:readable, capitalizeAll:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
 /* global sendToPlaylist:readable */
 include('..\\filter_and_query\\remove_duplicates.js');
 /* global removeDuplicates:readable */
 include('..\\..\\helpers\\helpers_xxx_tags.js');
-/* global dynamicTags:readable, numericTags:readable, cyclicTags:readable, cyclicTagsDescriptor:readable, queryJoin:readable, queryCombinations:readable, logicDic:readable */
+/* global dynamicTags:readable, numericTags:readable, cyclicTags:readable, cyclicTagsDescriptor:readable, queryJoin:readable, queryCombinations:readable, logicDic:readable, getCustomPlaylistName:readable */
 include('..\\..\\helpers\\helpers_xxx_math.js');
 /* global k_combinations:readable */
 
@@ -92,6 +92,7 @@ function searchSameByCombs({
 	bAdvTitle = true,
 	bMultiple = true,
 	sameBy = { GENRE: 1, STYLE: 2, MOOD: 5 },
+	playlistNameArgs = null,
 	playlistName = 'Search...',
 	logic = 'AND',
 	remapTags = {},
@@ -155,6 +156,7 @@ function searchSameByCombs({
 	let sel_info = sel.GetFileInfo();
 	let nTags = tags.length;
 	let i = 0;
+	const tagVal = [];
 	while (i < nTags) { // Check all tags
 		const tagName = tags[i].toLowerCase(); // To match sets!
 		const bIsFunc = tagName.includes('$');
@@ -167,6 +169,7 @@ function searchSameByCombs({
 		} else { // For selected tag
 			if (numericTags.has(tagName)) { // NOSONAR [may be a numeric tag]
 				const tagValue = dynamicTags.has(tagName) ? Number(fb.TitleFormat(tagNameTF).EvalWithMetadb(sel)) : Number(sel_info.MetaValue(tagIdx, 0));
+				tagVal.push(tagValue);
 				const valueRange = k_tagsCombs[i] > 0 ? Math.abs(k_tagsCombs[i]) : 0; // Instead of k comb number, is a range!
 				const valueUpper = tagValue + valueRange;
 				const valueLower = valueRange > tagValue ? 0 : tagValue - valueRange; // Safety check
@@ -176,6 +179,7 @@ function searchSameByCombs({
 				else { query[ql] += queryTagNameTF + ' GREATER ' + valueLower + ' AND ' + queryTagNameTF + ' LESS ' + valueUpper; }
 			} else if (cyclicTags.has(tagName)) { // A cyclic numeric tag
 				const tagValue = Number(sel_info.MetaValue(tagIdx, 0));
+				tagVal.push(tagValue);
 				const valueRange = k_tagsCombs[i] > 0 ? Math.abs(k_tagsCombs[i]) : 0; //instead of k comb number, is a range!
 				const [valueLower, valueUpper, lowerLimit, upperLimit] = cyclicTagsDescriptor[tagName](tagValue, valueRange, true);
 				ql = query.length;
@@ -199,6 +203,7 @@ function searchSameByCombs({
 				let j = 0;
 				while (j < tagNumber) {
 					tagValues[j] = sel_info.MetaValue(tagIdx, j);
+					tagVal.push(tagValues[j]);
 					j++;
 				}
 				let k;
@@ -270,6 +275,13 @@ function searchSameByCombs({
 	outputHandleList.RemoveRange(playlistLength, outputHandleList.Count - 1);
 	if (bSendToPls) {
 		console.log('Items retrieved by query: ' + oldCount + ' tracks');
+		if (playlistNameArgs) {
+			playlistName = getCustomPlaylistName({
+				entryName: 'By ' + tags.map((s) => capitalizeAll(s)).join(' - '),
+				tagVal: tagVal.slice(0, 20).join(', '),
+				...playlistNameArgs
+			});
+		}
 		sendToPlaylist(outputHandleList, playlistName);
 	}
 	if (bProfile) { test.Print('Task #1: Search same tracks by tags combinations', false); }
@@ -286,6 +298,7 @@ function searchSameByQueries({
 	bAdvTitle = true,
 	bMultiple = true,
 	sameBy = [['STYLE'], ['MOOD']],
+	playlistNameArgs = null,
 	playlistName = 'Search...',
 	bSendToPls = true,
 	bProfile = false,
@@ -348,6 +361,13 @@ function searchSameByQueries({
 		outputHandleList.RemoveRange(playlistLength, outputHandleList.Count - 1);
 		if (bSendToPls) {
 			console.log('Items retrieved by query: ' + oldCount + ' tracks');
+			if (playlistNameArgs) {
+				playlistName = getCustomPlaylistName({
+					entryName: 'By ' + sameBy.flat(Infinity).map((s) => capitalizeAll(s)).join(' - '),
+					tagVal: tagVal.flat(Infinity).slice(0, 20).join(', '),
+					...playlistNameArgs
+				});
+			}
 			sendToPlaylist(outputHandleList, playlistName);
 		}
 	} else {
