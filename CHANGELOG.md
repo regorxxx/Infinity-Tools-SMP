@@ -14,6 +14,7 @@
 
 ## [Unreleased][]
 ### Added
+- Quicklookup: new button 'search_quicklookup.js' which may be used as alternative to Quicksearch for huge multiple selections, since foobar2000 is not able to process queries which are too long. Contrary to queries, processing is done with nested hash-maps which are almost instant even for really huge selections. For ex. may be used to find tracks on library with same MD5 than selection (20K tracks); a real use-case of this is converting a part of your library to Opus (transferring the MD5 tag) and then at a later point you want to find all the source tracks without duplicated matches. It can also be used as a simple and faster replacement of Quicksearch though.
 - Buttons: added 'Interactive Rating stars' preset on empty toolbars.
 - UI: active button color is now based by default in DUI/CUI colors and adjusted according to it. Previous installations will have a color already set, thus it will not change unless manually reset first.
 ### Changed
@@ -31,6 +32,8 @@
 - Music Map: a popup is now shown when the script is processing library on background to better warn about panel reload consequences. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087770.html#msg1087770).
 - Music Map: minor changes to 'Ambient Classical' relationships.
 - Wrapped: replaced Spotify artist images download with a new framework which can download images from multiple sources. Currently using last.fm.
+- Wrapped: added fallback 'no artist' img in case no local/online image is found.
+- Wrapped: improved image download and processing.
 - Helpers: updated helpers.
 ### Removed
 ### Fixed

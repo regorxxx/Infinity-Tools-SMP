@@ -1,0 +1,24 @@
+﻿Tool similar to foo_quicksearch, which allows searching for tracks with
+same tag values (using a hash-map) from a configurable source (playlists,
+library). Results can be sent to a playlist or directly selected at source
+using keyboard modifiers (shown on the tool).
+
+Original foo_quicksearch:
+https://www.foobar2000.org/components/view/foo_quicksearch
+
+Buttons usage:
+	• By default sends results to a [configurable] playlist.
+	• Shift selectes matches on source.
+	• Ctrl specifies the tracks source for matching.
+	• To add customized entries, use Library search\Dynamic queries
+		(on Playlist Tools button) or configure any other
+		button by pressing shift.
+
+Note this tool doesn't use queries under the hood so it's much faster
+when trying to find matches for a lot of tracks and doesn't have any
+limit contrary to queries (too long queries give errors on foobar2000).
+
+While it can be used as a replacement for quicksearch tools, it's allows
+pretty handy for other use cases. For ex. if you convert a part of your
+library to another format (and transfer the tags), then at any time later
+you can find the exact source tracks in library (for ex. using MD5 tag).
