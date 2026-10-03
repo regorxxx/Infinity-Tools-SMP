@@ -1,5 +1,5 @@
 ﻿'use strict';
-//30/08/26
+//02/10/26
 
 /* exported listenBrainzMenu */
 
@@ -20,7 +20,7 @@ include('..\\..\\helpers\\helpers_xxx_tags.js');
 include('..\\..\\helpers\\helpers_xxx_tags_extra.js');
 /* global getSimilarDataFromFile:readable */
 include('..\\..\\helpers\\helpers_xxx_playlists.js');
-/* global sendToPlaylist:readable */
+/* global sendToPlaylist:readable, getHandlesFromUIPlaylists:readable */
 include('..\\..\\main\\playlist_manager\\playlist_manager_listenbrainz.js');
 /* global ListenBrainz:readable, SimpleCrypto:readable */
 include('..\\..\\main\\playlist_manager\\playlist_manager_listenbrainz_extra.js');
@@ -1356,11 +1356,15 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 					if (!await checkLBToken()) { return false; }
 					const token = bListenBrainz ? lb.decryptToken({ lBrainzToken: properties.lBrainzToken[1], bEncrypted: properties.lBrainzEncrypt[1] }) : null;
 					if (!token) { return false; }
-					const file = Input.string('string', '', 'Enter .jsonl file path:\n\nImporting of duplicated listens is automatically handled by ListenBrainz servers, adding them only once. You can process the same file multiple times and only new listens will be added.', 'ListenBrainz Tools: Import listens', folders.xxx + 'examples\\scrobbles_log.jsonl', [(file) => _isFile(file)]);
+					const file = Input.string('string', '', 'Enter .jsonl file path:\n\nImporting of duplicated listens is automatically handled by ListenBrainz servers, adding them only once. You can process the same file multiple times and only new listens will be added.', 'ListenBrainz Tools: Import listens - File path', folders.xxx + 'examples\\scrobbles_log.jsonl', [(file) => _isFile(file)]);
 					if (file === null) { console.log('ListenBrainz tools:', Input.lastInput, 'not found.'); return false; }
+					const sourceName = Input.json('array strings', [], 'Enter playlist(s) to be used as source(s):\n(JSON strings array)\n\nEx:\n["Phone music", "My playlist"]\n\nTo use foobar2000 library, leave it empty ([]).', 'ListenBrainz Tools: Import listens - Source', JSON.stringify([]));
+					const source = sourceName && sourceName.length
+						? getHandlesFromUIPlaylists()
+						: fb.GetLibraryItems();
 					const event = 'scrobble';
 					const payload = lb.parsePanoScrobblerJson(file, { client: this.scriptName, version: this.version }, event);
-					lb.findPayloadMBIDs(payload);
+					lb.findPayloadMBIDs(payload, source);
 					const data = await lb.processPayload(payload, token, event);
 					lb.submitListens(data, token).then(
 						() => WshShell.Popup('Listens imported successfully.', 0, 'ListenBrainz Tools', popup.info + popup.ok),
@@ -1375,10 +1379,14 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 					if (!token) { return false; }
 					const file = Input.string('string', '', 'Enter .jsonl file path:\n\nImporting of duplicated feedback is automatically handled by the script, adding it only once.', 'ListenBrainz Tools: Import feedback', folders.xxx + 'examples\\scrobbles_log.jsonl', [(file) => _isFile(file)]);
 					if (file === null) { console.log('ListenBrainz tools:', Input.lastInput, 'not found.'); return false; }
+					const sourceName = Input.json('array strings', [], 'Enter playlist(s) to be used as source(s):\n(JSON strings array)\n\nEx:\n["Phone music", "My playlist"]\n\nTo use foobar2000 library, leave it empty ([]).', 'ListenBrainz Tools: Import listens - Source', JSON.stringify([]));
+					const source = sourceName && sourceName.length
+						? getHandlesFromUIPlaylists()
+						: fb.GetLibraryItems();
 					const user = await lb.retrieveUser(token);
 					const event = 'love';
 					const payload = lb.parsePanoScrobblerJson(file, { client: this.scriptName, version: this.version }, event);
-					lb.findPayloadMBIDs(payload);
+					lb.findPayloadMBIDs(payload, source);
 					const mbids = (await lb.processPayload(payload, token, event)).map((e) => e.recording_mbid);
 					// Check actual feedback
 					this.switchAnimation('ListenBrainz data retrieval', true);
@@ -1556,7 +1564,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 								.find((defTag) => tag.name === defTag.name);
 							if (defTag) { input = defTag.tf; }
 						} else {
-							input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s):\n(JSON)\n\nSetting it to [] will disable the menu entry.', 'ListenBrainz Tools: Track recommendations', '["ARTIST","ALBUM ARTIST"]', void (0), true);
+							input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s):\n(JSON strings array)\n\nTo disable menu entry, leave it empty ([]).', 'ListenBrainz Tools: Track recommendations', '["ARTIST","ALBUM ARTIST"]', void (0), true);
 							if (input === null) { return; }
 						}
 						tag.tf = input;
