@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/07/26
+//02/10/26
 
 /*
 	Integrates Last.fm recommendations statistics within foobar2000 library.
@@ -151,7 +151,7 @@ addButton({
 											.find((defTag) => tag.name === defTag.name);
 										if (defTag) { input = defTag.tf; }
 									} else {
-										input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s):\n(JSON)\n\nSetting it to [] will disable the menu entry.', 'Last.fm Tools', '["ARTIST","ALBUM ARTIST"]', void (0), true);
+										input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s):\n(JSON strings Array)\n\nTo disable menu entry, leave it empty ([]).', 'Last.fm Tools: Selection tags', JSON.stringify(['ARTIST','ALBUM ARTIST']), void (0), true);
 										if (input === null) { return; }
 									}
 									tag.tf = input;

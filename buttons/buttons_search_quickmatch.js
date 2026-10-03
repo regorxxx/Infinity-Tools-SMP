@@ -1,5 +1,5 @@
 ﻿'use strict';
-//30/09/26
+//02/10/26
 
 /*
 	Quickmatch same....
@@ -109,9 +109,9 @@ addButton({
 							input: () => {
 								const entry = {
 									tf: Input.json('array strings', '',
-										'Enter tag names:\n\n' +
+										'Enter tag names:\n(JSON strings array)\n\n' +
 										'Ex:\n' + JSON.stringify(['ARTIST', 'ALBUM ARTIST'])
-										, 'Quickmatch', JSON.stringify(['ARTIST', 'ALBUM ARTIST']), void (0), true),
+										, 'Quickmatch: Selection tags', JSON.stringify(['ARTIST', 'ALBUM ARTIST']), [(array) => array.length !== 0], true),
 								};
 								if (!entry.tf) { return; }
 								return entry;

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/07/26
+//21/10/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -71,9 +71,9 @@ addButton({
 							input: () => {
 								const entry = {
 									tf: Input.json('array strings', '',
-										'Enter tag names:\n\n' +
+										'Enter tag names:\n(JSON strings array)\n\n' +
 										'Ex:\n' + JSON.stringify([globTags.genre, 'ALBUM GENRE WIKIPEDIA'])
-										, 'Genre explorer', JSON.stringify([globTags.genre, 'ALBUM GENRE WIKIPEDIA']), void (0), true
+										, 'Genre explorer: Selection tags', JSON.stringify([globTags.genre, 'ALBUM GENRE WIKIPEDIA']), [(array) => array.length !== 0], true
 									),
 								};
 								if (!entry.tf) { return; }

@@ -29,6 +29,7 @@
 - UI: improved default behavior regarding hover effects if hover color is disabled. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087726.html#msg1087726).
 - UI: reworked initial presets popup to better warn about panel reload consequences while buttons are installing on first init. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087770.html#msg1087770).
 - UI: adding/removing/moving buttons is now disallowed while any of them is processing on background. This minimizes situations where user keep installing buttons without reading docs or allowing the previous tool to fully install and process. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087742.html#msg1087742) and [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087774.html#msg1087774).
+- UI: minor improvements to some input popups requiring array of strings.
 - Music Map: a popup is now shown when the script is processing library on background to better warn about panel reload consequences. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087770.html#msg1087770).
 - Music Map: minor changes to 'Ambient Classical' relationships.
 - Wrapped: replaced Spotify artist images download with a new framework which can download images from multiple sources. Currently using last.fm.
@@ -45,7 +46,7 @@
 - UI: fixed incompatibility with JSplitter v4.2.0+ or v3.9.0+.
 - UI: fixed some unwanted helpers button files being shown at add button submenus. Bug introduced at [2.2.0](#211---2026-09-14).
 - UI: fix image-based icons not being reset on color changes until panel reload. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087540.html#msg1087540).
-- Helpers: replaced nircmd.exe with nircmdx.exe so all recycle bin errors are directly handled by console.
+- Helpers: create full folder tree on file/folder remove.
 
 ## [2.2.0] - 2026-09-14
 ### Added

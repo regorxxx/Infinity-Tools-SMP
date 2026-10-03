@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/09/26
+//02/10/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, configMenu:readable, specialMenu:readable, deferFunc:readable, menu_propertiesBack:readable, createSmartShuffleMenu:readable */
 
@@ -183,7 +183,7 @@
 							menu.newEntry({
 								menuName, entryText, func: () => {
 									const example = '["GENRE","GENRE2"]';
-									const input = Input.json('array strings', JSON.parse(menu_properties[key][1]), 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example + (info[i] ? info[i] : ''), sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(menu_properties[key][3]));
+									const input = Input.json('array strings', JSON.parse(menu_properties[key][1]), 'Enter tag(s) or TF expression(s):\n(JSON strings array)\n\nTo disable it, leave it empty ([]).\n\n To restore default settings, use ["DEFAULT"].\n\nFor example:\n' + example + (info[i] ? info[i] : ''), sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(menu_properties[key][3]));
 									if (input === null) { return; }
 									menu_properties[key][1] = JSON.stringify(input);
 									if (hook) { hook(key, i, menu_properties); }
@@ -223,7 +223,7 @@
 													menu.newEntry({
 														menuName: sm, entryText, func: () => {
 															const example = '["GENRE","LASTFM_GENRE","GENRE2"]';
-															const input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s): (JSON)\n\nFor example:\n' + example, sbd.name, example, void (0), true);
+															const input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s):\n(JSON strings array)\n\nFor example:\n' + example, sbd.name, example, void (0), true);
 															if (input === null) { return; }
 															if (Object.hasOwn(defaultArgs, key)) { defaultArgs[key] = input; }
 															tag.tf = input;

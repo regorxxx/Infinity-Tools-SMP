@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/07/26
+//02/10/26
 
 /*
 	Integrates ListenBrainz feedback and recommendations statistics within foobar2000 library.
@@ -125,7 +125,7 @@ addButton({
 						tags.forEach((tag) => {
 							menu.newEntry({
 								menuName: subMenuName, entryText: tag.name + (tag.tf && tag.tf.length ? '' : '\t-disabled-'), func: () => {
-									const input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s):\n(JSON)\n\nSetting it to [] will disable the menu entry.', 'ListenBrainz Tools', '["ARTIST","ALBUM ARTIST"]', void (0), true);
+									const input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s):\n(JSON strings array)\n\nTo disable menu entry, leave it empty ([]).', 'ListenBrainz Tools: Selection tags', '["ARTIST","ALBUM ARTIST"]', void (0), true);
 									if (input === null) { return; }
 									tag.tf = input;
 									this.buttonsProperties.tags[1] = JSON.stringify(tags);

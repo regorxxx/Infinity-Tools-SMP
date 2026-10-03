@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/09/26
+//02/10/26
 
 /* exported overwritePanelProperties, loadProperties, createSubMenuEditEntries, lastActionEntry, focusFlags, playlistCountFlags, playlistCountFlagsRem, playlistCountFlagsAddRem, multipleSelectedFlags, multipleSelectedFlagsReorder, selectedFlags, selectedFlagsReorder, selectedFlagsRem, selectedFlagsAddRem, closeLock, createTagMenu, createSmartShuffleMenu */
 
@@ -522,7 +522,7 @@ const createTagMenu = (menuName, options, flag = [], hook = null, entryNames = [
 		menu.newEntry({
 			menuName, entryText, func: () => {
 				const example = '["GENRE","GENRE2"]';
-				const input = Input.json('array strings', JSON.parse(menu_properties[key][1]), 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example + (info[i] ? info[i] : ''), scriptName + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(menu_properties[key][3]));
+				const input = Input.json('array strings', JSON.parse(menu_properties[key][1]), 'Enter tag(s) or TF expression(s):\n(JSON strings array)\n\nTo disable it, leave it empty ([]).\n\n To restore default settings, use ["DEFAULT"]\n\nFor example:\n' + example + (info[i] ? info[i] : ''), scriptName + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(menu_properties[key][3]));
 				if (input === null) { return; }
 				menu_properties[key][1] = JSON.stringify(input);
 				if (hook) { hook(key, i, menu_properties); }

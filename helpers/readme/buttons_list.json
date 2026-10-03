@@ -22,6 +22,7 @@
 	"buttons_search_by_tags_queries.js": "search_same_by_tags_queries.txt",
 	"buttons_search_fingerprint_chromaprint_fast.js": "fingerprint_search.txt",
 	"buttons_search_fingerprint_fooid.js": "fingerprint_search.txt",
+	"buttons_search_quicklookup.js": "search_quicklookup.txt",
 	"buttons_search_quickmatch.js": "search_quickmatch.txt",
 	"buttons_search_quicksearch.js": "search_quicksearch.txt",
 	"buttons_search_top_tracks.js": "top_tracks.txt",

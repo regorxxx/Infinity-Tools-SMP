@@ -1,5 +1,5 @@
 ﻿'use strict';
-//10/09/26
+//02/10/26
 
 /* exported createConfigMenu */
 
@@ -108,7 +108,7 @@ function createConfigMenu(parent) {
 			menu.newEntry({
 				menuName, entryText, func: () => {
 					const example = '["GENRE","GENRE2"]';
-					const input = Input.json('array strings', JSON.parse(properties[key][1]), 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example + (info[i] ? info[i] : ''), sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(properties[key][3]));
+					const input = Input.json('array strings', JSON.parse(properties[key][1]), 'Enter tag(s) or TF expression(s):\n(JSON strings array)\n\nTo disable it, leave it empty ([]).\n\n To restore default settings, use ["DEFAULT"]\n\nFor example:\n' + example + (info[i] ? info[i] : ''), sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(properties[key][3]));
 					if (input === null) { return; }
 					properties[key][1] = JSON.stringify(input);
 					if (hook) { hook(key, i, properties); }
@@ -317,7 +317,7 @@ function createConfigMenu(parent) {
 					menu.newEntry({
 						menuName: subMenuName, entryText, func: () => {
 							const example = '["GENRE","LASTFM_GENRE","GENRE2"]';
-							const input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s): (JSON)\nSetting it to [] disables it, ["DEFAULT"] restores default settings.\n\nFor example:\n' + example, sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(properties.tags[3]));
+							const input = Input.json('array strings', tag.tf, 'Enter tag(s) or TF expression(s):\n(JSON strings array)\n\nTo disable it, leave it empty ([]).\n\n To restore default settings, use ["DEFAULT"]\n\nFor example:\n' + example, sbd.name + ': ' + entryText.replace(/\t.*/, ''), example, void (0), true, JSON.parse(properties.tags[3]));
 							if (input === null) { return; }
 							baseTag.tf = input;
 							properties.tags[1] = JSON.stringify(tags);
