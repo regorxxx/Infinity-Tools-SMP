@@ -35,6 +35,7 @@
 - Wrapped: added fallback 'no artist' img in case no local/online image is found.
 - Wrapped: improved image download and processing.
 - Helpers: updated helpers.
+- Helpers: replaced nircmd.exe with nircmdx.exe so all recycle bin errors are directly handled by console.
 ### Removed
 ### Fixed
 - Buttons: added default settings to 'Volume display' preset so display TF button actually shows some volume-related display instead of the default settings value (rating display). Seems it was forgotten when first released.
@@ -44,6 +45,7 @@
 - UI: fixed incompatibility with JSplitter v4.2.0+ or v3.9.0+.
 - UI: fixed some unwanted helpers button files being shown at add button submenus. Bug introduced at [2.2.0](#211---2026-09-14).
 - UI: fix image-based icons not being reset on color changes until panel reload. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087540.html#msg1087540).
+- Helpers: replaced nircmd.exe with nircmdx.exe so all recycle bin errors are directly handled by console.
 
 ## [2.2.0] - 2026-09-14
 ### Added
