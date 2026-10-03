@@ -1,5 +1,5 @@
 ﻿'use strict';
-//24/08/26
+//02/10/26
 
 /* global youTube:readable */
 include('..\\..\\helpers\\helpers_xxx.js');
@@ -218,10 +218,10 @@ ListenBrainz.parsePanoScrobblerJson = function parsePanoScrobblerJson(file, info
  * @kind method
  * @memberof ListenBrainz
  * @param {{ listened_at: number; track_metadata: { additional_info: { submission_client: string; submission_client_version: string; duration_ms: number; media_player?: string; }; artist_name: string; track_name: string; release_name: string; }; }[]} payload - Listenbrainz submit listen payload array
+ * @param {FbMetadbHandleList} source - Handle list to find matches
  * @returns {{ listened_at: number; track_metadata: { additional_info: { submission_client: string; submission_client_version: string; release_mbid: string; artist_mbids: string[]; recording_mbid:string; duration_ms: number; media_player?: string; }; artist_name: string; track_name: string; release_name: string; }; }[]}
  */
-ListenBrainz.findPayloadMBIDs = function findPayloadMBIDs(payload) {
-	let libItems;
+ListenBrainz.findPayloadMBIDs = function findPayloadMBIDs(payload, source = fb.GetLibraryItems()) {
 	const multiTagRe = / \/ /gi;
 	const findTrack = memoize((title, artist, album, releaseId, artistId, trackId) => {
 		const query = queryJoin(
@@ -258,8 +258,7 @@ ListenBrainz.findPayloadMBIDs = function findPayloadMBIDs(payload) {
 			'AND'
 		);
 		if (!query) { return null; }
-		if (!libItems) { libItems = fb.GetLibraryItems(); }
-		const handleList = fb.GetQueryItemsCheck(libItems, query, true);
+		const handleList = fb.GetQueryItemsCheck(source, query, true);
 		if (handleList && handleList.Count) {
 			const biasTF = fb.TitleFormat(globQuery.remDuplBias);
 			handleList.OrderByFormat(biasTF, -1);

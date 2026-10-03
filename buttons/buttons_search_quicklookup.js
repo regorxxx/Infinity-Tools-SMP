@@ -1,5 +1,5 @@
 ﻿'use strict';
-//30/09/26
+//02/10/26
 
 /*
 	Search tracks on library matching given tags
@@ -117,14 +117,14 @@ addButton({
 							defaults: JSON.parse(this.buttonsProperties.entries[3]),
 							input: () => {
 								const entry = {};
-								entry.tfFrom = Input.json('array strings', '',
-									'Enter tag names:\n\n' +
+								entry.tfFrom = Input.json('array strings', [],
+									'Enter tag names:\n(JSON strings array)\n\n' +
 									'Ex:\n' + JSON.stringify(['ARTIST', 'ALBUM ARTIST'])
-									, 'Quicklookup: Selection tags', JSON.stringify(['ARTIST', 'ALBUM ARTIST']), void (0), true) || (Input.isLastEqual ? Input.lastInput : null);
+									, 'Quicklookup: Selection tags', JSON.stringify(['ARTIST', 'ALBUM ARTIST']), [(array) => array.length !== 0], true) || (Input.isLastEqual ? Input.lastInput : null);
 								if (!entry.tfFrom) { return; }
 								entry.tfTo = Input.json('array strings', [],
-									'Enter tag names:\n\n' +
-									'Leave it empty to use the same tags than selection. i.e. []\n' +
+									'Enter tag names:\n(JSON strings array)\n\n' +
+									'To use same tags than selection, leave it empty ([]).\n' +
 									'Ex:\n' + JSON.stringify(['ARTIST', 'ALBUM ARTIST'])
 									, 'Quicklookup: Source tags', JSON.stringify([]), void (0), true) || (Input.isLastEqual ? Input.lastInput : null);
 								if (!entry.tfTo) { return; }
@@ -196,7 +196,7 @@ function quicklookupMenu({ bSimulate = false } = {}) {
 	const sortTF = this.buttonsProperties.sortTF[1];
 	// Menu
 	const menu = new _menu({ onBtnUp: () => this.selItems = null });
-	menu.newEntry({ entryText: 'Select-only (Shift) / Specify source (Ctrl):', flags: MF_GRAYED });
+	menu.newEntry({ entryText: 'Specify source (Ctrl):', flags: MF_GRAYED });
 	menu.newSeparator();
 	{	// Same...
 		entries.forEach((entry) => {
@@ -209,11 +209,11 @@ function quicklookupMenu({ bSimulate = false } = {}) {
 				// Entries
 				menu.newEntry({
 					entryText: entry.name + (this.selItems ? '' : '\t[no sel]'), func: () => {
-						const bShift = utils.IsKeyPressed(VK_SHIFT);
 						const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 						const input = bCtrl
-							? Input.json('array strings', ['Library Viewer Selection'], 'Specify the playlists for lookup:\n(Array of strings)', 'Quicklookup: sources', ['Top Tracks', 'Playlist B']) || Input.lastInput
+							? Input.json('array strings', ['Library Viewer Selection'], 'Specify the playlists for lookup:\n(JSON strings array)\n\nPressing Shift will select matches at given sources instead of sending them to a new playlist.', 'Quicklookup: sources', ['Top Tracks', 'Playlist B']) || Input.lastInput
 							: null;
+						const bShift = utils.IsKeyPressed(VK_SHIFT);
 						if (input !== null && bShift) {
 							let bFocusSet = false;
 							input.map((n) => getPlaylistIndexArray(n)).flat(Infinity).forEach((plsIdx) => {
@@ -253,13 +253,13 @@ function quicklookupMenu({ bSimulate = false } = {}) {
 				const lastEntry = _jsonParse(this.buttonsProperties.lastLookup[1]) || { tfFrom: ['ARTIST', 'ALBUM ARTIST'], tfSource: [] };
 				const entry = {};
 				entry.tfFrom = Input.json('array strings', lastEntry.tfFrom,
-					'Enter tag names:\n\n' +
+					'Enter tag names:\n(JSON strings array)\n\n' +
 					'Ex:\n' + JSON.stringify(['ARTIST', 'ALBUM ARTIST'])
-					, 'Quicklookup: Selection tags', JSON.stringify(['ARTIST', 'ALBUM ARTIST']), void (0), true) || (Input.isLastEqual ? Input.lastInput : null);
+					, 'Quicklookup: Selection tags', JSON.stringify(['ARTIST', 'ALBUM ARTIST']), [(array) => array.length !== 0], true) || (Input.isLastEqual ? Input.lastInput : null);
 				if (!entry.tfFrom) { return; }
 				entry.tfTo = Input.json('array strings', lastEntry.tfSource || [],
-					'Enter tag names:\n\n' +
-					'Leave it empty to use the same tags than selection. i.e. []\n' +
+					'Enter tag names:\n(JSON strings array)\n\n' +
+					'To use same tags than selection, leave it empty ([]).\n' +
 					'Ex:\n' + JSON.stringify(['ARTIST', 'ALBUM ARTIST'])
 					, 'Quicklookup: Source tags', JSON.stringify([]), void (0), true) || (Input.isLastEqual ? Input.lastInput : null);
 				if (!entry.tfTo) { return; }
@@ -268,7 +268,7 @@ function quicklookupMenu({ bSimulate = false } = {}) {
 				const bShift = utils.IsKeyPressed(VK_SHIFT);
 				const bCtrl = utils.IsKeyPressed(VK_CONTROL);
 				const input = bCtrl
-					? Input.json('array strings', ['Library Viewer Selection'], 'Specify the playlists for lookup:\n(Array of strings)', 'Quicklookup: sources', ['Top Tracks', 'Playlist B']) || Input.lastInput
+					? Input.json('array strings', ['Library Viewer Selection'], 'Specify the playlists for lookup:\n(JSON strings array)', 'Quicklookup: sources', ['Top Tracks', 'Playlist B']) || Input.lastInput
 					: null;
 				if (input !== null && bShift) {
 					let bFocusSet = false;
