@@ -1,0 +1,5 @@
+﻿Replays the last action run at the button. Those requiring an input popup
+or some kind of user action will ask for user action again.
+
+Check 'Playlist Tools Menu\General usage' readme in case you want to
+hide the menu entry.
