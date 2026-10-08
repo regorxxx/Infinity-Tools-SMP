@@ -38,7 +38,7 @@
 - Wrapped: improved image download and processing.
 - Helpers: updated helpers.
 - Helpers: replaced nircmd.exe with nircmdx.exe so all recycle bin errors are directly handled by console.
-- Installation: required fonts are now loaded on the fly when using JSplitter instead of requiring being installed system-wide.
+- Installation: fonts installation is no longer needed when using JSplitter. Fonts will be directly loaded on real time, without system wide installation. Note this doesn't apply to 'Segoe UI' and 'Arial Unicode', which are supposed to be bundled with Windows; if missing (Unix systems), install required fonts from [here](https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts).
 ### Removed
 ### Fixed
 - Buttons: added default settings to 'Volume display' preset so display TF button actually shows some volume-related display instead of the default settings value (rating display). Seems it was forgotten when first released.
