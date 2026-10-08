@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//07/10/26
 
 /* exported wrappedMenu */
 
@@ -101,6 +101,7 @@ function wrappedMenu({ bSimulate = false } = {}) {
 		].forEach((opt) => {
 			reportTypes.forEach((reportType, i) => {
 				const menuName = menu.findOrNewMenu(opt.menu);
+				if (i === 0 && opt.mode === 'all') { menu.setDefaultEntry(menuName); }
 				if (i === 0) {
 					menu.newEntry({ menuName, entryText: opt.descr, flags: MF_GRAYED });
 					menu.newSeparator(menuName);
@@ -108,13 +109,14 @@ function wrappedMenu({ bSimulate = false } = {}) {
 				const subMenuName = opt.mode === 'recommendations'
 					? menuName
 					: menu.findOrNewMenu(reportType.menu, menuName);
+				if (i === 0 && opt.mode !== 'recommendations') { menu.setDefaultEntry(subMenuName, menuName); }
 				if (opt.mode === 'recommendations') {
 					if (i !== 0) { return; }
 				} else {
 					menu.newEntry({ menuName: subMenuName, entryText: 'Choose a period:', flags: MF_GRAYED });
 					menu.newSeparator(subMenuName);
 				}
-				years.forEach((year) => {
+				years.forEach((year, j) => {
 					menu.newEntry({
 						menuName: subMenuName,
 						entryText: 'From ' + year + (hasListens ? '' : '\t[missing plugin]'), func: () => {
@@ -126,7 +128,7 @@ function wrappedMenu({ bSimulate = false } = {}) {
 								opt.mode,
 								reportType.method
 							);
-						}
+						}, bDefault: j === 0
 					});
 				});
 				menu.newSeparator(subMenuName);
