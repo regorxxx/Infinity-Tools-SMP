@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//08/10/26
 
 include('..\\..\\helpers\\menu_xxx.js');
 include('..\\..\\helpers\\helpers_xxx.js');
@@ -16,7 +16,7 @@ include('..\\..\\helpers\\helpers_xxx.js');
 include('..\\..\\helpers\\buttons_xxx.js');
 /* global showButtonReadme:readable */
 include('..\\..\\helpers\\helpers_xxx_file.js');
-/* global utf8:readable, _explorer:readable, _jsonParseFileCheck:readable, _parseAttrFile:readable, findRecursiveFile:readable ,_foldPath:readable */
+/* global utf8:readable, _explorer:readable, _jsonParseFileCheck:readable, _parseAttrFile:readable, findRecursiveFile:readable ,_foldPath:readable, _copyFile:readable, WshShell:readable, popup:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
 /* global _p:readable */
 
@@ -86,15 +86,27 @@ function choosePresetMenu(parent) {
 		const menuName = presetMenu.newMenu('Other recipes');
 		presetMenu.newEntry({ menuName, entryText: 'Can be edited at JSON files:', flags: MF_GRAYED });
 		presetMenu.newSeparator(menuName);
+		const bSplitType = new Set(recipes.map((recipe) => recipe.method).filter(Boolean)).size > 1;
 		recipes.forEach((recipe) => {
-			const entryText = recipe.name + '\t' + _p(recipe.method);
+			const subMenuName = bSplitType ? presetMenu.findOrNewMenu(recipe.method || 'Others', menuName) : menuName;
+			const entryText = recipe.name + (bSplitType ? '' : '\t' + _p(recipe.method || 'N/A'));
 			presetMenu.newEntry({
-				menuName, entryText, func: () => {
+				menuName: subMenuName, entryText, func: () => {
 					searchByDistance({ properties, recipe: recipe.path, parent });
 				}
 			});
 		});
 		presetMenu.newSeparator(menuName);
+		presetMenu.newEntry({
+			menuName, entryText: 'Restore default presets...', func: () => {
+				const answer = WshShell.Popup('Copy default presets to user presets folder?\n\nNote existing files will NOT be overwritten.', 0, window.ScriptInfo.Name + ': presets', popup.question + popup.yes_no);
+				if (answer === popup.no) { return; }
+				findRecursiveFile(
+					'*.json',
+					[sbd.defaultRecipesPath]
+				).forEach((file) => _copyFile(file, file.replace(sbd.defaultRecipesPath, sbd.recipesPath), true));
+			}
+		});
 		presetMenu.newEntry({
 			menuName, entryText: 'Open recipes folder...', func: () => _explorer(sbd.recipesPath)
 		});

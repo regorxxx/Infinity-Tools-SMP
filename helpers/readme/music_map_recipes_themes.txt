@@ -2,11 +2,10 @@
 'Music Map' buttons and tools instead of evaluating with the
 selected track.
 
-Recipes are 'variables containers' which emulate the args of 'Search by
-Distance' buttons and tools instead of using hard-coded variables or
-properties.
+Recipes are 'variables containers' which emulate settings of 'Music Map'
+buttons and tools instead of using hard-coded variables or properties.
 
-Note recipes may also contain a forced theme, either the entire object or
+Note recipes may also contain a forced theme, either entirely or as
 a link to a theme file (using its path or filename).
 
 Both may be used in buttons, tools or with Playlist Tools:
