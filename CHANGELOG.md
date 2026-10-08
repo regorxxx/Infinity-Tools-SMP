@@ -34,6 +34,7 @@
 - UI: minor improvements to some input popups requiring array of strings.
 - Music Map: a popup is now shown when the script is processing library on background to better warn about panel reload consequences. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087770.html#msg1087770).
 - Music Map: minor changes to 'Ambient Classical' relationships.
+- Music Map: minor improvements to recipe handling at basic button.
 - Wrapped: replaced Spotify artist images download with a new framework which can download images from multiple sources. Currently using last.fm.
 - Wrapped: added fallback 'no artist' img in case no local/online image is found.
 - Wrapped: improved image download and processing.
