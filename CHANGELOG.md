@@ -44,6 +44,7 @@
 - Installation: fonts installation is no longer needed when using JSplitter. Fonts will be directly loaded on real time, without system wide installation. Note this doesn't apply to 'Segoe UI' and 'Arial Unicode', which are supposed to be bundled with Windows; if missing (Unix systems), install required fonts from [here](https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts).
 ### Removed
 ### Fixed
+- ListenBrainz: workaround for server-side error regarding artists lookup (https://datasets.listenbrainz.org/artist-lookup).
 - Buttons: added default settings to 'Volume display' preset so display TF button actually shows some volume-related display instead of the default settings value (rating display). Seems it was forgotten when first released.
 - Fingerprint tools: fixed error related to tag matching and ffprobe usage ('Read directly from files' option).
 - Fingerprint tools: reduced database split size to avoid OOM errors.

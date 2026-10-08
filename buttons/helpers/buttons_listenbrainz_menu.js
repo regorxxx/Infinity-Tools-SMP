@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/10/26
+//06/10/26
 
 /* exported listenBrainzMenu */
 
@@ -619,15 +619,15 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 							menuName: subMenu, entryText: bSingle ? tag.name + '\t[' + (capitalizeAll(val).cut(20) || (sel ? 'no tag' : 'no sel')) + ']' : capitalizeAll(val).cut(20), func: () => {
 								switch (tag.type) {
 									case 'getPopularRecordingsByArtist':
-										runSimilar(tag.type, 'By artist top tracks', 50, val); break;
+										void runSimilar(tag.type, 'By artist top tracks', 50, val); break;
 									case 'getPopularRecordingsBySimilarArtist':
-										runSimilar(tag.type, 'By similar artists', void (0), val); break;
+										void runSimilar(tag.type, 'By similar artists', void (0), val); break;
 									case 'getRecordingsByTag':
-										runSimilar(tag.type, 'By tag', 50, val); break;
+										void runSimilar(tag.type, 'By tag', 50, val); break;
 									case 'retrieveSimilarArtists':
-										runSimilar(tag.type, 'By similar artists', 'v1', val); break;
+										void runSimilar(tag.type, 'By similar artists', 'v1', val); break;
 									case 'retrieveSimilarRecordings':
-										runSimilar(tag.type, 'By similar tracks', 'v1', val); break;
+										void runSimilar(tag.type, 'By similar tracks', 'v1', val); break;
 								}
 							}, flags: (val ? MF_STRING : MF_GRAYED) | (!bSingle && i % 8 === 0 && i ? MF_MENUBREAK : MF_STRING)
 						});
@@ -1115,7 +1115,7 @@ function listenBrainzMenu({ bSimulate = false } = {}) {
 				entryText: 'Import playlist by MBID...', func: async () => {
 					const identifier = Input.string('string', '', 'Enter Playlist MBID:', 'ListenBrainz Tools: Import playlist (MBID)', '866b5a46-c474-4fae-8782-0f46240a9507', [(mbid) => isUUID(mbid.replace(lb.regEx, ''))]);
 					if (identifier === null) { return; }
-					importPlaylist({ identifier });
+					void importPlaylist({ identifier });
 				}
 			});
 			menu.newEntry({
