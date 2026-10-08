@@ -1,7 +1,7 @@
 ﻿'use strict';
-//02/10/26
+//08/10/26
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, configMenu:readable, specialMenu:readable, deferFunc:readable, menu_propertiesBack:readable, createSmartShuffleMenu:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, configMenu:readable, specialMenu:readable, deferFunc:readable, menu_propertiesBack:readable, createSmartShuffleMenu:readable */
 
 /* global MF_GRAYED:readable, folders:readable, globTags:readable, _isFile:readable,  isStringWeak:readable, isBoolean:readable, MF_STRING:readable,Input:readable, doOnce:readable, debounce:readable, globQuery:readable, globQuery:readable, capitalize:readable, capitalizeAll:readable, focusFlags:readable, popup:readable, WshShell:readable, isFoobarV2:readable, isArrayEqual:readable, isJSON:readable */
 
@@ -13,8 +13,7 @@
 		if (!Object.hasOwn(menusEnabled, specialMenu) || menusEnabled[specialMenu] || !Object.hasOwn(menusEnabled, 'Pools (' + (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ')') || menusEnabled['Pools (' + (typeof sbd === 'undefined' ? 'Music Map' : sbd.name) + ')']) {
 			if (!Object.hasOwn(menu_properties, 'bHarmonicMixDoublePass')) { menu_properties['bHarmonicMixDoublePass'] = ['Harmonic mixing double pass to match more tracks', true]; }
 			include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-			readmes[newReadmeSep()] = 'sep';
-			readmes[sbd.name] = sbd.readmes.main;
+			readmes.push({ key: sbd.name, path: sbd.readmes.main, folder: specialMenu });
 			// Delete unused properties
 			const toAdd = ['bAscii', 'bTagsCache', 'tags', 'genreStyleFilterTag', 'folksonomyWhitelistTag', 'folksonomyBlacklistTag', 'filePaths'];
 			let toMerge = {}; // Deep copy
@@ -82,7 +81,7 @@
 				{	// -> Special playlists
 					menu.newEntry({ menuName: specialMenu, entryText: 'Based on ' + sbd.name + ':', func: null, flags: MF_GRAYED });
 					const selArgs = [
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{
 							name: 'Influences from any date',
 							args: {
@@ -97,7 +96,7 @@
 								bUseInfluencesFilter: true, probPick: 100, scoreFilter: 40, graphDistance: 500, method: 'GRAPH'
 							}
 						},
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{
 							name: 'Progressive playlist by genre/styles',
 							args: {
@@ -112,7 +111,7 @@
 								probPick: 100, scoreFilter: 60, graphDistance: 300, method: 'GRAPH', bProgressiveListCreation: true, progressiveListCreationN: 3
 							}
 						},
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{
 							name: 'Harmonic mix with similar genre/styles',
 							args: {

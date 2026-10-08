@@ -1,16 +1,16 @@
 ﻿'use strict';
-//31/08/26
+//08/10/26
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable, entryMaxLength:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, updateShortcutsNames:readable, focusFlags:readable, selectedFlags:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, isInt:readable, addLock:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, playlistCountFlagsRem:readable, isString:readable, globQuery:readable, checkDynQuery:readable, _qCond:readable, _p:readable, playlistCountFlags:readable, multipleSelectedFlags:readable, MF_STRING:readable, MF_CHECKED:readable, _t:readable, _b:readable, popup:readable, WshShell:readable, setLocks:readable, VK_SHIFT:readable, range:readable, createAutoPlaylistPresets:readable, _setClipboardData:readable, compareVersions:readable */
 
 // Playlist manipulation...
 {
-	const name = 'Playlist manipulation';
-	if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
-		readmes[newReadmeSep()] = 'sep';
-		const menuName = menu.newMenu(name);
+	const parent = 'Playlist manipulation';
+	if (!Object.hasOwn(menusEnabled, parent) || menusEnabled[parent]) {
+		readmes.push({ key: menu.separator });
+		const menuName = menu.newMenu(parent);
 		{	// Remove Duplicates / Show Duplicates
 			const scriptPath = folders.xxx + 'main\\filter_and_query\\remove_duplicates.js';
 			/* global filterDuplicates:readable, removeDuplicates:readable, showDuplicates:readable, removeDuplicatesAsync:readable */
@@ -18,7 +18,7 @@
 				const name = 'Duplicates and tag filtering';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\remove_duplicates.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\remove_duplicates.txt', folder: parent });
 					let subMenuName = menu.newMenu(name, menuName);
 					let sortInputDuplic = globTags.remDupl;
 					let sortInputFilter = globTags.remDupl;
@@ -81,7 +81,7 @@
 									catch (e) { return; } // eslint-disable-line no-unused-vars
 									if (!Number.isSafeInteger(n)) { return; }
 									filterDuplicates({ checkKeys: tags, sortBias, nAllowed: n, bAdvTitle, bMultiple });
-								}, flags: playlistCountFlagsAddRem
+								}, flags: playlistCountFlagsAddRem, bDefault: true
 							});
 							menu.newSeparator(subMenuName);
 							menu.newEntry({
@@ -129,7 +129,7 @@
 				const name = 'Query filtering';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\filter_by_query.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\filter_by_query.txt', folder: parent });
 					forcedQueryMenusEnabled[name] = false;
 					const subMenuName = menu.newMenu(name, menuName);
 					let queryFilter = [
@@ -137,29 +137,29 @@
 						{ name: 'Rated ≥4 tracks', query: globQuery.ratingGr3 },
 						{ name: 'Fav tracks', query: globQuery.fav },
 						{ name: 'Loved tracks', query: globQuery.loved },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Not recently listened', query: 'NOT ' + globQuery.recent },
 						{ name: 'Daily listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalDay) + ' LESS 1' },
 						{ name: 'Weekly listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalWeek) + ' LESS 1' },
 						{ name: 'Monthly listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalMonth) + ' LESS 1' },
 						{ name: 'Yearly listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalYear) + ' LESS 1' },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Not instrumental', query: globQuery.noInstrumental },
 						{ name: 'Not live (none)', query: globQuery.noLiveNone },
 						{ name: 'Not live (except Hi-Fi)', query: globQuery.noLive },
 						{ name: 'Not multichannel', query: globQuery.stereo },
 						{ name: 'Not SACD or DVD', query: globQuery.noSACD },
 						{ name: 'Not Links', query: '"$strstr(%_PATH_RAW%,file:)" PRESENT OR "$strstr(%_PATH_RAW%,file-relative:)" PRESENT' },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Global forced query', query: defaultArgs['forcedQuery'] },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Same title than sel', query: globQuery.compareTitle },
 						{ name: 'Same song than sel', query: globTags.artist + ' IS #' + globTags.artistRaw + '# AND ' + globQuery.compareTitle + ' AND ' + _qCond(globTags.date) + ' IS #' + globTags.date + '#' },
 						{ name: 'Same artist(s) than sel', query: globTags.artist + ' IS #' + globTags.artistRaw + '#' },
 						{ name: 'Same genre than sel', query: globTags.genre + ' IS #' + globTags.genre + '#' },
 						{ name: 'Same key than sel', query: globTags.key + ' IS #' + globTags.key + '#' },
 						{ name: 'Same decade than sel', query: '"$div(' + _t(globTags.date) + ',10)0s" IS #$div(' + _t(globTags.date) + ',10)0s#' },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Different genre than sel', query: 'NOT ' + globTags.genre + ' IS #' + globTags.genre + '#' },
 						{ name: 'Different style than sel', query: 'NOT ' + globTags.style + ' IS #' + globTags.style + '#' }
 					];
@@ -269,7 +269,7 @@
 									selArg.query = input;
 									menu_properties['queryFilterCustomArg'][1] = input; // And update property with new value
 									overwriteMenuProperties(); // Updates panel
-								}, flags: playlistCountFlagsAddRem
+								}, flags: playlistCountFlagsAddRem, bDefault: true
 							});
 							menu.newSeparator(subMenuName);
 							createSubMenuEditEntries(subMenuName, {
@@ -438,7 +438,10 @@
 				const name = 'Harmonic mix';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\harmonic_mixing.txt';
+					readmes.push(
+						{ key: menu.separator, folder: parent },
+						{ key: name, path: folders.xxx + 'helpers\\readme\\harmonic_mixing.txt', folder: parent }
+					);
 					const subMenuName = menu.newMenu(name, menuName);
 					const selArgs = [
 						{
@@ -468,9 +471,9 @@
 									bRandomize: true,
 									bFillPerfectMatch: true
 								}
-							}, flags: playlistCountFlags
+							}, flags: playlistCountFlags, bDefault: true
 						},
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{
 							name: 'Incremental key playlist', args: {
 								selItems: () => plman.GetPlaylistSelectedItems(plman.ActivePlaylist),
@@ -487,7 +490,7 @@
 								bShuffleInput: true
 							}, flags: playlistCountFlags
 						},
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{
 							name: 'Mix from selection', args: {
 								selItems: () => { return plman.GetPlaylistSelectedItems(plman.ActivePlaylist); }, patternOptions: {
@@ -538,7 +541,7 @@
 								if (args.isSort) { harmonicMixingSort(args); }
 								else { harmonicMixing(args); }
 								if (defaultArgs.bProfile) { profiler.Print(); }
-							}, flags: selArg.flags ? selArg.flags : undefined
+							}, flags: selArg.flags ? selArg.flags : undefined, bDefault: selArg.bDefault
 						});
 					});
 					menu.newSeparator(menuName);
@@ -574,13 +577,13 @@
 					{ name: '50 tracks', func: (idx) => { removeNotSelectedTracks(idx, 50); } },
 					{ name: '75 tracks', func: (idx) => { removeNotSelectedTracks(idx, 75); } },
 					{ name: '100 tracks', func: (idx) => { removeNotSelectedTracks(idx, 100); } },
-					{ name: 'sep' },
+					{ name: menu.separator },
 					{ name: '25 tracks from end', func: (idx) => { removeNotSelectedTracks(idx, -25); } },
 					{ name: '50 tracks from end', func: (idx) => { removeNotSelectedTracks(idx, -50); } },
 					{ name: '75 tracks from end', func: (idx) => { removeNotSelectedTracks(idx, -75); } },
 					{ name: '100 tracks from end', func: (idx) => { removeNotSelectedTracks(idx, -100); } },
-					{ name: 'sep' },
-					{ name: () => { return 'Global pls. length: ' + menu_properties.playlistLength[1]; }, func: (idx) => { removeNotSelectedTracks(idx, menu_properties.playlistLength[1]); } },
+					{ name: menu.separator },
+					{ name: () => { return 'Global pls. length: ' + menu_properties.playlistLength[1]; }, func: (idx) => { removeNotSelectedTracks(idx, menu_properties.playlistLength[1]); }, bDefault: true },
 					{ name: () => { return 'Global pls. length (end): ' + menu_properties.playlistLength[1]; }, func: (idx) => { removeNotSelectedTracks(idx, menu_properties.playlistLength[1]); } },
 				];
 				menu.newEntry({ menuName: subMenuName, entryText: 'Set playlist length to desired #:', func: null, flags: MF_GRAYED });
@@ -593,7 +596,7 @@
 							if (ap === -1) { return; }
 							plman.UndoBackup(ap);
 							selArg.func(ap);
-						}, flags: playlistCountFlagsRem
+						}, flags: playlistCountFlagsRem, bDefault: selArg.bDefault
 					});
 				});
 				menu.newSeparator(menuName);
@@ -1098,7 +1101,7 @@
 											const ap = plman.ActivePlaylist;
 											if (ap === -1) { return; }
 											setLocks(ap, lockTypes, obj.action.replace('unlock', 'remove').replace('lock', 'add'));
-										}, flags
+										}, flags, bDefault: flags !== MF_GRAYED
 									});
 								}
 							});
@@ -1126,7 +1129,10 @@
 				const name = 'Playlist Revive';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\playlist_revive.txt';
+					readmes.push(
+						{ key: menu.separator, folder: parent },
+						{ key: name, path: folders.xxx + 'helpers\\readme\\playlist_revive.txt', folder: parent }
+					);
 					{	// Submenu
 						const subMenuName = menu.newMenu(name, menuName);
 						// Create new properties with previous args
@@ -1142,7 +1148,7 @@
 						menu.newEntry({
 							menuName: subMenuName, entryText: 'Revive dead items (active playlist)', func: () => {
 								playlistRevive({ selItems: plman.GetPlaylistItems(plman.ActivePlaylist), simThreshold: menu_properties['simThreshold'][1], bFindAlternative: true });
-							}, flags: playlistCountFlagsAddRem
+							}, flags: playlistCountFlagsAddRem, bDefault: focusFlags !== MF_GRAYED
 						});
 						menu.newEntry({
 							menuName: subMenuName, entryText: 'Select dead items (active playlist)', func: () => {
@@ -1204,7 +1210,8 @@
 				menu.newEntry({
 					menuName: subMenuName,
 					entryText: 'New Playlist',
-					func: () => plman.ActivePlaylist = plman.CreatePlaylist(plman.ActivePlaylist, '')
+					func: () => plman.ActivePlaylist = plman.CreatePlaylist(plman.ActivePlaylist, ''),
+					bDefault: true
 				});
 				menu.newEntry({
 					menuName: subMenuName,
@@ -1307,5 +1314,5 @@
 				});
 			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 		}
-	} else { menuDisabled.push({ menuName: name, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+	} else { menuDisabled.push({ menuName: parent, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 }

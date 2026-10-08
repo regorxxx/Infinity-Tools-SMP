@@ -1,16 +1,16 @@
 ﻿'use strict';
-//29/05/26
+//08/10/26
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable, entryMaxLength:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, scriptName:readable, defaultArgs:readable, defaultArgsClean:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, configMenu:readable, createSmartShuffleMenu:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, multipleSelectedFlagsReorder:readable, isStringWeak:readable, isBoolean:readable, MF_STRING:readable, Input:readable, playlistCountFlags:readable, selectedFlagsAddRem:readable, _p:readable, _qCond:readable, range:readable, focusInPlaylist:readable, isInt:readable, addLock:readable, selectedFlagsReorder:readable, playlistCountFlagsAddRem:readable, VK_CONTROL:readable, selectedFlags:readable, playlistCountFlagsRem:readable, isFunction:readable, selectedFlagsRem:readable, _t:readable, getHandleListTagsTyped:readable */
 
 // Selection manipulation
 {
-	const name = 'Selection manipulation';
-	if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
-		readmes[newReadmeSep()] = 'sep';
-		const menuName = menu.newMenu(name);
+	const parent = 'Selection manipulation';
+	if (!Object.hasOwn(menusEnabled, parent) || menusEnabled[parent]) {
+		readmes.push({ key: menu.separator });
+		const menuName = menu.newMenu(parent);
 		{	// Legacy Sort
 			const name = 'Sort';
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
@@ -19,18 +19,18 @@
 					const selArgs = [
 						{ name: 'Randomize', func: (idx) => { plman.SortByFormat(idx, '', true); } },
 						{ name: 'Reverse', func: () => { fb.RunMainMenuCommand('Edit/Selection/Sort/Reverse'); } },
-						{ name: 'sep' }
+						{ name: menu.separator }
 					];
 					let sortLegacy = [
 						{ name: 'Sort by Mood', tfo: '%' + globTags.mood + '%' },
 						{ name: 'Sort by Date', tfo: globTags.date },
 						{ name: 'Sort by BPM', tfo: '%' + globTags.bpm + '%' },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Sort by Listen Rate (daily)', tfo: globTags.playCountRateGlobalDay },
 						{ name: 'Sort by Listen Rate (weekly)', tfo: globTags.playCountRateGlobalWeek },
 						{ name: 'Sort by Listen Rate (monthly)', tfo: globTags.playCountRateGlobalMonth },
 						{ name: 'Sort by Listen Rate (yearly)', tfo: globTags.playCountRateGlobalYear },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Sort by Listen Rate (added)', tfo: globTags.playCountRateSinceAdded },
 						{ name: 'Sort by Listen Rate (played)', tfo: globTags.playCountRateSincePlayed },
 						{ name: 'Sort by Overdue listens (added)', tfo: globTags.playCountExpectedSinceAdded },
@@ -159,8 +159,11 @@
 					/* global sortByKey:readable */
 					if (_isFile(scriptPath)) {
 						include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-						readmes[name + '\\' + 'Sort by Key'] = folders.xxx + 'helpers\\readme\\sort_by_key.txt';
-						if (selArgs.length) { selArgs.push({ name: 'sep' }); }
+						readmes.push(
+							{ key: menu.separator, folder: parent },
+							{ key: 'Sort by Key', path: folders.xxx + 'helpers\\readme\\sort_by_key.txt', folder: parent }
+						);
+						if (selArgs.length) { selArgs.push({ name: menu.separator }); }
 						[
 							{ name: 'Incremental key (Camelot Wheel)', func: sortByKey, args: { sortOrder: 1 } },
 							{ name: 'Decremental key (Camelot Wheel)', func: sortByKey, args: { sortOrder: -1 } },
@@ -173,7 +176,7 @@
 					if (_isFile(scriptPath)) {
 						if (!Object.hasOwn(menu_properties, 'bHarmonicMixDoublePass')) { menu_properties['bHarmonicMixDoublePass'] = ['Harmonic mixing double pass to match more tracks', true]; }
 						include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-						readmes[name + '\\' + 'Harmonic mix'] = folders.xxx + 'helpers\\readme\\harmonic_mixing.txt';
+						readmes.push({ key: 'Harmonic mixing', path: folders.xxx + 'helpers\\readme\\harmonic_mixing.txt', folder: parent });
 						const applyHarmonicMix = (args) => {
 							const ap = plman.ActivePlaylist;
 							args.selItems = plman.GetPlaylistSelectedItems(ap);
@@ -214,7 +217,7 @@
 							plman.SetPlaylistSelection(ap, selectionIdx, true);
 							if (defaultArgs.bProfile) { profiler.Print(); }
 						};
-						if (selArgs.length) { selArgs.push({ name: 'sep' }); }
+						if (selArgs.length) { selArgs.push({ name: menu.separator }); }
 						selArgs.push(
 							{
 								name: 'Harmonic mix (Camelot Wheel)', func: applyHarmonicMix, args: {
@@ -272,8 +275,11 @@
 					/* global sortByDyngenre:readable */
 					if (_isFile(scriptPath)) {
 						include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-						readmes[name + '\\' + 'Sort by DynGenre'] = folders.xxx + 'helpers\\readme\\sort_by_dyngenre.txt';
-						if (selArgs.length) { selArgs.push({ name: 'sep' }); }
+						readmes.push(
+							{ key: menu.separator, folder: parent },
+							{ key: 'Sort by DynGenre', path: folders.xxx + 'helpers\\readme\\sort_by_dyngenre.txt', folder: parent }
+						);
+						if (selArgs.length) { selArgs.push({ name: menu.separator }); }
 						[
 							{ name: 'Incremental genre/styles (DynGenre)', func: sortByDyngenre, args: { sortOrder: 1 } },
 							{ name: 'Decremental genre/styles (DynGenre)', func: sortByDyngenre, args: { sortOrder: -1 } },
@@ -293,14 +299,17 @@
 				const name = 'Scatter by tags';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\scatter_by_tags.txt';
+					readmes.push(
+						{ key: menu.separator, folder: parent },
+						{ key: name, path: folders.xxx + 'helpers\\readme\\scatter_by_tags.txt', folder: parent }
+					);
 					const subMenuName = menu.newMenu(name, menuName);
 					let scatter = [
 						{ name: 'Scatter instrumental tracks', args: { tagName: [globTags.genre, globTags.style].join(','), tagValue: 'instrumental,jazz,instrumental rock' } },
 						{ name: 'Scatter acoustic tracks', args: { tagName: [globTags.genre, globTags.style, globTags.mood].join(','), tagValue: 'acoustic' } },
 						{ name: 'Scatter electronic tracks', args: { tagName: [globTags.genre, globTags.style].join(','), tagValue: 'electronic' } },
 						{ name: 'Scatter female vocal tracks', args: { tagName: [globTags.genre, globTags.style].join(','), tagValue: 'female vocal' } },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Scatter sad mood tracks', args: { tagName: globTags.mood, tagValue: 'sad' } },
 						{ name: 'Scatter aggressive mood tracks', args: { tagName: globTags.mood, tagValue: 'aggressive' } },
 
@@ -412,7 +421,7 @@
 				const name = 'Intercalate by tags';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\scatter_by_tags.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\scatter_by_tags.txt', folder: parent });
 					const subMenuName = menu.newMenu(name, menuName);
 					let intercalate = [
 						{ name: 'Intercalate same artist tracks', args: { tagName: globTags.artist, tagValue: null } },
@@ -522,7 +531,7 @@
 				const name = 'Shuffle by tags';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\shuffle_by_tags.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\shuffle_by_tags.txt', folder: parent });
 					const subMenuName = menu.newMenu(name, menuName);
 					let shuffle = [
 						{ name: 'Shuffle by artist', args: { tagName: [globTags.artist] } },
@@ -645,7 +654,7 @@
 				const name = 'Group by tags';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\group_by_tags.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\group_by_tags.txt', folder: parent });
 					const subMenuName = menu.newMenu(name, menuName);
 					let group = [
 						{ name: 'Group by artist', args: { tagName: [globTags.artist] } },
@@ -755,7 +764,10 @@
 				const nameRemove = 'Remove track(s) from';
 				if ([namePrevFind, nameNowFind, nameFind, nameRemove].some((name) => !Object.hasOwn(menusEnabled, name) || menusEnabled[name] === true)) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + 'Find in and Remove from'] = folders.xxx + 'helpers\\readme\\find_remove_from_playlists.txt';
+					readmes.push(
+						{ key: menu.separator, folder: parent },
+						{ key: 'Find in and Remove from', path: folders.xxx + 'helpers\\readme\\find_remove_from_playlists.txt', folder: parent }
+					);
 					// Add properties
 					menu_properties['bFindShowCurrent'] = ['\'Tools\\Find track(s) in\' show current playlist?', true];
 					menu_properties['bRemoveShowLocked'] = ['\'Tools\\Remove track(s) from\' show autoplaylists?', true];
@@ -1242,7 +1254,10 @@
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 				include(folders.xxx + 'helpers\\helpers_xxx_playlists.js');
 				/* global getPlaylistSelectedIndexFirst:readable, getPlaylistSelectedIndexLast:readable, focusOnItem:readable */ // eslint-disable-line no-redeclare
-				readmes[menuName + '\\' + 'Move, expand & jump'] = folders.xxx + 'helpers\\readme\\selection_expand_jump.txt';
+				readmes.push(
+					{ key: menu.separator, folder: parent },
+					{ key: 'Move, expand & jump', path: folders.xxx + 'helpers\\readme\\selection_expand_jump.txt', folder: parent }
+				);
 				const subMenuName = menu.newMenu(name, menuName);
 				menu.newEntry({ menuName: subMenuName, entryText: 'On current playlist:', func: null, flags: MF_GRAYED });
 				menu.newSeparator(subMenuName);
@@ -1345,36 +1360,36 @@
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					const subMenuName = menu.newMenu(name, menuName);
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\filter_by_query.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\filter_by_query.txt', folder: parent });
 					forcedQueryMenusEnabled[name] = false;
 					let selQueryFilter = [
 						{ name: 'Rated ≥3 tracks', query: globQuery.notLowRating },
 						{ name: 'Rated ≥4 tracks', query: globQuery.ratingGr3 },
 						{ name: 'Fav tracks', query: globQuery.fav },
 						{ name: 'Loved tracks', query: globQuery.loved },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Not recently listened', query: 'NOT ' + globQuery.recent },
 						{ name: 'Daily listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalDay) + ' LESS 1' },
 						{ name: 'Weekly listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalWeek) + ' LESS 1' },
 						{ name: 'Monthly listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalMonth) + ' LESS 1' },
 						{ name: 'Yearly listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalYear) + ' LESS 1' },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Instrumental', query: globQuery.instrumental },
 						{ name: 'Live (all)', query: globQuery.live },
 						{ name: 'Live (Hi-Fi)', query: globQuery.liveHifi },
 						{ name: 'Multichannel', query: 'NOT ' + _p(globQuery.stereo) },
 						{ name: 'SACD or DVD', query: globQuery.SACD },
 						{ name: 'Links', query: 'NOT ("$strstr(%_PATH_RAW%,file:)" PRESENT OR "$strstr(%_PATH_RAW%,file-relative:)" PRESENT)' },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Global forced query', query: defaultArgs['forcedQuery'] },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Same title than sel', query: globQuery.compareTitle },
 						{ name: 'Same song than sel', query: globTags.artist + ' IS #' + globTags.artistRaw + '# AND ' + globQuery.compareTitle + ' AND ' + _qCond(globTags.date) + ' IS #' + globTags.date + '#' },
 						{ name: 'Same artist(s) than sel', query: globTags.artist + ' IS #' + globTags.artistRaw + '#' },
 						{ name: 'Same genre than sel', query: globTags.genre + ' IS #' + globTags.genre + '#' },
 						{ name: 'Same key than sel', query: globTags.key + ' IS #' + globTags.key + '#' },
 						{ name: 'Same decade than sel', query: '"$div(' + _t(globTags.date) + ',10)0s" IS #$div(' + _t(globTags.date) + ',10)0s#' },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Different genre than sel', query: 'NOT ' + globTags.genre + ' IS #' + globTags.genre + '#' },
 						{ name: 'Different style than sel', query: 'NOT ' + globTags.style + ' IS #' + globTags.style + '#' }
 					];
@@ -1652,7 +1667,7 @@
 		{	// Select (for use with macros!!)
 			const name = 'Select (by time)';
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
-				readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\selection_time.txt';
+				readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\selection_time.txt', folder: parent });
 				const subMenuName = menu.newMenu(name, menuName);
 				menu.newEntry({ menuName: subMenuName, entryText: 'Sets selection on current playlist:', func: null, flags: MF_GRAYED });
 				menu.newSeparator(subMenuName);
@@ -1833,7 +1848,7 @@
 						{ name: 'By Artist', args: ['%ARTIST%'] },
 						{ name: 'By Album Artist', args: ['%ALBUM ARTIST%'] },
 						{ name: 'By Album', args: ['%ALBUM%'] },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'By Date', args: [globTags.date] },
 						{ name: 'By Decade', args: ['$div(' + _t(globTags.date) + ',10)0s'] },
 						{ name: 'By Genre', args: ['%' + globTags.genre + '%'] },
@@ -1841,11 +1856,11 @@
 						{ name: 'By Key', args: [defaultArgs.keyTag] },
 						{ name: 'By Mood', args: ['%' + globTags.mood + '%'] },
 						{ name: 'By Rating', args: [globTags.rating] },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'By Directory', args: ['%DIRECTORYNAME%'] },
 						{ name: 'By Protocol', args: ['$left(%_PATH_RAW%,$strstr(%_PATH_RAW%,://))'] },
 						{ name: 'By File/Url', args: ['$if3($strstr(%_PATH_RAW%,file:),$strstr(%_PATH_RAW%,file-relative:),0)'] },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{
 							name: 'By... (tags)', args: () => {
 								const input = Input.string('string', globTags.artist + ';%ALBUM%', 'Enter tag(s) or TF expression(s):\n(multiple values may be separated by \';\')', scriptName + ': ' + nameExpand, globTags.artist + ';%ALBUM%') || (Input.isLastEqual ? Input.lastInput : null);
@@ -1940,7 +1955,7 @@
 					{ name: 'By Artist', args: ['%ARTIST%'] },
 					{ name: 'By Album Artist', args: ['%ALBUM ARTIST%'] },
 					{ name: 'By Album', args: ['%ALBUM%'] },
-					{ name: 'sep' },
+					{ name: menu.separator },
 					{ name: 'By Date', args: [globTags.date] },
 					{ name: 'By Decade', args: ['$div(' + _t(globTags.date) + ',10)0s'] },
 					{ name: 'By Genre', args: ['%' + globTags.genre + '%'] },
@@ -1948,11 +1963,11 @@
 					{ name: 'By Key', args: [defaultArgs.keyTag] }, // Uses remapped tag. Probably missing %, fixed later.
 					{ name: 'By Mood', args: ['%' + globTags.mood + '%'] },
 					{ name: 'By Rating', args: [globTags.rating] },
-					{ name: 'sep' },
+					{ name: menu.separator },
 					{ name: 'By Directory', args: ['%DIRECTORYNAME%'] },
 					{ name: 'By Protocol', args: ['$left(%_PATH_RAW%,$strstr(%_PATH_RAW%,://))'] },
 					{ name: 'By File/Url', args: ['$if3($strstr(%_PATH_RAW%,file:),$strstr(%_PATH_RAW%,file-relative:),0)'] },
-					{ name: 'sep' },
+					{ name: menu.separator },
 					{
 						name: 'By... (tags)', args: () => {
 							let input = globTags.artist + ';%ALBUM%';
@@ -1997,5 +2012,5 @@
 			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 		}
 		menu.newSeparator();
-	} else { menuDisabled.push({ menuName: name, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+	} else { menuDisabled.push({ menuName: parent, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 }

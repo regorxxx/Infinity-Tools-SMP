@@ -1,5 +1,5 @@
 ﻿'use strict';
-//23/06/26
+//08/10/26
 
 /*
 	Playlist Tools Menu
@@ -115,6 +115,7 @@ menu_panelProperties.entryMaxLength.push({ func: isInt, range: [[20, Infinity]] 
 /*
 	Load properties and set default global Parameters
 */
+const scriptName = 'Playlist Tools Menu';
 const defaultArgs = {
 	playlistLength: menu_properties.playlistLength[1],
 	forcedQuery: menu_properties.forcedQuery[1],
@@ -132,30 +133,24 @@ const defaultArgs = {
 const defaultArgsClean = () => {
 	return Object.fromEntries(Object.keys(defaultArgs).filter((key) => key !== 'parent').map((key) => [key, defaultArgs[key]]));
 };
-const newReadmeSep = (() => {
-	let i = 0;
-	return (bFull = false) => { // NOSONAR
-		return (bFull ? { ['sep' + ++i]: 'sep' } : ['sep' + ++i]); // NOSONAR
-	};
-})();
-// {scriptName: path} or {arbitraryKey: 'sep'}
-var readmes = { // NOSONAR [global]
-	'Playlist Tools Menu': folders.xxx + 'helpers\\readme\\playlist_tools_menu.txt',
-	...newReadmeSep(true),
-	'Tagging requisites': folders.xxx + 'helpers\\readme\\tags_structure.txt',
-	'Tags sources': folders.xxx + 'helpers\\readme\\tags_sources.txt',
-	'Other tags notes': folders.xxx + 'helpers\\readme\\tags_notes.txt',
-	...newReadmeSep(true),
-	'Global settings': folders.xxx + 'helpers\\readme\\global_settings.txt',
-	'Global tag remapping': folders.xxx + 'helpers\\readme\\tags_global_remap.txt',
-	...newReadmeSep(true),
-};
+var readmes = [ // NOSONAR [global]
+	{ key: 'General usage', path: folders.xxx + 'helpers\\readme\\playlist_tools_menu.txt', folder: scriptName },
+	{ key: _menu.separator, folder: scriptName },
+	{ key: 'Last action', path: folders.xxx + 'helpers\\readme\\playlist_tools_last_action.txt', folder: scriptName },
+	{ key: _menu.separator },
+	{ key: 'Tagging requisites', path: folders.xxx + 'helpers\\readme\\tags_structure.txt', folder: 'Tagging' },
+	{ key: 'Tags sources', path: folders.xxx + 'helpers\\readme\\tags_sources.txt', folder: 'Tagging' },
+	{ key: 'Other tags notes', path: folders.xxx + 'helpers\\readme\\tags_notes.txt', folder: 'Tagging' },
+	{ key: _menu.separator },
+	{ key: 'Global settings', path: folders.xxx + 'helpers\\readme\\global_settings.txt', folder: 'Global' },
+	{ key: 'Global tag remapping', path: folders.xxx + 'helpers\\readme\\tags_global_remap.txt', folder: 'Global' },
+	{ key: _menu.separator }
+];
 loadProperties();
 
 // Menu
 const specialMenu = 'Special Playlists';
 const configMenu = 'Settings';
-const scriptName = 'Playlist Tools Menu';
 const libSearchMenu = 'Library search';
 const entryMaxLength = getPropertyByKey(typeof buttonsBar === 'undefined' ? menu_properties : menu_panelProperties, 'entryMaxLength', menu_prefix, 0);
 const menu = new _menu({
@@ -335,7 +330,7 @@ include('playlist_tools_menu_dyn_queries.js');
 			if (!menu.hasMenu(libSearchMenu)) { menu.newMenu(libSearchMenu); }
 			if (!menu.hasMenu(specialMenu, libSearchMenu)) { menu.newMenu(specialMenu, libSearchMenu); }
 			menu.newSeparator(libSearchMenu);
-		} else if (!menuDisabled.some((menu) => menu.menuName === specialMenu) ) { menuDisabled.push({ menuName: specialMenu, subMenuFrom: libSearchMenu, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+		} else if (!menuDisabled.some((menu) => menu.menuName === specialMenu)) { menuDisabled.push({ menuName: specialMenu, subMenuFrom: libSearchMenu, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 	}
 }
 

@@ -1,16 +1,16 @@
 ﻿'use strict';
-//17/04/26
+//08/10/26
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, multipleSelectedFlags:readable, selectedFlags:readable, selectedFlags:readable, configMenu:readable, menu_panelProperties */
+/* global menusEnabled:readable, readmes:readable, menu:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, multipleSelectedFlags:readable, selectedFlags:readable, selectedFlags:readable, configMenu:readable, menu_panelProperties */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, _isFolder:readable, globTags:readable, VK_SHIFT:readable, clone:readable, MF_STRING:readable, Input:readable, findRecursiveDirs:readable, _resolvePath:readable, capitalize:readable,_t:readable, isBoolean:readable, soFeat:readable, strNumCollator:readable */
 
 // Tagging
 {
-	const name = 'Tagging';
-	if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
-		readmes[newReadmeSep()] = 'sep';
-		const menuName = menu.newMenu(name);
+	const parent = 'Tagging';
+	if (!Object.hasOwn(menusEnabled, parent) || menusEnabled[parent]) {
+		readmes.push({ key: menu.separator });
+		const menuName = menu.newMenu(parent);
 		{	// Check tags
 			const scriptPath = folders.xxx + 'main\\tags\\check_library_tags.js';
 			/* global checkTags_properties:readable, checkTags:readable, addTagsToExclusion:readable, dictSettings:readable */
@@ -18,7 +18,7 @@
 				const name = 'Check tags';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\check_library_tags.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\check_library_tags.txt', folder: parent + ' tools' });
 					const subMenuName = menu.newMenu(name, menuName);
 					// Delete unused properties
 					const toDelete = new Set(['bUseDic']);
@@ -38,16 +38,16 @@
 						{ tag: globTags.mood, name: 'Mood (+ dictionary)', bUseDic: true },
 						{ tag: globTags.composer, name: 'Composer', bUseDic: false },
 						{ tag: globTags.titleRaw, name: 'Title', bUseDic: false },
-						'sep',
+						menu.separator,
 						{ tag: [globTags.genre, globTags.style].join(','), name: 'Genre + Style (+ dictionary)', bUseDic: true },
 						{ tag: [...new Set([globTags.composer, globTags.artistRaw, 'ARTIST', 'ALBUM ARTIST'])].join(','), name: 'Composer + Artist', bUseDic: false },
-						'sep',
+						menu.separator,
 						{ tag: ['FRONT'].join(','), name: 'Front artwork', bUseDic: false },
 						{ tag: ['BACK'].join(','), name: 'Back artwork', bUseDic: false },
 						{ tag: ['DISC'].join(','), name: 'Disc artwork', bUseDic: false },
 						{ tag: ['ICON'].join(','), name: 'Icon artwork', bUseDic: false },
 						{ tag: ['ARTIST'].join(','), name: 'Artist artwork', bUseDic: false },
-						'sep',
+						menu.separator,
 						{ tag: ['FRONT', 'BACK', 'DISC', 'ICON', 'ARTIST'].join(','), name: 'All artwork', bUseDic: false },
 					];
 					// Menus
@@ -195,7 +195,7 @@
 				const name = 'Batch Tagger';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\tagger.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\tagger.txt', folder: parent + ' tools' });
 					const tAut = new Tagger();
 					menu_properties.toolsByKey = ['\'Other tools\\Tagger\' Tools enabled', JSON.stringify(new Tagger({ bOutputDefTools: true }))];
 					menu_properties.quietByKey = ['\'Other tools\\Tagger\' Quiet mode', JSON.stringify({})];
@@ -216,7 +216,7 @@
 							tAut.run({ bDebug: menu_panelProperties.bDebug[1], bProfile: menu_panelProperties.bProfile[1] });
 							// Apply animation on registered parent button...
 							if (defaultArgs.parent) { defaultArgs.parent.switchAnimation(menuName + '\\' + name, true, () => { return !tAut.isRunning(); }); }
-						}, flags: allFlags
+						}, flags: allFlags, bDefault: allFlags !== MF_GRAYED
 					});
 					menu.newSeparator(subMenuName);
 					menu.newEntry({
@@ -397,7 +397,7 @@
 				const name = 'Group Tagger';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\group_tagger.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\group_tagger.txt', folder: parent + ' tools' });
 					const subMenuName = menu.newMenu(name, menuName);
 					menu.newEntry({ menuName: subMenuName, entryText: 'Group tagging:', func: null, flags: MF_GRAYED });
 					menu.newSeparator(subMenuName);
@@ -406,14 +406,14 @@
 						[
 							{ entryText: 'By Album', source: '[%RATING%]', group: '%ALBUM%|%DATE%|%COMMENT%', destEx: 'ALBUMRATING', destModeEx: 'ALBUMGENRE' },
 							{ entryText: 'By Album (duration)', source: '[$mul(%RATING%,%LENGTH_SECONDS%)]', group: '%ALBUM%|%DATE%|%COMMENT%', destEx: 'ALBUMRATING', destModeEx: 'ALBUMGENRE', count: '%LENGTH_SECONDS%', bSkipMode: true },
-							{ entryText: 'sep' },
+							{ entryText: menu.separator },
 							{ entryText: 'By Artist', source: '[%RATING%]', group: '%ARTIST%', destEx: 'ARTISTRATING', destModeEx: 'ARTISTGENRE' },
 							{ entryText: 'By Album Artist', source: '[%RATING%]', group: '%ALBUM ARTIST%', destEx: 'ALBUMARTISTRATING', destModeEx: 'ALBUMARTISTGENRE' },
 							{ entryText: 'By 1st Artist', source: '[%RATING%]', group: '$if2($meta(ALBUM ARTIST,0),$meta(ARTIST,0))', destEx: 'ARTISTRATING', destModeEx: 'ARTISTGENRE' },
-							{ entryText: 'sep' },
+							{ entryText: menu.separator },
 							{ entryText: 'By Date', source: '[%RATING%]', group: globTags.date, destEx: 'DATERATING', destModeEx: 'DATEGENRE' },
 							{ entryText: 'By Decade', source: '[%RATING%]', group: '$div(' + _t(globTags.date) + ',10)0s', destEx: 'DECADERATING', destModeEx: 'DECADEGENRE' },
-							{ entryText: 'sep' },
+							{ entryText: menu.separator },
 							{ entryText: 'By... (expression)' },
 						].forEach((entry) => {
 							if (entry.bSkipMode && mode === 'mode') { return; }
@@ -454,5 +454,5 @@
 			}
 		}
 		menu.newSeparator();
-	} else { menuDisabled.push({ menuName: name, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+	} else { menuDisabled.push({ menuName: parent, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 }

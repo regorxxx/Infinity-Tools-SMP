@@ -1,7 +1,7 @@
 ﻿'use strict';
-//29/05/26
+//08/10/26
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, specialMenu:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, focusFlags:readable, entryMaxLength:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, specialMenu:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, focusFlags:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, convertObjectToString:readable, isString:readable, WshShell:readable, popup:readable, convertStringToObject:readable, capitalize:readable, globTags:readable */
 
@@ -17,8 +17,10 @@
 			const name = 'Search same by tags';
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 				include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-				readmes[newReadmeSep()] = 'sep';
-				readmes[name] = folders.xxx + 'helpers\\readme\\search_same_by_tags_combinations.txt';
+				readmes.push(
+					{ key: menu.separator, folder: parent },
+					{ key: name, path: folders.xxx + 'helpers\\readme\\search_same_by_tags_combinations.txt', folder: parent }
+				);
 				forcedQueryMenusEnabled[name] = true;
 				const subMenuName = menu.newMenu(name, menuName);
 				{	// Dynamic menu
@@ -28,7 +30,7 @@
 						{ args: { sameBy: { [globTags.style.toUpperCase()]: 2 } } },
 						{ args: { sameBy: { [globTags.composer.toUpperCase()]: 2 } } },
 						{ args: { sameBy: { [globTags.key.toUpperCase()]: 1 } } },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ args: { sameBy: { [globTags.style.toUpperCase()]: 2, [globTags.mood.toUpperCase()]: 6 } } },
 						{ args: { sameBy: { [globTags.style.toUpperCase()]: 2, [globTags.date.toUpperCase()]: 10 } } },
 					];
@@ -130,7 +132,7 @@
 										const sameByArgs = { ...selArg.args, playlistLength: defaultArgs.playlistLength, forcedQuery: defaultArgs.forcedQuery, checkDuplicatesBy: defaultArgs.checkDuplicatesBy, bAdvTitle: defaultArgs.bAdvTitle };
 										if (!forcedQueryMenusEnabled[name]) { sameByArgs.forcedQuery = ''; }
 										searchSameByCombs(sameByArgs);
-									}, flags: focusFlags
+									}, flags: focusFlags, bDefault: focusFlags !== MF_GRAYED
 								});
 								// Menu to configure property
 								menu.newSeparator(subMenuName);
@@ -156,7 +158,7 @@
 						const artist = globTags.artistRaw.toUpperCase();
 						const composer = globTags.composer.toUpperCase();
 						const selArgs = [
-							{ title: 'sep', menu: specialMenu },
+							{ title: menu.separator, menu: specialMenu },
 							{ // Finds tracks where artist or involved people matches any from selection
 								title: 'Same artist(s) or featured artist(s)', menu: specialMenu,
 								args: {
@@ -183,7 +185,7 @@
 									logic: 'OR'
 								}
 							},
-							{ title: 'sep', menu: specialMenu },
+							{ title: menu.separator, menu: specialMenu },
 						];
 						selArgs.forEach((selArg) => {
 							if (menu.isSeparator(selArg)) {

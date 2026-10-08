@@ -1,7 +1,7 @@
 ﻿'use strict';
-//17/04/26
+//08/10/26
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, menu_panelProperties:readable, configMenu:readable, createSubMenuEditEntries:readable, stripSort:readable, globTags:readable, createSmartShuffleMenu:readable, sbd:readable, entryMaxLength:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, menu_panelProperties:readable, configMenu:readable, createSubMenuEditEntries:readable, stripSort:readable, globTags:readable, createSmartShuffleMenu:readable, sbd:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, MF_MENUBARBREAK:readable, folders:readable, _isFile:readable, clone:readable, MF_STRING:readable, isJSON:readable, isBoolean:readable, isStringWeak:readable */
 
@@ -15,9 +15,10 @@
 			include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
 			include(scriptPath.replace(folders.xxx + 'main\\', '..\\').replace('pools.js', 'pools_presets.js'));
 			/* global createPoolPresets:readable */
-			readmes[newReadmeSep()] = 'sep';
-			readmes[name] = folders.xxx + 'helpers\\readme\\playlist_tools_menu_pools.txt';
-			readmes[name + ' (allowed keys)'] = folders.xxx + '\\presets\\Playlist Tools\\pools\\allowedKeys.txt';
+			readmes.push(
+				{ key: name, path: folders.xxx + 'helpers\\readme\\playlist_tools_menu_pools.txt', folder: name },
+				{ key: name + ' (allowed keys)', path: folders.xxx + '\\presets\\Playlist Tools\\pools\\allowedKeys.txt', folder: name }
+			);
 			// Other properties
 			if (!Object.hasOwn(menu_properties, 'bSmartShuffleAdvc')) {
 				menu_properties['bSmartShuffleAdvc'] = ['Smart shuffle extra conditions', true, { func: isBoolean }, true];
@@ -173,7 +174,7 @@
 									selArg = { name: 'Custom', ...input };
 									menu_properties['poolsCustomArg'][1] = JSON.stringify(selArg); // And update property with new value
 									overwriteMenuProperties(); // Updates panel
-								}
+								}, bDefault: true
 							});
 							// Menu to configure property
 							menu.newSeparator(menuName);

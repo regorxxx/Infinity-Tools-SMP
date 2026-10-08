@@ -1,18 +1,17 @@
 ﻿'use strict';
-//22/05/26
+//08/10/26
 
 /* exported mainMenuSMP, executeByName */
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, presets:readable, menu_panelProperties:readable, deferFunc:readable, isFunction:readable, overwritePanelProperties:readable, createMainMenuDynamic:readable, deleteMainMenuDynamic:readable, allEntries:readable, exportMainMenuDynamic:readable, configMenu:readable, sbd:readable, entryMaxLength:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, presets:readable, menu_panelProperties:readable, deferFunc:readable, isFunction:readable, overwritePanelProperties:readable, createMainMenuDynamic:readable, deleteMainMenuDynamic:readable, allEntries:readable, exportMainMenuDynamic:readable, configMenu:readable, sbd:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, WshShell:readable, popup:readable, clone:readable, _save:readable, isCompatible:readable, MF_STRING:readable, callbacksListener:readable, callbacksListener:readable, _jsonParseFileCheck:readable, utf8:readable */
 
 // Script integration
 {
-	const name = 'Script integration';
-	if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
-		readmes[newReadmeSep()] = 'sep';
-		const menuName = menu.newMenu(name);
+	const parent = 'Script integration';
+	if (!Object.hasOwn(menusEnabled, parent) || menusEnabled[parent]) {
+		const menuName = menu.newMenu(parent);
 		{	// Dynamic menus
 			const scriptPath = folders.xxx + 'main\\main_menu\\main_menu_custom.js';
 			/* global onMainMenuEntries:readable, onMainMenuDynamicEntries:readable */
@@ -24,8 +23,11 @@
 					/* global exportComponents:readable, exportDSP:readable, exportDSP:readable, exportDevices:readable,  */
 					include(folders.xxx + 'helpers\\helpers_xxx_playlists.js');
 					/* global getPlaylistIndexArray:readable */
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\main_menu_dynamic.txt';
-					readmes[menuName + '\\' + name + ' custom'] = folders.xxx + 'helpers\\readme\\main_menu_dynamic_custom.txt';
+					readmes.push(
+						{ key: menu.separator, folder: parent },
+						{ key: name, path: folders.xxx + 'helpers\\readme\\main_menu_dynamic.txt', folder: parent },
+						{ key: name + ' custom', path: folders.xxx + 'helpers\\readme\\main_menu_dynamic_custom.txt', folder: parent }
+					);
 					const subMenuName = menu.newMenu(name, menuName);
 					const mainMenuSMPDefaults = clone([
 						{ name: 'Add SKIP Tag at current playback', funcName: 'skipTagFromPlayback', path: '.\\main\\tags\\skip_tag_from_playback.js', icon: 'ui-icon ui-icon-tag' },
@@ -317,7 +319,10 @@
 		{	// Playlist Names Commands
 			const name = 'Playlist Names Commands';
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
-				readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\playlist_names_commands.txt';
+				readmes.push(
+					{ key: menu.separator, folder: parent },
+					{ key: name, path: folders.xxx + 'helpers\\readme\\playlist_names_commands.txt', folder: parent }
+				);
 				const subMenuName = menu.newMenu(name, menuName);
 				//  Menus
 				menu.newEntry({ menuName: subMenuName, entryText: 'Switch event listener:', func: null, flags: MF_GRAYED });
@@ -340,7 +345,10 @@
 		{	// Include scripts
 			const name = 'Include scripts';
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
-				readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\include_scripts.txt';
+				readmes.push(
+					{ key: menu.separator, folder: parent },
+					{ key: name, path: folders.xxx + 'helpers\\readme\\include_scripts.txt', folder: parent }
+				);
 				const subMenuName = menu.newMenu(name, menuName);
 				let scriptIncluded = [];
 				let scriptIncludedDefaults = [];
@@ -442,5 +450,5 @@
 				});
 			} else { menuDisabled.push({ menuName: name, subMenuFrom: menuName, index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 		}
-	} else { menuDisabled.push({ menuName: name, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
+	} else { menuDisabled.push({ menuName: parent, subMenuFrom: menu.getMainMenuName(), index: menu.getMenus().filter((entry) => menuAltAllowed.has(entry.subMenuFrom)).length + disabledCount++, bIsMenu: true }); }
 }

@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/05/26
+//08/10/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, forcedQueryMenusEnabled:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable */
 
@@ -20,7 +20,7 @@
 				const name = 'Most played Tracks at';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[name] = folders.xxx + 'helpers\\readme\\top_tracks_from_date.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\top_tracks_from_date.txt', folder: parent });
 					forcedQueryMenusEnabled[name] = true;
 					const subMenuName = menu.newMenu(name, menuName);
 					menu.newEntry({ menuName: subMenuName, entryText: 'Based on play counts within a period:', func: null, flags: MF_GRAYED });
@@ -28,13 +28,13 @@
 					{	// Static menus
 						const currentYear = new Date().getFullYear();
 						const selYearArr = [currentYear, currentYear - 1, currentYear - 2];
-						selYearArr.forEach((selYear) => {
+						selYearArr.forEach((selYear, i) => {
 							let selArgs = { year: selYear, bUseLast: false };
 							menu.newEntry({
 								menuName: subMenuName, entryText: 'Most played at ' + selYear, func: (args = { ...defaultArgs, ...selArgs }) => { // NOSONAR
 									if (!forcedQueryMenusEnabled[name]) { args.forcedQuery = ''; }
 									topTracksFromDate(args);
-								}
+								}, bDefault: i === 0
 							});
 						});
 						menu.newSeparator(subMenuName);
@@ -127,7 +127,7 @@
 			} else if (isPlayCount && _isFile(scriptPathElse)) {
 				const name = 'Most played Tracks';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
-					readmes[name] = folders.xxx + 'helpers\\readme\\top_tracks.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\top_tracks.txt', folder: parent });
 					// All years
 					include(scriptPathElse);
 					menu.newEntry({
@@ -152,7 +152,7 @@
 							const name = namePlay;
 							if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 								include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-								readmes[name] = folders.xxx + 'helpers\\readme\\top_rated_tracks.txt';
+								readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\top_rated_tracks.txt', folder: parent });
 								forcedQueryMenusEnabled[name] = true;
 								const subMenuName = menu.newMenu(name, menuName);
 								menu.newEntry({ menuName: subMenuName, entryText: 'Shift + Click to randomize:', func: null, flags: MF_GRAYED });
@@ -164,9 +164,9 @@
 								for (let i = fromTo[0]; i < fromTo[1]; i += step) {
 									selYearArr.push([i, Math.min(i + step, currentYear)]);
 								}
-								selYearArr.push('sep', [fromTo[1] - 20, currentYear], 'sep', [currentYear - 1], [currentYear]);
+								selYearArr.push(menu.separator, [fromTo[1] - 20, currentYear], menu.separator, [currentYear - 1], [currentYear]);
 								if (selYearArr.length > 20) { selYearArr.length = 20; } // Safecheck
-								selYearArr.splice(0, 0, [0, selYearArr[0][0]], 'sep');
+								selYearArr.splice(0, 0, [0, selYearArr[0][0]], menu.separator);
 								const queryDateAndName = (selArgs, selYear) => {
 									let dateQuery = '';
 									if (selYear.length === 2) {
@@ -180,7 +180,7 @@
 									const plsName = 'Top ' + selArgs.playlistLength + ' Played Tracks ' + dateName;
 									return [dateQuery, plsName];
 								};
-								selYearArr.reverse().forEach((selYear) => {
+								selYearArr.reverse().forEach((selYear, i) => {
 									if (menu.isSeparator(selYear)) { menu.newSeparator(subMenuName); return; }
 									selYear.sort(); // Invariant to order
 									const dateName = (selYear.length === 2 && selYear[0] === 0 ? ' before ' + selYear[1] : ' from ' + selYear.join('-'));
@@ -189,7 +189,7 @@
 											if (utils.IsKeyPressed(VK_SHIFT)) { args.sortBy = ''; } // Random on shift
 											[args.forcedQuery, args.playlistName] = queryDateAndName(args, selYear);
 											topTracks(args);
-										}
+										}, bDefault: i === 0
 									});
 								});
 								menu.newSeparator(subMenuName);
@@ -221,7 +221,7 @@
 							const name = nameRate;
 							if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 								include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-								readmes[name] = folders.xxx + 'helpers\\readme\\top_rated_tracks.txt';
+								readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\top_rated_tracks.txt', folder: parent });
 								forcedQueryMenusEnabled[name] = true;
 								const subMenuName = menu.newMenu(name, menuName);
 								menu.newEntry({ menuName: subMenuName, entryText: 'Shift + Click to randomize:', func: null, flags: MF_GRAYED });
@@ -233,9 +233,9 @@
 								for (let i = fromTo[0]; i < fromTo[1]; i += step) {
 									selYearArr.push([i, Math.min(i + step, currentYear)]);
 								}
-								selYearArr.push('sep', [fromTo[1] - 20, currentYear], 'sep', [currentYear - 1], [currentYear]);
+								selYearArr.push(menu.separator, [fromTo[1] - 20, currentYear], menu.separator, [currentYear - 1], [currentYear]);
 								if (selYearArr.length > 20) { selYearArr.length = 20; } // Safecheck
-								selYearArr.splice(0, 0, [0, selYearArr[0][0]], 'sep');
+								selYearArr.splice(0, 0, [0, selYearArr[0][0]], menu.separator);
 								const queryDateAndName = (selArgs, selYear) => {
 									let dateQuery = '';
 									if (selYear.length === 2) {
@@ -249,7 +249,7 @@
 									const plsName = 'Top ' + selArgs.playlistLength + ' Rated Tracks ' + dateName;
 									return [dateQuery, plsName];
 								};
-								selYearArr.reverse().forEach((selYear) => {
+								selYearArr.reverse().forEach((selYear, i) => {
 									if (menu.isSeparator(selYear)) { menu.newSeparator(subMenuName); return; }
 									selYear.sort(); // Invariant to order
 									const dateName = (selYear.length === 2 && selYear[0] === 0 ? ' before ' + selYear[1] : ' from ' + selYear.join('-'));
@@ -258,7 +258,7 @@
 											if (utils.IsKeyPressed(VK_SHIFT)) { args.sortBy = ''; } // Random on shift
 											[args.forcedQuery, args.playlistName] = queryDateAndName(args, selYear);
 											topRatedTracks(args);
-										}
+										}, bDefault: i === 0
 									});
 								});
 								menu.newSeparator(subMenuName);

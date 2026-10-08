@@ -1,15 +1,16 @@
 ﻿'use strict';
-//10/09/26
+//08/10/26
 
-/* global menusEnabled:readable, configMenu:readable, readmes:readable, menu:readable, newReadmeSep:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, menu_propertiesBack:readable, menu_panelProperties:readable, overwritePanelProperties:readable, shortcutsPath:readable, importPreset:readable, presets:writable, menu_panelPropertiesBack:readable, loadProperties:readable, overwriteDefaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, specialMenu:readable, sbd:readable */
+/* global menusEnabled:readable, configMenu:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, menu_propertiesBack:readable, menu_panelProperties:readable, overwritePanelProperties:readable, shortcutsPath:readable, importPreset:readable, presets:writable, menu_panelPropertiesBack:readable, loadProperties:readable, overwriteDefaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, specialMenu:readable, sbd:readable */
 
-/* global MF_GRAYED:readable, folders:readable, _isFile:readable, utf8:readable, globQuery:readable, _p:readable, _save:readable, _explorer:readable, isArrayEqual:readable, _jsonParseFileCheck:readable, Input:readable, globRegExp:readable, capitalize:readable, WshShell:readable, popup:readable, MF_STRING:readable, _recycleFile:readable, _open:readable, MF_MENUBREAK:readable, _qCond:readable, globTags:readable */
+/* global MF_GRAYED:readable, folders:readable, _isFile:readable, utf8:readable, globQuery:readable, _p:readable, _save:readable, _explorer:readable, isArrayEqual:readable, _jsonParseFileCheck:readable, Input:readable, globRegExp:readable, capitalize:readable, WshShell:readable, popup:readable, MF_STRING:readable, _recycleFile:readable, _open:readable, _qCond:readable, globTags:readable */
 
 // Configuration
 {
 	if (!Object.hasOwn(menusEnabled, configMenu) || menusEnabled[configMenu]) {
-		readmes[newReadmeSep()] = 'sep';
-		readmes[configMenu + '\\Presets'] = folders.xxx + 'helpers\\readme\\playlist_tools_menu_presets.txt';
+		readmes.push(
+			{ key: 'Presets', path: folders.xxx + 'helpers\\readme\\playlist_tools_menu_presets.txt', folder: scriptName }
+		);
 		// Create it if it was not already created. Contains entries from multiple scripts
 		if (!menu.hasMenu(configMenu)) {
 			if (!menu.isLastEntrySepFrom(menu.getMainMenuName())) { menu.newSeparator(); }
@@ -99,13 +100,13 @@
 										{ name: 'Medium length tracks', query: globQuery.mediumLength },
 										{ name: 'Long length tracks', query: globQuery.longLength },
 										{ name: 'Only Stereo', query: globQuery.stereo },
-										{ name: 'sep' },
+										{ name: menu.separator },
 										{ name: 'Not recently listened', query: 'NOT ' + globQuery.recent },
 										{ name: 'Daily listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalDay) + ' LESS 1' },
 										{ name: 'Weekly listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalWeek) + ' LESS 1' },
 										{ name: 'Monthly listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalMonth) + ' LESS 1' },
 										{ name: 'Yearly listen rate ≥1', query: 'NOT ' + _qCond(globTags.playCountRateGlobalYear) + ' LESS 1' },
-										{ name: 'sep' },
+										{ name: menu.separator },
 										{ name: 'No Female vocals', query: globQuery.noFemale },
 										{ name: 'No Instrumentals', query: globQuery.noInstrumental },
 										{ name: 'No Acoustic tracks', query: globQuery.noAcoustic },
@@ -262,7 +263,7 @@
 			menu.newEntry({ menuName: subMenuName, entryText: 'Switch async functionality:', func: null, flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
 			{	// Enable
-				readmes[configMenu + '\\Async processing'] = folders.xxx + 'helpers\\readme\\async_processing.txt';
+				readmes.push({ key: 'Async processing', path: folders.xxx + 'helpers\\readme\\async_processing.txt', folder: scriptName });
 				menu.newCondEntry({
 					entryText: 'async', condFunc: () => {
 						const async = JSON.parse(menu_properties.async[1]);
@@ -318,7 +319,7 @@
 			menu.newEntry({ menuName: subMenuName, entryText: 'Switch UI functionality:', func: null, flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
 			{	// Shortcuts
-				readmes[configMenu + '\\Keyboard Shortcuts'] = folders.xxx + 'helpers\\readme\\keyboard_shortcuts.txt';
+				readmes.push({ key: 'Keyboard Shortcuts', path: folders.xxx + 'helpers\\readme\\keyboard_shortcuts.txt', folder: scriptName });
 				menu.newEntry({
 					menuName: subMenuName, entryText: 'Show keyboard shortcuts on entries', func: () => {
 						if (!menu_properties.bShortcuts[1]) {
@@ -407,33 +408,36 @@
 		menu.newSeparator(configMenu);
 		{	// Readmes
 			const subMenuName = menu.newMenu('Help', configMenu);
-			if (window.ScriptInfo.Name === 'Playlist Tools: Buttons Bar') {
-				readmes[newReadmeSep()] = 'sep';
-				readmes['Toolbar'] = folders.xxx + 'helpers\\readme\\toolbar.txt';
+			menu.setDefaultEntryLast();
+			if (window.ScriptInfo.Name === 'Infinity-Tools-SMP') {
+				readmes.push(
+					{ key: menu.separator },
+					{ key: 'Toolbar', path: folders.xxx + 'helpers\\readme\\toolbar.txt' }
+				);
 			}
 			menu.newEntry({ menuName: subMenuName, entryText: 'Open popup with readme:', func: null, flags: MF_GRAYED });
 			menu.newSeparator(subMenuName);
 			let iCount = 0;
-			const breakOn = 20;
-			if (Object.keys(readmes).length) {
-				const sepRegEx = /^(?:sep|separator)$/i;
-				Object.entries(readmes).forEach(([key, value]) => { // Only show non empty files
-					if (sepRegEx.test(value)) { menu.newSeparator(subMenuName); }
-					else if (_isFile(value)) {
-						const readme = _open(value, utf8); // Executed on script load
-						const flags = iCount < breakOn ? MF_STRING : iCount === breakOn ? MF_MENUBREAK : (iCount - breakOn) % (breakOn + 1) ? MF_STRING : MF_MENUBREAK; // Span horizontally
+			if (readmes.length) {
+				readmes.forEach(({ key, path, folder }) => { // Only show non empty files
+					if (menu.isSeparator(key)) {
+						const menuName = folder ? menu.findOrNewMenu(folder, subMenuName) : subMenuName;
+						if (!menu.isLastEntrySepFrom(menuName) && (!folder || !menu.isMenuEmpty(menuName, subMenuName))) { menu.newSeparator(menuName); }
+					} else if (_isFile(path)) {
+						const menuName = folder ? menu.findOrNewMenu(folder, subMenuName) : subMenuName;
+						const readme = _open(path, utf8); // Executed on script load
 						if (readme.length) {
 							menu.newEntry({
-								menuName: subMenuName, entryText: key, func: () => { // Executed on menu click
-									if (_isFile(value)) {
-										const readme = _open(value, utf8);
+								menuName, entryText: key, func: () => { // Executed on menu click
+									if (_isFile(path)) {
+										const readme = _open(path, utf8);
 										if (readme.length) { fb.ShowPopupMessage(readme, key); }
-									} else { console.log('Playlist Tools: Readme not found\n\t ' + value); }
-								}, flags
+									} else { console.log('Playlist Tools: Readme not found\n\t ' + path); }
+								}, flags: MF_STRING
 							});
 							iCount++;
 						}
-					} else { console.log('Playlist Tools: Readme not found\n\t ' + value); }
+					} else { console.log('Playlist Tools: Readme not found\n\t ' + path); }
 				});
 				// Entry to open all readmes
 				menu.newCondEntry({
@@ -442,12 +446,12 @@
 							menu.newSeparator(subMenuName);
 							menu.newEntry({
 								menuName: subMenuName, entryText: 'Open all readmes', func: () => { // Executed on menu click
-									Object.entries(readmes).forEach(([key, value]) => { // Only show non empty files
-										if (sepRegEx.test(value)) { return; }
-										else if (_isFile(value)) {
-											const readme = _open(value, utf8);
+									readmes.forEach(({ key, path }) => { // Only show non empty files
+										if (menu.isSeparator(key)) { return; }
+										else if (_isFile(path)) {
+											const readme = _open(path, utf8);
 											if (readme.length) { fb.ShowPopupMessage(readme, key); }
-										} else { console.log('Playlist Tools: Readme not found\n\t ' + value); }
+										} else { console.log('Playlist Tools: Readme not found\n\t ' + path); }
 									});
 								}
 							});

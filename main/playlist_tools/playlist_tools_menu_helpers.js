@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/10/26
+//08/10/26
 
 /* exported overwritePanelProperties, loadProperties, createSubMenuEditEntries, lastActionEntry, focusFlags, playlistCountFlags, playlistCountFlagsRem, playlistCountFlagsAddRem, multipleSelectedFlags, multipleSelectedFlagsReorder, selectedFlags, selectedFlagsReorder, selectedFlagsRem, selectedFlagsAddRem, closeLock, createTagMenu, createSmartShuffleMenu */
 
@@ -52,7 +52,7 @@ function updateMenuProperties(propObject, menuFunc = deferFunc) {
 		overwriteProperties(panelPropObject); // Updates panel
 		const readmeKeys = ['Tagging requisites']; // Must read files on first execution
 		readmeKeys.forEach((key) => {
-			const readmePath = readmes[key];
+			const readmePath = readmes.find((r) => r.key === key);
 			const readme = _open(readmePath, utf8);
 			if (readme.length) { fb.ShowPopupMessage(readme, key); }
 		});

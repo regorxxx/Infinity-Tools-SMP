@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/05/26
+//08/10/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:writable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, selectedFlags:readable, createSubMenuEditEntries:readable, libSearchMenu:readable, entryMaxLength:readable */
 
@@ -16,7 +16,7 @@
 				const name = 'Dynamic Queries';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[name] = folders.xxx + 'helpers\\readme\\dynamic_query.txt';
+					readmes.push({ key: name, path: folders.xxx + 'helpers\\readme\\dynamic_query.txt', folder: libSearchMenu });
 					forcedQueryMenusEnabled[name] = false;
 					if (!menu.isLastEntrySepFrom(menuName)) { menu.newSeparator(menuName); }
 					const subMenuName = menu.newMenu(name, menuName);
@@ -34,7 +34,7 @@
 								name: 'Duplicates on library',
 								query: queryJoin([globQuery.compareTitle, globTags.artist + ' IS #' + globTags.artistRaw + '#', _qCond(globTags.date) + ' IS #' + globTags.date + '#'])
 							},
-							{ name: 'sep' },
+							{ name: menu.separator },
 							{
 								name: 'Same date (any track/artist)',
 								query: _qCond(globTags.date) + ' IS #' + globTags.date + '#'
@@ -43,7 +43,7 @@
 								name: 'Same artist(s)',
 								query: globTags.artist + ' IS #' + globTags.artistRaw + '#'
 							},
-							{ name: 'sep' },
+							{ name: menu.separator },
 							{
 								name: 'Acoustic versions of song',
 								query: queryJoin([globQuery.compareTitle, globTags.artist + ' IS #' + globTags.artistRaw + '#', globQuery.acoustic])
@@ -56,7 +56,7 @@
 								name: 'Cover versions of song',
 								query: queryJoin([globQuery.compareTitle, globTags.artist + ' IS #' + globTags.artistRaw + '#'], 'AND NOT')
 							},
-							{ name: 'sep' },
+							{ name: menu.separator },
 							{
 								name: 'Rated ≥3 tracks (by artist)',
 								query: queryJoin([globQuery.ratingGr2, globTags.artist + ' IS #' + globTags.artistRaw + '#'])
@@ -69,7 +69,7 @@
 								name: 'Loved tracks (by artist)',
 								query: queryJoin([globQuery.loved, globTags.artist + ' IS #' + globTags.artistRaw + '#'])
 							},
-							{ name: 'sep' },
+							{ name: menu.separator },
 							{
 								name: 'Last played today',
 								query: globQuery.lastPlayedFunc.replaceAll('#QUERYEXPRESSION#', 'DURING #NOW#'),
@@ -82,7 +82,7 @@
 								sort: { tfo: globTags.playCountRateGlobalDay, direction: -1 },
 								bStatic: true
 							},
-							{ name: 'sep' },
+							{ name: menu.separator },
 							{
 								name: 'Daily listen rate ≥1',
 								query: 'NOT ' + _qCond(globTags.playCountRateGlobalDay) + ' LESS 1',
@@ -209,7 +209,7 @@
 												const handleList = dynamicQuery({ query, bForceStatic: true });
 												if (!handleList) { fb.ShowPopupMessage('Query failed:\n' + query, scriptName); return; }
 											}
-										}
+										}, bDefault: true
 									});
 									// Menu to configure property
 									menu.newSeparator(subMenuName);

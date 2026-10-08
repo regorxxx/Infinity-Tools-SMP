@@ -1,7 +1,7 @@
 ﻿'use strict';
-//21/11/25
+//08/10/25
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, globQuery:readable, libSearchMenu:readable, entryMaxLength:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, forcedQueryMenusEnabled:readable, createSubMenuEditEntries:readable, globQuery:readable, libSearchMenu:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, globTags:readable, checkQuery:readable */
 
@@ -15,25 +15,27 @@
 			const name = 'Standard Queries';
 			if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 				include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-				readmes[newReadmeSep()] = 'sep';
-				readmes[name] = folders.xxx + 'helpers\\readme\\dynamic_query.txt';
+				readmes.push(
+					{ key: menu.separator, folder: libSearchMenu },
+					{ key: name, path: folders.xxx + 'helpers\\readme\\dynamic_query.txt', folder: libSearchMenu }
+				);
 				forcedQueryMenusEnabled[name] = true;
 				const subMenuName = menu.newMenu(name, menuName);
 				{	// Dynamic menu
 					let queryFilter = [
 						{ name: 'Media library', query: 'ALL', sort: { tfo: '', direction: -1 } },
 						{ name: 'Media library (forced query)', query: '', sort: { tfo: '', direction: -1 } },
-						{ name: 'sep' },
-						{ name: 'Rated ≥4 tracks', query: globQuery.ratingGr3 , sort: { tfo: globTags.rating, direction: 1 } },
-						{ name: 'Rated 5 tracks', query: globQuery.ratingTop , sort: { tfo: globTags.rating, direction: 1 } },
-						{ name: 'Fav tracks', query: globQuery.fav , sort: { tfo: globTags.rating, direction: 1 } },
-						{ name: 'Loved tracks', query: globQuery.loved , sort: { tfo: globTags.rating, direction: 1 } },
-						{ name: 'sep' },
-						{ name: 'Recently listened', query: globQuery.recent, sort: { tfo: globTags.sortLastPlayed , direction: -1 } },
+						{ name: menu.separator },
+						{ name: 'Rated ≥4 tracks', query: globQuery.ratingGr3, sort: { tfo: globTags.rating, direction: 1 } },
+						{ name: 'Rated 5 tracks', query: globQuery.ratingTop, sort: { tfo: globTags.rating, direction: 1 } },
+						{ name: 'Fav tracks', query: globQuery.fav, sort: { tfo: globTags.rating, direction: 1 } },
+						{ name: 'Loved tracks', query: globQuery.loved, sort: { tfo: globTags.rating, direction: 1 } },
+						{ name: menu.separator },
+						{ name: 'Recently listened', query: globQuery.recent, sort: { tfo: globTags.sortLastPlayed, direction: -1 } },
 						{ name: 'Recently added', query: globQuery.added, sort: { tfo: globTags.sortAdded, direction: -1 } },
-						{ name: 'Not recently listened', query: 'NOT ' + globQuery.recent, sort: { tfo: globTags.sortLastPlayed , direction: -1 } },
+						{ name: 'Not recently listened', query: 'NOT ' + globQuery.recent, sort: { tfo: globTags.sortLastPlayed, direction: -1 } },
 						{ name: 'Not recently added', query: 'NOT ' + globQuery.added, sort: { tfo: globTags.sortAdded, direction: -1 } },
-						{ name: 'sep' },
+						{ name: menu.separator },
 						{ name: 'Rock tracks', query: globTags.genre + ' IS rock OR ' + globTags.genre + ' IS alt. rock OR ' + globTags.genre + ' IS progressive rock OR ' + globTags.genre + ' IS hard rock OR ' + globTags.genre + ' IS rock & roll', sort: { tfo: '$rand()', direction: 1 } },
 						{ name: 'Psychedelic tracks', query: globTags.genre + ' IS psychedelic rock OR ' + globTags.genre + ' IS psychedelic OR ' + globTags.style + ' IS neo-psychedelia OR ' + globTags.style + ' IS psychedelic Folk', sort: { tfo: '$rand()', direction: 1 } },
 						{ name: 'Folk \\ Country tracks', query: globTags.genre + ' IS folk OR ' + globTags.genre + ' IS folk-rock OR ' + globTags.genre + ' IS country', sort: { tfo: '$rand()', direction: 1 } },
@@ -120,7 +122,7 @@
 											query: forcedQueryMenusEnabled[name] && defaultArgs.forcedQuery.length
 												? (query.length && query.toUpperCase() !== 'ALL'
 													? '(' + query + ') AND (' + defaultArgs.forcedQuery + ')'
-													: query	)
+													: query)
 												: (query.length ? query : 'ALL')
 										});
 										if (!handleList) { fb.ShowPopupMessage('Query failed:\n' + query, scriptName); return; }
@@ -128,7 +130,7 @@
 										selArg.query = query;
 										menu_properties['searchCustomArg'][1] = JSON.stringify(selArg); // And update property with new value
 										overwriteMenuProperties(); // Updates panel
-									}
+									}, bDefault: true
 								});
 								// Menu to configure property
 								menu.newSeparator(subMenuName);

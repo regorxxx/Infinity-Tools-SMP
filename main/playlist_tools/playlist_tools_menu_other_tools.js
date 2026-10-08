@@ -1,7 +1,7 @@
 ﻿'use strict';
-//28/05/26
+//08/10/26
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, newReadmeSep:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, libSearchMenu:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, scriptName:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, menu_properties:writable, overwriteMenuProperties:readable, libSearchMenu:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, globTags:readable globQuery:readable, isString:readable, isJSON:readable, Input:readable, sanitizePath:readable, checkQuery:readable, _foldPath:readable, _copyFile:readable, utf8:readable, convertCharsetToCodepage:readable */
 
@@ -9,7 +9,7 @@
 {
 	if (!Object.hasOwn(menusEnabled, libSearchMenu) || menusEnabled[libSearchMenu]) {
 		const menuName = menu.findOrNewMenu(libSearchMenu);
-		readmes[newReadmeSep()] = 'sep';
+		readmes.push({ key: menu.separator });
 		{	// Import track list
 			const scriptPath = folders.xxx + 'main\\playlists\\import_text_playlist.js';
 			/* global ImportTextPlaylist:readable */
@@ -17,7 +17,10 @@
 				const name = 'Import track list';
 				if (!Object.hasOwn(menusEnabled, name) || menusEnabled[name]) {
 					include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
-					readmes[menuName + '\\' + name] = folders.xxx + 'helpers\\readme\\import_text_playlist.txt';
+					readmes.push(
+						{ key: menu.separator, folder: libSearchMenu },
+						{ key: name, path: folders.xxx + 'helpers\\readme\\import_text_playlist.txt', folder: libSearchMenu }
+					);
 					{	// Submenu
 						const subMenuName = menu.newMenu(name, menuName);
 						// Create new properties with previous args

@@ -1,7 +1,7 @@
 ﻿'use strict';
 //28/05/26
 
-/* global menusEnabled:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, createSubMenuEditEntries:readable, newReadmeSep:readable, presets:readable, entryMaxLength:readable */
+/* global menusEnabled:readable, readmes:readable, menu:readable, menu_properties:readable, scriptName:readable, overwriteMenuProperties:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable, createSubMenuEditEntries:readable,presets:readable, entryMaxLength:readable */
 
 /* global MF_GRAYED:readable, folders:readable, _isFile:readable, isJSON:readable, MF_STRING:readable */
 
@@ -16,8 +16,10 @@
 			const menuName = menu.newMenu(name);
 			include(scriptPath.replace(folders.xxx + 'main\\', '..\\'));
 			const Macros = menu.Macros = new _Macros(menu, { prefixMenu: name });
-			readmes[newReadmeSep()] = 'sep';
-			readmes[name] = folders.xxx + 'helpers\\readme\\playlist_tools_menu_macros.txt';
+			readmes.push(
+				{ key: menu.separator },
+				{ key: name, path: folders.xxx + 'helpers\\readme\\playlist_tools_menu_macros.txt' }
+			);
 			// Create new properties
 			const thisYear = (new Date()).getFullYear() - 1;
 			const macrosDefaults = [
@@ -97,7 +99,7 @@
 						'Pools\\Custom pool...'
 					], bAsync: false
 				},
-				{ name: 'sep' },
+				{ name: menu.separator },
 				{
 					name: 'Report library tags errors', entry: [
 						'Standard Queries\\Entire library',
