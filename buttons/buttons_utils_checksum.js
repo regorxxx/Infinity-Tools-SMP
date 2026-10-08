@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//07/10/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -87,7 +87,7 @@ addButton({
 						}).then(() => {
 							if (properties.bCheckOnSel[1]) { this.changeActiveOnSelection(); }
 						});
-					}, flags: checksumUtils.isRunning() ? MF_GRAYED : MF_STRING
+					}, flags: checksumUtils.isRunning() ? MF_GRAYED : MF_STRING, bDefault: true
 				});
 				menu.newSeparator();
 				menu.newEntry({
@@ -114,7 +114,7 @@ addButton({
 				menu.newEntry({
 					entryText: 'Abort processing', func: () => {
 						checksumUtils.abort();
-					}, flags: checksumUtils.isRunning() ? MF_STRING : MF_GRAYED
+					}, flags: checksumUtils.isRunning() ? MF_STRING : MF_GRAYED, bDefault: checksumUtils.isRunning()
 				});
 				menu.newSeparator();
 				menu.newEntry({ entryText: 'Settings...', func: () => this.onClick(MK_SHIFT) });

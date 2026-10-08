@@ -26,6 +26,7 @@
 - Fingerprint tools: warns when foobar2000 is not configured to read the full fingerprint tag on ChromaPrint fast entry, previously was only done on the standard one.
 - Fingerprint tools: greatly improved database structure to reduce file size and memory usage.
 - Buttons: minor changes to some preset names to better reflect buttons used.
+- UI: some menus now have default actions set (bold text), if JS-Host allows it. This is only a minor display detail without any associated functionality.
 - UI: after changing buttons text color, a popup will ask to adjust active button color based on it.
 - UI: improved default behavior regarding hover effects if hover color is disabled. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087726.html#msg1087726).
 - UI: reworked initial presets popup to better warn about panel reload consequences while buttons are installing on first init. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087770.html#msg1087770).

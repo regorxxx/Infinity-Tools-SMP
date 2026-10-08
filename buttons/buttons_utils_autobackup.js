@@ -1,5 +1,5 @@
 ﻿'use strict';
-//17/08/26
+//07/10/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -285,7 +285,7 @@ addButton({
 					menu.newCheckMenuLast(() => { return this.buttonsProperties.active[1]; });
 				}
 				menu.newSeparator();
-				menu.newEntry({ entryText: 'Execute Save & Backup', func: this.autoBackup.forceBackup });
+				menu.newEntry({ entryText: 'Execute Save & Backup', func: this.autoBackup.forceBackup, bDefault: true });
 				menu.newSeparator();
 				menu.newEntry({
 					entryText: 'Open backup folder...', func: () => {

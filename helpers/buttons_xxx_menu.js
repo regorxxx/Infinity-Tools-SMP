@@ -1,5 +1,5 @@
 ﻿'use strict';
-//27/04/26
+//07/10/26
 
 /* exported settingsMenu */
 
@@ -144,7 +144,7 @@ function settingsMenu(parent, bShowValues = false, readmeFiles = [], entrySettin
 				}
 			});
 		} else {
-			menu.newEntry({ entryText: 'Open help...', func: () => showButtonReadme(readmeFiles[0]) });
+			menu.newEntry({ entryText: 'Open help...', func: () => showButtonReadme(readmeFiles[0]), bDefault: true });
 		}
 	}
 	return menu;
