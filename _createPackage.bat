@@ -1,6 +1,6 @@
 @ECHO off
 REM ------------------------------------------------------------------
-REM Create packages (zip file) from js files v.10/10/2026
+REM Create packages (zip file) from js files v.11/10/2026
 REM Requires 7za.exe on windows to compress (otherwise do it manually)
 REM If it's not provided, can be downloaded from:
 REM 	https://www.7-zip.org/download.html
@@ -23,7 +23,7 @@ SETLOCAL
 SET packagesFolder=packages
 SET zipExec=helpers-external\7z\7za_32.exe
 SET hasErrors=false
-SET timestamp=DD/MM/YYYY HH:mm
+SET timestamp=YYYY/MM/DD hh:mm
 SET foobarPath=%2
 IF [%foobarPath%]==[.] (
 	SET foobarPath="..\..\..\..\foobar2000.exe"
@@ -1146,7 +1146,7 @@ FOR %%f in (%folders%) do (
 GOTO:EOF
 
 :get_date
-for /f "delims=" %%# in ('powershell get-date -format "{dd-MM-yyyy HH:mm}"') do @set timestamp=%%#
+for /f "delims=" %%# in ('powershell get-date -format "{yyyy-MM-dd HH:mm}"') do @set timestamp=%%#
 GOTO:EOF
 
 :create_package_info
