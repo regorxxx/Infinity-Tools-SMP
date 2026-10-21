@@ -478,9 +478,20 @@ addButton({
 						}, bAvailable: bLibraryTree
 					},
 					{
-						text: 'Search on Library Tree', func: () => {
+						text: 'Search on Library Tree (+ ENTER)', func: () => {
 							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
 							window.NotifyOthers('Library-Tree-SMP: search', { search: this.displayFunc(), window: panels });
+						},
+						input: () => {
+							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], libraryTreeText, 'Library-Tree-SMP panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
+							if (panels === null) { return; }
+							this.buttonsProperties.onClickArg[1] = panels;
+						}, bAvailable: bLibraryTree
+					},
+					{
+						text: 'Search on Library Tree', func: () => {
+							const panels = this.buttonsProperties.onClickArg[1].length ? this.buttonsProperties.onClickArg[1].split('|') : void (0);
+							window.NotifyOthers('Library-Tree-SMP: search', { search: this.displayFunc(), window: panels, enter: false });
 						},
 						input: () => {
 							const panels = Input.string('string', this.buttonsProperties.onClickArg[1], libraryTreeText, 'Library-Tree-SMP panel name', 'My panel|Another panel') || (Input.isLastEqual ? Input.lastInput : null);
