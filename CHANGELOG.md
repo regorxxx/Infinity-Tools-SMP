@@ -53,6 +53,7 @@
 - UI: fixed incompatibility with JSplitter v4.2.0+ or v3.9.0+.
 - UI: fixed some unwanted helpers button files being shown at add button submenus. Bug introduced at [2.2.0](#211---2026-09-14).
 - UI: fix image-based icons not being reset on color changes until panel reload. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087540.html#msg1087540).
+- UI: fixed titles of some button settings input popups.
 - Helpers: create full folder tree on file/folder remove.
 
 ## [2.2.0] - 2026-09-14

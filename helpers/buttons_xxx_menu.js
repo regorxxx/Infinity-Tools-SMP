@@ -59,7 +59,9 @@ function settingsMenu(parent, bShowValues = false, readmeFiles = [], entrySettin
 			const entryName = Object.hasOwn(keySettings, 'name') ? keySettings.name : properties[key][0].replace(/[A-z]*\d*_*\d*\./, '');
 			const entryText = entryName + (bShowValues && type !== 'boolean' ? '\t[' + (type === 'string' || type === 'object' ? value.cut(10) : value) + ']' : '');
 			const desc = keySettings.input || '';
-			const popupName = parentName + entryName;
+			const popupName = parentName
+				? parentName + ': ' + entryName
+				: entryName;
 			menu.newEntry({
 				entryText, func: () => {
 					let input;
