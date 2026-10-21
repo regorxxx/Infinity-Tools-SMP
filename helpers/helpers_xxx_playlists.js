@@ -1,5 +1,5 @@
 ﻿'use strict';
-//06/06/26
+//17/10/26
 
 /* exported playlistCountLocked, removeNotSelectedTracks, getPlaylistNames, removePlaylistByName, clearPlaylistByName, arePlaylistNamesDuplicated, findPlaylistNamesDuplicated, sendToPlaylist, getHandlesFromUIPlaylists, getLocks, setLocks, getPlaylistSelectedIndexes, getPlaylistSelectedIndexFirst, getPlaylistSelectedIndexLast, getSource, MAX_QUEUE_ITEMS, focusOnItem, findTracksAtPlaylist, hasAnyLocks, movePlaylistSelection, selectTracksAtPlaylist, selectTracksAtPlaylistAndFocus */
 
@@ -83,7 +83,7 @@ function selectTracksAtPlaylistAndFocus({ selection, plsIdx }) {
 // Outputs names of all playlists
 function getPlaylistNames() {
 	let names = [];
-	for (let i = 0; i < plman.PlaylistCount; i++) { names.push({ name: plman.GetPlaylistName(i), idx: i }); }
+	for (let i = 0; i < plman.PlaylistCount; i++) { names.push({ name: plman.GetPlaylistName(i), guid: plman.GetGUID(i), idx: i }); }
 	return names;
 }
 

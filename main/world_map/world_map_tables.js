@@ -1,5 +1,5 @@
 ﻿'use strict';
-//06/06/26
+//21/10/26
 
 /* exported findCountryCoords,isNearCountry, findCountry, getCountryName, alpha3toAlpha2, nameReplacersRev, nameShortRev */
 
@@ -146,12 +146,11 @@ const nameReplacers = new Map([
 	['us virgin islands', 'virgin islands, u.s.'],
 	['u.s. virgin islands', 'virgin islands, u.s.'],
 	['u.s.', 'united states'],
-	['russian federation', 'russia'],
+	['russian federation', 'russia']
 ]);
 const nameReplacersRev = new Map(Array.from(nameReplacers, (arr) => arr.reverse()));
 
 const nameShort = new Map([
-	['korea', 'korea, democratic people\'s republic of'],
 	['micronesia', 'micronesia, federated states of'],
 	['moldova', 'moldova, republic of'],
 	['saint helena', 'saint helena, ascension and tristan da cunha'],
@@ -165,7 +164,7 @@ const nameShort = new Map([
 	['saint helena', 'saint helena, ascension and tristan da cunha'],
 	['tanzania', 'tanzania, united republic of'],
 	['virgin islands', 'virgin islands, british'],
-	['virgin islands', 'virgin islands, u.s.'],
+	['us virgin islands', 'virgin islands, u.s.'],
 ]);
 const nameShortRev = new Map(Array.from(nameShort, (arr) => arr.reverse()));
 
