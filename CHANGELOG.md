@@ -19,6 +19,7 @@
 - Display TF button: more actions for [Library-Tree-SMP](https://github.com/regorxxx/Library-Tree-SMP).
 - Buttons: added 'Interactive Rating stars' preset on empty toolbars.
 - UI: active button color is now based by default in DUI/CUI colors and adjusted according to it. Previous installations will have a color already set, thus it will not change unless manually reset first.
+- Installation: added support for [foo_component_update_checker](https://github.com/p2ashiura/foo_component_update_checker). Those who use that component, will get automatic notifications about package updates from now on (not nightlies).
 ### Changed
 - Quickmatch: playlist name is now configurable with dynamic variables based on entries.
 - Quicksearch: playlist name is now configurable with dynamic variables based on entries.
