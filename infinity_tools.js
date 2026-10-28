@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/26
+//27/10/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -52,7 +52,7 @@ globProfiler.Print('helpers');
 checkCompatible();
 
 let barProperties = {
-	drawMode: ['- Draw mode: GDI (0), D2D (1)', 0, { func: isInt, range: [[0,1]] }],
+	drawMode: ['- Draw mode: GDI (0), D2D (1)', 1, { func: isInt, range: [[0,1]] }],
 	name: ['Name of config json file', 'buttons_' + randomString(5), { func: isString }],
 	toolbarColor: ['Toolbar color', -1, { func: isInt }],
 	textColor: ['Buttons\' text color', -1, { func: isInt }],
