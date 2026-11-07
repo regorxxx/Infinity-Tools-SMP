@@ -1,11 +1,13 @@
 ﻿'use strict';
-//27/09/26
+//03/11/26
 
 /* exported graphInfoMenu */
 
 /* global VK_SHIFT:readable, VK_CONTROL:readable, MF_GRAYED:readable, globQuery:readable, globTags:readable, clone:readable, MF_STRING:readable, MF_MENUBREAK:readable, MK_SHIFT:readable */
 include('..\\..\\helpers\\buttons_xxx.js');
-/* global showButtonReadme:readable  */
+/* global showButtonReadme:readable, folders:readable */
+include('..\\..\\helpers\\helpers_xxx_file.js');
+/* global _save:readable */
 include('..\\..\\helpers\\helpers_xxx_input.js');
 /* global Input:readable */
 include('..\\..\\helpers\\helpers_xxx_prototypes.js');
@@ -19,7 +21,7 @@ include('..\\..\\helpers\\buttons_xxx_menu.js');
 include('..\\..\\helpers\\helpers_xxx_statistics.js');
 /* global calcStatistics:readable */
 include('..\\..\\main\\search_by_distance\\search_by_distance.js'); // Load after buttons_xxx.js so properties are only set once
-/* global sbd:readable, music_graph_descriptors:readable */
+/* global sbd:readable, music_graph_descriptors:readable, graphStatistics:readable */
 include('..\\..\\main\\search_by_distance\\search_by_distance_genres.js');
 /* global getNearestGenreStylesV2:readable, calcMeanDistanceV2:readable */
 include('..\\..\\main\\search_by_distance\\search_by_distance_culture.js');
@@ -239,6 +241,21 @@ function graphInfoMenu() {
 					});
 				});
 			}
+		});
+		menu.newSeparator(menuName);
+		[{ entryText: 'Music Graph statistics (library)', bFoobar: true }, { entryText: 'Music Graph statistics (all)', bFoobar: false }].forEach((o) => {
+			menu.newEntry({
+				menuName, entryText: o.entryText, func: () => {
+					const profiler = sbd.panelProperties.bProfile[1] ? new FbProfiler('graphStatistics') : null;
+					this.switchAnimation('Graph statistics', true);
+					graphStatistics({ properties: this.buttonsProperties, graph: sbd.allMusicGraph, influenceMethod: sbd.influenceMethod, bFoobar: o.bFoobar }).then((resolve) => {
+						_save(folders.temp + 'musicMapStatistics.txt', resolve.text.replace(/\n/g, '\r\n'));
+						console.popup(resolve.text, o.entryText); // DEBUG
+						this.switchAnimation('Graph statistics', false);
+						if (sbd.panelProperties.bProfile[1]) { profiler.Print(); }
+					});
+				}
+			});
 		});
 	}
 	{ // Similar genres

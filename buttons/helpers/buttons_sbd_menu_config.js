@@ -1,5 +1,5 @@
 ﻿'use strict';
-//02/10/26
+//03/11/26
 
 /* exported createConfigMenu */
 
@@ -1508,17 +1508,19 @@ function createConfigMenu(parent) {
 			if (!menu.isLastEntrySep) { menu.newSeparator(subMenu); }
 			const submenuTwo = menu.newMenu('Descriptors', subMenu);
 			{
-				menu.newEntry({
-					menuName: submenuTwo, entryText: 'Calculate Music Graph statistics', func: () => {
-						const profiler = sbd.panelProperties.bProfile[1] ? new FbProfiler('graphStatistics') : null;
-						parent.switchAnimation('Graph statistics', true);
-						graphStatistics({ properties, graph: sbd.allMusicGraph, influenceMethod: sbd.influenceMethod }).then((resolve) => {
-							_save(folders.temp + 'musicMapStatistics.txt', resolve.text.replace(/\n/g, '\r\n'));
-							console.log(resolve.text); // DEBUG
-							parent.switchAnimation('Graph statistics', false);
-							if (sbd.panelProperties.bProfile[1]) { profiler.Print(); }
-						});
-					}
+				[{ entryText: 'Music Graph statistics (library)', bFoobar: true }, { entryText: 'Music Graph statistics (all)', bFoobar: false }].forEach((o) => {
+					menu.newEntry({
+						menuName: submenuTwo, entryText: o.entryText, func: () => {
+							const profiler = sbd.panelProperties.bProfile[1] ? new FbProfiler('graphStatistics') : null;
+							parent.switchAnimation('Graph statistics', true);
+							graphStatistics({ properties, graph: sbd.allMusicGraph, influenceMethod: sbd.influenceMethod, bFoobar: o.bFoobar }).then((resolve) => {
+								_save(folders.temp + 'musicMapStatistics.txt', resolve.text.replace(/\n/g, '\r\n'));
+								console.popup(resolve.text, o.entryText); // DEBUG
+								parent.switchAnimation('Graph statistics', false);
+								if (sbd.panelProperties.bProfile[1]) { profiler.Print(); }
+							});
+						}
+					});
 				});
 			}
 			menu.newSeparator(submenuTwo);
