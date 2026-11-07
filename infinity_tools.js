@@ -495,6 +495,11 @@ addEventListener('on_mouse_wheel', (step) => {
 addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-unused-vars
 	if (name === 'bio_imgChange' || name === 'biographyTags' || name === 'bio_chkTrackRev' || name === 'xxx-scripts: panel name reply') { return; }
 	switch (name) { // NOSONAR
+		case 'Scripts: ask panel name':
+		case window.ScriptInfo.Name + ': ask panel name': {
+			window.NotifyOthers('Scripts: set panel name', { name: window.Name, scriptName: window.ScriptInfo.Name, id: window.ID, source: info });
+			break;
+		}
 		case window.ScriptInfo.Name + ': share UI settings': {
 			if (info) {
 				forEachButton((button) => { button.switchHighlight(true); });
