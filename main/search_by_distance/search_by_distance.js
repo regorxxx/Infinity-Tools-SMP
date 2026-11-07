@@ -1,5 +1,5 @@
 ﻿'use strict';
-//29/09/26
+//05/11/26
 var version = '8.0.0'; // NOSONAR [shared on files]
 
 /* exported  searchByDistance, checkScoringDistribution, checkMinGraphDistance */
@@ -360,7 +360,7 @@ if (sbd.panelProperties.bTagsCache[1]) {
 */
 // Only use file cache related to current descriptors, otherwise delete it
 if (sbd.panelProperties.bProfile[1]) { sbd.profiler = new FbProfiler('descriptorCRC'); }
-const descriptorCRC = utils.CRC32(JSON.stringify(music_graph_descriptors) + musicGraph.toString() + calcGraphDistance.toString() + calcMeanDistance.toString() + sbd.influenceMethod + 'v1.2.0');
+const descriptorCRC = utils.CRC32(JSON.stringify(music_graph_descriptors) + musicGraph.toString() + calcGraphDistance.toString() + calcMeanDistance.toString() + sbd.influenceMethod + 'v1.3.0');
 const bMismatchCRC = sbd.panelProperties.descriptorCRC[1] !== descriptorCRC;
 if (bMismatchCRC) {
 	if (sbd.panelProperties.descriptorCRC[1] !== -1) { // There may be multiple panels, don't nuke it on first init on a new panel
@@ -603,6 +603,8 @@ if (!_isFile(sbd.recipesPath + 'allowedKeys.txt') || bMismatchCRC) {
 		'*.json',
 		[sbd.defaultRecipesPath, sbd.defaultThemesPath]
 	).forEach((file) => _copyFile(file, file.replace(sbd.defaultRecipesPath, sbd.recipesPath).replace(sbd.defaultThemesPath, sbd.themesPath), true));
+	// Special recipes
+	['ext_simil_tracks_graph.json', 'int_simil_artists_calc_graph.json'].forEach((file) => _copyFile(sbd.defaultRecipesPath + file, sbd.recipesPath + file, false));
 }
 
 function testRecipe({ path = null, json = null, baseTags = null } = {}) {
@@ -826,7 +828,7 @@ testBaseTags(JSON.parse(SearchByDistance_properties.tags[3]));
  * --->Misc
  *
  * @param {any?} o.parent - [=null] Parent object
- * @returns {Promise.<[FbMetadbHandle[], {name:string, score:number, mapDistance:number, bRelated:boolean, bUnrelated:boolean}[], FbMetadbHandle, FbMetadbHandle|-1]>} Output handle list (as array), the score data, current selection (reference track) and more distant track
+ * @returns {Promise.<[FbMetadbHandle[] | FbMetadbHandleList, {name:string, score:number, mapDistance:number, bRelated:boolean, bUnrelated:boolean}[], FbMetadbHandle, FbMetadbHandle|-1]>} Output handle list (as array), the score data, current selection (reference track) and more distant track
  */
 async function searchByDistance({
 	// --->Default args (aka properties from the panel and input)
@@ -906,6 +908,7 @@ async function searchByDistance({
 	// --->Output
 	playlistName = Object.hasOwn(properties, 'playlistName') ? properties.playlistName[1] : 'Search...',
 	bCreatePlaylist = true,
+	bOutputHandleList = false,
 	// --->Misc
 	parent = null
 } = {}) {
@@ -1055,8 +1058,27 @@ async function searchByDistance({
 		if (!sel) {
 			console.log('No track\\theme selected for mix.');
 			return;
-		}
-		if (bBasicLogging) {
+		} else if (sel instanceof FbMetadbHandleList) {
+			const arg = arguments[0];
+			return Promise.serial(
+				sel.Convert().map((h) => { return { ...arg, sel: h, bCreatePlaylist: false, bOutputHandleList: false }; }),
+				searchByDistance,
+				25
+			).then((dataArr) => {
+				const handleList = bCreatePlaylist || bOutputHandleList
+					? removeDuplicates({
+						handleList: new FbMetadbHandleList(dataArr.map((data) => data[0]).flat(Infinity)),
+						checkKeys: checkDuplicatesByTag,
+						bAdvTitle,
+						bMultiple
+					}) : null;
+				if (bCreatePlaylist) {
+					sendToPlaylist(handleList, parsePlaylistName(playlistName, theme.name), false);
+					if (bBasicLogging) { console.log('Final Playlist selection length: ' + handleList.Count + ' tracks.'); }
+				}
+				return bOutputHandleList ? [handleList, dataArr[1], dataArr[2], dataArr[3]] : dataArr;
+			});
+		} else if (bBasicLogging) {
 			console.log('Using selection as reference: ' + fb.TitleFormat('[%TRACK% - ]%TITLE%').EvalWithMetadb(sel) + ' (' + sel.RawPath + ')');
 		}
 	}
@@ -1183,21 +1205,23 @@ async function searchByDistance({
 	if (bUseTheme && theme.tags.length > 1) {
 		const arg = arguments[0];
 		return Promise.serial(
-			theme.tags.map((subTags) => { return { ...arg, theme: { ...theme, tags: [subTags] }, bCreatePlaylist: false }; }),
+			theme.tags.map((subTags) => { return { ...arg, theme: { ...theme, tags: [subTags] }, bCreatePlaylist: false, bOutputHandleList: false }; }),
 			searchByDistance,
 			25
 		).then((dataArr) => {
-			if (bCreatePlaylist) {
-				const handleList = removeDuplicates({
+			const handleList = bCreatePlaylist || bOutputHandleList
+				? removeDuplicates({
 					handleList: new FbMetadbHandleList(dataArr.map((data) => data[0]).flat(Infinity)),
 					checkKeys: checkDuplicatesByTag,
 					bAdvTitle,
 					bMultiple
-				});
+				})
+				: null;
+			if (bCreatePlaylist) {
 				sendToPlaylist(handleList, parsePlaylistName(playlistName, theme.name), false);
 				if (bBasicLogging) { console.log('Final Playlist selection length: ' + handleList.Count + ' tracks.'); }
 			}
-			return dataArr;
+			return bOutputHandleList ? [handleList, dataArr[1], dataArr[2], dataArr[3]] : dataArr;
 		});
 	}
 
@@ -2430,7 +2454,7 @@ async function searchByDistance({
 	if (typeof cacheLink !== 'undefined' && oldCacheLinkSize !== cacheLink.size && method === 'GRAPH') { window.NotifyOthers(sbd.name + ': cacheLink map', cacheLink); }
 	if (typeof cacheLinkSet !== 'undefined' && oldCacheLinkSetSize !== cacheLinkSet.size && method === 'GRAPH') { window.NotifyOthers(sbd.name + ': cacheLinkSet map', cacheLinkSet); }
 	// Output handle list (as array), the score data, current selection (reference track) and more distant track
-	return [selectedHandlesArray, selectedHandlesData, sel, (poolLength ? handleList[scoreData[poolLength - 1].index] : -1)];
+	return [bOutputHandleList ? new FbMetadbHandleList(selectedHandlesArray) : selectedHandlesArray, selectedHandlesData, sel, (poolLength ? handleList[scoreData[poolLength - 1].index] : -1)];
 }
 
 /*

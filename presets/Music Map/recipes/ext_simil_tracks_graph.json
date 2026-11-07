@@ -1,0 +1,76 @@
+{
+	"name": "Similar tracks calculation (GRAPH)",
+	"tags": {
+		"genre": {
+			"weight": 10,
+			"scoringDistribution": "LOGARITHMIC"
+		},
+		"style": {
+			"weight": 5,
+			"scoringDistribution": "LOGARITHMIC"
+		},
+		"mood": {
+			"weight": 5,
+			"scoringDistribution": "LINEAR"
+		},
+		"key": {
+			"weight": 5,
+			"range": 3,
+			"scoringDistribution": "LINEAR"
+		},
+		"bpm": {
+			"weight": 5,
+			"range": 50,
+			"scoringDistribution": "NORMAL"
+		},
+		"date": {
+			"weight": 25,
+			"range": 30,
+			"scoringDistribution": "NORMAL"
+		},
+		"artistRegion": {
+			"weight": 3,
+			"baseScore": 0,
+			"range": 5,
+			"scoringDistribution": "LOGISTIC"
+		},
+		"genreStyleRegion": {
+			"weight": 5,
+			"baseScore": 0,
+			"range": 5,
+			"scoringDistribution": "LOGISTIC"
+		},
+		"*": {
+			"weight": 0
+		}
+	},
+	"scoreFilter": 65,
+	"method": "GRAPH",
+	"graphDistance": "music_graph_descriptors.cluster * 2 * 3/4",
+	"bFilterWithGraph": false,
+	"bNegativeWeighting": true,
+	"bConditionAntiInfluences": false,
+	"bUseAntiInfluencesFilter": true,
+	"bUseInfluencesFilter": false,
+	"bSimilArtistsFilter": false,
+	"bSameArtistFilter": false,
+	"genreStyleRegionFilter": -1,
+	"artistRegionFilter": -1,
+	"nearGenresFilter": 0,
+	"bBreakWhenFilled": true,
+	"bPoolFiltering": false,
+	"bRandomPick": true,
+	"probPick": 100,
+	"playlistLength": 30,
+	"bSortRandom": false,
+	"bSmartShuffle": true,
+	"bProgressiveListOrder": false,
+	"bScatterInstrumentals": false,
+	"bInKeyMixingPlaylist": false,
+	"bProgressiveListCreation": false,
+	"bProfile": false,
+	"bShowQuery": false,
+	"bShowFinalSelection": false,
+	"bBasicLogging": false,
+	"bSearchDebug": false
+}

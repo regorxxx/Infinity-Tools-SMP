@@ -97,7 +97,7 @@ addButton({
 		prefix, buttonsProperties: newButtonsProperties,
 		icon: chars.wand,
 		listener: {
-			'on_notify_data': (parent, name, info) => {
+			'on_notify_data': async (parent, name, info) => {
 				if (name === 'bio_imgChange' || name === 'biographyTags' || name === 'bio_chkTrackRev' || name === 'xxx-scripts: panel name reply') { return; }
 				if (!name.startsWith(sbd.name)) { return; }
 				switch (name) { // NOSONAR
@@ -125,6 +125,19 @@ addButton({
 							parent.switchHighlight(false);
 							window.Repaint();
 						}
+						break;
+					}
+					case sbd.name + ': search by distance': {
+						if (info && info.window) {
+							if (!info.window.includes(window.Name)) { break; }
+							info.window.splice(info.window.indexOf(window.Name), 1);
+						}
+						const sel = info
+							? info.sel || (info.handleList ? new FbMetadbHandleList(info.handleList) : void (0))
+							: void (0);
+						const targetId = info.id;
+						const data = await searchByDistance({ properties: parent.buttonsProperties, theme: null, recipe: 'ext_simil_tracks_graph.json', parent, sel, bCreatePlaylist: false, bOutputHandleList: true });
+						window.NotifyOthers(sbd.name + ': search by distance receive', { targetId, sourceName: window.Name, data });
 						break;
 					}
 				}

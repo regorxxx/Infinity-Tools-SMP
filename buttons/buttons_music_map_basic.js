@@ -1,5 +1,5 @@
 ﻿'use strict';
-//19/03/26
+//05/11/26
 
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
@@ -15,7 +15,7 @@ include('..\\helpers\\helpers_xxx_UI.js');
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable */
 include('..\\main\\search_by_distance\\search_by_distance.js'); // Load after buttons_xxx.js so properties are only set once
-/* global SearchByDistance_properties:readable, sbd:readable, updateCache:readable, findStyleGenresMissingGraphCheck:readable, testBaseTags:readable, checkJsonProperties:readable */
+/* global SearchByDistance_properties:readable, sbd:readable, updateCache:readable, findStyleGenresMissingGraphCheck:readable, testBaseTags:readable, checkJsonProperties:readable, searchByDistance:readable */
 include('helpers\\buttons_sbd_menu_presets.js'); // Button menu
 /* global choosePresetMenu:readable */
 
@@ -86,7 +86,28 @@ addButton({
 		},
 		description: buttonTooltipSbd,
 		prefix, buttonsProperties: newButtonsProperties,
-		icon: chars.wand
+		icon: chars.wand,
+		listener: {
+			'on_notify_data': async (parent, name, info) => {
+				if (name === 'bio_imgChange' || name === 'biographyTags' || name === 'bio_chkTrackRev' || name === 'xxx-scripts: panel name reply') { return; }
+				if (!name.startsWith(sbd.name)) { return; }
+				switch (name) { // NOSONAR
+					case sbd.name + ': search by distance': {
+						if (info && info.window) {
+							if (!info.window.includes(window.Name)) { break; }
+							info.window.splice(info.window.indexOf(window.Name), 1);
+						}
+						const sel = info
+							? info.sel || (info.handleList ? new FbMetadbHandleList(info.handleList) : void (0))
+							: void (0);
+						const targetId = info.id;
+						const data = await searchByDistance({ properties: parent.buttonsProperties, theme: null, recipe: 'ext_simil_tracks_graph.json', parent, sel, bCreatePlaylist: false, bOutputHandleList: true });
+						window.NotifyOthers(sbd.name + ': search by distance receive', { targetId, sourceName: window.Name, data });
+						break;
+					}
+				}
+			}
+		},
 	})
 });
 
