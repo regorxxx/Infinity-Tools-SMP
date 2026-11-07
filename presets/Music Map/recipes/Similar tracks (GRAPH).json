@@ -30,14 +30,14 @@
 		"artistRegion": {
 			"weight": 3,
 			"baseScore": 0,
-			"scoringDistribution": "LOGISTIC",
-			"range": 5
+			"range": 5,
+			"scoringDistribution": "LOGISTIC"
 		},
 		"genreStyleRegion": {
 			"weight": 5,
 			"baseScore": 0,
-			"scoringDistribution": "LOGISTIC",
-			"range": 5
+			"range": 5,
+			"scoringDistribution": "LOGISTIC"
 		}
 	},
 	"scoreFilter": 65,
