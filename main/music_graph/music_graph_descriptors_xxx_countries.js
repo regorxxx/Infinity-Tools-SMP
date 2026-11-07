@@ -1,5 +1,5 @@
 ﻿'use strict';
-//28/12/23
+//29/10/26
 
 if (typeof include !== 'undefined') {
 	include('..\\map\\region_xxx.js');
@@ -19,16 +19,16 @@ const music_graph_descriptors_countries = new RegionMap({
 		},
 		'Africa': {
 			'West Africa': [
-				'SLE', 'NGA', 'LBR', 'GMB', 'GHA', 'GNB', 'GIN', 'SEN', 'CIV', 'BEN', 'TGO', 'CPV', 'MLI', 'MRT', 'BFA'
+				'SLE', 'NGA', 'LBR', 'GMB', 'GHA', 'GNB', 'GIN', 'SEN', 'CIV', 'BEN', 'TGO', 'CPV', 'MLI', 'MRT', 'BFA', 'NER'
 			],
 			'Maghreb': [ // North Africa
 				'DZA', 'TUN', 'ESH', 'MAR', 'LBY', 'EGY'
 			],
 			'Central Africa': [
-				'COD', 'COG', 'GAB', 'SSD', 'NER', 'UGA', 'GNQ', 'CMR', 'RWA', 'CAF', 'TCD', 'BDI'
+				'COD', 'COG', 'GAB', 'GNQ', 'CMR', 'RWA', 'CAF', 'TCD', 'BDI'
 			],
 			'East Africa': [
-				'ETH', 'KEN', 'SDN', 'SOM', 'DJI', 'ERI'
+				'ETH', 'KEN', 'SDN', 'SOM', 'DJI', 'ERI', 'UGA', 'SSD'
 			],
 			'South Africa': [
 				'ZAF', 'TZA', 'MOZ', 'NAM', 'ZMB', 'ZWE', 'COM', 'SWZ', 'SYC', 'STP', 'SHN', 'REU', 'AGO', 'MDG', 'BWA', 'ATF', 'LSO', 'MWI', 'MUS', 'MYT', 'BVT'
@@ -36,24 +36,24 @@ const music_graph_descriptors_countries = new RegionMap({
 		},
 		'Asia': {
 			'Central Asia': [
-				'NPL', 'BTN'
+				'NPL', 'BTN', 'UZB', 'KGZ', 'TKM', 'TJK'
 			],
 			'East Asia': [
-				'TWN', 'CHN', 'JPN', 'PRK', 'MAC', 'HKG'
+				'TWN', 'CHN', 'JPN', 'PRK', 'MAC', 'HKG', 'KOR'
 			],
 			'West Asia': [
-				'TKM', 'TJK', 'IRN', 'PAK', 'UZB', 'KAZ', 'KOR', 'AFG', 'KGZ'
+				'IRN', 'PAK', 'AFG'
 			],
 			'South Asia': [
-				'BGD', 'THA', 'IND', 'MMR', 'VNM', 'LKA', 'SGP', 'TLS', 'PHL', 'MYS', 'LAO', 'KHM', 'MDV', 'BRN', 'MNP', 'IOT', 'IDN'
+				'BGD', 'THA', 'IND', 'MMR', 'VNM', 'LKA', 'SGP', 'TLS', 'PHL', 'MYS', 'LAO', 'KHM', 'MDV', 'BRN', 'IOT', 'IDN'
 			],
 			'North Asia': [
-				'MNG', 'RUS'
+				'MNG', 'RUS', 'KAZ'
 			]
 		},
 		'Europe': {
 			'Eastern Europe': [
-				'ALB', 'UKR', 'SRB', 'MKD', 'HRV', 'MDA', 'MNE', 'ROU', 'BIH', 'BGR'
+				'ALB', 'UKR', 'SRB', 'MKD', 'HRV', 'MDA', 'MNE', 'ROU', 'BIH', 'BGR', 'XKX', 'BLR', 'RUS'
 			],
 			'Southern Europe': [
 				'AND', 'ESP', 'ITA', 'GIB', 'GRC', 'PRT', 'MLT', 'SMR', 'VAT'
@@ -65,7 +65,7 @@ const music_graph_descriptors_countries = new RegionMap({
 				'BEL', 'GBR', 'MCO', 'IRL', 'FRA', 'LUX', 'NLD', 'GGY', 'IMN', 'JEY'
 			],
 			'Northern Europe': [
-				'BLR', 'SWE', 'NOR', 'LTU', 'EST', 'DNK', 'FIN', 'SJM', 'LVA', 'GRL', 'FRO', 'ISL'
+				'SWE', 'NOR', 'LTU', 'EST', 'DNK', 'FIN', 'SJM', 'LVA', 'GRL', 'FRO', 'ISL', 'ALA'
 			]
 		},
 		'Mashriq': { // West Asia
@@ -84,7 +84,7 @@ const music_graph_descriptors_countries = new RegionMap({
 		},
 		'America': {
 			'Caribbean': [
-				'CUB', 'DMA', 'DOM', 'JAM', 'PRI', 'MSR', 'VIR', 'VGB', 'TCA', 'TTO', 'VCT', 'LCA', 'KNA', 'HTI', 'CYM', 'MTQ', 'ANT', 'GLP', 'GRD', 'AIA'
+				'CUB', 'DMA', 'DOM', 'JAM', 'PRI', 'MSR', 'VIR', 'VGB', 'TCA', 'TTO', 'VCT', 'LCA', 'KNA', 'HTI', 'CYM', 'MTQ', 'ANT', 'GLP', 'GRD', 'AIA', 'SXM', 'MAF', 'BLM', 'CUW', 'BES'
 			],
 			'North America': [
 				'ATG', 'ABW', 'BHS', 'BRB', 'USA', 'CAN', 'SPM', 'BMU'
@@ -104,7 +104,7 @@ const music_graph_descriptors_countries = new RegionMap({
 				'VUT', 'NCL', 'SLB', 'PNG', 'FJI'
 			],
 			'Micronesia': [
-				'PLW', 'GUM', 'FSM', 'NRU', 'MHL'
+				'PLW', 'GUM', 'FSM', 'NRU', 'MHL', 'MNP'
 			],
 			'Polynesia': [
 				'TUV', 'WLF', 'UMI', 'TKL', 'TON', 'WSM', 'PCN', 'PYF', 'COK', 'NZL', 'ASM', 'NIU', 'KIR'
