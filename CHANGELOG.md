@@ -26,6 +26,7 @@
 		- sel can be a single track or multiple ones. If not provided, uses the focused track instead.
 		- recipe and theme can point to filenames or have full preset objects. If recipe is provided, but empty, uses the default one ('ext_simil_tracks_graph.json').
 		- bCreatePlaylist, by default false.
+		- All logging is disabled except showing final selection at console log.
 - Installation: added support for [foo_component_update_checker](https://github.com/p2ashiura/foo_component_update_checker). Those who use that component, will get automatic notifications about package updates from now on (not nightlies).
 ### Changed
 - Quickmatch: playlist name is now configurable with dynamic variables based on entries.

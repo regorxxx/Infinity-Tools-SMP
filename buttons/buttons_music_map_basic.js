@@ -105,6 +105,11 @@ addButton({
 							recipe: Object.hasOwn(info, 'recipe') ? info.recipe || 'ext_simil_tracks_graph.json' : null,
 							bCreatePlaylist: Object.hasOwn(info, 'bCreatePlaylist') ? info.bCreatePlaylist : false,
 							bOutputHandleList: !!targetId,
+							bProfile: false,
+							bShowQuery: false,
+							bBasicLogging: false,
+							bSearchDebug: false,
+							bShowFinalSelection: true
 						};
 						const data = await searchByDistance({ properties: parent.buttonsProperties, parent, ...options });
 						if (targetId) { window.NotifyOthers(sbd.name + ': search by distance receive', { targetId, sourceName: window.Name, data }); }
