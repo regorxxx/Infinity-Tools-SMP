@@ -20,11 +20,12 @@
 - Buttons: added 'Interactive Rating stars' preset on empty toolbars.
 - UI: active button color is now based by default in DUI/CUI colors and adjusted according to it. Previous installations will have a color already set, thus it will not change unless manually reset first.
 - External integration: third party panels can now call Music Map buttons to search for similar tracks. Currently used by [Library-Tree-SMP](https://github.com/regorxxx/Library-Tree-SMP).
-	* 'Music Map: search by distance' -> { window: string[], id: string, sel: FbMetadbHandleList }
-		- window is an array of Infinity-Tools-SMP panel names, only one button will process the call per panel
-		- id refers to (single) panel ID results will be send to
+	* 'Music Map: search by distance' -> { window: string[], id: string, sel: FbMetadbHandleList, recipe: string|object, theme: string|object, bCreatePlaylist: boolean }
+		- window is an array of Infinity-Tools-SMP panel names, only one button will process the call per panel.
+		- id refers to a (single) panel, by ID, which results will be send to.
 		- sel can be a single track or multiple ones. If not provided, uses the focused track instead.
-		- current implementation uses 'ext_simil_tracks_graph.json' recipe, with no possibility to customize searches.
+		- recipe and theme can point to filenames or have full preset objects. If recipe is provided, but empty, uses the default one ('ext_simil_tracks_graph.json').
+		- bCreatePlaylist, by default false.
 - Installation: added support for [foo_component_update_checker](https://github.com/p2ashiura/foo_component_update_checker). Those who use that component, will get automatic notifications about package updates from now on (not nightlies).
 ### Changed
 - Quickmatch: playlist name is now configurable with dynamic variables based on entries.

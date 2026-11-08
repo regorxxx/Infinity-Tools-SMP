@@ -93,16 +93,21 @@ addButton({
 				if (!name.startsWith(sbd.name)) { return; }
 				switch (name) { // NOSONAR
 					case sbd.name + ': search by distance': {
-						if (info && info.window) {
+						if (!info) { break; }
+						if (info.window) {
 							if (!info.window.includes(window.Name)) { break; }
 							info.window.splice(info.window.indexOf(window.Name), 1);
 						}
-						const sel = info
-							? info.sel || (info.handleList ? new FbMetadbHandleList(info.handleList) : void (0))
-							: void (0);
-						const targetId = info.id;
-						const data = await searchByDistance({ properties: parent.buttonsProperties, theme: null, recipe: 'ext_simil_tracks_graph.json', parent, sel, bCreatePlaylist: false, bOutputHandleList: true });
-						window.NotifyOthers(sbd.name + ': search by distance receive', { targetId, sourceName: window.Name, data });
+						const targetId = Object.hasOwn(info, 'id') ? info.id : null;
+						const options = {
+							sel: info.sel || (info.handleList ? new FbMetadbHandleList(info.handleList) : void (0)),
+							theme: Object.hasOwn(info, 'theme') ? JSON.parse(JSON.stringify(info.theme)) : null,
+							recipe: Object.hasOwn(info, 'recipe') ? info.recipe || 'ext_simil_tracks_graph.json' : null,
+							bCreatePlaylist: Object.hasOwn(info, 'bCreatePlaylist') ? info.bCreatePlaylist : false,
+							bOutputHandleList: !!targetId,
+						};
+						const data = await searchByDistance({ properties: parent.buttonsProperties, parent, ...options });
+						if (targetId) { window.NotifyOthers(sbd.name + ': search by distance receive', { targetId, sourceName: window.Name, data }); }
 						break;
 					}
 				}

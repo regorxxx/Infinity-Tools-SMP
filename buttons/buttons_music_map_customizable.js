@@ -1,5 +1,5 @@
 ﻿'use strict';
-//20/03/26
+//08/11/26
 
 /* global barProperties:readable */
 include('..\\helpers\\helpers_xxx.js');
@@ -9,7 +9,7 @@ include('..\\helpers\\buttons_xxx.js');
 include('..\\helpers\\helpers_xxx_properties.js');
 /* global setProperties:readable, getPropertiesPairs:readable, overwriteProperties:readable, checkJsonProperties:readable */
 include('..\\helpers\\helpers_xxx_prototypes.js');
-/* global isBoolean:readable, isJSON:readable, _p:readable , isStringWeak:readable */
+/* global isBoolean:readable, isJSON:readable, _p:readable, isStringWeak:readable */
 include('..\\helpers\\helpers_xxx_UI.js');
 /* global _textWidth:readable, chars:readable, _scale:readable */
 include('..\\helpers\\helpers_xxx_file.js');
@@ -128,16 +128,21 @@ addButton({
 						break;
 					}
 					case sbd.name + ': search by distance': {
-						if (info && info.window) {
+						if (!info) { break; }
+						if (info.window) {
 							if (!info.window.includes(window.Name)) { break; }
 							info.window.splice(info.window.indexOf(window.Name), 1);
 						}
-						const sel = info
-							? info.sel || (info.handleList ? new FbMetadbHandleList(info.handleList) : void (0))
-							: void (0);
-						const targetId = info.id;
-						const data = await searchByDistance({ properties: parent.buttonsProperties, theme: null, recipe: 'ext_simil_tracks_graph.json', parent, sel, bCreatePlaylist: false, bOutputHandleList: true });
-						window.NotifyOthers(sbd.name + ': search by distance receive', { targetId, sourceName: window.Name, data });
+						const targetId = Object.hasOwn(info, 'id') ? info.id : null;
+						const options = {
+							sel: info.sel || (info.handleList ? new FbMetadbHandleList(info.handleList) : void (0)),
+							theme: Object.hasOwn(info, 'theme') ? JSON.parse(JSON.stringify(info.theme)) : null,
+							recipe: Object.hasOwn(info, 'recipe') ? info.recipe || 'ext_simil_tracks_graph.json' : null,
+							bCreatePlaylist: Object.hasOwn(info, 'bCreatePlaylist') ? info.bCreatePlaylist : false,
+							bOutputHandleList: !!targetId,
+						};
+						const data = await searchByDistance({ properties: parent.buttonsProperties, parent, ...options });
+						if (targetId) { window.NotifyOthers(sbd.name + ': search by distance receive', { targetId, sourceName: window.Name, data }); }
 						break;
 					}
 				}
@@ -181,9 +186,9 @@ function buttonTooltipSbdCustom() {
 		getSetting('artistRegionFilter') !== -1 || getSetting('genreStyleRegionFilter') !== -1
 			? 'Cultural filter'
 			: '',
-		(getSetting('dynQueries') || []).length !== 0
-			? 'Dynamic query'
-			: ''
+		(getSetting('dynQueries') || []).length === 0
+			? ''
+			: 'Dynamic query'
 	].filter(Boolean).join(' | ');
 	const sort = [
 		(getSetting('bSmartShuffle')
@@ -223,7 +228,10 @@ function processRecipePlaceholder(recipeFile, tags) {
 			: _isFile(sbd.recipesPath + recipeFile)
 				? _jsonParseFileCheck(sbd.recipesPath + recipeFile, 'Recipe json', sbd.name, utf8) || {}
 				: {};
-		if (Object.keys(recipe).length !== 0) {
+		if (Object.keys(recipe).length === 0) {
+			console.log(sbd.name + ': Recipe file not found\n\t', recipeFile); // DEBUG
+			fb.ShowPopupMessage('Recipe file not found:\n' + recipeFile, sbd.name);
+		} else {
 			const result = testRecipe({ json: recipe, baseTags: tags });
 			if (!result.valid) { console.popup(result.report.join('\n\t- '), 'Recipe error'); }
 			// Process nested recipes
@@ -235,14 +243,14 @@ function processRecipePlaceholder(recipeFile, tags) {
 						recipe[key] = toAdd[key];
 					} else if (key === 'tags') {
 						for (let key in toAdd.tags) {
-							if (!Object.hasOwn(recipe.tags, key)) {
-								recipe.tags[key] = toAdd.tags[key];
-							} else {
+							if (Object.hasOwn(recipe.tags, key)) {
 								for (let subKey in toAdd.tags[key]) {
 									if (!Object.hasOwn(recipe.tags[key], subKey)) {
 										recipe.tags[key][subKey] = toAdd.tags[key][subKey];
 									}
 								}
+							} else {
+								recipe.tags[key] = toAdd.tags[key];
 							}
 						}
 					}
@@ -259,9 +267,6 @@ function processRecipePlaceholder(recipeFile, tags) {
 					if (!Object.hasOwn(recipe.tags, key)) { recipe.tags[key] = recipe.tags['*']; }
 				}
 			}
-		} else {
-			console.log(sbd.name + ': Recipe file not found\n\t', recipeFile); // DEBUG
-			fb.ShowPopupMessage('Recipe file not found:\n' + recipeFile, sbd.name);
 		}
 	}
 	return recipe;
