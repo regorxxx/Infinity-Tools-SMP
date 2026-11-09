@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/11/26
+//09/11/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -497,7 +497,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 	switch (name) { // NOSONAR
 		case 'Scripts: ask panel name':
 		case window.ScriptInfo.Name + ': ask panel name': {
-			window.NotifyOthers('Scripts: set external panel name', { name: window.Name, scriptName: window.ScriptInfo.Name, id: window.ID, source: info });
+			window.NotifyOthers('Scripts: set external panel name', { name: window.Name, scriptName: window.ScriptInfo.Name, id: window.ID, source: info, subScripts: buttonsBar.listKeys.flat(Infinity) });
 			break;
 		}
 		case window.ScriptInfo.Name + ': share UI settings': {
