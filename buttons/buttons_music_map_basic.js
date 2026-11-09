@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/11/26
+//09/11/26
 
 include('..\\helpers\\buttons_xxx.js');
 /* global getUniquePrefix:readable, buttonsBar:readable, addButton:readable, ThemedButton:readable */
@@ -74,7 +74,7 @@ setProperties(newButtonsProperties, prefix, 0); //This sets all the panel proper
 */
 
 addButton({
-	[sbd.name + ' basic']: new ThemedButton({
+	[sbd.name + ' Basic']: new ThemedButton({
 		coordinates: { x: 0, y: 0, w: _textWidth('Similar Tracks', buttonsBar.config.font.text) + buttonsBar.config.buttonMargin, h: _scale(16, false) },
 		text: 'Similar Tracks',
 		func: function (mask) {

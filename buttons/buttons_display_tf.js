@@ -450,7 +450,7 @@ addButton({
 			},
 			get onClickOptions() {
 				const bLibraryTree = !!utils.GetPackageInfo('{E85C9EF0-778B-46DD-AF20-F4BE831360DD}');
-				const libraryTreeText = 'Specify Library-Tree-SMP panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-SMP and only works for panels within same JS host component.';
+				const libraryTreeText = 'Specify Library-Tree-SMP panel names:\n(split by \'|\')\n\nIf left empty, it will apply to all available panels.\n\nRequires Library-Tree-SMP and only works for panels within same JS-Host component.';
 				return [
 					{ text: 'None', func: null, bAvailable: true },
 					{ text: this.buttonsProperties.bPlaying[1] ? 'Show Now Playing / Selection' : 'Show Selection', func: this.showHandle, bAvailable: true },
