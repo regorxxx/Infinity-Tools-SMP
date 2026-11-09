@@ -1,5 +1,5 @@
 ﻿'use strict';
-//08/10/26
+//09/11/26
 
 /* global menusEnabled:readable, readmes:readable, menu:readable, forcedQueryMenusEnabled:readable, scriptName:readable, defaultArgs:readable, disabledCount:writable, menuAltAllowed:readable, menuDisabled:readable */
 
@@ -177,7 +177,7 @@
 									if (!forcedQueryMenusEnabled[name]) { selArgs.forcedQuery = ''; }
 									dateQuery = selArgs.forcedQuery.length ? '(' + dateQuery + ') AND (' + selArgs.forcedQuery + ')' : dateQuery;
 									const dateName = (selYear.length === 2 && selYear[0] === 0 ? ' before ' + selYear[1] : ' from ' + selYear.join('-'));
-									const plsName = 'Top ' + selArgs.playlistLength + ' Played Tracks ' + dateName;
+									const plsName = 'Top ' + selArgs.playlistLength + ' Played Tracks' + dateName;
 									return [dateQuery, plsName];
 								};
 								selYearArr.reverse().forEach((selYear, i) => {
@@ -246,7 +246,7 @@
 									if (!forcedQueryMenusEnabled[name]) { selArgs.forcedQuery = ''; }
 									dateQuery = selArgs.forcedQuery.length ? '(' + dateQuery + ') AND (' + selArgs.forcedQuery + ')' : dateQuery;
 									const dateName = (selYear.length === 2 && selYear[0] === 0 ? ' before ' + selYear[1] : ' from ' + selYear.join('-'));
-									const plsName = 'Top ' + selArgs.playlistLength + ' Rated Tracks ' + dateName;
+									const plsName = 'Top ' + selArgs.playlistLength + ' Rated Tracks' + dateName;
 									return [dateQuery, plsName];
 								};
 								selYearArr.reverse().forEach((selYear, i) => {

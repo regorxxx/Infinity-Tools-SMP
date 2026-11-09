@@ -62,6 +62,7 @@
 - Buttons: added default settings to 'Volume display' preset so display TF button actually shows some volume-related display instead of the default settings value (rating display). Seems it was forgotten when first released.
 - Fingerprint tools: fixed error related to tag matching and ffprobe usage ('Read directly from files' option).
 - Fingerprint tools: reduced database split size to avoid OOM errors.
+- Playlist Tools\Statistics search: unwanted double space on playlist names in some cases.
 - UI: fixed icons not being properly drawn for text colors different than black or white in some cases. Bug introduced at [v2.1.0](#210---2026-08-24). See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087037.html#msg1087037).
 - UI: fixed incompatibility with JSplitter v4.2.0+ or v3.9.0+.
 - UI: fixed some unwanted helpers button files being shown at add button submenus. Bug introduced at [2.2.0](#211---2026-09-14).
