@@ -316,7 +316,6 @@ function shuffleByTags({
 	let tagValues = selItemsClone
 		? getHandleListTags(selItemsClone, tagName, { bMerged: true })
 		: [...tagsArray];
-	console.log(tagValues);
 	// Get tag values and find the one with higher count or merged into a single one (id)
 	if (bMultiple) {
 		tagValues = tagValues.map((item) => item.filter(Boolean).map((item) => item.toLowerCase()).sort());
