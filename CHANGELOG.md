@@ -69,6 +69,7 @@
 - UI: fix image-based icons not being reset on color changes until panel reload. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087540.html#msg1087540).
 - UI: fixed titles of some button settings input popups.
 - Helpers: create full folder tree on file/folder remove.
+- Fixed long time bug regarding Smart Shuffle on Playlist Tools and Music Map which resulted on crashes in some rare situations.
 
 ## [2.2.0] - 2026-09-14
 ### Added
