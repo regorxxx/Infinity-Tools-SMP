@@ -1,5 +1,5 @@
 ﻿'use strict';
-//09/11/26
+//17/11/26
 
 /* Infinity Tools: Buttons Toolbar
 	Loads any button found on the buttons folder. Just load this file and add your desired buttons via R. Click.
@@ -502,6 +502,7 @@ addEventListener('on_notify_data', (name, info) => { // eslint-disable-line no-u
 		}
 		case window.ScriptInfo.Name + ': share UI settings': {
 			if (info) {
+				if (info.window && !info.window.includes(window.Name)) { break; }
 				forEachButton((button) => { button.switchHighlight(true); });
 				const answer = WshShell.Popup('Apply current settings to highlighted toolbar?\nCheck UI.', 0, window.FullPanelName, popup.question + popup.yes_no);
 				if (answer === popup.yes) {
