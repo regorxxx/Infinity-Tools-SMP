@@ -51,7 +51,7 @@
 - Wrapped: added fallback 'no artist' img in case no local/online image is found.
 - Wrapped: improved image download and processing.
 - Helpers: updated helpers.
-- Helpers: replaced nircmd.exe with nircmdx.exe so all recycle bin errors are directly handled by console.
+- Helpers: replaced nircmd.exe with nircmdc.exe so all recycle bin errors are directly handled by console.
 - Readmes: cleanup of Playlist Tools readmes submenu, with better layout (compatible with dark mode).
 - Installation: fonts installation is no longer needed when using JSplitter. Fonts will be directly loaded on real time, without system wide installation.If any font is missing (Unix systems), install required fonts from [here](https://github.com/regorxxx/foobar2000-assets/tree/main/Fonts) either system-wide or use the user fonts feature as seen [here](https://hydrogenaudio.org/index.php/topic,130149.msg1090600.html#msg1090600).
 - Installation: new user fonts feature which allows to override or load any custom font in JSplitter by adding them at '[FB2K_PROFILE]\js_data\fonts' folder. Additionally package has real time built-in support for up to 7 different popular emoji fonts (also for flags), ready to be used at any custom font field. See [here](https://hydrogenaudio.org/index.php/topic,130149.msg1090600.html#msg1090600) for more info.
@@ -65,6 +65,7 @@
 - Fingerprint tools: fixed error related to tag matching and ffprobe usage ('Read directly from files' option).
 - Fingerprint tools: reduced database split size to avoid OOM errors.
 - Playlist Tools\Statistics search: unwanted double space on playlist names in some cases.
+- Music Map: missing html file. See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1091256.html#msg1091256).
 - UI: fixed icons not being properly drawn for text colors different than black or white in some cases. Bug introduced at [v2.1.0](#210---2026-08-24). See [here](https://hydrogenaudio.org/index.php/topic,128978.msg1087037.html#msg1087037).
 - UI: fixed incompatibility with JSplitter v4.2.0+ or v3.9.0+.
 - UI: fixed some unwanted helpers button files being shown at add button submenus. Bug introduced at [2.2.0](#211---2026-09-14).
